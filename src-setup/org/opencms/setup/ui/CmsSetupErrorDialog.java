@@ -89,7 +89,7 @@ public class CmsSetupErrorDialog extends CmsBasicDialog {
      * Creates a new instance.<p>
      *
      * @param message the error message
-     * @param t the error to be displayed
+     * @param details the error details to be displayed
      * @param onClose executed on close
      * @param window the dialog window if available
      */

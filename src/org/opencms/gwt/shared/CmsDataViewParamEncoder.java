@@ -43,6 +43,7 @@ public final class CmsDataViewParamEncoder {
      * Hidden default constructor.<p>
      */
     private CmsDataViewParamEncoder() {
+
         // do nothing
     }
 

@@ -27,6 +27,9 @@
 
 package org.opencms.db.postgresql;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * PostgreSql implementation of the SQL manager.<p>
  *
@@ -42,7 +45,15 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public CmsSqlManager() {
 
-        super();
+        this(Collections.<String> emptyList());
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager(java.util.List)
+     */
+    public CmsSqlManager(List<String> additionalQueryProperties) {
+
+        super(additionalQueryProperties);
         loadQueryProperties(QUERY_PROPERTIES);
     }
 

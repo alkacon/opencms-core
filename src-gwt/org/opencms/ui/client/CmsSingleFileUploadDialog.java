@@ -564,8 +564,8 @@ public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDi
     }
 
     /**
-     * Helper method for finishing the upload. 
-     * 
+     * Helper method for finishing the upload.
+     *
      * @param jsonObject the JSON received from the server
      */
     private void finishUpload(JSONObject jsonObject) {

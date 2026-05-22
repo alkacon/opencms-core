@@ -227,16 +227,6 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Checks if other OUs are visible.<p>
-     *
-     * @return true if other OUs are visible
-     */
-    protected boolean otherOrgUnitsVisible() {
-
-        return getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_ORGUNIT).isVisible();
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
@@ -260,28 +250,11 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Makes a list item from a user.<p>
-     *
-     * @param user the user
-     *
-     * @return the list item
-     */
-    protected CmsListItem makeUserItem(CmsUser user) {
-
-        CmsListItem item = getList().newItem(user.getId().toString());
-        item.set(LIST_COLUMN_LOGIN, user.getName());
-        item.set(LIST_COLUMN_NAME, user.getSimpleName());
-        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
-        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
-        return item;
-    }
-
-    /**
      * Returns a list of users to display.<p>
      *
      * @param withOtherOus if not set only users of the current ou should be returned
      *
-     * @return a list of <code><{@link CmsUser}</code>s
+     * @return a list of {@link CmsUser}s
      *
      * @throws CmsException if something goes wrong
      */
@@ -300,6 +273,33 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setVisible(visible);
             getList().getMetadata().getColumnDefinition(LIST_COLUMN_ORGUNIT).setPrintable(visible);
         }
+    }
+
+    /**
+     * Makes a list item from a user.<p>
+     *
+     * @param user the user
+     *
+     * @return the list item
+     */
+    protected CmsListItem makeUserItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_NAME, user.getSimpleName());
+        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+        return item;
+    }
+
+    /**
+     * Checks if other OUs are visible.<p>
+     *
+     * @return true if other OUs are visible
+     */
+    protected boolean otherOrgUnitsVisible() {
+
+        return getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_ORGUNIT).isVisible();
     }
 
     /**

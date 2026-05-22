@@ -42,6 +42,7 @@ public class CmsPatternPanelIndividualController extends A_CmsPatternPanelContro
      * @param changeHandler the value change handler.
      */
     CmsPatternPanelIndividualController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
+
         super(model, changeHandler);
         m_view = new CmsPatternPanelIndividualView(this, m_model);
     }

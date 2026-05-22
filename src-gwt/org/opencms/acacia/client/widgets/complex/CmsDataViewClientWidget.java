@@ -88,6 +88,7 @@ public class CmsDataViewClientWidget extends Composite {
      * @param configString the configuration string
      */
     public CmsDataViewClientWidget(CmsDataViewValueAccessor valueAccessor, String configString) {
+
         m_valueAccessor = valueAccessor;
         m_valueAccessor.setWidget(this);
 

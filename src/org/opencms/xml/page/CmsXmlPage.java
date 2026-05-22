@@ -257,8 +257,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     e);
             } catch (IOException e) {
                 throw new CmsRuntimeException(
-                        Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0),
-                        e);
+                    Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0),
+                    e);
             }
         }
         return m_xmlPageContentDefinition;

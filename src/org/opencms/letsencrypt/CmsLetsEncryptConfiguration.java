@@ -87,7 +87,7 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
 
     /**
      * Helper for parsing / generating the configuration.<p>
-     **/
+     */
     public static final CmsElementWithAttrsParamConfigHelper CONFIG_HELPER = new CmsElementWithAttrsParamConfigHelper(
         "*/system",
         N_LETSENCRYPT,
@@ -204,6 +204,7 @@ public class CmsLetsEncryptConfiguration implements I_CmsConfigurationParameterH
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
+
         // do nothing
     }
 

@@ -338,9 +338,10 @@ public class CmsPropertyDelete extends CmsDialog {
         // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
-            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0)
-                + ": "
-                + getParamPropertyName());
+            setParamTitle(
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0)
+                    + ": "
+                    + getParamPropertyName());
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else if (DIALOG_DELETE_CASCADE.equals(getParamAction())) {

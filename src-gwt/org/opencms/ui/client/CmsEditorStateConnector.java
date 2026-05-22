@@ -57,6 +57,7 @@ public class CmsEditorStateConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsEditorStateConnector() {
+
         m_rpc = getRpcProxy(I_CmsEditorStateRPC.class);
     }
 
@@ -89,24 +90,24 @@ public class CmsEditorStateConnector extends AbstractExtensionConnector {
      * @return <code>true</code> indicates the frame was found and the method exported
      */
     native boolean exportMethod(String frameName)/*-{
-		var self = this;
-		var frame = $wnd.frames[frameName];
-		if (frame == null && $wnd.frames.length > 0) {
-			for (i = 0; i < $wnd.frames.length; i++) {
-				if ($wnd.frames[i].frameElement.name == frameName) {
-					frame = $wnd.frames[i];
-					break;
-				}
-			}
-		}
+        var self = this;
+        var frame = $wnd.frames[frameName];
+        if (frame == null && $wnd.frames.length > 0) {
+            for (i = 0; i < $wnd.frames.length; i++) {
+                if ($wnd.frames[i].frameElement.name == frameName) {
+                    frame = $wnd.frames[i];
+                    break;
+                }
+            }
+        }
 
-		if (frame != null) {
-			frame.cmsSetEditorChangedState = function(changed) {
-				self.@org.opencms.ui.client.CmsEditorStateConnector::setEditorChangedState(Z)(changed);
-			}
-			return true;
-		} else
-			return false;
+        if (frame != null) {
+            frame.cmsSetEditorChangedState = function(changed) {
+                self.@org.opencms.ui.client.CmsEditorStateConnector::setEditorChangedState(Z)(changed);
+            }
+            return true;
+        } else
+            return false;
     }-*/;
 
     /**

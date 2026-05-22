@@ -109,6 +109,7 @@ public class CmsRoleTable extends Table implements I_CmsFilterableTable {
 
     /**Table properties. */
     enum TableProperty {
+
         /**Icon. */
         Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_ROLE)),
         /**Name. */

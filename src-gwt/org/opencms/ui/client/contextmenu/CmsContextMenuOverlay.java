@@ -52,6 +52,7 @@ class CmsContextMenuOverlay extends VOverlay {
      * Constructor.<p>
      */
     public CmsContextMenuOverlay() {
+
         super(false, false);
 
         m_closeHandlerRegistration = addCloseHandler(m_closeHandler);

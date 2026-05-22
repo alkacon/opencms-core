@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  * Provides a DHTML calendar widget, for use on a widget dialog.<p>
  *
- * */
+ */
 public class CmsCalendarWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
 
     /** Value of the activation. */

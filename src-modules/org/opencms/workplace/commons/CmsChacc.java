@@ -547,11 +547,12 @@ public class CmsChacc extends CmsDialog {
                 getSettings().getUserSettings().getDialogExpandUserPermissions()));
         result.append(dialogWhiteBoxStart());
         try {
-            result.append(buildPermissionEntryForm(
-                getSettings().getUser().getId(),
-                buildPermissionsForCurrentUser(),
-                false,
-                false));
+            result.append(
+                buildPermissionEntryForm(
+                    getSettings().getUser().getId(),
+                    buildPermissionsForCurrentUser(),
+                    false,
+                    false));
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {

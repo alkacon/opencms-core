@@ -53,21 +53,20 @@ public class CmsListIndependentAction extends A_CmsListAction {
     }
 
     /**
-     * Help method to resolve the on clic text to use.<p>
+     * Returns the default explorer switch action for explorer list dialogs.<p>
      *
-     * @param wp the workplace context
-     *
-     * @return the on clic text
+     * @return the default explorer switch action
      */
-    protected String resolveOnClic(CmsWorkplace wp) {
+    public static CmsListIndependentAction getDefaultExplorerSwitchAction() {
 
-        return "listIndepAction('"
-            + getListId()
-            + "','"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-            + "');";
+        CmsListIndependentAction defAction = new CmsListIndependentAction(ACTION_EXPLORER_SWITCH_ID);
+        defAction.setName(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0));
+        defAction.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0));
+        defAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0));
+        defAction.setIconPath("list/explorer.png");
+        defAction.setEnabled(true);
+        defAction.setVisible(true);
+        return defAction;
     }
 
     /**
@@ -90,19 +89,20 @@ public class CmsListIndependentAction extends A_CmsListAction {
     }
 
     /**
-     * Returns the default explorer switch action for explorer list dialogs.<p>
+     * Help method to resolve the on clic text to use.<p>
      *
-     * @return the default explorer switch action
+     * @param wp the workplace context
+     *
+     * @return the on clic text
      */
-    public static CmsListIndependentAction getDefaultExplorerSwitchAction() {
+    protected String resolveOnClic(CmsWorkplace wp) {
 
-        CmsListIndependentAction defAction = new CmsListIndependentAction(ACTION_EXPLORER_SWITCH_ID);
-        defAction.setName(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0));
-        defAction.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0));
-        defAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0));
-        defAction.setIconPath("list/explorer.png");
-        defAction.setEnabled(true);
-        defAction.setVisible(true);
-        return defAction;
+        return "listIndepAction('"
+            + getListId()
+            + "','"
+            + getId()
+            + "', '"
+            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
+            + "');";
     }
 }

@@ -46,6 +46,7 @@ public class CmsSqlManager {
      * Protected constructor to allow only subclassing.<p>
      */
     protected CmsSqlManager() {
+
         // hide public constructor
     }
 

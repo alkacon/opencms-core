@@ -63,6 +63,7 @@ public class CmsRemoteShellServer {
      * @param port the port for the RMI registry
      */
     public CmsRemoteShellServer(int port) {
+
         m_port = port;
     }
 
@@ -84,7 +85,9 @@ public class CmsRemoteShellServer {
 
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(
-                    Messages.get().getBundle().key(Messages.INIT_REMOTESHELL_ENABLED_1, Integer.valueOf(result.m_port)));
+                    Messages.get().getBundle().key(
+                        Messages.INIT_REMOTESHELL_ENABLED_1,
+                        Integer.valueOf(result.m_port)));
             }
 
             result.initServer();

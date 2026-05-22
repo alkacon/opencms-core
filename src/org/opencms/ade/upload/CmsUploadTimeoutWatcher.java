@@ -96,10 +96,11 @@ public class CmsUploadTimeoutWatcher extends Thread implements Serializable {
                 m_listener = null;
             } else {
                 if (isFrozen()) {
-                    m_listener.cancelUpload(new CmsUploadException(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_UPLOAD_FROZEN_1,
-                            Integer.valueOf(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
+                    m_listener.cancelUpload(
+                        new CmsUploadException(
+                            Messages.get().getBundle().key(
+                                Messages.ERR_UPLOAD_FROZEN_1,
+                                Integer.valueOf(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
                 } else {
                     run();
                 }

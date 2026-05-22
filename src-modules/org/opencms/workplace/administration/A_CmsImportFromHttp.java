@@ -44,14 +44,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 
-import org.apache.commons.fileupload2.core.DiskFileItem;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * Abstract class to upload a zip file containing VFS resources with HTTP upload.<p>

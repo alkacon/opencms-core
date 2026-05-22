@@ -58,7 +58,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
-import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
 
 import com.google.common.collect.Sets;
@@ -100,7 +99,7 @@ public class CmsAliasBulkEditHelper {
         byte[] data = null;
         String siteRoot = null;
         String separator = ",";
-        for (FileItem fileItem : items) {
+        for (DiskFileItem fileItem : items) {
             String name = fileItem.getFieldName();
             if (PARAM_IMPORTFILE.equals(name)) {
                 data = fileItem.get();

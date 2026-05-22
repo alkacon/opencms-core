@@ -173,8 +173,6 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
             openImportExportDialog(m_cms, context.iterator().next());
         }
 
-
-
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
          */
@@ -325,6 +323,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
      * Table properties.<p>
      */
     enum TableProperty {
+
         /** Description property.*/
         Description(Messages.GUI_USERMANAGEMENT_OU_DESCRIPTION_0, String.class, ""),
         /**Icon property. */
@@ -445,11 +444,7 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
         }
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
-        window.setContent(
-            CmsImportExportUserDialog.getExportUserDialogForOU(
-                ou,
-                window,
-                includeTechnicalFields));
+        window.setContent(CmsImportExportUserDialog.getExportUserDialogForOU(ou, window, includeTechnicalFields));
 
         A_CmsUI.get().addWindow(window);
     }

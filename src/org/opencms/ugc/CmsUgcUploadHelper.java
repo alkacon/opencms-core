@@ -36,12 +36,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * A helper class which processes and stores uploaded form data belonging to a single form edit session.<p>

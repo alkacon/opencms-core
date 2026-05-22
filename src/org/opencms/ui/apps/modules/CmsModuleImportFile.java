@@ -53,6 +53,7 @@ public class CmsModuleImportFile {
      * @param path the path of the module zip file to import
      */
     public CmsModuleImportFile(String path) {
+
         m_path = path;
     }
 

@@ -91,7 +91,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
      * Constructor.<p>
      *
      * @param configuration the widget configuration
-     **/
+     */
     public CmsLocationPicker(String configuration) {
 
         I_CmsLayoutBundle.INSTANCE.locationPickerCss().ensureInjected();

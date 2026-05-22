@@ -293,7 +293,7 @@ public class CmsHtmlWidgetOption {
     /** Option for the "insert predefined template content" button. */
     public static final String OPTION_TEMPLATE = "template";
 
-    /** Typography button. */ 
+    /** Typography button. */
     public static final String OPTION_TYPOGRAPHY = "typography";
 
     /** Option for the "unlink" button. */
@@ -410,9 +410,6 @@ public class CmsHtmlWidgetOption {
 
     /** The link default protocol */
     private String m_linkDefaultProtocol;
-
-    /**
-    private boolean m_allowScripts;
 
     /** The path for custom styles. */
     private String m_stylesFormatPath;

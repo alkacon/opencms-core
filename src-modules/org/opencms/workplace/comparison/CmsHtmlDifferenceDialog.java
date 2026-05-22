@@ -141,8 +141,9 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
                             getLocale()));
                 } else if (getMode() == CmsDiffViewMode.ALL) {
                     // print original source, if there are no differences
-                    out.println(wrapLinesWithUnchangedStyle(
-                        CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", "")));
+                    out.println(
+                        wrapLinesWithUnchangedStyle(
+                            CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", "")));
                 }
             }
         } catch (Exception e) {

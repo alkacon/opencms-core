@@ -411,6 +411,7 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
      * @see org.opencms.loader.I_CmsTemplateContextProvider#isIgnoreTemplateContextsSetting()
      */
     public boolean isIgnoreTemplateContextsSetting() {
+
         return true;
     }
 

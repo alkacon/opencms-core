@@ -168,6 +168,30 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
+     * Returns true if the export user has read permission on a specified resource.<p>
+     *
+     * @return true, if the export user has the permission to read the resource
+     */
+    public boolean exportUserHasReadPermission() {
+
+        String vfsName = getParamResource();
+        CmsObject cms = getCms();
+        try {
+            // static export must always be checked with the export users permissions,
+            // not the current users permissions
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            exportCms.getRequestContext().setSiteRoot(getCms().getRequestContext().getSiteRoot());
+            // let's look up if the export user has the permission to read
+            return exportCms.hasPermissions(
+                cms.readResource(vfsName, CmsResourceFilter.IGNORE_EXPIRATION),
+                CmsPermissionSet.ACCESS_READ);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        return false;
+    }
+
+    /**
      * Returns the value of the export parameter.<p>
      *
      * @return the value of the export parameter
@@ -242,30 +266,6 @@ public class CmsSecure extends CmsDialog {
     public String getResourceUrl() {
 
         return OpenCms.getLinkManager().getOnlineLink(getCms(), getParamResource());
-    }
-
-    /**
-     * Returns true if the export user has read permission on a specified resource.<p>
-     *
-     * @return true, if the export user has the permission to read the resource
-     */
-    public boolean exportUserHasReadPermission() {
-
-        String vfsName = getParamResource();
-        CmsObject cms = getCms();
-        try {
-            // static export must always be checked with the export users permissions,
-            // not the current users permissions
-            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            exportCms.getRequestContext().setSiteRoot(getCms().getRequestContext().getSiteRoot());
-            // let's look up if the export user has the permission to read
-            return exportCms.hasPermissions(
-                cms.readResource(vfsName, CmsResourceFilter.IGNORE_EXPIRATION),
-                CmsPermissionSet.ACCESS_READ);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-        return false;
     }
 
     /**

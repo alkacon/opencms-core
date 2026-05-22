@@ -49,6 +49,7 @@ public class CmsModuleLog {
      * Action type.<p>
      */
     public enum Action {
+
         /** import. */
         importModule("import"),
 
@@ -67,6 +68,7 @@ public class CmsModuleLog {
          * @param printName the name to be written to the log
          */
         Action(String printName) {
+
             m_printName = printName;
         }
 

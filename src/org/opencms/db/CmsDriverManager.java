@@ -291,7 +291,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
          * Gets the current driver manager.
          *
          * @return the driver manager to use
-         **/
+         */
         public CmsDriverManager getDriverManager() {
 
             return m_driverManager;
@@ -2223,7 +2223,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     if ((content != null) && resource.isFile()) {
                         // also update file content if required
-                        getVfsDriver(dbc).writeContent(dbc, newResource.getResourceId(), content);
+                        getVfsDriver(dbc).writeContent(dbc, newResource, content);
                     }
                 }
 
@@ -10404,7 +10404,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         byte[] contents = resource.getContents();
-        getVfsDriver(dbc).writeContent(dbc, resource.getResourceId(), contents);
+        getVfsDriver(dbc).writeContent(dbc, resource, contents);
         // log it
         log(
             dbc,

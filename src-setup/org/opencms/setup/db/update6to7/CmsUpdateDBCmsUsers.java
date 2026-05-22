@@ -129,84 +129,6 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
     }
 
     /**
-     * @see org.opencms.setup.db.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
-     */
-    @Override
-    protected void internalExecute(CmsSetupDb dbCon) {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        try {
-            if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
-                CmsUUID id = createWebusersGroup(dbCon);
-                addWebusersToGroup(dbCon, id);
-            } else {
-                System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            // Check if the CMS_USERDATA table exists
-            if (!checkUserDataTable(dbCon)) {
-                createUserDataTable(dbCon); // Could throw Exception during table creation
-
-                String query = readQuery(QUERY_SELECT_USER_DATA);
-                CmsSetupDBWrapper db = null;
-                try {
-                    db = dbCon.executeSqlStatement(query, null);
-                    while (db.getResultSet().next()) {
-                        String userID = (String)db.getResultSet().getObject(RESULTSET_USER_ID);
-                        System.out.println("UserId: " + userID);
-
-                        try {
-                            Blob blob = db.getResultSet().getBlob(RESULTSET_USER_INFO);
-
-                            ByteArrayInputStream bin = new ByteArrayInputStream(blob.getBytes(1, (int)blob.length()));
-                            ObjectInputStream oin = new ObjectInputStream(bin);
-
-                            Map<String, Object> infos = CmsCollectionsGenericWrapper.map(oin.readObject());
-
-                            if (infos == null) {
-                                infos = new HashMap<String, Object>();
-                            }
-
-                            // Add user address and user description of the current user
-                            String userAddress = (String)db.getResultSet().getObject(USER_ADDRESS);
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userAddress)) {
-                                infos.put(USER_ADDRESS, userAddress);
-                            }
-                            String userDescription = (String)db.getResultSet().getObject(USER_DESCRIPTION);
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userDescription)) {
-                                infos.put(USER_DESCRIPTION, userDescription);
-                            }
-
-                            // Write the user data to the table
-                            writeAdditionalUserInfo(dbCon, userID, infos);
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } finally {
-                    if (db != null) {
-                        db.close();
-                    }
-                }
-
-                // add the column USER_DATECREATED
-                addUserDateCreated(dbCon);
-
-                // remove the unnecessary columns from CMS_USERS
-                removeUnnecessaryColumns(dbCon);
-
-            } else {
-                System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Adds the new column USER_DATECREATED to the CMS_USERS table.<p>
      *
      * @param dbCon the db connection interface
@@ -298,6 +220,84 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
         params.add("/");
         dbCon.updateSqlStatement(sql, null, params);
         return id;
+    }
+
+    /**
+     * @see org.opencms.setup.db.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
+     */
+    @Override
+    protected void internalExecute(CmsSetupDb dbCon) {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        try {
+            if (dbCon.hasTableOrColumn(CMS_USERS_TABLE, USER_TYPE)) {
+                CmsUUID id = createWebusersGroup(dbCon);
+                addWebusersToGroup(dbCon, id);
+            } else {
+                System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            // Check if the CMS_USERDATA table exists
+            if (!checkUserDataTable(dbCon)) {
+                createUserDataTable(dbCon); // Could throw Exception during table creation
+
+                String query = readQuery(QUERY_SELECT_USER_DATA);
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = dbCon.executeSqlStatement(query, null);
+                    while (db.getResultSet().next()) {
+                        String userID = (String)db.getResultSet().getObject(RESULTSET_USER_ID);
+                        System.out.println("UserId: " + userID);
+
+                        try {
+                            Blob blob = db.getResultSet().getBlob(RESULTSET_USER_INFO);
+
+                            ByteArrayInputStream bin = new ByteArrayInputStream(blob.getBytes(1, (int)blob.length()));
+                            ObjectInputStream oin = new ObjectInputStream(bin);
+
+                            Map<String, Object> infos = CmsCollectionsGenericWrapper.map(oin.readObject());
+
+                            if (infos == null) {
+                                infos = new HashMap<String, Object>();
+                            }
+
+                            // Add user address and user description of the current user
+                            String userAddress = (String)db.getResultSet().getObject(USER_ADDRESS);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userAddress)) {
+                                infos.put(USER_ADDRESS, userAddress);
+                            }
+                            String userDescription = (String)db.getResultSet().getObject(USER_DESCRIPTION);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userDescription)) {
+                                infos.put(USER_DESCRIPTION, userDescription);
+                            }
+
+                            // Write the user data to the table
+                            writeAdditionalUserInfo(dbCon, userID, infos);
+                        } catch (Throwable e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
+                }
+
+                // add the column USER_DATECREATED
+                addUserDateCreated(dbCon);
+
+                // remove the unnecessary columns from CMS_USERS
+                removeUnnecessaryColumns(dbCon);
+
+            } else {
+                System.out.println("table " + CHECK_CMS_USERDATA + " already exists");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

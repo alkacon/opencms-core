@@ -8,9 +8,9 @@ plugins {
     id 'signing'
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
-    id 'com.diffplug.spotless' version '8.4.0'
     id 'org.openrewrite.rewrite' version '7.+'
     id("com.netflix.nebula.jakartaee-migration") version "2.0.2"
+    id 'com.diffplug.spotless' version '8.5.1'
 }
 
 
@@ -74,7 +74,7 @@ if (externalVersionProps.exists()){
     propFile=externalVersionProps
 }else{
     println 'Using internal version properties file'
-    propFile=file("$projectDir/src/org/opencms/main/version.properties")
+    propFile=file("${projectDir}/src/org/opencms/main/version.properties")
 }
 
 Properties vprops = new Properties()
@@ -178,8 +178,8 @@ sourceSets{
     }
 }
 
-def spotlessImportOrderFile = file('/Users/alex/workspace/ak-work/agents/config/OrganizeImports_OpenCms.importorder')
-def spotlessFormatterConfigFile = file('/Users/alex/workspace/ak-work/agents/config/Formatter_OpenCms.xml')
+def spotlessImportOrderFile = file("${projectDir}/.settings/opencms_rules.importorder")
+def spotlessFormatterConfigFile = file("${projectDir}/.settings/formatter_opencms_rules.xml")
 def spotlessEclipseVersion = '4.39'
 def hasSpotlessFilesProperty = project.hasProperty('spotlessFiles')
 def spotlessFilePaths = hasSpotlessFilesProperty
@@ -599,7 +599,7 @@ tasks.register('workplaceTheme', JavaExec) {
 
 
     args = [
-        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
+        "${projectDir}/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
         layout.buildDirectory.file("workplaceThemes/opencms/styles.css").get().asFile
     ]
     maxHeapSize = max_heap_size
@@ -628,7 +628,7 @@ tasks.register('opencmsFonts', JavaExec) {
     // opencmsFonts are generated into a different directory than the /opencms/styles.css
     // to avoid conflicts or dependencies between the build tasks 'workplaceTheme' and 'opencmsFonts'
     args = [
-        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
+        "${projectDir}/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
         layout.buildDirectory.file("workplaceThemes/opencmsFonts/opencmsFonts.css").get().asFile
     ]
     maxHeapSize = max_heap_size
@@ -636,7 +636,7 @@ tasks.register('opencmsFonts', JavaExec) {
 
 
 Properties gwtProps = new Properties()
-gwtProps.load(new FileInputStream("$projectDir/src-gwt/gwt-modules.properties"))
+gwtProps.load(new FileInputStream("${projectDir}/src-gwt/gwt-modules.properties"))
 project.ext.gwtModuleNames = gwtProps['gwtmodules']
 
 tasks.register('resourcesJar', Jar) {
@@ -1280,6 +1280,9 @@ def coreTestConfig = {
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
     systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
+    if (project.hasProperty('dbProduct')) {
+        systemProperties['db.product'] = project.property('dbProduct')
+    }
     systemProperties['opencms.test.verbose'] = providers.systemProperty('opencms.test.verbose')
         .orElse(providers.environmentVariable('OPENCMS_TEST_VERBOSE'))
         .orElse('false')
@@ -1288,13 +1291,56 @@ def coreTestConfig = {
     inputs.dir "${projectDir}/webapp"
 }
 
+def storageBackendTestPatterns = [
+    'org.opencms.db.storage.Test*'
+]
+
+def storageVfsRegressionTestClasses = [
+    'org.opencms.file.TestStorageVfsDriver',
+    'org.opencms.file.TestCreateWriteResource',
+    'org.opencms.file.TestReadResource',
+    'org.opencms.file.TestPublishing',
+    'org.opencms.file.TestHistory',
+    'org.opencms.file.TestSiblings',
+    'org.opencms.file.TestDeletion',
+    'org.opencms.file.TestReplace',
+    'org.opencms.file.TestRestoreFromHistory'
+]
+
 test {
     configure coreTestConfig
     // includes = ['org/opencms/test/AllTestsBridge.class']
     description = "Runs the complete OpenCms core test suite."
 
     includes = ['**/Test*.class']
+    excludes = [
+        'org/opencms/db/storage/Test*.class',
+        'org/opencms/file/TestStorageVfsDriver.class'
+    ]
     scanForTestClasses = true
+}
+
+tasks.register('testStorage', Test) {
+    description = "Runs the storage backend tests and selected VFS regression tests with storage driver configuration."
+    group = 'verification'
+    configure coreTestConfig
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    useJUnitPlatform()
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        delete reports.html.outputLocation.get().asFile
+        delete reports.junitXml.outputLocation.get().asFile
+        def dbProduct = systemProperties['db.product'] ?: 'hsqldb'
+        systemProperties['test.config.folder'] = "config.${dbProduct}_storage"
+        logger.lifecycle("Running storage tests with ${systemProperties['test.config.folder']}")
+    }
+
+    filter {
+        storageBackendTestPatterns.each { includeTestsMatching it }
+        storageVfsRegressionTestClasses.each { includeTestsMatching it }
+    }
 }
 
 tasks.register('testSingle', Test) {
@@ -1652,6 +1698,10 @@ tasks.register('uploadArchives') { // dependency tasks are set dynamically via a
     }
 }
 
+// fail in case the source is badly formatted
+tasks.named('compileJava') {
+    dependsOn spotlessCheck
+}
 
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {

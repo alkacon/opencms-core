@@ -34,6 +34,7 @@ import com.vaadin.ui.FormLayout;
 public class CmsNewTypeForm extends FormLayout {
 
     public CmsNewTypeForm() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
     }
 

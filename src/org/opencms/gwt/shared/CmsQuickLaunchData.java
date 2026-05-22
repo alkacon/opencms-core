@@ -96,6 +96,7 @@ public class CmsQuickLaunchData implements IsSerializable {
      * Default constructor for serialization.<p>
      */
     protected CmsQuickLaunchData() {
+
         // Default constructor for serialization
     }
 

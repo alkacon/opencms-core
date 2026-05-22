@@ -221,6 +221,9 @@ public class OpenCmsTestCase extends TestCase {
     /** Key for tests on Oracle database. */
     public static final String DB_ORACLE = "oracle";
 
+    /** Property / Environment name for selecting an alternative test configuration folder. */
+    public static final String PROP_TEST_CONFIG_FOLDER = "test.config.folder";
+
     /** The OpenCms/database configuration. */
     public static CmsParameterConfiguration m_configuration;
 
@@ -1449,7 +1452,15 @@ public class OpenCmsTestCase extends TestCase {
                 "Importing to  : " + targetFolder});
 
         // set default values, if parameters are null
-        configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
+        if (configFolder == null) {
+            String testConfigFolder = System.getProperty(PROP_TEST_CONFIG_FOLDER);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(testConfigFolder)) {
+                testConfigFolder = m_configuration.get(PROP_TEST_CONFIG_FOLDER);
+            }
+            configFolder = CmsStringUtil.isEmptyOrWhitespaceOnly(testConfigFolder)
+            ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/")
+            : getTestDataPath("WEB-INF/" + testConfigFolder + "/");
+        }
         testName = testName == null ? getCurrentTestClass() : testName;
         specialConfigFolder = specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null;
 

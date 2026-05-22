@@ -461,7 +461,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * Sets if the parent category should be selected with the child or not.
      *
      * @param value if the parent categories should be selected or not
-     * */
+     */
     public void setParentSelection(boolean value) {
 
         m_selectParent = value;

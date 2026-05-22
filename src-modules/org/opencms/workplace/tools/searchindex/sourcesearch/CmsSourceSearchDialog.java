@@ -143,8 +143,9 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
         // create export file name block
-        result.append(createWidgetBlockStart(
-            key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
+        result.append(
+            createWidgetBlockStart(
+                key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
         if (m_solrEnabled) {
             result.append(createDialogRowsHtml(0, 9));
         } else {

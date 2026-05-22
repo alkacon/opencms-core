@@ -35,6 +35,7 @@ import com.google.common.collect.Maps;
  * Enum representing report entry types.<p>
  */
 public enum CmsReportFormatType {
+
     /** Default format. */
     fmtDefault("FORMAT_DEFAULT", I_CmsReport.FORMAT_DEFAULT),
 
@@ -65,6 +66,13 @@ public enum CmsReportFormatType {
     /** Enum values by format name. */
     private static Map<String, CmsReportFormatType> m_byName = Maps.newHashMap();
 
+    static {
+        for (CmsReportFormatType type : values()) {
+            m_byId.put(Integer.valueOf(type.getFormatId()), type);
+            m_byName.put(type.getFormatName(), type);
+        }
+    }
+
     /** The format id. */
     private int m_id;
 
@@ -78,15 +86,9 @@ public enum CmsReportFormatType {
      * @param formatId the format id
      */
     private CmsReportFormatType(String formatName, int formatId) {
+
         m_name = formatName;
         m_id = formatId;
-    }
-
-    static {
-        for (CmsReportFormatType type : values()) {
-            m_byId.put(Integer.valueOf(type.getFormatId()), type);
-            m_byName.put(type.getFormatName(), type);
-        }
     }
 
     /**

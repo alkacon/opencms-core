@@ -543,6 +543,7 @@ public class CmsDateSeriesEditHandler implements I_CmsEditHandler {
      * @see org.opencms.workplace.editors.directedit.I_CmsEditHandler#setParameters(java.util.Map)
      */
     public void setParameters(Map<String, String> params) {
+
         // this handler doesn't need parameters
     }
 }

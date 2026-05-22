@@ -28,7 +28,12 @@
 package org.opencms.synchronize;
 
 import org.opencms.db.CmsDbIoException;
-import org.opencms.file.*;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -207,9 +212,11 @@ public class CmsSynchronize {
         } catch (CmsException e) {
             // the folder could not be read, so create it
             String foldername = translate(folder);
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_1,
-                String.valueOf(m_count++)), I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_1,
+                    String.valueOf(m_count++)),
+                I_CmsReport.FORMAT_NOTE);
             m_report.print(Messages.get().container(Messages.RPT_IMPORT_FOLDER_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(
                 org.opencms.report.Messages.get().container(
@@ -579,15 +586,12 @@ public class CmsSynchronize {
             List<CmsProperty> properties = new ArrayList<>();
             properties.add(titleProp);
 
-            CmsResource newFile = m_cms.createResource(
-                translate(folder) + filename,
-                resType,
-                content,
-                properties);
+            CmsResource newFile = m_cms.createResource(translate(folder) + filename, resType, content, properties);
 
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                m_cms.getSitePath(newFile)));
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    m_cms.getSitePath(newFile)));
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             // now check if there is some external method to be called which
@@ -783,9 +787,11 @@ public class CmsSynchronize {
         // .. and remove it from the old one
         m_syncList.remove(translate(resname));
         // update the report
-        m_report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_SUCCESSION_1,
-            String.valueOf(m_count++)), I_CmsReport.FORMAT_NOTE);
+        m_report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_1,
+                String.valueOf(m_count++)),
+            I_CmsReport.FORMAT_NOTE);
         m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
         m_report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, resname));

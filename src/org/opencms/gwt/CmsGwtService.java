@@ -183,6 +183,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String msg) {
+
         LOG.info(msg);
     }
 
@@ -191,6 +192,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String message, Throwable t) {
+
         LOG.info(message, t);
     }
 

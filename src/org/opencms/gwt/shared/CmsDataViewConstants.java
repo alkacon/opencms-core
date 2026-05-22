@@ -94,6 +94,7 @@ public final class CmsDataViewConstants {
 
     /** Default constructor. */
     private CmsDataViewConstants() {
+
         // do nothing
     }
 

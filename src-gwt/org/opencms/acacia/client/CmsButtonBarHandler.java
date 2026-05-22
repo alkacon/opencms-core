@@ -36,7 +36,6 @@ import org.opencms.acacia.client.ui.CmsInlineEntityWidget;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

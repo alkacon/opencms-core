@@ -73,6 +73,16 @@ public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
     }
 
     /**
+     * Returns if the handler is currently registered.<p>
+     *
+     * @return <code>true</code> if the handler is currently registered and active
+     */
+    public boolean isRegistered() {
+
+        return m_handlerRegistration != null;
+    }
+
+    /**
      * @see com.google.gwt.user.client.Event.NativePreviewHandler#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
      */
     public void onPreviewNativeEvent(NativePreviewEvent event) {
@@ -103,16 +113,6 @@ public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
         }
 
-    }
-
-    /**
-     * Returns if the handler is currently registered.<p>
-     *
-     * @return <code>true</code> if the handler is currently registered and active
-     */
-    public boolean isRegistered() {
-
-        return m_handlerRegistration != null;
     }
 
     /**

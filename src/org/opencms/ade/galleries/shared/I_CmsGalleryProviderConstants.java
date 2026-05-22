@@ -47,7 +47,7 @@ public interface I_CmsGalleryProviderConstants {
 
         /** The wysiwyg editor mode. */
         editor(CmsGalleryTabConfiguration.resolve(
-            CmsGalleryTabConfiguration.TC_SELECT_DOC) /* may be overwritten by configuration */),
+            CmsGalleryTabConfiguration.TC_SELECT_DOC)/* may be overwritten by configuration */),
 
         /** The explorer mode. */
         view(CmsGalleryTabConfiguration.resolve(CmsGalleryTabConfiguration.TC_SELECT_DOC)),

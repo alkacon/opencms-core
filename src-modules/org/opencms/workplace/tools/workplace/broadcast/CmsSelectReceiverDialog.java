@@ -117,8 +117,9 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
 
         if ((m_groups == null) || m_groups.isEmpty()) {
             setCommitErrors(
-                Collections.singletonList((Throwable)new CmsIllegalStateException(
-                    Messages.get().container(Messages.ERR_NO_SELECTED_GROUP_0))));
+                Collections.singletonList(
+                    (Throwable)new CmsIllegalStateException(
+                        Messages.get().container(Messages.ERR_NO_SELECTED_GROUP_0))));
             return;
         }
 
@@ -147,8 +148,9 @@ public class CmsSelectReceiverDialog extends CmsWidgetDialog {
 
         if (!hasUser) {
             setCommitErrors(
-                Collections.singletonList((Throwable)new CmsIllegalStateException(
-                    Messages.get().container(Messages.ERR_NO_SELECTED_RECEIVERS_0))));
+                Collections.singletonList(
+                    (Throwable)new CmsIllegalStateException(
+                        Messages.get().container(Messages.ERR_NO_SELECTED_RECEIVERS_0))));
             return;
         }
 

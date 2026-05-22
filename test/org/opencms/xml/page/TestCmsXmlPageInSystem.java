@@ -191,7 +191,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestRunner {
      * Tests link issue with certain parameters.<p>
      *
      * Description of the issue:
-     * links with parameters <code>&lt;a href="form.jsp?a=b&language=xy"&gt;</code> are replaced by
+     * links with parameters <code>&lt;a href="form.jsp?a=b&amp;language=xy"&gt;</code> are replaced by
      * <code>&lt;a href="form.jsp?a=b?uage=xy"&gt;</code>.<p>
      *
      * This issue turned out to be a bug in the HtmlParser component,

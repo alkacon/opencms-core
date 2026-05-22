@@ -101,15 +101,6 @@ public class CmsSetupDBWrapper {
 
     /**
      * Creates a new SQL Statement on the connection of this DB wrapper.<p>
-     * @throws SQLException if statement cannot be created
-     */
-    public void createStatement() throws SQLException {
-
-        m_statement = m_connection.createStatement();
-    }
-
-    /**
-     * Creates a new SQL Statement on the connection of this DB wrapper.<p>
      *
      * @param query the DB query to use
      * @param params List of additional parameters
@@ -152,15 +143,12 @@ public class CmsSetupDBWrapper {
     }
 
     /**
-     * Executes a query on the connection and statement of this db wrapper.<p>
-     *
-     * @param query the query to execute
-     *
+     * Creates a new SQL Statement on the connection of this DB wrapper.<p>
      * @throws SQLException if statement cannot be created
      */
-    public void excecuteQuery(String query) throws SQLException {
+    public void createStatement() throws SQLException {
 
-        m_resultset = m_statement.executeQuery(query);
+        m_statement = m_connection.createStatement();
     }
 
     /**
@@ -170,6 +158,18 @@ public class CmsSetupDBWrapper {
     public void excecutePreparedQuery() throws SQLException {
 
         m_resultset = m_preparedStatement.executeQuery();
+    }
+
+    /**
+     * Executes a query on the connection and statement of this db wrapper.<p>
+     *
+     * @param query the query to execute
+     *
+     * @throws SQLException if statement cannot be created
+     */
+    public void excecuteQuery(String query) throws SQLException {
+
+        m_resultset = m_statement.executeQuery(query);
     }
 
     /**

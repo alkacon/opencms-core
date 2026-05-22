@@ -224,10 +224,11 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
     private void replaceTags(CmsResource resource, Integer totalJobCount, Integer actualJobCount) throws CmsException {
 
         I_CmsReport report = getReport();
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_SUCCESSION_2,
-            actualJobCount,
-            totalJobCount));
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                actualJobCount,
+                totalJobCount));
         report.print(
             Messages.get().container(
                 Messages.RPT_TAGREPLACE_PROCESS_FILE_1,

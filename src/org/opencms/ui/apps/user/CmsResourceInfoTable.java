@@ -67,6 +67,7 @@ public class CmsResourceInfoTable extends Table {
      * @param groupIDs group id
      */
     public CmsResourceInfoTable(CmsObject cms, Set<CmsUUID> userIDs, Set<CmsUUID> groupIDs) {
+
         List<CmsUser> user = new ArrayList<CmsUser>();
         try {
             for (CmsUUID group : groupIDs) {
@@ -93,6 +94,7 @@ public class CmsResourceInfoTable extends Table {
      * @param user list of user
      */
     public CmsResourceInfoTable(Set<CmsResource> resources, List<CmsUser> user) {
+
         addStyleName("o-no-padding");
         m_container = new IndexedContainer();
         m_container.addContainerProperty(PROP_ELEMENT, CmsResourceInfo.class, null);

@@ -86,6 +86,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INITIALIZING_USER_DRIVER_0 = "ERR_INITIALIZING_USER_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INITIALIZING_HISTORY_DRIVER_0 = "ERR_INITIALIZING_HISTORY_DRIVER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZING_VFS_DRIVER_0 = "ERR_INITIALIZING_VFS_DRIVER_0";
 
     /** Message constant for key in the resource bundle. */

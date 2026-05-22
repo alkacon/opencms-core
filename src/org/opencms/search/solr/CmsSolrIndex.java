@@ -128,7 +128,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * Constant for additional parameter to set the maximally processed results (start + rows) for searches with this index.
      * It overwrites the global configuration from {@link CmsSolrConfiguration#getMaxProcessedResults()} for this index.
-    **/
+    */
     public static final String SOLR_SEARCH_MAX_PROCESSED_RESULTS = "search.solr.maxProcessedResults";
 
     /** Constant for additional parameter to set the fields the select handler should return at maximum. */

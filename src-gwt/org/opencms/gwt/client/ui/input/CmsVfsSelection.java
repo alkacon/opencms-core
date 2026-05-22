@@ -370,7 +370,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
-     * */
+     */
     public void setName(String name) {
 
         m_selectionInput.m_textbox.setName(name);
@@ -420,7 +420,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Close the popup of this widget.<p>
-     * */
+     */
     protected void close() {
 
         m_popup.hideDelayed();
@@ -430,7 +430,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Opens the popup of this widget.<p>
-     * */
+     */
     protected void open() {
 
         m_oldValue = m_selectionInput.m_textbox.getValue();
@@ -484,10 +484,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
      * Exporting the set principal function to the window scope.<p>
      */
     private native void exportSetPrincipalFunction()/*-{
-		var self = this;
-		$wnd.setPrincipalFormValue = function(typeFlag, principal) {
-			self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
-			self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
-		}
+        var self = this;
+        $wnd.setPrincipalFormValue = function(typeFlag, principal) {
+            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
+            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
+        }
     }-*/;
 }

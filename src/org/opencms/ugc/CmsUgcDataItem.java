@@ -32,7 +32,7 @@ import java.io.IOException;
 import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
- * Implementation of the I_CmsFormDataItem which delegates its methods to a FileItem from Apache Commons Upload.<p>
+ * Implementation of the I_CmsFormDataItem which delegates its methods to a DiskFileItem from Apache Commons Upload.<p>
  */
 public class CmsUgcDataItem implements I_CmsFormDataItem {
 

@@ -160,6 +160,7 @@ public class CmsJspNavigationBean {
         int endLevel,
         String resource,
         String param) {
+
         this(cms, type, startLevel, endLevel, resource, param, null);
     }
 

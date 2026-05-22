@@ -51,6 +51,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
 
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspLoginPersistingBean.class);
+
     /** The token life time. */
     private long m_tokenLifetime = CmsPersistentLoginTokenHandler.DEFAULT_LIFETIME;
 
@@ -59,9 +62,6 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
 
     /** True if the token has been set. */
     private boolean m_isTokenSet;
-
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspLoginPersistingBean.class);
 
     /**
      * Gets the path to use for the authorization cookie, optionally resolving any macros used.<p>

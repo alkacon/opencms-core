@@ -72,6 +72,7 @@ public class CmsDataViewValueAccessor {
      * @param index the value index
      */
     public CmsDataViewValueAccessor(CmsEntity entity, I_CmsAttributeHandler handler, int index) {
+
         m_entity = entity;
         m_handler = handler;
         m_index = index;

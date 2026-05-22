@@ -377,9 +377,10 @@ public class CmsTree extends CmsWorkplace {
                     // no (valid) start folder given, just load current folder
                     try {
                         if (includeFiles()) {
-                            resources.addAll(getCms().getResourcesInFolder(
-                                currentTargetFolder,
-                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                            resources.addAll(
+                                getCms().getResourcesInFolder(
+                                    currentTargetFolder,
+                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                         } else {
                             resources.addAll(
                                 getCms().getSubFolders(currentTargetFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
@@ -404,9 +405,10 @@ public class CmsTree extends CmsWorkplace {
                         while (tok.hasMoreTokens()) {
                             startFolder += tok.nextToken() + "/";
                             if (includeFiles()) {
-                                resources.addAll(getCms().getResourcesInFolder(
-                                    startFolder,
-                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+                                resources.addAll(
+                                    getCms().getResourcesInFolder(
+                                        startFolder,
+                                        CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
                             } else {
                                 resources.addAll(
                                     getCms().getSubFolders(startFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));

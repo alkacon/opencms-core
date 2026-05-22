@@ -133,7 +133,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestRunner {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     * Overrides the OpenCms test setup.
      */
     @Override
     @BeforeAll

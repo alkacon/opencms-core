@@ -38,6 +38,7 @@ public class CmsExplorerElementViewPreference extends CmsElementViewPreference {
      * @param name the preference name
      */
     public CmsExplorerElementViewPreference(String name) {
+
         super(name);
     }
 

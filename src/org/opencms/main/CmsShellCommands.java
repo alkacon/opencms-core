@@ -539,7 +539,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+     *
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1599,6 +1599,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @throws Exception if something goes wrong
      */
     public void replaceModuleFromDefault(String importFile) throws Exception {
+
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);

@@ -57,6 +57,7 @@ public class CmsResourceContextMenuBuilder implements I_CmsContextMenuBuilder {
      * Constructor.<p>
      */
     public CmsResourceContextMenuBuilder() {
+
         m_itemProviders = new ArrayList<I_CmsContextMenuItemProvider>();
     }
 

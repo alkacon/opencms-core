@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Composite;
  * If there is no value in the content xml, the value<br>
  * set in the configuration string of the xsd is shown.<p>
  *
- * */
+ */
 public class CmsDisplayWidget extends Composite implements I_CmsEditWidget {
 
     /** Value of the activation. */
@@ -159,7 +159,7 @@ public class CmsDisplayWidget extends Composite implements I_CmsEditWidget {
      * Sets the color for the input box.<p>
      *
      * @param color the color that should be set
-     * */
+     */
     public void setColor(String color) {
 
         m_textbox.getTextBox().getElement().getStyle().setColor(color);

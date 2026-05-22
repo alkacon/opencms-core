@@ -51,6 +51,12 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
     /** A map used to translate between the internal names and the user readable names of the selectable values. */
     private static BiMap<CmsAliasMode, String> nameLookup = HashBiMap.create();
 
+    static {
+        nameLookup.put(CmsAliasMode.permanentRedirect, CmsAliasMessages.messagePermanentRedirect());
+        nameLookup.put(CmsAliasMode.redirect, CmsAliasMessages.messageRedirect());
+        nameLookup.put(CmsAliasMode.page, CmsAliasMessages.messagePage());
+    }
+
     /** The table for which this column is used. */
     CmsAliasCellTable m_table;
 
@@ -72,12 +78,6 @@ public class CmsAliasModeColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
             }
         };
         setFieldUpdater(updater);
-    }
-
-    static {
-        nameLookup.put(CmsAliasMode.permanentRedirect, CmsAliasMessages.messagePermanentRedirect());
-        nameLookup.put(CmsAliasMode.redirect, CmsAliasMessages.messageRedirect());
-        nameLookup.put(CmsAliasMode.page, CmsAliasMessages.messagePage());
     }
 
     /**

@@ -262,7 +262,7 @@ public class CmsElementView {
      * @param folder used for permission checks for explorertype based views
      *
      * @return <code>true</code> if the current user has permissions to use the element view
-     **/
+     */
     public boolean hasPermission(CmsObject cms, CmsResource folder) {
 
         if ((m_explorerType != null) && (folder != null)) {

@@ -190,7 +190,10 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 // we also want to catch the case where a file (not folder) with the destination path already exists
                 destinationWithoutTrailingSlash = CmsFileUtil.removeTrailingSeparator(dest);
             }
-            securityManager.readResource(cms.getRequestContext(), destinationWithoutTrailingSlash, CmsResourceFilter.ALL);
+            securityManager.readResource(
+                cms.getRequestContext(),
+                destinationWithoutTrailingSlash,
+                CmsResourceFilter.ALL);
             throw new CmsVfsException(
                 org.opencms.file.Messages.get().container(
                     org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,

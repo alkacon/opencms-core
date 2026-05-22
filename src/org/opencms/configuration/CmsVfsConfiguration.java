@@ -157,6 +157,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The schematype node name. */
     public static final String N_SCHEMATYPE = "schematype";
 
+    /** The storage-policy node name. */
+    public static final String N_STORAGE_POLICY = "storage-policy";
+
     /** The online-folders node name. */
     public static final String N_ONLINE_FOLDERS = "online-folders";
 
@@ -223,6 +226,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured resource manager. */
     private CmsResourceManager m_resourceManager;
+
+    /** The configured storage policy. */
+    private CmsStoragePolicyConfiguration m_storagePolicyConfiguration;
 
     /** Controls if XSD translation is enabled. */
     private boolean m_xsdTranslationEnabled;
@@ -472,6 +478,26 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
         // add rules for resource types
         addResourceTypeXmlRules(digester);
+
+        // add rules for storage policy
+        digester.addRule("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_STORAGE_POLICY, new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                CmsStoragePolicyConfiguration configuration = new CmsStoragePolicyConfiguration();
+                configuration.setClassName(attributes.getValue(A_CLASS));
+                getDigester().push(configuration);
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                CmsStoragePolicyConfiguration configuration = getDigester().pop();
+                configuration.initConfiguration();
+                setStoragePolicyConfiguration(configuration);
+            }
+        });
 
         // add rules for VFS content collectors
         digester.addCallMethod(
@@ -732,6 +758,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         resourceTypes.addAll(m_resourceManager.getResourceTypes());
         generateResourceTypeXml(resourcetypesElement, resourceTypes, false);
 
+        if (m_storagePolicyConfiguration != null) {
+            Element storagePolicyElement = resources.addElement(N_STORAGE_POLICY);
+            storagePolicyElement.addAttribute(A_CLASS, m_storagePolicyConfiguration.getClassName());
+            m_storagePolicyConfiguration.getConfiguration().appendToXml(storagePolicyElement);
+        }
+
         // add VFS content collectors
         Element collectorsElement = resources.addElement(N_COLLECTORS);
         for (I_CmsResourceCollector collector : m_resourceManager.getRegisteredContentCollectors()) {
@@ -928,6 +960,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the configured storage policy configuration.<p>
+     *
+     * @return the configured storage policy configuration
+     */
+    public CmsStoragePolicyConfiguration getStoragePolicyConfiguration() {
+
+        return m_storagePolicyConfiguration;
+    }
+
+    /**
      * Returns the configured XML content type manager.<p>
      *
      * @return the configured XML content type manager
@@ -1004,6 +1046,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     public void setResourceManager(CmsResourceManager manager) {
 
         m_resourceManager = manager;
+    }
+
+    /**
+     * Sets the configured storage policy configuration.<p>
+     *
+     * @param storagePolicyConfiguration the storage policy configuration
+     */
+    public void setStoragePolicyConfiguration(CmsStoragePolicyConfiguration storagePolicyConfiguration) {
+
+        m_storagePolicyConfiguration = storagePolicyConfiguration;
     }
 
     /**

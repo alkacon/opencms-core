@@ -48,7 +48,8 @@ public class CmsValidationDetailsWidget extends Widget {
     }
 
     /** The UI binder instance. */
-    private static I_CmsValidationDetailsWidgetUiBinder uiBinder = GWT.create(I_CmsValidationDetailsWidgetUiBinder.class);
+    private static I_CmsValidationDetailsWidgetUiBinder uiBinder = GWT.create(
+        I_CmsValidationDetailsWidgetUiBinder.class);
 
     /** The element displaying the icon. */
     @UiField

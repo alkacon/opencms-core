@@ -246,9 +246,10 @@ public class CmsProgressWidget {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_PROGRESS_THREAD_NOT_FOUND_1, getKey()));
                 }
-                return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                    Messages.GUI_PROGRESS_THREAD_NOT_FOUND_1,
-                    getKey()));
+                return createError(
+                    Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                        Messages.GUI_PROGRESS_THREAD_NOT_FOUND_1,
+                        getKey()));
             }
 
         } catch (Throwable t) {

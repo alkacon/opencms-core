@@ -126,7 +126,7 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
      * Key for the setting used to identify which page this element was read from originally.
      *
      * <p>This setting is not stored when saving a container page.
-     **/
+     */
     public static final String SETTING_PAGE_ID = "SYSTEM::pageId";
 
     /** The use as copy model setting key. */

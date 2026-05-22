@@ -1696,11 +1696,11 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
+     * Returns a list of DiskFileItem instances parsed from the request, in the order that they were transmitted.<p>
      *
      * This list is automatically initialized from the createParameterMapFromMultiPart(HttpServletRequest) method.<p>
      *
-     * @return list of FileItem instances parsed from the request, in the order that they were transmitted
+     * @return list of DiskFileItem instances parsed from the request, in the order that they were transmitted
      */
     public List<DiskFileItem> getMultiPartFileItems() {
 

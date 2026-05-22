@@ -118,6 +118,17 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     }
 
     /**
+     * Returns the changedContent.
+     * <p>
+     *
+     * @return the changedContent
+     */
+    public boolean isChangedContent() {
+
+        return m_changedContent;
+    }
+
+    /**
      * Extracts the text from the given html content, assuming the given html encoding.
      * <p>
      * Additionally tags are replaced / removed according to the configuration of this instance.
@@ -180,17 +191,6 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
             m_changedContent = true;
         }
         super.visitTag(tag);
-    }
-
-    /**
-     * Returns the changedContent.
-     * <p>
-     *
-     * @return the changedContent
-     */
-    public boolean isChangedContent() {
-
-        return m_changedContent;
     }
 
 }

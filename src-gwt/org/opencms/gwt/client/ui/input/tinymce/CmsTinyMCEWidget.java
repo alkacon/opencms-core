@@ -381,9 +381,9 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * Checks whether the necessary Javascript libraries are available by accessing them.
      */
     protected native void checkLibraries() /*-{
-		// fail early if tinymce is not available
-		var w = $wnd;
-		var init = w.tinyMCE.init;
+        // fail early if tinymce is not available
+        var w = $wnd;
+        var init = w.tinyMCE.init;
     }-*/;
 
     /**
@@ -437,7 +437,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @return the element with the given id
      */
     protected native Element getElementById(String id) /*-{
-		return $doc.getElementById(id);
+        return $doc.getElementById(id);
     }-*/;
 
     /**
@@ -520,33 +520,33 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @param eventSource the event source
      */
     protected native void propagateMouseEvent(String eventType, Element eventSource) /*-{
-		var doc = $wnd.document;
-		var event;
-		if (doc.createEvent) {
-			event = doc.createEvent("MouseEvents");
-			event.initEvent(eventType, true, true);
-			eventSource.dispatchEvent(event);
-		} else {
-			eventSource.fireEvent("on" + eventType);
-		}
+        var doc = $wnd.document;
+        var event;
+        if (doc.createEvent) {
+            event = doc.createEvent("MouseEvents");
+            event.initEvent(eventType, true, true);
+            eventSource.dispatchEvent(event);
+        } else {
+            eventSource.fireEvent("on" + eventType);
+        }
     }-*/;
 
     /**
      * Sets focus to the editor. Use only when in line editing.<p>
      */
     protected native void refocusInlineEditor() /*-{
-		var elem = $wnd.document
-				.getElementById(this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id);
-		elem.blur();
-		elem.focus();
+        var elem = $wnd.document
+                .getElementById(this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id);
+        elem.blur();
+        elem.focus();
     }-*/;
 
     /**
      * Removes the editor instance.<p>
      */
     protected native void removeEditor() /*-{
-		var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
-		editor.remove();
+        var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
+        editor.remove();
     }-*/;
 
     /**
@@ -572,10 +572,10 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @param html the new content html
      */
     protected native void setMainElementContent(String html) /*-{
-		var instance = this;
-		var elementId = instance.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id;
-		var mainElement = $wnd.document.getElementById(elementId);
-		mainElement.innerHTML = html;
+        var instance = this;
+        var elementId = instance.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id;
+        var mainElement = $wnd.document.getElementById(elementId);
+        mainElement.innerHTML = html;
     }-*/;
 
     /**
@@ -616,89 +616,89 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      */
     native void initNative(boolean readonly) /*-{
 
-		function merge() {
-			var result = {}, length = arguments.length;
-			for (i = 0; i < length; i++) {
-				for (key in arguments[i]) {
-					if (arguments[i].hasOwnProperty(key)) {
-						result[key] = arguments[i][key];
-					}
-				}
-			}
-			return result;
-		}
+        function merge() {
+            var result = {}, length = arguments.length;
+            for (i = 0; i < length; i++) {
+                for (key in arguments[i]) {
+                    if (arguments[i].hasOwnProperty(key)) {
+                        result[key] = arguments[i][key];
+                    }
+                }
+            }
+            return result;
+        }
 
-		var self = this;
-		var needsRefocus = false;
-		var elementId = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id;
-		var mainElement = $wnd.document.getElementById(elementId);
-		var editorHeight = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editorHeight
-				+ "px";
+        var self = this;
+        var needsRefocus = false;
+        var elementId = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_id;
+        var mainElement = $wnd.document.getElementById(elementId);
+        var editorHeight = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editorHeight
+                + "px";
 
-		var fireChange = function() {
-			self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::fireChangeFromNative()();
-		};
-		var options = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_options;
-		if (options != null && options.editorHeight) {
-			editorHeight = options.editorHeight;
-			delete options.editorHeight;
-		}
-		// default options:
-		var defaults = {
-			elements : elementId,
-			relative_urls : false,
-			remove_script_host : false,
-			entity_encoding : "raw",
-			skin_variant : 'ocms',
-			mode : "exact",
-			theme : "silver",
-			plugins : "autolink lists pagebreak table save hr image link emoticons spellchecker insertdatetime preview media searchreplace print paste directionality noneditable visualchars nonbreaking template wordcount advlist",
-			paste_as_text : true,
-			menubar : false,
-		};
+        var fireChange = function() {
+            self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::fireChangeFromNative()();
+        };
+        var options = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_options;
+        if (options != null && options.editorHeight) {
+            editorHeight = options.editorHeight;
+            delete options.editorHeight;
+        }
+        // default options:
+        var defaults = {
+            elements : elementId,
+            relative_urls : false,
+            remove_script_host : false,
+            entity_encoding : "raw",
+            skin_variant : 'ocms',
+            mode : "exact",
+            theme : "silver",
+            plugins : "autolink lists pagebreak table save hr image link emoticons spellchecker insertdatetime preview media searchreplace print paste directionality noneditable visualchars nonbreaking template wordcount advlist",
+            paste_as_text : true,
+            menubar : false,
+        };
 
-		self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_currentContent = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_originalContent;
-		defaults.min_height = 100;
-		defaults.max_height = editorHeight;
-		defaults.width = '100%';
-		defaults.resize = 'both';
+        self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_currentContent = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_originalContent;
+        defaults.min_height = 100;
+        defaults.max_height = editorHeight;
+        defaults.width = '100%';
+        defaults.resize = 'both';
 
-		// extend the defaults with any given options
-		if (options != null) {
-			defaults = merge(defaults, options);
-		}
-		defaults.plugins = "autoresize " + defaults.plugins;
-		// add the setup function
-		defaults.setup = function(ed) {
-			self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor = ed;
-			ed.on('change', fireChange);
-			ed.on('KeyDown', fireChange);
-			ed
-					.on(
-							'LoadContent',
-							function() {
+        // extend the defaults with any given options
+        if (options != null) {
+            defaults = merge(defaults, options);
+        }
+        defaults.plugins = "autoresize " + defaults.plugins;
+        // add the setup function
+        defaults.setup = function(ed) {
+            self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor = ed;
+            ed.on('change', fireChange);
+            ed.on('KeyDown', fireChange);
+            ed
+                    .on(
+                            'LoadContent',
+                            function() {
 
-								// firing resize event on resize of the editor iframe
-								ed.dom
-										.bind(
-												ed.getWin(),
-												'resize',
-												function() {
-													self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::fireResizeEvent()();
-												});
-								var content = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_originalContent;
-								if (content != null) {
-									ed.setContent(content);
-								}
-								self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_initialized = true;
-							});
+                                // firing resize event on resize of the editor iframe
+                                ed.dom
+                                        .bind(
+                                                ed.getWin(),
+                                                'resize',
+                                                function() {
+                                                    self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::fireResizeEvent()();
+                                                });
+                                var content = self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_originalContent;
+                                if (content != null) {
+                                    ed.setContent(content);
+                                }
+                                self.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_initialized = true;
+                            });
 
-		};
-		// initialize tinyMCE
-		if (readonly) {
-			defaults.readonly = 1;
-		}
-		$wnd.tinymce.init(defaults);
+        };
+        // initialize tinyMCE
+        if (readonly) {
+            defaults.readonly = 1;
+        }
+        $wnd.tinymce.init(defaults);
     }-*/;
 
     /**
@@ -714,14 +714,14 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      */
     private native void detachEditor() /*-{
 
-		var ed = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
-		if (ed != null) {
-			ed.remove();
-		}
-		// in IE somehow the whole document will be selected, empty the selection to resolve that
-		if ($wnd.document.selection != null) {
-			$wnd.document.selection.empty();
-		}
+        var ed = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
+        if (ed != null) {
+            ed.remove();
+        }
+        // in IE somehow the whole document will be selected, empty the selection to resolve that
+        if ($wnd.document.selection != null) {
+            $wnd.document.selection.empty();
+        }
     }-*/;
 
     /**
@@ -766,8 +766,8 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @return the editor content
      */
     private native String getContent() /*-{
-		var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
-		return editor.getContent();
+        var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
+        return editor.getContent();
     }-*/;
 
     /**
@@ -776,8 +776,8 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @param newContent the new content
      */
     private native void setContent(String newContent) /*-{
-		var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
-		editor.setContent(newContent);
+        var editor = this.@org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEWidget::m_editor;
+        editor.setContent(newContent);
     }-*/;
 
     /**
@@ -788,7 +788,7 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
      * @param enabled true if editor should be enabled
      */
     private native void setEnabled(JavaScriptObject editor, boolean enabled) /*-{
-		editor.getBody().setAttribute('contenteditable', enabled);
+        editor.getBody().setAttribute('contenteditable', enabled);
     }-*/;
 
 }

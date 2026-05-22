@@ -356,10 +356,7 @@ public final class CmsConfigParserUtils {
      * @param configBean the config bean to get the blacklist entries from.
      * @return the updated content (update is in-place).
      */
-    public static CmsXmlContent updateBlackList(
-        CmsObject cms,
-        CmsXmlContent content,
-        CmsConfigurationBean configBean) {
+    public static CmsXmlContent updateBlackList(CmsObject cms, CmsXmlContent content, CmsConfigurationBean configBean) {
 
         // list configurations are single locale contents
         Locale locale = CmsLocaleManager.MASTER_LOCALE;

@@ -48,6 +48,7 @@ public class CmsMenuItemVisibilitySingleOnly implements I_CmsHasMenuItemVisibili
      * @param visibility the wrapped visibility handler
      */
     public CmsMenuItemVisibilitySingleOnly(I_CmsHasMenuItemVisibility visibility) {
+
         m_visibility = visibility;
     }
 

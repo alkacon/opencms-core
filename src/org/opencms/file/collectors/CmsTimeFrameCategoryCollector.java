@@ -560,9 +560,10 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
             // "singleFile"
             return getTimeFrameAndCategories(cms, param, numResults);
         } else {
-            throw new CmsDataAccessException(org.opencms.file.collectors.Messages.get().container(
-                org.opencms.file.collectors.Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                collectorName));
+            throw new CmsDataAccessException(
+                org.opencms.file.collectors.Messages.get().container(
+                    org.opencms.file.collectors.Messages.ERR_COLLECTOR_NAME_INVALID_1,
+                    collectorName));
         }
     }
 

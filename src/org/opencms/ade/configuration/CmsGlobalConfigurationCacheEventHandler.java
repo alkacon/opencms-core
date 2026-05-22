@@ -127,7 +127,7 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
     /** Creates a new cache event handler.
      *
      * @param onlineCms an online CMS object
-     **/
+     */
     public CmsGlobalConfigurationCacheEventHandler(CmsObject onlineCms) {
 
         m_onlineCms = onlineCms;

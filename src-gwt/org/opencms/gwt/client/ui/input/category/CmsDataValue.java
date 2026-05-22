@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Widget to generate an single row of values.<p>
  *
- * */
+ */
 public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickHandlers {
 
     /**
@@ -188,7 +188,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * Adds buttons to the view.
      *
      * @param buttons the buttons that should be added
-     * */
+     */
     public void addButton(Widget... buttons) {
 
         for (Widget button : buttons) {
@@ -266,7 +266,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * Sets the color.<p>
      *
      * @param color the color that should be set
-     * */
+     */
     public void setColor(String color) {
 
         m_label.getElement().getStyle().setColor(color);
@@ -274,7 +274,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Sets the style if the data value should be inactive.<p>
-     * */
+     */
     public void setInactive() {
 
         getElement().getStyle().setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());

@@ -60,7 +60,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
-import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
 import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
@@ -793,12 +792,12 @@ public final class CmsRequestUtil {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
      *
      * @param request the HTTP servlet request to parse
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
     public static List<DiskFileItem> readMultipartFileItems(HttpServletRequest request) {
@@ -809,13 +808,13 @@ public final class CmsRequestUtil {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
      *
      * @param request the HTTP servlet request to parse
      * @param tempFolderPath the real file system path to the temp file folder
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
     public static List<DiskFileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {

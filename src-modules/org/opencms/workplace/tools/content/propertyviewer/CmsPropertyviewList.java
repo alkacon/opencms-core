@@ -182,7 +182,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
         String sortedColId,
         CmsListOrderEnum sortOrder,
         String searchableColId)
-        throws FileNotFoundException, CmsException {
+    throws FileNotFoundException, CmsException {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
         m_messages = new CmsMessages(

@@ -46,13 +46,6 @@ public interface I_CmsSetupTest {
     String RESULT_WARNING = "warning!";
 
     /**
-     * Returns the nice name for the test.<p>
-     *
-     * @return the nice name
-     */
-    String getName();
-
-    /**
      * Returns the test results.<p>
      *
      * @param setupBean the setup bean
@@ -62,4 +55,11 @@ public interface I_CmsSetupTest {
      * @throws Exception if something goes wrong
      */
     CmsSetupTestResult execute(CmsSetupBean setupBean) throws Exception;
+
+    /**
+     * Returns the nice name for the test.<p>
+     *
+     * @return the nice name
+     */
+    String getName();
 }

@@ -45,6 +45,7 @@ public class CmsReportUpdateItem {
      * @param message the message (either a string or an exception)
      */
     public CmsReportUpdateItem(CmsReportFormatType type, Object message) {
+
         m_type = type;
         m_message = message;
     }

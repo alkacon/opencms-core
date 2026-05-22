@@ -200,9 +200,10 @@ public class CmsCopy extends CmsMultiDialog {
                 if (resource.getTypeId() == targetType) {
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(
-                        CmsStringUtil.escapeHtml(key(
-                            Messages.GUI_COPY_CONFIRM_OVERWRITE_2,
-                            new Object[] {getParamResource(), getParamTarget()})));
+                        CmsStringUtil.escapeHtml(
+                            key(
+                                Messages.GUI_COPY_CONFIRM_OVERWRITE_2,
+                                new Object[] {getParamResource(), getParamTarget()})));
                     getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
                 } else {
                     // file type is different, create error message
@@ -513,7 +514,8 @@ public class CmsCopy extends CmsMultiDialog {
         String target,
         String sitePrefix,
         CmsResourceCopyMode copyMode,
-        boolean overwrite) throws CmsException {
+        boolean overwrite)
+    throws CmsException {
 
         // calculate the target name
         String finalTarget = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(source));

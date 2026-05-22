@@ -68,19 +68,19 @@ public class CmsSearchToolHandler extends A_CmsToolHandler {
     }
 
     /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
+     */
+    public boolean isVisible(CmsObject cms) {
+
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
+    }
+
+    /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
      */
     @Override
     public boolean isVisible(CmsWorkplace wp) {
 
         return isEnabled(wp);
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
-     */
-    public boolean isVisible(CmsObject cms) {
-
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
     }
 }

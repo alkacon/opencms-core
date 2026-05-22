@@ -77,6 +77,7 @@ public class CmsPrincipalTable extends Table {
         String captionProp,
         String descProp,
         String ouProp) {
+
         setHeight("500px");
         m_container = container;
         PROP_CAPTION = captionProp;

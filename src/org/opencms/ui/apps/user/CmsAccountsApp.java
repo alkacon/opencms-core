@@ -839,7 +839,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-    
+     *
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(

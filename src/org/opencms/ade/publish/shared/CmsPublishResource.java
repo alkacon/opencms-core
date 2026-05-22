@@ -82,14 +82,14 @@ public class CmsPublishResource extends CmsListInfoBean {
      * @param resourceType the resource type name
      * @param state the resource state
      * @param permissionInfo the permission info
-     * @þaram isXmlContent if the resource is an XML content
+     * @param isXmlContent if the resource is an XML content
      * @param dateLastModified the last modification date
      * @param userLastModified name of the user who last modified the resource
      * @param dateLastModifiedStr the last modification date as a formatted string
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
-     **/
+     */
     public CmsPublishResource(
         CmsUUID id,
         String name,

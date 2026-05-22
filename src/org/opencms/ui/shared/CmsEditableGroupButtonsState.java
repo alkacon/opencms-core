@@ -53,6 +53,7 @@ public class CmsEditableGroupButtonsState extends AbstractComponentState {
      * Default constructor.<p>
      */
     public CmsEditableGroupButtonsState() {
+
         // do nothing
     }
 

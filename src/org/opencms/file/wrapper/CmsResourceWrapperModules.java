@@ -96,7 +96,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
      * The reason is that when using this wrapper with the JLAN CIFS connector, some clients check
      * on the status of the import file before they write any data to it, and fail mysteriously if it isn't found,
      * so we have to pretend that the file actually exists after creating it.
-     **/
+     */
     ConcurrentHashMap<String, Long> m_importFileUpdateCache = new ConcurrentHashMap<String, Long>();
 
     /**

@@ -1241,10 +1241,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart("administration/index.html"));
-        result.append("<script  src=\"").append(getResourceUri()).append(
-            "editors/xmlcontent/edit.js\"></script>\n");
-        result.append("<script  src=\"").append(getResourceUri()).append(
-            "editors/xmlcontent/help.js\"></script>\n");
+        result.append("<script  src=\"").append(getResourceUri()).append("editors/xmlcontent/edit.js\"></script>\n");
+        result.append("<script  src=\"").append(getResourceUri()).append("editors/xmlcontent/help.js\"></script>\n");
         result.append(getWidgetIncludes());
         result.append("<script >\n<!--\n");
         result.append("// flag indicating if form initialization is finished\n");

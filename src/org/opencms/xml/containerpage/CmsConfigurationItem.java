@@ -64,7 +64,7 @@ public class CmsConfigurationItem {
      * @param lazyFolder the lazy folder object
      * @param pattern the file pattern
      * @param isDefault <code>true</code> if this item is default for it's resource-type
-     **/
+     */
     public CmsConfigurationItem(
         CmsResource sourceFile,
         CmsResource destinationFolder,

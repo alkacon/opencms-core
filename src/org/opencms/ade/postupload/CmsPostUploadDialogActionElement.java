@@ -93,10 +93,11 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(exportCloseLink());
-        sb.append(exportDictionary(
-            CmsPostUploadDialogBean.DICT_NAME,
-            I_CmsPostUploadDialogService.class.getMethod("prefetch"),
-            getDialogData()));
+        sb.append(
+            exportDictionary(
+                CmsPostUploadDialogBean.DICT_NAME,
+                I_CmsPostUploadDialogService.class.getMethod("prefetch"),
+                getDialogData()));
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }

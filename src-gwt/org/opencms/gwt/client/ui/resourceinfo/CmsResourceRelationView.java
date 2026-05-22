@@ -100,6 +100,13 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
     /** The detail container path pattern. */
     private static final String DETAIL_CONTAINER_PATTERN = ".*\\/\\.detailContainers\\/.*";
 
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+        m_filteredActions.add(CmsLogout.class.getName());
+    }
+
     /** The panel containing the resource boxes. */
     protected CmsList<CmsListItem> m_list;
 
@@ -151,13 +158,6 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
         m_mode = mode;
         m_tabTitle = tabTitle;
         initContent(status);
-    }
-
-    static {
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-        m_filteredActions.add(CmsLogout.class.getName());
     }
 
     /**

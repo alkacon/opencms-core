@@ -64,6 +64,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem, I_CmsADEA
      * @param priority the priority
      */
     public CmsContextMenuActionItem(I_CmsWorkplaceAction action, String parentId, float order, int priority) {
+
         m_parentId = parentId;
         m_order = order;
         m_priority = priority;

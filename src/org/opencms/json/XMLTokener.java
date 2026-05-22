@@ -65,6 +65,15 @@ public class XMLTokener extends JSONTokener {
      */
     public static final java.util.HashMap<String, Character> ENTITY;
 
+    static {
+        ENTITY = new java.util.HashMap<String, Character>(8);
+        ENTITY.put("amp", XML.AMP);
+        ENTITY.put("apos", XML.APOS);
+        ENTITY.put("gt", XML.GT);
+        ENTITY.put("lt", XML.LT);
+        ENTITY.put("quot", XML.QUOT);
+    }
+
     /**
      * Construct an XMLTokener from a string.<p>
      *
@@ -73,15 +82,6 @@ public class XMLTokener extends JSONTokener {
     public XMLTokener(String s) {
 
         super(s);
-    }
-
-    static {
-        ENTITY = new java.util.HashMap<String, Character>(8);
-        ENTITY.put("amp", XML.AMP);
-        ENTITY.put("apos", XML.APOS);
-        ENTITY.put("gt", XML.GT);
-        ENTITY.put("lt", XML.LT);
-        ENTITY.put("quot", XML.QUOT);
     }
 
     /**

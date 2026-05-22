@@ -65,10 +65,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
-import elemental2.dom.DomGlobal;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
-
 /**
  * A tabbed form field container widget.<p>
  *
@@ -185,7 +181,6 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             }
         });
     }
-
 
     /**
      * Adds the {@link BeforeSelectionHandler} for the tab panel.<p>

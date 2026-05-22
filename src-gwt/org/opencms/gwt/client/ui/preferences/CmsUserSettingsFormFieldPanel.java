@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Form panel for editing user settings.
- **/
+ */
 public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** The ui binder interface for this class. */
@@ -69,7 +69,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
          * CSS class accessor.
          *
          * @return the CSS class
-         **/
+         */
         String titleColumn();
 
     }

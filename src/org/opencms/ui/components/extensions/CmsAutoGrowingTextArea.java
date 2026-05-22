@@ -47,6 +47,7 @@ public class CmsAutoGrowingTextArea extends AbstractExtension {
      * @param maxRows the maximal number of rows (&lt;1 for unlimited)
      */
     public CmsAutoGrowingTextArea(TextArea textArea, int maxRows) {
+
         super.extend(textArea);
         getState().setMaxRows(maxRows);
         getState().setMinRows(textArea.getRows());

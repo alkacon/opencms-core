@@ -120,6 +120,24 @@ public class CmsGalleryWidgetConfiguration {
     }
 
     /**
+     * Returns the values as a parameter string.<p>
+     *
+     * @return the values as a parameter string
+     */
+    public String getConfigString() {
+
+        String result = "";
+        if (m_startup != null) {
+            result += "&startup=" + m_startup;
+        }
+        if (m_type != null) {
+            result += "&type=" + m_type;
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the configured gallery types.<p>
      *
      * @return the configured gallery types
@@ -237,24 +255,6 @@ public class CmsGalleryWidgetConfiguration {
     protected void setType(String type) {
 
         m_type = type;
-    }
-
-    /**
-     * Returns the values as a parameter string.<p>
-     *
-     * @return the values as a parameter string
-     * */
-    public String getConfigString() {
-
-        String result = "";
-        if (m_startup != null) {
-            result += "&startup=" + m_startup;
-        }
-        if (m_type != null) {
-            result += "&type=" + m_type;
-        }
-
-        return result;
     }
 
 }

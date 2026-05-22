@@ -47,6 +47,7 @@ public class CmsVMenuBar extends VMenuBar {
      * Constructor.<p>
      */
     CmsVMenuBar() {
+
         super();
     }
 
@@ -57,6 +58,7 @@ public class CmsVMenuBar extends VMenuBar {
      * @param parentmenu the parent menu
      */
     CmsVMenuBar(boolean submenu, VMenuBar parentmenu) {
+
         super(submenu, parentmenu);
     }
 

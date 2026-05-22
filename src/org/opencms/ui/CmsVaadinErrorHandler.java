@@ -62,6 +62,7 @@ public class CmsVaadinErrorHandler extends DefaultErrorHandler {
      * @param ui the workplace UI
      */
     public CmsVaadinErrorHandler(CmsAppWorkplaceUi ui) {
+
         m_ui = ui;
     }
 

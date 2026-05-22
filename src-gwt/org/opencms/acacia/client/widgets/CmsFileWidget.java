@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  *
- * */
+ */
 public class CmsFileWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers {
 
     /** Value of the activation. */

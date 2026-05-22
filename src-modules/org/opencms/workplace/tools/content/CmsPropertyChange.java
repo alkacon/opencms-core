@@ -451,6 +451,16 @@ public class CmsPropertyChange extends CmsDialog {
     }
 
     /**
+     * Sets the changed resources that were affected by the property change action.<p>
+     *
+     * @param changedResources the changed resources that were affected by the property change action
+     */
+    private void setChangedResources(List changedResources) {
+
+        m_changedResources = changedResources;
+    }
+
+    /**
      * Sets the given property with the given value to the given resource
      * (potentially recursiv) if it has not been set before.<p>
      *
@@ -470,7 +480,8 @@ public class CmsPropertyChange extends CmsDialog {
         String resourceRootPath,
         String propertyDefinition,
         String newValue,
-        boolean recursive) throws CmsException, CmsVfsException {
+        boolean recursive)
+    throws CmsException, CmsVfsException {
 
         CmsObject cms = getCms();
 
@@ -500,16 +511,6 @@ public class CmsPropertyChange extends CmsDialog {
             }
         }
         return changedResources;
-    }
-
-    /**
-     * Sets the changed resources that were affected by the property change action.<p>
-     *
-     * @param changedResources the changed resources that were affected by the property change action
-     */
-    private void setChangedResources(List changedResources) {
-
-        m_changedResources = changedResources;
     }
 
     /**

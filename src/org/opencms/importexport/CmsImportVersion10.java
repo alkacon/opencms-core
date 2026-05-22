@@ -2077,7 +2077,9 @@ public class CmsImportVersion10 implements I_CmsImport {
             translatedName = getRequestContext().removeSiteRoot(translatedName);
             // if the resource is not immutable and not on the exclude list, import it
             if (!skipResource) {
-                if (!m_hasStructureId && isFolderType(m_typeName) && getCms().existsResource(translatedName, CmsResourceFilter.ALL)) {
+                if (!m_hasStructureId
+                    && isFolderType(m_typeName)
+                    && getCms().existsResource(translatedName, CmsResourceFilter.ALL)) {
                     skipResource = true;
                 }
             }
@@ -3612,6 +3614,7 @@ public class CmsImportVersion10 implements I_CmsImport {
      * @return the type name
      */
     protected boolean isFolderType(String typeName) {
+
         if (OpenCms.getResourceManager().hasResourceType(typeName)) {
             try {
                 return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
@@ -3637,7 +3640,8 @@ public class CmsImportVersion10 implements I_CmsImport {
 
         if ((m_resourceBuilder.getResourceId() == null) && m_unknownType) {
             try {
-                m_resourceBuilder.setType(OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+                m_resourceBuilder.setType(
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
             } catch (CmsLoaderException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

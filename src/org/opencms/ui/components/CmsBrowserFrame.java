@@ -54,6 +54,7 @@ public class CmsBrowserFrame extends BrowserFrame {
      *            The caption for the component
      */
     public CmsBrowserFrame(String caption) {
+
         super(caption);
     }
 
@@ -66,6 +67,7 @@ public class CmsBrowserFrame extends BrowserFrame {
      *            A Resource representing the Web page that should be displayed.
      */
     public CmsBrowserFrame(String caption, Resource source) {
+
         super(caption, source);
     }
 

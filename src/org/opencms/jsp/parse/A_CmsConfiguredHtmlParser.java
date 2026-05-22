@@ -73,18 +73,6 @@ public abstract class A_CmsConfiguredHtmlParser {
     }
 
     /**
-     * Subclasses have to create their desired instance for parsing the html here.<p>
-     *
-     * You have access to {@link #getCmsObject()} and {@link #getParam()} already here and may pass those to
-     * the visitor to return.<p>
-     *
-     * @return the instance to be used for parsing the html
-     *
-     * @throws CmsException if sth. goes wrong
-     */
-    protected abstract I_CmsHtmlNodeVisitor createVisitorInstance() throws CmsException;
-
-    /**
      * Returns the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation.<p>
      *
      * @param encoding the encoding to use for parsing
@@ -106,6 +94,42 @@ public abstract class A_CmsConfiguredHtmlParser {
         result = m_visitor.getResult();
         return result;
     }
+
+    /**
+     * Sets the internal cms object for accessing core functionality.<p>
+     *
+     * This will be invokde by the &tl;cms:parse&gt; tag implementation.<p>
+     *
+     * @param cmsObject the internal cms object for accessing core functionality to set
+     */
+    public void setCmsObject(CmsObject cmsObject) {
+
+        m_cmsObject = cmsObject;
+    }
+
+    /**
+     * The attribute value of the attribute param of the &lt;cms:parse&gt; tag.<p>
+     *
+     * Will be set by the &lt;cms:parse&gt; implementation.<p>
+     *
+     * @param param the param to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
+    }
+
+    /**
+     * Subclasses have to create their desired instance for parsing the html here.<p>
+     *
+     * You have access to {@link #getCmsObject()} and {@link #getParam()} already here and may pass those to
+     * the visitor to return.<p>
+     *
+     * @return the instance to be used for parsing the html
+     *
+     * @throws CmsException if sth. goes wrong
+     */
+    protected abstract I_CmsHtmlNodeVisitor createVisitorInstance() throws CmsException;
 
     /**
      * Returns the internal cms object for accessing core functionality.<p>
@@ -137,29 +161,5 @@ public abstract class A_CmsConfiguredHtmlParser {
     protected I_CmsHtmlNodeVisitor getVisitor() {
 
         return m_visitor;
-    }
-
-    /**
-     * Sets the internal cms object for accessing core functionality.<p>
-     *
-     * This will be invokde by the &tl;cms:parse&gt; tag implementation.<p>
-     *
-     * @param cmsObject the internal cms object for accessing core functionality to set
-     */
-    public void setCmsObject(CmsObject cmsObject) {
-
-        m_cmsObject = cmsObject;
-    }
-
-    /**
-     * The attribute value of the attribute param of the &lt;cms:parse&gt; tag.<p>
-     *
-     * Will be set by the &lt;cms:parse&gt; implementation.<p>
-     *
-     * @param param the param to set
-     */
-    public void setParam(String param) {
-
-        m_param = param;
     }
 }

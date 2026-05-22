@@ -77,7 +77,8 @@ public class CmsResourceWrapperPreventCreateNameCI extends A_CmsResourceWrapper 
         String resourcepath,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsIllegalArgumentException {
 
         String name = CmsResource.getName(resourcepath);
         if (m_disabledNames.contains(name.toLowerCase())) {

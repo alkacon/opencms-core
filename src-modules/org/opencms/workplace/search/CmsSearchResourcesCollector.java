@@ -84,6 +84,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /** Sort Parameter name constant. */
     public static final String PARAM_SORT = "sort";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
+
     /** Resource cache. */
     protected Map<String, CmsSearchResult> m_srCache = new HashMap<String, CmsSearchResult>();
 
@@ -92,9 +95,6 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /** Cached search results. */
     private List<CmsSearchResult> m_searchResults;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
 
     /**
      * Constructor, creates a new instance.<p>

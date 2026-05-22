@@ -72,134 +72,134 @@ public final class CmsTinyMCEHelper {
     */
     public static native JavaScriptObject generateOptionsForTiny(String configuration, String codeMirrorPath)/*-{
 
-		var options = null;
-		try {
-			var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
-			options = {
-				entity_encoding : 'named',
-				entities : '160,nbsp',
-				// the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
-				file_picker_callback : $wnd.cmsTinyMceFileBrowser
-			};
-			if (config.downloadGalleryConfig) {
-				options.downloadGalleryConfig = config.downloadGalleryConfig;
-			}
+        var options = null;
+        try {
+            var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
+            options = {
+                entity_encoding : 'named',
+                entities : '160,nbsp',
+                // the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
+                file_picker_callback : $wnd.cmsTinyMceFileBrowser
+            };
+            if (config.downloadGalleryConfig) {
+                options.downloadGalleryConfig = config.downloadGalleryConfig;
+            }
 
-			if (config.imageGalleryConfig) {
-				options.imageGalleryConfig = config.imageGalleryConfig;
-			}
+            if (config.imageGalleryConfig) {
+                options.imageGalleryConfig = config.imageGalleryConfig;
+            }
 
-			if (config.content_css) {
-				options.content_css = config.content_css;
-			}
-			options.importcss_append = true;
-			if (config.importCss) {
-				options.importcss_selector_filter = ""; // always matches
-			} else {
-				options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
-			}
-			if (config.height) {
-				var height = parseInt(config.height);
-				if (height != NaN) {
-					options.editorHeight = height;
-				}
-			}
-			if (config.block_formats) {
-				options.block_formats = config.block_formats;
-			}
-			if (config.style_formats) {
-				var temp = null;
-				try {
-					temp = eval('(' + config.style_formats + ')');
-				} catch (error) {
-					$wnd.alert("Could not parse WYSIWYG editor options: "
-							+ error);
-				}
-				if (typeof temp != 'undefined' && temp != null) {
-					options.style_formats = temp;
-				}
-			}
-			if (config.cmsGalleryEnhancedOptions) {
-				options.cmsGalleryEnhancedOptions = config.cmsGalleryEnhancedOptions;
-			}
-			if (config.cmsGalleryUseThickbox) {
-				options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
-			}
-			options.plugins = "anchor charmap importcss autolink lists pagebreak table save hr codemirror image link emoticons insertdatetime preview media searchreplace print paste directionality fullscreen noneditable visualchars nonbreaking template wordcount advlist spellchecker typograf -opencms";
-			options.preview_styles="font-family font-size font-weight font-style text-decoration text-transform border border-radius outline text-shadow";
-			if (config.fullpage) {
-				options.plugins += " fullpage";
-			}
-			// add codemirror source view plugin configuration
-			options.codemirror = {
-				indentOnInit : true, // whether or not to indent code on init.
-				path : @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::getCodeMirrorPath()(), // path to CodeMirror distribution
-				config : { // CodeMirror config object
-					lineNumbers : true
-				}
-			};
-			if (config.allowscripts) {
-				options.valid_elements = "*[*]";
-				options.allow_script_urls = true;
-			}
-			if (config.link_default_protocol) {
-				options.link_default_protocol = config.link_default_protocol;
-			}
-			if (config.toolbar_items) {
-				toolbarGroup = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
-				toolbarGroup += " | spellchecker";
-				options.toolbar1 = toolbarGroup;
-				var contextmenu = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
+            if (config.content_css) {
+                options.content_css = config.content_css;
+            }
+            options.importcss_append = true;
+            if (config.importCss) {
+                options.importcss_selector_filter = ""; // always matches
+            } else {
+                options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
+            }
+            if (config.height) {
+                var height = parseInt(config.height);
+                if (height != NaN) {
+                    options.editorHeight = height;
+                }
+            }
+            if (config.block_formats) {
+                options.block_formats = config.block_formats;
+            }
+            if (config.style_formats) {
+                var temp = null;
+                try {
+                    temp = eval('(' + config.style_formats + ')');
+                } catch (error) {
+                    $wnd.alert("Could not parse WYSIWYG editor options: "
+                            + error);
+                }
+                if (typeof temp != 'undefined' && temp != null) {
+                    options.style_formats = temp;
+                }
+            }
+            if (config.cmsGalleryEnhancedOptions) {
+                options.cmsGalleryEnhancedOptions = config.cmsGalleryEnhancedOptions;
+            }
+            if (config.cmsGalleryUseThickbox) {
+                options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
+            }
+            options.plugins = "anchor charmap importcss autolink lists pagebreak table save hr codemirror image link emoticons insertdatetime preview media searchreplace print paste directionality fullscreen noneditable visualchars nonbreaking template wordcount advlist spellchecker typograf -opencms";
+            options.preview_styles="font-family font-size font-weight font-style text-decoration text-transform border border-radius outline text-shadow";
+            if (config.fullpage) {
+                options.plugins += " fullpage";
+            }
+            // add codemirror source view plugin configuration
+            options.codemirror = {
+                indentOnInit : true, // whether or not to indent code on init.
+                path : @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::getCodeMirrorPath()(), // path to CodeMirror distribution
+                config : { // CodeMirror config object
+                    lineNumbers : true
+                }
+            };
+            if (config.allowscripts) {
+                options.valid_elements = "*[*]";
+                options.allow_script_urls = true;
+            }
+            if (config.link_default_protocol) {
+                options.link_default_protocol = config.link_default_protocol;
+            }
+            if (config.toolbar_items) {
+                toolbarGroup = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
+                toolbarGroup += " | spellchecker";
+                options.toolbar1 = toolbarGroup;
+                var contextmenu = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createContextMenu(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
 
-				if (config.spellcheck_url) {
-					options.spellchecker_language = config.spellcheck_language;
-					options.spellchecker_languages = config.spellcheck_language;
-					options.spellchecker_rpc_url = config.spellcheck_url;
-					options.spellchecker_callback = function(name, text,
-							onSuccess, onFailure) {
-						$wnd.tinymce.util.JSONRequest.sendRPC({
-							url : config.spellcheck_url,
-							method : "spellcheck",
-							params : {
-								lang : this.getLanguage(),
-								words : text.match(this.getWordCharPattern())
-							},
-							success : function(result) {
-								onSuccess({
-									words : result
-								});
-							},
-							error : function(error, xhr) {
-								onFailure("Spellcheck error:" + xhr.status);
-							}
-						});
-					};
-					contextmenu += " spellchecker"
-				}
-				if (contextmenu != "") {
-					options.contextmenu = contextmenu;
-				}
-				options.typograf = {
-				    disableRule: ["*"],
-				    enableRule2: ["common/punctuation/quote"],
-				    locale: [config.typograf_locale, "en-US"]
-				};
-				if (config.pasteOptions) {
-					options.paste_as_text = config.pasteOptions.paste_text_sticky_default ? true
-							: false;
-				}
-				if (config.directOptions) {
-				    for (var key in config.directOptions) {
-				        options[key] = config.directOptions[key];
-				    }
-				}
-			}
+                if (config.spellcheck_url) {
+                    options.spellchecker_language = config.spellcheck_language;
+                    options.spellchecker_languages = config.spellcheck_language;
+                    options.spellchecker_rpc_url = config.spellcheck_url;
+                    options.spellchecker_callback = function(name, text,
+                            onSuccess, onFailure) {
+                        $wnd.tinymce.util.JSONRequest.sendRPC({
+                            url : config.spellcheck_url,
+                            method : "spellcheck",
+                            params : {
+                                lang : this.getLanguage(),
+                                words : text.match(this.getWordCharPattern())
+                            },
+                            success : function(result) {
+                                onSuccess({
+                                    words : result
+                                });
+                            },
+                            error : function(error, xhr) {
+                                onFailure("Spellcheck error:" + xhr.status);
+                            }
+                        });
+                    };
+                    contextmenu += " spellchecker"
+                }
+                if (contextmenu != "") {
+                    options.contextmenu = contextmenu;
+                }
+                options.typograf = {
+                    disableRule: ["*"],
+                    enableRule2: ["common/punctuation/quote"],
+                    locale: [config.typograf_locale, "en-US"]
+                };
+                if (config.pasteOptions) {
+                    options.paste_as_text = config.pasteOptions.paste_text_sticky_default ? true
+                            : false;
+                }
+                if (config.directOptions) {
+                    for (var key in config.directOptions) {
+                        options[key] = config.directOptions[key];
+                    }
+                }
+            }
 
-		} catch (e) {
-			// nothing to do
-		}
+        } catch (e) {
+            // nothing to do
+        }
 
-		return options;
+        return options;
     }-*/;
 
     /**

@@ -78,6 +78,7 @@ public class CmsDbImportApp extends A_CmsAttributeAwareApp implements I_CmsRepor
      * @param mode for import
      */
     public CmsDbImportApp(Mode mode) {
+
         m_mode = mode;
     }
 

@@ -96,7 +96,7 @@ public class CmsSqlConsoleLayout extends VerticalLayout {
         List<Throwable> errors = new ArrayList<>();
         CmsSqlConsoleResults result = m_console.execute(stmt, pool, report, errors);
         if (errors.size() > 0) {
-            CmsErrorDialog.showErrorDialog(report.toString() +  errors.get(0).getMessage(), errors.get(0));
+            CmsErrorDialog.showErrorDialog(report.toString() + errors.get(0).getMessage(), errors.get(0));
         } else {
             Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
             window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SQLCONSOLE_QUERY_RESULTS_0));

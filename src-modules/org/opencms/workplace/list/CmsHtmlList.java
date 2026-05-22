@@ -991,15 +991,16 @@ public class CmsHtmlList {
             helpText = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0);
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            id,
-            name,
-            helpText,
-            enabled,
-            iconPath,
-            null,
-            onClic));
+        html.append(
+            A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                id,
+                name,
+                helpText,
+                enabled,
+                iconPath,
+                null,
+                onClic));
         html.append("\n");
         // next button
         id = "listNext";
@@ -1011,15 +1012,16 @@ public class CmsHtmlList {
             helpText = messages.key(Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0);
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            id,
-            name,
-            helpText,
-            enabled,
-            iconPath,
-            null,
-            onClic));
+        html.append(
+            A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                id,
+                name,
+                helpText,
+                enabled,
+                iconPath,
+                null,
+                onClic));
         html.append("\n");
         // page selection list
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
@@ -1045,9 +1047,13 @@ public class CmsHtmlList {
                     Messages.GUI_LIST_PAGING_TEXT_2,
                     new Object[] {m_name.key(getWp().getLocale()), Integer.valueOf(getTotalSize())}));
         } else {
-            html.append(messages.key(
-                Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
-                new Object[] {m_name.key(getWp().getLocale()), Integer.valueOf(getSize()), Integer.valueOf(getTotalSize())}));
+            html.append(
+                messages.key(
+                    Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
+                    new Object[] {
+                        m_name.key(getWp().getLocale()),
+                        Integer.valueOf(getSize()),
+                        Integer.valueOf(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
@@ -1090,35 +1096,39 @@ public class CmsHtmlList {
             }
             if (getTotalNumberOfPages() > 1) {
                 if (isNotSearching) {
-                    html.append(messages.key(
-                        Messages.GUI_LIST_TITLE_TEXT_4,
-                        new Object[] {
-                            m_name.key(getWp().getLocale()),
-                            Integer.valueOf(displayedFrom()),
-                            Integer.valueOf(displayedTo()),
-                            Integer.valueOf(getTotalSize())}));
+                    html.append(
+                        messages.key(
+                            Messages.GUI_LIST_TITLE_TEXT_4,
+                            new Object[] {
+                                m_name.key(getWp().getLocale()),
+                                Integer.valueOf(displayedFrom()),
+                                Integer.valueOf(displayedTo()),
+                                Integer.valueOf(getTotalSize())}));
                 } else {
-                    html.append(messages.key(
-                        Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
-                        new Object[] {
-                            m_name.key(getWp().getLocale()),
-                            Integer.valueOf(displayedFrom()),
-                            Integer.valueOf(displayedTo()),
-                            Integer.valueOf(getSize()),
-                            Integer.valueOf(getTotalSize())}));
+                    html.append(
+                        messages.key(
+                            Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
+                            new Object[] {
+                                m_name.key(getWp().getLocale()),
+                                Integer.valueOf(displayedFrom()),
+                                Integer.valueOf(displayedTo()),
+                                Integer.valueOf(getSize()),
+                                Integer.valueOf(getTotalSize())}));
                 }
             } else {
                 if (isNotSearching) {
-                    html.append(messages.key(
-                        Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
-                        new Object[] {m_name.key(getWp().getLocale()), Integer.valueOf(getTotalSize())}));
+                    html.append(
+                        messages.key(
+                            Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
+                            new Object[] {m_name.key(getWp().getLocale()), Integer.valueOf(getTotalSize())}));
                 } else {
-                    html.append(messages.key(
-                        Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
-                        new Object[] {
-                            m_name.key(getWp().getLocale()),
-                            Integer.valueOf(getSize()),
-                            Integer.valueOf(getTotalSize())}));
+                    html.append(
+                        messages.key(
+                            Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
+                            new Object[] {
+                                m_name.key(getWp().getLocale()),
+                                Integer.valueOf(getSize()),
+                                Integer.valueOf(getTotalSize())}));
                 }
             }
             html.append("\n");

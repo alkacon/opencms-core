@@ -52,6 +52,7 @@ public class CmsCopyPageMenuEntry extends A_CmsSitemapMenuEntry {
      * @param hoverbar the hoverbar for the current item
      */
     public CmsCopyPageMenuEntry(CmsSitemapHoverbar hoverbar) {
+
         super(hoverbar);
         setLabel(Messages.get().key(Messages.GUI_COPYPAGE_MENU_ENTRY_0));
         setActive(true);

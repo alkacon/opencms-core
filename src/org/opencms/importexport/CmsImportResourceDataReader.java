@@ -124,7 +124,9 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
             String translatedName = getRequestContext().addSiteRoot(m_parameters.getDestinationPath() + m_destination);
             boolean resourceImmutable = checkImmutable(translatedName);
             translatedName = getRequestContext().removeSiteRoot(translatedName);
-            boolean isExistingParent = !m_hasStructureId && isFolderType(m_typeName) && getCms().existsResource(translatedName, CmsResourceFilter.ALL);
+            boolean isExistingParent = !m_hasStructureId
+                && isFolderType(m_typeName)
+                && getCms().existsResource(translatedName, CmsResourceFilter.ALL);
             if (!resourceImmutable && !isExistingParent) {
                 byte[] content = null;
                 if (m_source != null) {

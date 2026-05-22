@@ -139,6 +139,7 @@ public final class CmsDbPool {
      * Hidden constructor.<p>
      */
     private CmsDbPool() {
+
         // hidden constructor
     }
 

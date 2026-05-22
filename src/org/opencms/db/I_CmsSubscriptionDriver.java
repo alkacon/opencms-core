@@ -155,7 +155,8 @@ public interface I_CmsSubscriptionDriver {
         List<CmsGroup> groups,
         CmsResource parent,
         boolean includeSubFolders,
-        long deletedFrom) throws CmsDataAccessException;
+        long deletedFrom)
+    throws CmsDataAccessException;
 
     /**
      * Returns the resources that were subscribed by a user or group set in the filter.<p>

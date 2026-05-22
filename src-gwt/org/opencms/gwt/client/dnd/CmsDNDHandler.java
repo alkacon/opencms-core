@@ -476,7 +476,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      * Constructor.<p>
      *
      * @param controller the drag and drop controller
-     **/
+     */
     public CmsDNDHandler(I_CmsDNDController controller) {
 
         m_targets = new ArrayList<I_CmsDropTarget>();

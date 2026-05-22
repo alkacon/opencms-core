@@ -45,6 +45,7 @@ public class CmsObjectFunctionTransformer implements Transformer {
      * @param cms the cms context
      */
     public CmsObjectFunctionTransformer(CmsObject cms) {
+
         m_cms = cms;
     }
 

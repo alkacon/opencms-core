@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -72,6 +72,7 @@ public class CmsCopyToProjectDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsCopyToProjectDialog(I_CmsDialogContext context) {
+
         m_context = context;
         displayResourceInfo(m_context.getResources());
         String projectName = m_context.getCms().getRequestContext().getCurrentProject().getName();

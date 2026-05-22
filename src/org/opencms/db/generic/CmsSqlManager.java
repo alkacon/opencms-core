@@ -41,8 +41,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,9 +84,20 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public CmsSqlManager() {
 
+        this(Collections.<String> emptyList());
+    }
+
+    /**
+     * Creates a new SQL manager and loads additional SQL query property files after the generic queries.<p>
+     *
+     * @param additionalQueryProperties the additional SQL query property files to load
+     */
+    public CmsSqlManager(List<String> additionalQueryProperties) {
+
         m_cachedQueries = new ConcurrentHashMap<String, String>();
         m_queries = new HashMap<String, String>();
         loadQueryProperties(QUERY_PROPERTIES);
+        loadAdditionalQueryProperties(additionalQueryProperties);
     }
 
     /**
@@ -96,10 +109,35 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public static org.opencms.db.generic.CmsSqlManager getInstance(String classname) {
 
+        return getInstance(classname, Collections.<String> emptyList());
+    }
+
+    /**
+     * Creates a new instance of a SQL manager and loads additional SQL query property files.<p>
+     *
+     * @param classname the classname of the SQL manager
+     * @param additionalQueryProperties the additional SQL query property files to load
+     *
+     * @return a new instance of the SQL manager
+     */
+    public static org.opencms.db.generic.CmsSqlManager getInstance(
+        String classname,
+        List<String> additionalQueryProperties) {
+
         org.opencms.db.generic.CmsSqlManager sqlManager;
 
         try {
-            Object objectInstance = Class.forName(classname).newInstance();
+            Class<?> sqlManagerClass = Class.forName(classname);
+            Object objectInstance;
+            try {
+                objectInstance = sqlManagerClass.getConstructor(List.class).newInstance(additionalQueryProperties);
+            } catch (NoSuchMethodException e) {
+                if ((additionalQueryProperties == null) || additionalQueryProperties.isEmpty()) {
+                    objectInstance = sqlManagerClass.newInstance();
+                } else {
+                    throw e;
+                }
+            }
             sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_SQL_MANAGER_INIT_FAILED_1, classname), t);
@@ -426,6 +464,23 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
         }
 
         return " ";
+    }
+
+    /**
+     * Loads additional Java properties hashes containing SQL queries.<p>
+     *
+     * @param additionalQueryProperties the additional SQL query property files to load
+     */
+    protected void loadAdditionalQueryProperties(List<String> additionalQueryProperties) {
+
+        if (additionalQueryProperties == null) {
+            return;
+        }
+        for (String propertyFilename : additionalQueryProperties) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyFilename)) {
+                loadQueryProperties(propertyFilename);
+            }
+        }
     }
 
     /**

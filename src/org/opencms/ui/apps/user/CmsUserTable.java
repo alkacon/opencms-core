@@ -1110,13 +1110,13 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                     m_menu.openForTable(event, event.getItemId(), event.getPropertyId(), CmsUserTable.this);
                 } else if (event.getButton().equals(MouseButton.LEFT)
                     && TableProperty.Name.equals(event.getPropertyId())) {
-                        CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
-                        try {
-                            openInfoDialog(user.getId());
-                        } catch (CmsException e) {
-                            LOG.error("Error on opening user info dialog", e);
-                        }
+                    CmsUser user = ((Set<CmsUser>)getValue()).iterator().next();
+                    try {
+                        openInfoDialog(user.getId());
+                    } catch (CmsException e) {
+                        LOG.error("Error on opening user info dialog", e);
                     }
+                }
 
             }
 

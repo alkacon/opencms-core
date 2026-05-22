@@ -82,6 +82,7 @@ public class CmsLocaleLinkTargetSelectionDialog extends CmsResourceSelectDialog 
      */
     public CmsLocaleLinkTargetSelectionDialog(I_CmsDialogContext context, I_CmsLocaleCompareContext localeContext)
     throws CmsException {
+
         super(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
 
         m_localeContext = localeContext;

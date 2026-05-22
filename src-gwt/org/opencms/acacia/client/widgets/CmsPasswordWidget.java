@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
  *
- * */
+ */
 public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
 
     /**The main panel of this widget. */

@@ -34,6 +34,7 @@ public class CmsExternalLayout extends AbstractComponent implements HasComponent
      *            component to be rendered, cannot be null
      */
     public CmsExternalLayout(String divId, Component component) {
+
         if ((divId == null) || (component == null)) {
             throw new IllegalArgumentException("The div id or the child component cannot be null.");
         }

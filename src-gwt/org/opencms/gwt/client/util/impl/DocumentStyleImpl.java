@@ -100,17 +100,6 @@ public class DocumentStyleImpl {
     }
 
     /**
-     * Hyphenizes the given string.<p>
-     *
-     * @param name the string to hyphenize
-     *
-     * @return the result
-     */
-    protected native String hyphenize(String name) /*-{
-                                                   return name.replace(/([A-Z])/g, "-$1").toLowerCase();
-                                                   }-*/;
-
-    /**
      * Returns the computed style from the DOM object.<p>
      *
      * @param elem the element object
@@ -144,4 +133,15 @@ public class DocumentStyleImpl {
 
                                                                         return value;
                                                                         }-*/;
+
+    /**
+     * Hyphenizes the given string.<p>
+     *
+     * @param name the string to hyphenize
+     *
+     * @return the result
+     */
+    protected native String hyphenize(String name) /*-{
+                                                   return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+                                                   }-*/;
 }

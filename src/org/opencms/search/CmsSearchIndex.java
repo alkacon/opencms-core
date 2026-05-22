@@ -1885,18 +1885,18 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                 doScoring = true;
             } else if ((sort == CmsSearchParameters.SORT_DATE_CREATED)
                 || (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED)) {
-                    // these default sorts don't need score calculation
-                    doScoring = false;
-                } else {
-                    // for all non-defaults: check if the score field is present, in that case we must calculate the score
-                    SortField[] fields = sort.getSort();
-                    for (SortField field : fields) {
-                        if (field == SortField.FIELD_SCORE) {
-                            doScoring = true;
-                            break;
-                        }
+                // these default sorts don't need score calculation
+                doScoring = false;
+            } else {
+                // for all non-defaults: check if the score field is present, in that case we must calculate the score
+                SortField[] fields = sort.getSort();
+                for (SortField field : fields) {
+                    if (field == SortField.FIELD_SCORE) {
+                        doScoring = true;
+                        break;
                     }
                 }
+            }
         }
         return doScoring;
     }

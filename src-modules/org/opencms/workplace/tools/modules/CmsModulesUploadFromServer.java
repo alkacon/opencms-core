@@ -198,6 +198,25 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     }
 
     /**
+     * Gets the module parameter.<p>
+     *
+     * @return the module parameter
+     */
+    public String getModuleupload() {
+
+        return m_moduleupload;
+    }
+
+    /**
+     * Sets the module parameter.<p>
+     * @param module the module parameter
+     */
+    public void setModuleupload(String module) {
+
+        m_moduleupload = module;
+    }
+
+    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
      *
      * @param dialog the dialog (page) to get the HTML for
@@ -251,52 +270,6 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the list of all modules available on the server in prepared CmsSelectWidgetOption objects.<p>
-     *
-     * @return List of module names in CmsSelectWidgetOption objects
-     */
-    private List getModulesFromServer() {
-
-        List result = new ArrayList();
-
-        // get the systems-exportpath
-        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
-        exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath + "modules");
-        File folder = new File(exportpath);
-
-        // get a list of all files
-        String[] list = folder.list();
-        for (int i = 0; i < list.length; i++) {
-            try {
-                File diskFile = new File(exportpath, list[i]);
-                // check if it is a file and ends with zip -> this is a module
-                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
-                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
-                } else
-                    if (diskFile.isDirectory() && ((new File(diskFile + File.separator + "manifest.xml")).exists())) {
-                    // this is a folder with manifest file -> this a module
-                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
-                }
-            } catch (Throwable t) {
-                // ignore and continue
-            }
-        }
-
-        Collections.sort(result, new ComparatorSelectWidgetOption());
-        return result;
-    }
-
-    /**
-     * Gets the module parameter.<p>
-     *
-     * @return the module parameter
-     */
-    public String getModuleupload() {
-
-        return m_moduleupload;
-    }
-
-    /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
     @Override
@@ -333,12 +306,39 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     }
 
     /**
-     * Sets the module parameter.<p>
-     * @param module the module parameter
+     * Returns the list of all modules available on the server in prepared CmsSelectWidgetOption objects.<p>
+     *
+     * @return List of module names in CmsSelectWidgetOption objects
      */
-    public void setModuleupload(String module) {
+    private List getModulesFromServer() {
 
-        m_moduleupload = module;
+        List result = new ArrayList();
+
+        // get the systems-exportpath
+        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
+        exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath + "modules");
+        File folder = new File(exportpath);
+
+        // get a list of all files
+        String[] list = folder.list();
+        for (int i = 0; i < list.length; i++) {
+            try {
+                File diskFile = new File(exportpath, list[i]);
+                // check if it is a file and ends with zip -> this is a module
+                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
+                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
+                } else if (diskFile.isDirectory()
+                    && ((new File(diskFile + File.separator + "manifest.xml")).exists())) {
+                    // this is a folder with manifest file -> this a module
+                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
+                }
+            } catch (Throwable t) {
+                // ignore and continue
+            }
+        }
+
+        Collections.sort(result, new ComparatorSelectWidgetOption());
+        return result;
     }
 
 }

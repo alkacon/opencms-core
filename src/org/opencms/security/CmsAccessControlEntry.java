@@ -159,6 +159,12 @@ public class CmsAccessControlEntry {
     /** UUID which is used to read all access control entries, should never be written to the database. */
     public static final CmsUUID PRINCIPAL_READALL_ID;
 
+    static {
+        PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME.toLowerCase());
+        PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase());
+        PRINCIPAL_READALL_ID = CmsUUID.getConstantUUID("principal-read-all");
+    }
+
     /** Flags of this access control entry. */
     private int m_flags;
 
@@ -279,12 +285,6 @@ public class CmsAccessControlEntry {
         }
 
         m_permissions = new CmsPermissionSetCustom(permissionString.toString());
-    }
-
-    static {
-        PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME.toLowerCase());
-        PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase());
-        PRINCIPAL_READALL_ID = CmsUUID.getConstantUUID("principal-read-all");
     }
 
     /**

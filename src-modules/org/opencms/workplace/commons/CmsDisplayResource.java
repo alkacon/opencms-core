@@ -165,10 +165,11 @@ public class CmsDisplayResource extends CmsDialog {
             CmsResource resource = readResource(resourceStr);
             if (isDeleted(resource)) {
                 // resource has been deleted in offline project
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_RESOURCE_DELETED_2,
-                    resourceStr,
-                    getCms().getRequestContext().getCurrentProject().getName()));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_DELETED_2,
+                        resourceStr,
+                        getCms().getRequestContext().getCurrentProject().getName()));
             }
 
             // check for release / expiration time window

@@ -51,6 +51,7 @@ public class CmsSitemapTreeNodeOpener extends Button {
      * Creates a new instance.<p>
      */
     public CmsSitemapTreeNodeOpener() {
+
         super();
         addStyleName("opencms-font-icon");
         addStyleName("o-sitemap-tree-opener");

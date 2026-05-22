@@ -40,14 +40,6 @@ public class CmsSetupTestOperatingSystem implements I_CmsSetupTest {
     public static final String TEST_NAME = "Operating System";
 
     /**
-     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
-     */
-    public String getName() {
-
-        return TEST_NAME;
-    }
-
-    /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
     public CmsSetupTestResult execute(CmsSetupBean setupBean) {
@@ -64,5 +56,13 @@ public class CmsSetupTestOperatingSystem implements I_CmsSetupTest {
         testResult.setGreen();
 
         return testResult;
+    }
+
+    /**
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
+     */
+    public String getName() {
+
+        return TEST_NAME;
     }
 }

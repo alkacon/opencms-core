@@ -52,6 +52,7 @@ public class CmsExpiringValue<T> {
      * @param expirationTime the expiration time in milliseconds
      */
     public CmsExpiringValue(long expirationTime) {
+
         m_expirationTime = expirationTime;
     }
 

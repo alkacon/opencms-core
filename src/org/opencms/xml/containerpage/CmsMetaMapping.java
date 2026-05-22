@@ -53,6 +53,7 @@ public class CmsMetaMapping {
      * @param defaultValue the mapping default value
      */
     public CmsMetaMapping(String key, String element, int order, String defaultValue) {
+
         m_key = key;
         m_element = element;
         m_order = order;

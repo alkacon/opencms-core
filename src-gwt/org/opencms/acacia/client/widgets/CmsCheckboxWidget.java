@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * Provides a standard HTML form check box widget, for use on a widget dialog.<p>
  *
- * */
+ */
 public class CmsCheckboxWidget extends Composite implements I_CmsEditWidget {
 
     /** The check box of this widget. */

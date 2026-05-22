@@ -46,6 +46,7 @@ public class CmsPropertyCompareBean {
      * @param comp an attribute comparison
      */
     public CmsPropertyCompareBean(CmsAttributeComparison comp) {
+
         m_comp = comp;
     }
 

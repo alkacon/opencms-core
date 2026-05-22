@@ -181,6 +181,7 @@ public interface I_CmsTemplateContextProvider {
      * @return true if the templateContexts setting should be ignored by the cms:container tag
      */
     default boolean isIgnoreTemplateContextsSetting() {
+
         return false;
     }
 

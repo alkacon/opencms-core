@@ -24,6 +24,7 @@ public class CmsExternalLayout extends SimplePanel {
      * Constructor.<p>
      */
     public CmsExternalLayout() {
+
         m_renderTargetElement = getElement();
     }
 

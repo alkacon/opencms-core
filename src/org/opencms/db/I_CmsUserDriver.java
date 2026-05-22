@@ -96,7 +96,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsUUID principal,
         int allowed,
         int denied,
-        int flags) throws CmsDataAccessException;
+        int flags)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new group.<p>
@@ -117,7 +118,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String groupFqn,
         String description,
         int flags,
-        String parentGroupName) throws CmsDataAccessException;
+        String parentGroupName)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new organizational unit.<p>
@@ -140,7 +142,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String description,
         int flags,
         CmsOrganizationalUnit parent,
-        String associationRootPath) throws CmsDataAccessException;
+        String associationRootPath)
+    throws CmsDataAccessException;
 
     /**
      * Creates the default root organizational unit.<p>
@@ -179,7 +182,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         long lastlogin,
         int flags,
         long dateCreated,
-        Map<String, Object> additionalInfos) throws CmsDataAccessException;
+        Map<String, Object> additionalInfos)
+    throws CmsDataAccessException;
 
     /**
      * Adds a user to a group.<p>
@@ -317,7 +321,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     List<CmsOrganizationalUnit> getOrganizationalUnits(
         CmsDbContext dbc,
         CmsOrganizationalUnit parent,
-        boolean includeChildren) throws CmsDataAccessException;
+        boolean includeChildren)
+    throws CmsDataAccessException;
 
     /**
      * Returns all resources of the given organizational unit.<p>
@@ -414,7 +419,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsUUID offlineId,
-        CmsUUID onlineId) throws CmsDataAccessException;
+        CmsUUID onlineId)
+    throws CmsDataAccessException;
 
     /**
      * Reads all relevant access control entries for a given resource.<p>
@@ -432,7 +438,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID resource,
-        boolean inheritedOnly) throws CmsDataAccessException;
+        boolean inheritedOnly)
+    throws CmsDataAccessException;
 
     //    /**
     //     * Returns all resources subscribed by the given user or group.<p>
@@ -467,7 +474,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID resource,
-        CmsUUID principal) throws CmsDataAccessException;
+        CmsUUID principal)
+    throws CmsDataAccessException;
 
     /**
      * Reads all child groups of a group.<p>
@@ -525,7 +533,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         String ouFqn,
         boolean includeChildOus,
         String remoteAddress,
-        boolean readRoles) throws CmsDataAccessException;
+        boolean readRoles)
+    throws CmsDataAccessException;
 
     //    /**
     //     * Returns the resources that were visited by a user set in the filter.<p>
@@ -692,7 +701,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
         CmsDbContext dbc,
         CmsProject project,
         CmsProject onlineProject,
-        CmsUUID principal) throws CmsDataAccessException;
+        CmsUUID principal)
+    throws CmsDataAccessException;
 
     /**
      * Removes an access control entry.<p>

@@ -43,14 +43,6 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
     public static final String TEST_NAME = "Unpacked WAR File";
 
     /**
-     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
-     */
-    public String getName() {
-
-        return TEST_NAME;
-    }
-
-    /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
     public CmsSetupTestResult execute(CmsSetupBean setupBean) {
@@ -74,5 +66,13 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
             testResult.setResult(RESULT_FAILED);
         }
         return testResult;
+    }
+
+    /**
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
+     */
+    public String getName() {
+
+        return TEST_NAME;
     }
 }

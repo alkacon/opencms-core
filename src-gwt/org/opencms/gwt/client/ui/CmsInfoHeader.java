@@ -139,7 +139,7 @@ public class CmsInfoHeader extends Composite {
 
     /**
      * Gets the button bar next to the path information.
-     * 
+     *
      * @return the button bar next to the path information
      */
     public FlowPanel getPathButtons() {

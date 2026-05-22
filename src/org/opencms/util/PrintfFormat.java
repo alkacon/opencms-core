@@ -817,10 +817,11 @@ public class PrintfFormat {
                     s2 = printGFormat(s);
                     break;
                 default:
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
-                        "double",
-                        Character.valueOf(m_conversionCharacter)));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(
+                            Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                            "double",
+                            Character.valueOf(m_conversionCharacter)));
             }
             return s2;
         }
@@ -871,10 +872,11 @@ public class PrintfFormat {
                     s2 = printCFormat((char)s);
                     break;
                 default:
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
-                        "int",
-                        Character.valueOf(m_conversionCharacter)));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(
+                            Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                            "int",
+                            Character.valueOf(m_conversionCharacter)));
             }
             return s2;
         }
@@ -925,10 +927,11 @@ public class PrintfFormat {
                     s2 = printCFormat((char)s);
                     break;
                 default:
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
-                        "long",
-                        Character.valueOf(m_conversionCharacter)));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(
+                            Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                            "long",
+                            Character.valueOf(m_conversionCharacter)));
             }
             return s2;
         }
@@ -970,10 +973,11 @@ public class PrintfFormat {
             if ((m_conversionCharacter == 's') || (m_conversionCharacter == 'S')) {
                 s2 = printSFormat(s);
             } else {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
-                    "String",
-                    Character.valueOf(m_conversionCharacter)));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(
+                        Messages.ERR_INVALID_DOUBLE_FMT_CHAR_2,
+                        "String",
+                        Character.valueOf(m_conversionCharacter)));
             }
             return s2;
         }

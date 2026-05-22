@@ -64,6 +64,7 @@ public class CmsRemoveInnerNameFallback implements I_KeyFallbackHandler, I_CmsRe
      * @param config the configuration (ignored)
      */
     public CmsRemoveInnerNameFallback(String config) {
+
         // do nothing, we just need this constructor for reflection purposes
     }
 

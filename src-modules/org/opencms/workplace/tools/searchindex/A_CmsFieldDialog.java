@@ -233,8 +233,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
 
         if (m_fieldconfiguration == null) {
             try {
-                m_fieldconfiguration = m_searchManager.getFieldConfiguration(
-                    getParamFieldconfiguration());
+                m_fieldconfiguration = m_searchManager.getFieldConfiguration(getParamFieldconfiguration());
                 if (m_fieldconfiguration == null) {
                     m_fieldconfiguration = new CmsLuceneFieldConfiguration();
                 }

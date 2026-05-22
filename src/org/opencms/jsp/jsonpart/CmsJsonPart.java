@@ -60,6 +60,7 @@ public class CmsJsonPart {
      * @param value the value
      */
     public CmsJsonPart(String key, String value) {
+
         super();
         m_key = key;
         m_value = value;

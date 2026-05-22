@@ -160,18 +160,6 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    @Override
-    protected void setColumns(CmsListMetadata metadata) {
-
-        super.setColumns(metadata);
-        metadata.getColumnDefinition(A_CmsListExplorerDialog.LIST_COLUMN_NAME).setName(
-            org.opencms.workplace.explorer.Messages.get().container(
-                org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
     @Override
@@ -187,6 +175,18 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
         isVisible = isVisible
             || ((colFlag == LIST_COLUMN_SITE.hashCode()) && (OpenCms.getSiteManager().getSites().size() > 1));
         return isVisible;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    @Override
+    protected void setColumns(CmsListMetadata metadata) {
+
+        super.setColumns(metadata);
+        metadata.getColumnDefinition(A_CmsListExplorerDialog.LIST_COLUMN_NAME).setName(
+            org.opencms.workplace.explorer.Messages.get().container(
+                org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
     }
 
     /**

@@ -40,7 +40,6 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
-import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.util.ArrayList;
 import java.util.List;

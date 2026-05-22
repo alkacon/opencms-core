@@ -211,17 +211,6 @@ public class CmsEntityWrapper implements Exportable {
     }
 
     /**
-    public void setAttributeValueEntity(String attributeName, CmsEntityWrapper value, int index) {
-    
-        m_entity.setAttributeValue(attributeName, value.getEntity(), index);
-    }
-    
-    public void setAttributeValueString(String attributeName, String value) {
-    
-        m_entity.setAttributeValue(attributeName, value);
-    }
-    
-    /**
      * Wrapper method.<p>
      *
      * @param attributeName parameter for the wrapped method

@@ -34,10 +34,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Widget used to displays a nested hierarchy of app categories and apps.<p>

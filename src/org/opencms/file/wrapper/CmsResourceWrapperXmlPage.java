@@ -244,7 +244,8 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         // cut off trailing slash
         if (resourcename.endsWith("/")) {

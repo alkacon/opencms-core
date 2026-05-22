@@ -60,7 +60,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Client-side content editor widget for editing source code using the CodeMirror library.
- * */
+ */
 public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget, HasResizeHandlers {
 
     /** Map from modes to labels. */

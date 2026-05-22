@@ -31,9 +31,9 @@ import org.opencms.xml.xml2json.handler.CmsJsonHandlerContainerPage;
 import org.opencms.xml.xml2json.handler.CmsJsonHandlerFolder;
 import org.opencms.xml.xml2json.handler.CmsJsonHandlerJsp;
 import org.opencms.xml.xml2json.handler.CmsJsonHandlerList;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerOnlineCachingWrapper;
 import org.opencms.xml.xml2json.handler.CmsJsonHandlerResource;
 import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent;
-import org.opencms.xml.xml2json.handler.CmsJsonHandlerOnlineCachingWrapper;
 import org.opencms.xml.xml2json.handler.I_CmsJsonHandler;
 
 import java.util.ArrayList;

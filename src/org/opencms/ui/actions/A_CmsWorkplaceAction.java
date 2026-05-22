@@ -164,8 +164,8 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCKS_0),
                 dialog);
         }
-            return true;
-        }
+        return true;
+    }
 
     /**
      * Opens the given dialog in a new overlay window.<p>

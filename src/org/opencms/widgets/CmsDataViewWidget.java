@@ -54,6 +54,7 @@ public class CmsDataViewWidget implements I_CmsComplexWidget {
      * Default constructor.<p>
      */
     public CmsDataViewWidget() {
+
         this("");
     }
 
@@ -63,6 +64,7 @@ public class CmsDataViewWidget implements I_CmsComplexWidget {
      * @param config the widget configuration
      */
     public CmsDataViewWidget(String config) {
+
         m_config = config;
     }
 

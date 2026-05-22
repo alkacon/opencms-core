@@ -163,7 +163,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      *
      * @return the List of splitted Substrings
      */
-    public static List<String> splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
+    public static List<String> splitAsList(
+        String source,
+        String[] delimiters,
+        boolean trim,
+        boolean includeDelimiters) {
 
         List<String> result = new ArrayList<String>();
         String delimiter = "";
@@ -305,10 +309,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 String word = wordList.get(i);
                 boolean alreadyDecorated = false;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
-                        word,
-                        Boolean.valueOf(mustDecode(word, wordList, i))));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
+                            word,
+                            Boolean.valueOf(mustDecode(word, wordList, i))));
                 }
 
                 // test if the word must be decoded
@@ -328,10 +333,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
-                        wordDecObj,
-                        word));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
+                            wordDecObj,
+                            word));
                 }
 
                 // if there is a decoration object for this word, we must do the decoration
@@ -384,26 +390,29 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                             decKey.append(wordList.get(i + j));
                             decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
-                                    Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
-                                    decObj,
-                                    word,
-                                    Integer.valueOf(j)));
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
+                                        decObj,
+                                        word,
+                                        Integer.valueOf(j)));
                             }
                             if (decObj != null) {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().getBundle().key(
-                                        Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                                        decObj.getContentDecoration(
-                                            m_config,
-                                            decKey.toString(),
-                                            m_cms.getRequestContext().getLocale().toString())));
+                                    LOG.debug(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                            decObj.getContentDecoration(
+                                                m_config,
+                                                decKey.toString(),
+                                                m_cms.getRequestContext().getLocale().toString())));
                                 }
                                 // decorate the current word with the following delimiter
-                                m_result.append(decObj.getContentDecoration(
-                                    m_config,
-                                    decKey.toString(),
-                                    m_cms.getRequestContext().getLocale().toString()));
+                                m_result.append(
+                                    decObj.getContentDecoration(
+                                        m_config,
+                                        decKey.toString(),
+                                        m_cms.getRequestContext().getLocale().toString()));
                                 // important, we must skip the next element of the list
                                 i += j;
                                 // reset the decObj
@@ -414,9 +423,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     }
                     if ((decObj == null) && (wordDecObj == null)) {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
-                                word));
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
+                                    word));
                         }
                         // no decoration was found, use the word alone
                         m_result.append(word);
@@ -425,25 +435,26 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 //} else {
                 if ((wordDecObj != null) && !alreadyDecorated) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            wordDecObj.getContentDecoration(
-                                m_config,
-                                word,
-                                m_cms.getRequestContext().getLocale().toString())));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                wordDecObj.getContentDecoration(
+                                    m_config,
+                                    word,
+                                    m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
-                    m_result.append(wordDecObj.getContentDecoration(
-                        m_config,
-                        word,
-                        m_cms.getRequestContext().getLocale().toString()));
+                    m_result.append(
+                        wordDecObj.getContentDecoration(
+                            m_config,
+                            word,
+                            m_cms.getRequestContext().getLocale().toString()));
                 }
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1,
-                    text));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1, text));
             }
             m_result.append(text);
         }

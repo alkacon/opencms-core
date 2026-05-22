@@ -126,7 +126,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
 
     /** The search index that should be used .
      *  It will either be the configured index, or "Solr Offline" / "Solr Online" depending on the project.
-     * */
+     */
     private CmsSolrIndex m_index;
 
     /**

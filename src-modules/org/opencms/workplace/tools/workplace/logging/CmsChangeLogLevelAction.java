@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Action handler for single actions from logging view.<p>
  *
- * */
+ */
 public class CmsChangeLogLevelAction extends CmsListDirectAction {
 
     /** The actual log level of this row. */
@@ -86,19 +86,6 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     }
 
     /**
-     * Help method to resolve the name to use.<p>
-     *
-     * @param locale the used locale
-     *
-     * @return the name
-     */
-    @Override
-    protected String resolveName(Locale locale) {
-
-        return getName().key(locale);
-    }
-
-    /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
      */
     @Override
@@ -116,5 +103,18 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
             isVisible = !logger.getLevel().equals(m_logLevel);
         }
         return isVisible;
+    }
+
+    /**
+     * Help method to resolve the name to use.<p>
+     *
+     * @param locale the used locale
+     *
+     * @return the name
+     */
+    @Override
+    protected String resolveName(Locale locale) {
+
+        return getName().key(locale);
     }
 }

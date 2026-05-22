@@ -35,7 +35,7 @@ import java.io.Serializable;
  * Module dependencies are checked if a module is imported or deleted.
  * If a module A requires certain resources (like Java classes)
  * from another module B, a should be made dependend on B.<p>
-
+ *
  *
  * @since 6.0.0
  */

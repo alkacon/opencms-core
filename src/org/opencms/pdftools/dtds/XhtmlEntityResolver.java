@@ -47,8 +47,9 @@ public class XhtmlEntityResolver implements EntityResolver {
 
     /**
      * Constructor.<p>
-     **/
+     */
     public XhtmlEntityResolver() {
+
         this(null);
     }
 
@@ -58,6 +59,7 @@ public class XhtmlEntityResolver implements EntityResolver {
      * @param next the next entity resolver.<p>
      */
     public XhtmlEntityResolver(EntityResolver next) {
+
         m_next = next;
     }
 

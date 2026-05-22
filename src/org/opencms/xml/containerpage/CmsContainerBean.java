@@ -60,7 +60,7 @@ public class CmsContainerBean {
     /**
      * Indicates whether this container not nested,
      * or in case of a detail only container page the starting point of a detail only container hierarchy.
-     **/
+     */
     private boolean m_isRootContainer;
 
     /** The maximal number of elements in the container. */
@@ -90,7 +90,7 @@ public class CmsContainerBean {
      * @param isRootContainer <code>true</code> if this container not nested
      * @param maxElements the maximal number of elements in the container
      * @param elements the elements
-     **/
+     */
     public CmsContainerBean(
         String name,
         String type,
@@ -117,7 +117,7 @@ public class CmsContainerBean {
      * @param parentInstanceId the parent instance id
      * @param isRootContainer <code>true</code> if this container not nested
      * @param elements the elements
-     **/
+     */
     public CmsContainerBean(
         String name,
         String type,

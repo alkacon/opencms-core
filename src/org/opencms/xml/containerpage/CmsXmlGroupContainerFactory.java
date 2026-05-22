@@ -139,7 +139,8 @@ public final class CmsXmlGroupContainerFactory {
         CmsObject cms,
         byte[] xmlData,
         String encoding,
-        EntityResolver resolver) throws CmsXmlException {
+        EntityResolver resolver)
+    throws CmsXmlException {
 
         return unmarshal(cms, CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);
     }
@@ -373,7 +374,8 @@ public final class CmsXmlGroupContainerFactory {
         CmsObject cms,
         String xmlData,
         String encoding,
-        EntityResolver resolver) throws CmsXmlException {
+        EntityResolver resolver)
+    throws CmsXmlException {
 
         // create the XML content object from the provided String
         return unmarshal(cms, CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding, resolver);

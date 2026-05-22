@@ -50,6 +50,13 @@ public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
     }
 
     /**
+     * The js code to execute.<p>
+     *
+     * @return js code to execute
+     */
+    public abstract String jsCode();
+
+    /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveOnClic(java.util.Locale)
      */
     @Override
@@ -72,11 +79,4 @@ public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
         }
         return onClic.toString();
     }
-
-    /**
-     * The js code to execute.<p>
-     *
-     * @return js code to execute
-     */
-    public abstract String jsCode();
 }

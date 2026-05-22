@@ -75,17 +75,6 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     }
 
     /**
-     * Closes the dialog window.<p>
-     */
-    protected void closeWindow() {
-
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
-    }
-
-    /**
      * @see org.opencms.ui.I_CmsDialogContext#error(java.lang.Throwable)
      */
     public void error(Throwable error) {
@@ -221,6 +210,17 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
             if (dialog instanceof CmsBasicDialog) {
                 ((CmsBasicDialog)dialog).initActionHandler(m_window);
             }
+        }
+    }
+
+    /**
+     * Closes the dialog window.<p>
+     */
+    protected void closeWindow() {
+
+        if (m_window != null) {
+            m_window.close();
+            m_window = null;
         }
     }
 }

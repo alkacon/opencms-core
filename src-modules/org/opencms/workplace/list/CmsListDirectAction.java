@@ -59,77 +59,6 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
-     * Help method to resolve the help text to use.<p>
-     *
-     * @param locale the used locale
-     *
-     * @return the help text
-     */
-    protected String resolveHelpText(Locale locale) {
-
-        String helpText = getHelpText().key(locale);
-        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
-            helpText = new MessageFormat(helpText, locale).format(new Object[] {getItem().get(getColumnForTexts())});
-        }
-        return helpText;
-    }
-
-    /**
-     * Help method to resolve the on clic text to use.<p>
-     *
-     * @param locale the used locale
-     *
-     * @return the on clic text
-     */
-    protected String resolveOnClic(Locale locale) {
-
-        String confirmationMessage = getConfirmationMessage().key(locale);
-        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
-            confirmationMessage = new MessageFormat(confirmationMessage, locale).format(
-                new Object[] {getItem().get(getColumnForTexts())});
-        }
-        StringBuffer onClic = new StringBuffer(128);
-        onClic.append("listAction('");
-        onClic.append(getListId());
-        onClic.append("', '");
-        onClic.append(getId());
-        onClic.append("', '");
-        if ((getColumnForTexts() == null)
-            || (getItem().get(getColumnForTexts()) == null)
-            || confirmationMessage.equals(new MessageFormat(confirmationMessage, locale).format(new Object[] {""}))) {
-            onClic.append("conf" + getId());
-        } else {
-            onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
-        }
-        onClic.append("', '");
-        onClic.append(CmsStringUtil.escapeJavaScript(getItem().getId()));
-        onClic.append("');");
-        return onClic.toString();
-    }
-
-    /**
-     * Help method to resolve the name to use.<p>
-     *
-     * @param locale the used locale
-     *
-     * @return the name
-     */
-    protected String resolveName(Locale locale) {
-
-        return getName().key(locale);
-    }
-
-    /**
-     * Help method to resolve the style of the button.<p>
-     *
-     * @return the style of the button
-     */
-    protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
-
-        return CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY;
-    }
-
-    /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
     public String buttonHtml(CmsWorkplace wp) {
@@ -213,6 +142,77 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     public void setItem(CmsListItem item) {
 
         m_listItem = item;
+    }
+
+    /**
+     * Help method to resolve the style of the button.<p>
+     *
+     * @return the style of the button
+     */
+    protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
+
+        return CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY;
+    }
+
+    /**
+     * Help method to resolve the help text to use.<p>
+     *
+     * @param locale the used locale
+     *
+     * @return the help text
+     */
+    protected String resolveHelpText(Locale locale) {
+
+        String helpText = getHelpText().key(locale);
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
+            helpText = new MessageFormat(helpText, locale).format(new Object[] {getItem().get(getColumnForTexts())});
+        }
+        return helpText;
+    }
+
+    /**
+     * Help method to resolve the name to use.<p>
+     *
+     * @param locale the used locale
+     *
+     * @return the name
+     */
+    protected String resolveName(Locale locale) {
+
+        return getName().key(locale);
+    }
+
+    /**
+     * Help method to resolve the on clic text to use.<p>
+     *
+     * @param locale the used locale
+     *
+     * @return the on clic text
+     */
+    protected String resolveOnClic(Locale locale) {
+
+        String confirmationMessage = getConfirmationMessage().key(locale);
+        if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
+            confirmationMessage = new MessageFormat(confirmationMessage, locale).format(
+                new Object[] {getItem().get(getColumnForTexts())});
+        }
+        StringBuffer onClic = new StringBuffer(128);
+        onClic.append("listAction('");
+        onClic.append(getListId());
+        onClic.append("', '");
+        onClic.append(getId());
+        onClic.append("', '");
+        if ((getColumnForTexts() == null)
+            || (getItem().get(getColumnForTexts()) == null)
+            || confirmationMessage.equals(new MessageFormat(confirmationMessage, locale).format(new Object[] {""}))) {
+            onClic.append("conf" + getId());
+        } else {
+            onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
+        }
+        onClic.append("', '");
+        onClic.append(CmsStringUtil.escapeJavaScript(getItem().getId()));
+        onClic.append("');");
+        return onClic.toString();
     }
 
 }

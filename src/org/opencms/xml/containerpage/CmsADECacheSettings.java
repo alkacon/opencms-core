@@ -37,14 +37,14 @@ public class CmsADECacheSettings {
     /** Default size for container page caches. */
     private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
 
+    /** Default size for group container caches. */
+    private static final int DEFAULT_GROUP_CONTAINER_SIZE = 128;
+
     /** The size of the container page offline cache. */
     private int m_containerPageOfflineSize;
 
     /** The size of the container page online cache. */
     private int m_containerPageOnlineSize;
-
-    /** Default size for group container caches. */
-    private static final int DEFAULT_GROUP_CONTAINER_SIZE = 128;
 
     /** The size of the group container offline cache. */
     private int m_groupContainerOfflineSize;
@@ -87,26 +87,6 @@ public class CmsADECacheSettings {
     }
 
     /**
-     * Sets the size of the cache for offline container pages.<p>
-     *
-     * @param size the size of the cache for offline container pages
-     */
-    public void setContainerPageOfflineSize(String size) {
-
-        m_containerPageOfflineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
-    }
-
-    /**
-     * Sets the size of the cache for online container pages.<p>
-     *
-     * @param size the size of the cache for online container pages
-     */
-    public void setContainerPageOnlineSize(String size) {
-
-        m_containerPageOnlineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
-    }
-
-    /**
      * Returns the size of the group container offline cache.<p>
      *
      * @return the size of the group container offline cache
@@ -130,6 +110,26 @@ public class CmsADECacheSettings {
             return DEFAULT_GROUP_CONTAINER_SIZE;
         }
         return m_groupContainerOnlineSize;
+    }
+
+    /**
+     * Sets the size of the cache for offline container pages.<p>
+     *
+     * @param size the size of the cache for offline container pages
+     */
+    public void setContainerPageOfflineSize(String size) {
+
+        m_containerPageOfflineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
+    }
+
+    /**
+     * Sets the size of the cache for online container pages.<p>
+     *
+     * @param size the size of the cache for online container pages
+     */
+    public void setContainerPageOnlineSize(String size) {
+
+        m_containerPageOnlineSize = getIntValue(size, DEFAULT_CONTAINER_PAGE_SIZE);
     }
 
     /**

@@ -99,7 +99,8 @@ public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         if (m_isWrappedResource) {
             return cms.createResource(resourcename, type, content, properties);

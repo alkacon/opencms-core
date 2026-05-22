@@ -846,7 +846,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SECURITY_MANAGER_SHUTDOWN_1 = "INIT_SECURITY_MANAGER_SHUTDOWN_1";
 
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_WAIT_FOR_DB_4 = "INIT_WAIT_FOR_DB_4";
 
     /** Message constant for key in the resource bundle. */

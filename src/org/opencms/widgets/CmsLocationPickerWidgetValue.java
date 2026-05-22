@@ -141,6 +141,7 @@ public class CmsLocationPickerWidgetValue {
      * Enumeration class for defining the map types.<p>
      */
     public static enum MapType {
+
         /** Hybrid map type. */
         hybrid,
 

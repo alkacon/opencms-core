@@ -71,6 +71,7 @@ public class CmsSolrCopyModifiedUpateProcessor extends UpdateRequestProcessor {
         @Nonnull Pattern regex,
         @Nonnull String replacement,
         UpdateRequestProcessor nextProcessor) {
+
         super(nextProcessor);
         m_source = source;
         m_target = target;

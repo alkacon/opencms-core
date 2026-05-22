@@ -36,7 +36,7 @@ import java.util.Locale;
  *
  * It uses the information of a <code>{@link CmsDecorationDefintion}</code> to create the
  * pre- and postfix for a text decoration.
-
+ *
  *
  * @since 6.1.3
  */

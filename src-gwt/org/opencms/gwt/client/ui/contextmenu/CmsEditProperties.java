@@ -240,7 +240,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
          *
          * @param focusNameField true if the file name field should be focused after opening the dialog
          *
-         * */
+         */
         public void setFocusNameField(boolean focusNameField) {
 
             m_focusNameField = focusNameField;

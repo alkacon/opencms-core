@@ -60,8 +60,10 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
          */
         public SitemapTypeDialog(List<CmsListInfoBean> itemInfos) {
 
-            super(itemInfos, Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TITLE_0), Messages.get().key(
-                Messages.GUI_SITEMAP_TYPE_CHOICE_TEXT_0));
+            super(
+                itemInfos,
+                Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TITLE_0),
+                Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TEXT_0));
 
         }
 
@@ -154,9 +156,10 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
         // showing the resource type icon of the default file in navigation mode
-        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-        ? entry.getDefaultFileType()
-        : entry.getResourceTypeName());
+        infoBean.setResourceType(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+            ? entry.getDefaultFileType()
+            : entry.getResourceTypeName());
         confirmDialog.addTopWidget(new CmsListItemWidget(infoBean));
         confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
 

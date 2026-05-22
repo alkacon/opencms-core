@@ -64,6 +64,7 @@ public class CmsSerialDateBeanIndividual extends A_CmsSerialDateBean {
         int occurrences,
         SortedSet<Date> exceptions,
         SortedSet<Date> individualDates) {
+
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
         m_individualDates = null == individualDates ? new TreeSet<Date>() : new TreeSet<Date>(individualDates);
 

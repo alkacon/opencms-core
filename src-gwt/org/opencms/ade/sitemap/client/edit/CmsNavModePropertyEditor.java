@@ -140,7 +140,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
     /**
      * Builds a single form field.<p>
      *
-    
+     *
      * @param entryId the entry id
      * @param defaultFileId the default file id
      * @param ownProps the entry's own properties

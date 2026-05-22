@@ -102,7 +102,8 @@ public class CmsAdeImageGalleryWidget extends A_CmsAdeGalleryWidget {
         CmsObject cms,
         String resource,
         CmsMessages messages,
-        I_CmsWidgetParameter param) throws JSONException {
+        I_CmsWidgetParameter param)
+    throws JSONException {
 
         CmsVfsImageWidgetConfiguration config = getWidgetConfiguration(cms, messages, param);
         JSONObject result = new JSONObject();

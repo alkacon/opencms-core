@@ -97,7 +97,8 @@ public interface I_CmsImport {
         I_CmsReport report,
         File importResource,
         ZipFile importZip,
-        Document docXml) throws CmsImportExportException;
+        Document docXml)
+    throws CmsImportExportException;
 
     /**
      * Checks if the file given as parameter matches this import version implementation.<p>

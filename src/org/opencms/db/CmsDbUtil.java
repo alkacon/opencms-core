@@ -48,31 +48,6 @@ public final class CmsDbUtil {
     }
 
     /**
-     * Fills a given prepared statement with parameters from a list of objects.<p>
-     *
-     * @param stmt the prepared statement
-     * @param params the parameter objects
-     *
-     * @throws SQLException if something goes wrong
-     */
-    public static void fillParameters(PreparedStatement stmt, List<Object> params) throws SQLException {
-
-        int i = 1;
-        for (Object param : params) {
-            if (param instanceof String) {
-                stmt.setString(i, (String)param);
-            } else if (param instanceof Integer) {
-                stmt.setInt(i, ((Integer)param).intValue());
-            } else if (param instanceof Long) {
-                stmt.setLong(i, ((Long)param).longValue());
-            } else {
-                throw new IllegalArgumentException();
-            }
-            i += 1;
-        }
-    }
-
-    /**
      * Creates an expression for comparing a column with a constant.<p>
      *
      * @param column the column name
@@ -96,5 +71,30 @@ public final class CmsDbUtil {
     public static CmsSimpleQueryFragment columnLike(String column, String str) {
 
         return new CmsSimpleQueryFragment(column + " LIKE ? ", str);
+    }
+
+    /**
+     * Fills a given prepared statement with parameters from a list of objects.<p>
+     *
+     * @param stmt the prepared statement
+     * @param params the parameter objects
+     *
+     * @throws SQLException if something goes wrong
+     */
+    public static void fillParameters(PreparedStatement stmt, List<Object> params) throws SQLException {
+
+        int i = 1;
+        for (Object param : params) {
+            if (param instanceof String) {
+                stmt.setString(i, (String)param);
+            } else if (param instanceof Integer) {
+                stmt.setInt(i, ((Integer)param).intValue());
+            } else if (param instanceof Long) {
+                stmt.setLong(i, ((Long)param).longValue());
+            } else {
+                throw new IllegalArgumentException();
+            }
+            i += 1;
+        }
     }
 }

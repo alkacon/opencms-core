@@ -120,9 +120,10 @@ public class CmsDeleteFieldConfigurationDialog extends A_CmsFieldConfigurationDi
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_NAME_0)));
             result.append(createWidgetTableStart());
-            result.append(key(
-                Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_CONF_1,
-                new Object[] {m_fieldconfiguration.getName()}));
+            result.append(
+                key(
+                    Messages.GUI_LIST_FIELDCONFIGURATION_ACTION_DELETE_CONF_1,
+                    new Object[] {m_fieldconfiguration.getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }

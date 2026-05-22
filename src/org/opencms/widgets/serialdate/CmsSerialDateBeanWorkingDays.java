@@ -63,6 +63,7 @@ public class CmsSerialDateBeanWorkingDays extends A_CmsSerialDateBean {
         Date serialEndDate,
         int occurrences,
         SortedSet<Date> exceptions) {
+
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
 
     }

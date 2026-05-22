@@ -762,7 +762,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-
+     *
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */

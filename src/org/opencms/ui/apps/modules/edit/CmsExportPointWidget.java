@@ -31,9 +31,9 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 
+import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
 
 /**
  * Widget used to edit a module export point.<p>
@@ -56,6 +56,7 @@ public class CmsExportPointWidget extends FormLayout {
      * @param target the export point target
      */
     public CmsExportPointWidget(String source, String target) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_source.setUseRootPaths(true);
         m_source.setValue(source);

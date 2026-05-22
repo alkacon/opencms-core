@@ -1590,7 +1590,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @return the resource categories
      *
      * @throws CmsRpcException if something goes wrong
-    
+     *
      *
      * @return
      * @throws CmsRpcException

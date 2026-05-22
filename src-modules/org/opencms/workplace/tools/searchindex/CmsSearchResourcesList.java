@@ -271,9 +271,10 @@ public class CmsSearchResourcesList extends A_CmsEmbeddedListDialog {
 
         // test the needed parameters
         if (getParamIndexsource() == null) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE));
+            throw new CmsIllegalStateException(
+                Messages.get().container(
+                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                    A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE));
         }
     }
 

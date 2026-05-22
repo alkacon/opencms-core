@@ -101,10 +101,11 @@ public class CmsDialogSelector {
                     Messages.LOG_DIALOG_HANDLER_CLASS_2,
                     getClass().getName(),
                     getHandler()));
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_PARAM_RESOURCE_2,
-                getClass().getName(),
-                getParamResource()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_PARAM_RESOURCE_2,
+                    getClass().getName(),
+                    getParamResource()));
         }
         // get the handler class from the OpenCms runtime property
         I_CmsDialogHandler dialogClass = OpenCms.getWorkplaceManager().getDialogHandler(getHandler());

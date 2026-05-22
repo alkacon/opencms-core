@@ -153,7 +153,7 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
 
                     Class<?> commandsCls = Class.forName(className);
                     if (I_CmsShellCommands.class.isAssignableFrom(commandsCls)) {
-                        additionalCommands.add((I_CmsShellCommands) commandsCls.getDeclaredConstructor().newInstance());
+                        additionalCommands.add((I_CmsShellCommands)commandsCls.getDeclaredConstructor().newInstance());
                         LOG.info("Class " + className + " has been loaded and added to additional commands.");
                     } else {
                         LOG.error("Error: Class " + className + " does not implement I_CmsShellCommands");
@@ -162,8 +162,8 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
                     final String errMsg = "Error: Could not find the class " + className;
                     LOG.error(errMsg, e);
                     throw new IllegalArgumentException(errMsg, e);
-                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                         InvocationTargetException e) {
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
                     final String errMsg = "Error instantiating the class " + className + ". " + e.getLocalizedMessage();
                     LOG.error(errMsg, e);
                     throw new IllegalArgumentException(errMsg, e);

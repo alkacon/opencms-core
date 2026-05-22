@@ -42,6 +42,7 @@ public final class CmsRemoteShellConstants {
      * Hidden default constructor.<p>
      */
     private CmsRemoteShellConstants() {
+
         // hidden default constructor
     }
 

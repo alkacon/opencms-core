@@ -160,7 +160,7 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
      * @param name the name of the field
      * @param niceName the display name of the field
      * @param validationRegex the validation regex
-     * @param error the validation error message 
+     * @param error the validation error message
      *
      * @return the property configuration
      */

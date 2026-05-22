@@ -176,15 +176,16 @@ public class CmsAdminMenuItem {
         html.append("\t<tr>\n");
         html.append("\t\t<td>\n");
         String onClic = "return openView('" + getId() + "', '" + m_link + "', '" + m_target + "');";
-        html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            getId(),
-            getName(),
-            getHelpText(),
-            isEnabled(),
-            getIconPath(),
-            null,
-            onClic));
+        html.append(
+            A_CmsHtmlIconButton.defaultButtonHtml(
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                getId(),
+                getName(),
+                getHelpText(),
+                isEnabled(),
+                getIconPath(),
+                null,
+                onClic));
 
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");

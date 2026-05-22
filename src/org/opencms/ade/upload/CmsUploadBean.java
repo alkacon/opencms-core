@@ -79,7 +79,6 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
-import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadByteCountLimitException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
 import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
@@ -758,12 +757,12 @@ public class CmsUploadBean extends CmsJspBean {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.<p>
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request has no file items, then <code>null</code> is returned.<p>
      *
      * @param listener the upload listener
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request has no file items
      *
      * @throws Exception if anything goes wrong

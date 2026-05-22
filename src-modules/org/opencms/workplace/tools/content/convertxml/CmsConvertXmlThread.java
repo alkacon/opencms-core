@@ -310,7 +310,9 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         if (files2Transform != null) {
             file2Transform = files2Transform.size();
             report.println(
-                Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, Integer.valueOf(file2Transform).toString()),
+                Messages.get().container(
+                    Messages.RPT_CONVERTXML_FOUND_FILES_1,
+                    Integer.valueOf(file2Transform).toString()),
                 I_CmsReport.FORMAT_OK);
         } else {
             report.println(Messages.get().container(Messages.RPT_CONVERTXML_NO_FILES_FOUND_0), I_CmsReport.FORMAT_OK);
@@ -598,10 +600,12 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
                     cms1.getRequestContext().setCurrentProject(project2Publish);
                     setXmlContentFromFile(cmsResource, cmsFile, cms1, transformedXmlContent, encodingType, report);
                 } else {
-                    report.println(Messages.get().container(
-                        Messages.RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME_2,
-                        cmsResource.getRootPath(),
-                        encodingType), I_CmsReport.FORMAT_OK);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_CONVERTXML_TRANSFORM_CURRENT_FILE_NAME_2,
+                            cmsResource.getRootPath(),
+                            encodingType),
+                        I_CmsReport.FORMAT_OK);
                     setXmlContentFromFile(cmsResource, cmsFile, cms2, transformedXmlContent, encodingType, report);
                 }
             } catch (CmsXmlException e) {

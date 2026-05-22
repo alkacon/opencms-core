@@ -51,16 +51,6 @@ public class NativeEventHandler implements ValueChangeHandler<String>, FocusHand
     }
 
     /**
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public native void onValueChange(ValueChangeEvent<String> event) /*-{
-                                                                     var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
-                                                                     if (connector.onChange != null) {
-                                                                     connector.onChange();
-                                                                     }
-                                                                     }-*/;
-
-    /**
      * @see com.google.gwt.event.dom.client.FocusHandler#onFocus(com.google.gwt.event.dom.client.FocusEvent)
      */
     public native void onFocus(FocusEvent event) /*-{
@@ -70,4 +60,14 @@ public class NativeEventHandler implements ValueChangeHandler<String>, FocusHand
                                                  connector.onFocus();
                                                  }
                                                  }-*/;
+
+    /**
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public native void onValueChange(ValueChangeEvent<String> event) /*-{
+                                                                     var connector = this.@org.opencms.ade.contenteditor.widgetregistry.client.NativeEventHandler::m_connector;
+                                                                     if (connector.onChange != null) {
+                                                                     connector.onChange();
+                                                                     }
+                                                                     }-*/;
 }

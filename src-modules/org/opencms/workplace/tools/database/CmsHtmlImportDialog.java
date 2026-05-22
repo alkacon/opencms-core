@@ -58,11 +58,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.fileupload2.core.DiskFileItem;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * Dialog to define an extended HTML import in the administration view.<p>

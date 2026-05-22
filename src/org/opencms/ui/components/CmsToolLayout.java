@@ -54,6 +54,7 @@ public class CmsToolLayout extends CssLayout {
      * Constructor.<p>
      */
     public CmsToolLayout() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
     }
 

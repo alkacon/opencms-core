@@ -78,6 +78,7 @@ public class CmsDefaultActionHandler implements I_CmsEditableGroupActionHandler 
      * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroupActionHandler#onEdit()
      */
     public void onEdit() {
+
         // nop
     }
 

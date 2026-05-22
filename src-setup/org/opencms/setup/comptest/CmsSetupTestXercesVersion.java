@@ -49,14 +49,6 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
     public static final String TEST_NAME = "Xerces Version";
 
     /**
-     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
-     */
-    public String getName() {
-
-        return TEST_NAME;
-    }
-
-    /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
     public CmsSetupTestResult execute(CmsSetupBean setupBean) throws Exception {
@@ -116,5 +108,13 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
                 testResult.setHelp(testResult.getInfo());
         }
         return testResult;
+    }
+
+    /**
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
+     */
+    public String getName() {
+
+        return TEST_NAME;
     }
 }

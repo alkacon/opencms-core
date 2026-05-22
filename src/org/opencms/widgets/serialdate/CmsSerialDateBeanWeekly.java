@@ -69,6 +69,7 @@ public class CmsSerialDateBeanWeekly extends A_CmsSerialDateBean {
         SortedSet<Date> exceptions,
         int interval,
         SortedSet<WeekDay> weekDays) {
+
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
         m_interval = interval;
         m_weekDays = weekDays;

@@ -75,6 +75,7 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
         context.addPublishButton(new I_CmsUpdateListener<String>() {
 
             public void onUpdate(List<String> updatedItems) {
+
                 // ignore
             }
         });
@@ -92,6 +93,7 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
      * @see org.opencms.ui.apps.I_CmsCachableApp#onRestoreFromCache()
      */
     public void onRestoreFromCache() {
+
         // do nothing
     }
 

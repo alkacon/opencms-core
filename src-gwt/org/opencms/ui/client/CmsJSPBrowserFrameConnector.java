@@ -50,6 +50,7 @@ public class CmsJSPBrowserFrameConnector extends AbstractExtensionConnector {
      * Public constructor.<p>
      */
     public CmsJSPBrowserFrameConnector() {
+
         super();
         m_rpc = getRpcProxy(I_CmsJSPBrowserFrameRpc.class);
     }
@@ -79,9 +80,9 @@ public class CmsJSPBrowserFrameConnector extends AbstractExtensionConnector {
      * JavaScript method to run on client.<p>
      */
     private native void closeBrowserFrame()/*-{
-		var self = this;
-		$wnd.changedResources = function(resources) {
-			self.@org.opencms.ui.client.CmsJSPBrowserFrameConnector::closeParentWindow([Ljava/lang/String;)(resources)
-		};
+        var self = this;
+        $wnd.changedResources = function(resources) {
+            self.@org.opencms.ui.client.CmsJSPBrowserFrameConnector::closeParentWindow([Ljava/lang/String;)(resources)
+        };
     }-*/;
 }

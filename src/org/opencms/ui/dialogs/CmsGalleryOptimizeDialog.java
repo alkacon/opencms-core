@@ -124,7 +124,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /**
          * Creates a new instance.
-        
+         *
          * @param dataItem the data item
          */
         public ContextMenu(DataItem dataItem) {
@@ -1556,9 +1556,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                             m_deletedCurrentResource.add(dataItem.getResource());
                         } else if ((dataItem.getDeleteFlag().booleanValue() == false)
                             && m_deletedCurrent.contains(dataItem)) {
-                                m_deletedCurrent.remove(dataItem);
-                                m_deletedCurrentResource.remove(dataItem.getResource());
-                            }
+                            m_deletedCurrent.remove(dataItem);
+                            m_deletedCurrentResource.remove(dataItem.getResource());
+                        }
                     } catch (ValidationException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }

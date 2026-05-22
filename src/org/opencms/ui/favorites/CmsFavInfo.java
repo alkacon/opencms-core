@@ -157,9 +157,6 @@ public class CmsFavInfo extends CustomLayout implements I_CmsEditableGroupRow {
      * Gets the project label.
      *
      * @return the project label
-        // TODO Auto-generated method stub
-        return null;
-
      */
     public Label getProjectLabel() {
 

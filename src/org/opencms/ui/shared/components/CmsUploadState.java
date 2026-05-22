@@ -70,6 +70,7 @@ public class CmsUploadState extends ButtonState {
      * Constructor.<p>
      */
     public CmsUploadState() {
+
         m_uploadType = UploadType.multifile;
     }
 

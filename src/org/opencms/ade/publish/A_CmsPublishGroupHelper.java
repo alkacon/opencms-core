@@ -54,8 +54,10 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
     /** An enum representing the age of a publish list resource. */
     public enum GroupAge {
         /** group age constant. */
-        medium, /** group age constant. */
-        old, /** group age constant. */
+        medium,
+        /** group age constant. */
+        old,
+        /** group age constant. */
         young
     }
 

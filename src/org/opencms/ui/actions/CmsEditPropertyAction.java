@@ -64,6 +64,7 @@ public class CmsEditPropertyAction extends A_CmsWorkplaceAction {
      * @param titleKey the title message key
      */
     public CmsEditPropertyAction(CmsResourceTableProperty propertyId, String titleKey) {
+
         m_propertyId = propertyId;
         m_titleKey = titleKey;
     }

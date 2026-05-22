@@ -55,7 +55,6 @@ public abstract class A_CmsFormFieldPanel extends Composite {
 
     protected A_CmsFormFieldPanel() {
 
-        
     }
 
     /**

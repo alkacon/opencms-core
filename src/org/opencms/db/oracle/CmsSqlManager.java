@@ -36,6 +36,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 
@@ -57,7 +59,15 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public CmsSqlManager() {
 
-        super();
+        this(Collections.<String> emptyList());
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager(java.util.List)
+     */
+    public CmsSqlManager(List<String> additionalQueryProperties) {
+
+        super(additionalQueryProperties);
         loadQueryProperties(QUERY_PROPERTIES);
     }
 

@@ -223,6 +223,22 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     }
 
     /**
+     * @see org.opencms.file.history.I_CmsHistoryResource#getResourceVersion()
+     */
+    public int getResourceVersion() {
+
+        return m_resourceVersion;
+    }
+
+    /**
+     * @see org.opencms.file.history.I_CmsHistoryResource#getStructureVersion()
+     */
+    public int getStructureVersion() {
+
+        return m_structureVersion;
+    }
+
+    /**
      * Returns the name of the user that created this resource.<p>
      *
      * @param cms the current cms context
@@ -252,22 +268,6 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
         } catch (CmsException e) {
             return getUserLastModified().toString();
         }
-    }
-
-    /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getResourceVersion()
-     */
-    public int getResourceVersion() {
-
-        return m_resourceVersion;
-    }
-
-    /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getStructureVersion()
-     */
-    public int getStructureVersion() {
-
-        return m_structureVersion;
     }
 
     /**

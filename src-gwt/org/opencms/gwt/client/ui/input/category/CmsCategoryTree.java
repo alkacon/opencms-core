@@ -87,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Builds the category tree.<p>
- * */
+ */
 public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasValueChangeHandlers<List<String>> {
 
     /** Sorting parameters. */
@@ -229,7 +229,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
          * If its check box was selected the click will deselect this box otherwise it will select it.
          *
          * @param event The event that is triggered
-         * */
+         */
         public void onClick(ClickEvent event) {
 
             if (isEnabled()) {
@@ -344,7 +344,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
      * @param categories the categories
-     **/
+     */
     public CmsCategoryTree(
         Collection<String> selectedCategories,
         int height,
@@ -362,7 +362,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param isSingleValue Sets the modes of this widget
      * @param categories the categories
      * @param showCollapsed if true, the category tree will be collapsed when opened.
-     **/
+     */
     public CmsCategoryTree(
         Collection<String> selectedCategories,
         int height,
@@ -506,7 +506,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * Returns the scrollpanel of this widget.<p>
      *
      * @return CmsScrollPanel the scrollpanel of this widget
-     * */
+     */
     public CmsScrollPanel getScrollPanel() {
 
         return m_list;

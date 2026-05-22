@@ -95,7 +95,7 @@ public class CmsSearchIndexSourceControlList extends A_CmsListDialog {
      * This is meant to be used for the same action as
      * <code>{@link #LIST_ACTION_OVERVIEW_INDEXSOURCE}</code> but has to be used if
      * within one list two columns shall trigger the same action...<p>
-     **/
+     */
     public static final String LIST_ACTION_OVERVIEW_INDEXSOURCE2 = "aois2";
 
     /** list action dummy id constant. */

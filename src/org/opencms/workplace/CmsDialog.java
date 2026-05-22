@@ -1938,10 +1938,7 @@ public class CmsDialog extends CmsToolDialog {
         // in case the close link points to the new workplace, make sure to set the new location on the top frame
         JspWriter out = getJsp().getJspContext().getOut();
         try {
-            out.write(
-                "<html><head><script >top.location.href=\""
-                    + workplaceLink
-                    + "\";</script></head>\n");
+            out.write("<html><head><script >top.location.href=\"" + workplaceLink + "\";</script></head>\n");
             out.write("</html>\n");
         } finally {
             out.close();

@@ -82,11 +82,16 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     /** States of the slect area panel. */
     private enum State {
         /** Dragging the selection. */
-        DRAGGING, /** Nothing selected. */
-        EMPTY, /** Resizing the height. */
-        RESIZE_HEIGHT, /** Resizing the width. */
-        RESIZE_WIDTH, /** Selected. */
-        SELECTED, /** Selecting new selection. */
+        DRAGGING,
+        /** Nothing selected. */
+        EMPTY,
+        /** Resizing the height. */
+        RESIZE_HEIGHT,
+        /** Resizing the width. */
+        RESIZE_WIDTH,
+        /** Selected. */
+        SELECTED,
+        /** Selecting new selection. */
         SELECTING
     }
 

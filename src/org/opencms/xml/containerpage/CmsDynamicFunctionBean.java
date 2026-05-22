@@ -126,7 +126,7 @@ public class CmsDynamicFunctionBean {
          * Returns the map of parameters for the JSP.<p>
          *
          * @return the map of parameters for the JSP
-         **/
+         */
         public Map<String, String> getParameters() {
 
             return m_parameters;

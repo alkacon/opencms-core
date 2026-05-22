@@ -256,14 +256,16 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             int resourceVersions = stmt.executeUpdate();
             m_sqlManager.closeAll(dbc, null, stmt, null);
 
-            // delete the content entries
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENT_HISTORY_DELETE");
-            stmt.setString(1, resource.getResourceId().toString());
-            stmt.setInt(2, minResPublishTagToKeep);
-            stmt.executeUpdate();
-
-            // make sure the statement and the result is closed
             m_sqlManager.closeAll(dbc, conn, stmt, res);
+            conn = null;
+            stmt = null;
+            res = null;
+
+            // delete the content entries
+            m_driverManager.getVfsDriver(dbc).deleteHistoryContent(
+                dbc,
+                resource.getResourceId(),
+                minResPublishTagToKeep);
             internalCleanup(dbc, resource);
             return Math.max(structureVersions, resourceVersions);
         } catch (SQLException e) {
@@ -585,33 +587,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      */
     public byte[] readContent(CmsDbContext dbc, CmsUUID resourceId, int publishTag) throws CmsDataAccessException {
 
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        byte[] content = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_READ_CONTENT");
-            stmt.setString(1, resourceId.toString());
-            stmt.setInt(2, publishTag);
-            stmt.setInt(3, publishTag);
-            res = stmt.executeQuery();
-
-            if (res.next()) {
-                content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(
-                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
-                e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return content;
+        return m_driverManager.getVfsDriver(dbc).readHistoryContent(dbc, resourceId, publishTag);
     }
 
     /**

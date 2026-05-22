@@ -46,6 +46,7 @@ public abstract class A_CmsPatternPanelController implements I_CmsSerialDatePatt
      * @param changeHandler the handler for value changes.
      */
     public A_CmsPatternPanelController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
+
         m_model = model;
         m_changeHandler = changeHandler;
 

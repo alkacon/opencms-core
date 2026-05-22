@@ -94,7 +94,7 @@ public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestRunne
     }
 
     /**
-     * Tests root path evaluation.<p
+     * Tests root path evaluation.<p>
      *
      * @throws Exception in case something goes wrong
      */

@@ -90,7 +90,7 @@ public class CmsUgcWrapper extends FormPanel {
     }
 
     /**
-     * Uploads files from the given file input fields.<p<
+     * Uploads files from the given file input fields.<p>
      *
      * @param fields the set of names of fields containing the files to upload
      * @param filenameCallback the callback to call with the resulting map from field names to file paths
@@ -120,18 +120,18 @@ public class CmsUgcWrapper extends FormPanel {
                     id,
                     new AsyncCallback<Map<String, String>>() {
 
-                    public void onFailure(Throwable caught) {
+                        public void onFailure(Throwable caught) {
 
-                        m_formSession.getContentFormApi().handleError(caught, errorCallback);
+                            m_formSession.getContentFormApi().handleError(caught, errorCallback);
 
-                    }
+                        }
 
-                    public void onSuccess(Map<String, String> fileNames) {
+                        public void onSuccess(Map<String, String> fileNames) {
 
-                        filenameCallback.apply(fileNames);
+                            filenameCallback.apply(fileNames);
 
-                    }
-                });
+                        }
+                    });
                 m_formSession.getContentFormApi().getRpcHelper().executeRpc(requestBuilder);
                 m_formSession.getContentFormApi().getRequestCounter().decrement();
             }

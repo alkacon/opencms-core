@@ -334,22 +334,24 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
         setKeyPrefix(KEY_PREFIX);
         List<CmsSelectWidgetOption> options = getLanguageSelections();
 
-        addWidget(new CmsWidgetDialogParameter(
-            m_dialogSettings,
-            "message",
-            key(Messages.GUI_LANGUAGECOPY_SELECTLANGUAGE_DIALOG_MESSAGE_0),
-            PAGES[0],
-            new CmsDisplayWidget(),
-            1,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_dialogSettings,
-            "paths",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
-            1,
-            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_dialogSettings,
+                "message",
+                key(Messages.GUI_LANGUAGECOPY_SELECTLANGUAGE_DIALOG_MESSAGE_0),
+                PAGES[0],
+                new CmsDisplayWidget(),
+                1,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_dialogSettings,
+                "paths",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
         addWidget(
             new CmsWidgetDialogParameter(m_dialogSettings, "delete", "false", PAGES[0], new CmsCheckboxWidget(), 1, 1));
         addWidget(
