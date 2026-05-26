@@ -237,6 +237,16 @@ public class CmsXmlSeoConfiguration {
     }
 
     /**
+     * Sets if container page modification dates should be computed.<p>
+     *
+     * @param computeContainerPageModificationDates flag if container page modification dates should be computed
+     */
+    public void setComputeContainerPageModificationDates(boolean computeContainerPageModificationDates) {
+
+        m_computeContainerPageDates = computeContainerPageModificationDates;
+    }
+
+    /**
      * Returns true if container page modification dates should be computed.<p>
      *
      * @return true if container page modification dates should be computed

@@ -110,6 +110,8 @@ public class CmsLlmsGenerator {
     public CmsLlmsGenerator(CmsXmlSeoConfiguration config, CmsResource configRes, CmsObject cms) {
 
         m_config = config;
+        // modification dates always have to be computed
+        m_config.setComputeContainerPageModificationDates(true);
         m_configRes = configRes;
         m_cms = cms;
     }
@@ -123,33 +125,52 @@ public class CmsLlmsGenerator {
     private static final String SYSTEM_PROMPT_GROUP(Locale locale) {
 
         return """
-        # Optimization of an llms.txt file for a website
+        # llms.txt Structure Optimizer
 
-        ## PROMPT
-        You receive queries in this JSON format:
+        ## ROLE
+        You are a technical document structurer. Your sole task is to add meaningful headings to an existing `llms.txt` file without altering any of its entries.
 
-        ```
+        ## INPUT
+        You receive a JSON object with the following structure:
+
+        ```json
         {
           "document": "A document content in markdown",
           "question": "Please generate headlines for the first- and second-level list entries where it makes sense, as well as for different language versions, and keep all existing entries."
         }
         ```
 
-        ## INSTRUCTIONS:
-        1. Analyze the content of the "document" element, it is a list of URLs with a summary for each URLin markdown syntax
-        2. Essential: keep the order of the entries, arrange them exactly as they were especially separate different language versions
-        3. Important: keep every entry of the list, leave the title, URL and description text exactly as it is
-        4. If there is more than one language version, for each language version list, add a short title heading (starting at level 2) for the following language version, using the language of the sub section
-        5. Only create a language title heading if there are different language versions present
-        6. For each first level  and second level transition (can be determined by the path structure), find a matching heading (starting at level 3 or level 2 if there are no different language versions) if it makes sense, summarizing the sub section in short, using the language of the sub section
+        ## TASK
+        Analyze the document and insert headings to group entries logically — by language version and by URL path structure — while leaving all existing content untouched.
 
-        If you are unsure about the language, use %s.
+        > **Important:** Do not fetch, scrape, or visit any URLs. Work exclusively with the content already provided in the `document` field.
 
-        ## FORMATTING RULES:
-        - Use markdown for emphasis/lists/headings (no links or code blocks)
-        - Start headings at level 2 (##)
+        ## INSTRUCTIONS
 
-        ## OUTPUT: Markdown only, no preamble or explanation.""".formatted(
+        ### 1. Preserve all existing content
+        - Do **not** fetch, scrape, or visit any URLs — all necessary content is already provided in the document
+        - Keep every entry exactly as-is: title, URL, and description text must not be altered
+        - Keep the original order of all entries — do not reorder, merge, or remove anything
+
+        ### 2. Language version headings (Level 2)
+        - Detect whether the document contains entries in more than one language
+        - If yes: insert a **level 2 heading (`##`)** before each language group, written in that language
+        - If only one language is present: skip language headings entirely
+
+        ### 3. Section headings by URL path structure (Level 2 or 3)
+        - Determine groupings from the first and second path segments of each URL (e.g. `/products/`, `/products/software/`)
+        - Insert a heading before each group **only if it adds meaningful context**
+        - Use **level 3 (`###`)** when language headings are present, **level 2 (`##`)** when they are not
+        - Write the heading in the language of that section
+        - Do **not** add a heading if the group contains only one entry or if no meaningful label can be derived
+
+        ### 4. Language fallback
+        If the language of a section cannot be determined, use: `%s`
+
+        ## OUTPUT FORMAT
+        - Markdown only (headings, bold, lists — no links, no code blocks)
+        - No preamble, no explanation, no meta-commentary
+        - The structured document — nothing else""".formatted(
             locale.getDisplayLanguage(Locale.ENGLISH));
     }
 
@@ -162,12 +183,15 @@ public class CmsLlmsGenerator {
     private static final String SYSTEM_PROMPT_SUMMARY(Locale locale) {
 
         return """
-        # Summary of a single page for a llms.txt file for a website
+        # Page Summary Generator for llms.txt
 
-        ## PROMPT
-        You receive a query containing an excerpt of a web page, generating by a SOLR index.
+        ## ROLE
+        You are a technical content summarizer. Your sole task is to generate concise, information-dense summaries optimized for LLM consumption.
 
-        ```
+        ## INPUT
+        You receive a JSON object with the following structure:
+
+        ```json
         {
           "url": "https://example.com/index.html",
           "title": "The page title",
@@ -176,18 +200,21 @@ public class CmsLlmsGenerator {
         }
         ```
 
-        ## INSTRUCTIONS:
-        1. Use the found title and excerpt text to summarize the page in one or two longer sentence(s)
-        2. The excerpt content has no specific order as it is built for a SOLR index, so you have to decide which information is important, please also consider the given page title for this
-        2. The summary has to be optimized for usage with LLMs so that the most important information of the page is included
-        3. IMPORTANT: Use the same language as the title and excerpt language for the language of the the summary, do not mix languages
+        ## TASK
+        Generate a summary of **1-2 sentences** for the given page, suitable for inclusion in an `llms.txt` file.
 
-        If you are unsure about the language, use %s.
+        ## INSTRUCTIONS
+        1. Base the summary primarily on the **title** and use the excerpt to extract the most relevant information
+        2. The excerpt is **unordered** (SOLR index output) - infer structure and relevance from context, not order
+        3. Optimize for **LLM readability**: prefer precise, factual, and dense phrasing over fluent prose
+        4. Write in the **same language as the title and excerpt** - do not mix languages
+        5. If the language cannot be determined, default to: `%s`
+        6. Do **not** invent or infer information not present in the input
 
-        ## FORMATTING RULES:
-        - Use markdown for formatting the summary (no links or code blocks)
-
-        ## OUTPUT: Markdown only, no preamble or explanation.""".formatted(
+        ## OUTPUT FORMAT
+        - Plain markdown text (no links, no code blocks, no headers)
+        - No preamble, no explanation, no meta-commentary
+        - The summary itself - nothing else""".formatted(
             locale.getDisplayLanguage(Locale.ENGLISH));
     }
 
@@ -389,7 +416,7 @@ public class CmsLlmsGenerator {
         try {
             ChatRequest q = ChatRequest.builder().messages(
                 SystemMessage.from(SYSTEM_PROMPT_GROUP(Locale.ENGLISH)),
-                UserMessage.from(getUserQueryGroup(pagesList.toString()))).build();
+                UserMessage.from(getUserQueryGroup(pagesList.toString()))).maxOutputTokens(8192).build();
             LOG.debug("Sending group query to chatbot.");
             result = getChatModel().chat(q).aiMessage().text();
         } catch (Exception e) {
