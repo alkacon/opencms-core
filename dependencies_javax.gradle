@@ -8,9 +8,18 @@ dependencies {
     distribution('org.glassfish.web:javax.servlet.jsp.jstl:1.2.5-b03') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-web:2.25.3') { transitive = false }
     distribution('org.apache.jackrabbit:jackrabbit-webdav:2.22.2')
+    
     distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-api:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0')
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
+    
+
     
 }
