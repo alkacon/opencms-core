@@ -27,7 +27,14 @@
 
 package org.opencms.file;
 
+import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.CmsStoragePolicyConfiguration;
+import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.db.storage.CmsFsStorage;
+import org.opencms.db.storage.CmsStorageManager;
 import org.opencms.db.storage.policy.CmsDefaultStoragePolicy;
+import org.opencms.db.storage.policy.CmsNoExternalStoragePolicy;
 import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -40,11 +47,16 @@ import org.opencms.setup.CmsSetupDb;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -69,7 +81,7 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/", "WEB-INF/config.storage-regression/");
     }
 
     /**
@@ -131,6 +143,34 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
                 new CmsStoragePolicyContext(
                     createEmptyContent(),
                     createResource(CmsResourceTypeBinary.getStaticTypeId()))));
+    }
+
+    /**
+     * Tests the default storage policy resource type id configuration.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(4)
+    public void testDefaultStoragePolicyUsesResourceTypeConfiguration() throws Exception {
+
+        CmsDefaultStoragePolicy policy = new CmsDefaultStoragePolicy();
+        policy.addConfigurationParameter(
+            CmsDefaultStoragePolicy.PARAM_RESOURCE_TYPE_IDS,
+            CmsResourceTypeBinary.getStaticTypeId() + "," + CmsResourceTypePlain.getStaticTypeId());
+        policy.initConfiguration();
+
+        byte[] content = createContent((byte)4);
+
+        assertTrue(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(content, createResource(CmsResourceTypeBinary.getStaticTypeId()))));
+        assertTrue(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(content, createResource(CmsResourceTypePlain.getStaticTypeId()))));
+        assertFalse(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(content, createResource(CmsResourceTypeImage.getStaticTypeId()))));
     }
 
     /**
@@ -223,6 +263,34 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
         assertTrue(Arrays.equals(content, cms.readFile(path).getContents()));
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+    }
+
+    /**
+     * Tests that the no-external-storage policy keeps all content local.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(3)
+    public void testNoExternalStoragePolicyKeepsContentLocal() throws Exception {
+
+        CmsNoExternalStoragePolicy policy = new CmsNoExternalStoragePolicy();
+
+        assertFalse(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(
+                    createContent((byte)1),
+                    createResource(CmsResourceTypeBinary.getStaticTypeId()))));
+        assertFalse(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(
+                    createContent((byte)2),
+                    createResource(CmsResourceTypeImage.getStaticTypeId()))));
+        assertFalse(
+            policy.isExternalStorageRequired(
+                new CmsStoragePolicyContext(
+                    createContent((byte)3),
+                    createResource(CmsResourceTypePlain.getStaticTypeId()))));
     }
 
     /**
@@ -439,6 +507,83 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that externally stored legacy file system content can be rewritten back into the content tables.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(12)
+    public void testRewriteLegacyFsStorageBackToLocalContentTables() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String path = "/storage-fs-legacy-to-local.bin";
+        byte[] externalContent = createContent((byte)18);
+        byte[] localContent = createContent((byte)19);
+        Path repository = Files.createTempDirectory("opencms-storage-legacy-fs");
+        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
+        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
+        CmsStorageManager fsStorageManager = null;
+        CmsStorageManager localStorageManager = null;
+
+        try {
+            org.opencms.db.generic.CmsSqlManager sqlManager = getStorageSqlManager(originalStorageManager);
+            fsStorageManager = createStorageManager(
+                sqlManager,
+                "legacyfs",
+                null,
+                repository,
+                CmsDefaultStoragePolicy.class.getName());
+            storageManagerField.set(getVfsDriver(), fsStorageManager);
+
+            CmsResource resource = cms.createResource(
+                path,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                externalContent,
+                null);
+            String resourceId = resource.getResourceId().toString();
+            String legacyHash = readContentHash("CMS_OFFLINE_CONTENTS", resourceId);
+            Path legacyBlob = getStoredFile(repository, legacyHash);
+            assertEquals("legacyfs", readContentStorage("CMS_OFFLINE_CONTENTS", resourceId));
+            assertTrue(Files.exists(legacyBlob));
+            assertTrue(Arrays.equals(externalContent, cms.readFile(path).getContents()));
+
+            localStorageManager = createStorageManager(
+                sqlManager,
+                "db",
+                "legacyfs",
+                repository,
+                CmsNoExternalStoragePolicy.class.getName());
+            storageManagerField.set(getVfsDriver(), localStorageManager);
+
+            writeFile(cms, path, localContent);
+
+            assertTrue(Arrays.equals(localContent, cms.readFile(path).getContents()));
+            assertNull(readContentStorage("CMS_OFFLINE_CONTENTS", resourceId));
+            assertNull(readContentHash("CMS_OFFLINE_CONTENTS", resourceId));
+            assertTrue(Arrays.equals(localContent, readContentBytes("CMS_OFFLINE_CONTENTS", resourceId)));
+            assertFalse(Files.exists(legacyBlob));
+
+            publishResource(cms, path);
+
+            assertNull(readContentStorage("CMS_CONTENTS", resourceId));
+            assertNull(readContentHash("CMS_CONTENTS", resourceId));
+            assertTrue(Arrays.equals(localContent, readContentBytes("CMS_CONTENTS", resourceId)));
+            cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+            assertTrue(Arrays.equals(localContent, cms.readFile(path).getContents()));
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        } finally {
+            storageManagerField.set(getVfsDriver(), originalStorageManager);
+            if (fsStorageManager != null) {
+                fsStorageManager.close();
+            }
+            if (localStorageManager != null) {
+                localStorageManager.close();
+            }
+            deleteDirectory(repository);
+        }
+    }
+
+    /**
      * Creates test content.<p>
      *
      * @param seed the byte value to fill the content with
@@ -507,6 +652,130 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
     }
 
     /**
+     * Creates a storage manager with a single optional file system backend.<p>
+     *
+     * @param sqlManager the SQL manager
+     * @param activeStorage the active storage id
+     * @param legacyStorage the legacy storage id, or <code>null</code>
+     * @param repository the file system repository path
+     * @param policyClassName the storage policy class name
+     *
+     * @return the storage manager
+     */
+    private CmsStorageManager createStorageManager(
+        org.opencms.db.generic.CmsSqlManager sqlManager,
+        String activeStorage,
+        String legacyStorage,
+        Path repository,
+        String policyClassName) {
+
+        CmsParameterConfiguration configuration = new CmsParameterConfiguration();
+        configuration.add("storage.active", activeStorage);
+        if (legacyStorage != null) {
+            configuration.add("storage.legacy", legacyStorage);
+        }
+        configuration.add("storage.backend.legacyfs.type", CmsFsStorage.STORAGE_TYPE);
+        configuration.add("storage.backend.legacyfs.path", repository.toString());
+
+        CmsStoragePolicyConfiguration policyConfiguration = new CmsStoragePolicyConfiguration();
+        policyConfiguration.setClassName(policyClassName);
+        return new CmsStorageManager(sqlManager, configuration, policyConfiguration);
+    }
+
+    /**
+     * Deletes a directory tree if it exists.<p>
+     *
+     * @param directory the directory
+     *
+     * @throws Exception if deleting fails
+     */
+    private void deleteDirectory(Path directory) throws Exception {
+
+        if (!Files.exists(directory)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(directory)) {
+            paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+        }
+    }
+
+    /**
+     * Finds a field in a class hierarchy.<p>
+     *
+     * @param type the type
+     * @param fieldName the field name
+     *
+     * @return the field
+     *
+     * @throws NoSuchFieldException if the field can not be found
+     */
+    private Field getField(Class<?> type, String fieldName) throws NoSuchFieldException {
+
+        Class<?> currentType = type;
+        while (currentType != null) {
+            try {
+                Field result = currentType.getDeclaredField(fieldName);
+                result.setAccessible(true);
+                return result;
+            } catch (NoSuchFieldException e) {
+                currentType = currentType.getSuperclass();
+            }
+        }
+        throw new NoSuchFieldException(fieldName);
+    }
+
+    /**
+     * Gets the SQL manager from a storage manager.<p>
+     *
+     * @param storageManager the storage manager
+     *
+     * @return the SQL manager
+     *
+     * @throws Exception if the field can not be read
+     */
+    private org.opencms.db.generic.CmsSqlManager getStorageSqlManager(CmsStorageManager storageManager)
+    throws Exception {
+
+        return (org.opencms.db.generic.CmsSqlManager)getField(CmsStorageManager.class, "m_sqlManager").get(
+            storageManager);
+    }
+
+    /**
+     * Gets the file for a file system storage hash.<p>
+     *
+     * @param repository the repository path
+     * @param hash the content hash
+     *
+     * @return the stored file path
+     */
+    private Path getStoredFile(Path repository, String hash) {
+
+        return repository.resolve(hash.substring(0, 2)).resolve(hash.substring(2, 4)).resolve(
+            hash.substring(4, 6)).resolve(hash);
+    }
+
+    /**
+     * Gets the current VFS driver.<p>
+     *
+     * @return the VFS driver
+     *
+     * @throws Exception if the driver can not be accessed
+     */
+    private I_CmsVfsDriver getVfsDriver() throws Exception {
+
+        CmsDriverManager driverManager = (CmsDriverManager)getField(
+            OpenCms.getSqlManager().getClass(),
+            "m_driverManager").get(OpenCms.getSqlManager());
+        return driverManager.getVfsDriver();
+    }
+
+    /**
      * Publishes a resource and waits for the publish job to finish.<p>
      *
      * @param cms the CMS context
@@ -518,6 +787,39 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
 
         OpenCms.getPublishManager().publishResource(cms, path);
         OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Reads the FILE_CONTENT value for a content row.<p>
+     *
+     * @param tableName the table name
+     * @param resourceId the resource id
+     *
+     * @return the FILE_CONTENT value
+     *
+     * @throws SQLException if reading fails
+     */
+    private byte[] readContentBytes(String tableName, String resourceId) throws SQLException {
+
+        CmsSetupDb setupDb = getSetupDbForDefaultConnection();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            stmt = setupDb.getConnection().prepareStatement(
+                "SELECT FILE_CONTENT FROM " + tableName + " WHERE RESOURCE_ID=?");
+            stmt.setString(1, resourceId);
+            res = stmt.executeQuery();
+            assertTrue(res.next(), "No content row found in " + tableName + " for " + resourceId);
+            return res.getBytes(1);
+        } finally {
+            if (res != null) {
+                res.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+            setupDb.closeConnection();
+        }
     }
 
     /**

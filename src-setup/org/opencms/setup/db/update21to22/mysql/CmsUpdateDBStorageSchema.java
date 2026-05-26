@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,24 +25,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db.storage.s3;
+package org.opencms.setup.db.update21to22.mysql;
+
+import java.io.IOException;
 
 /**
- * S3 Client for the Rustfs object storage.
- *
- * https://rustfs.com/
+ * MySQL version of the storage schema update.<p>
  */
-public class CmsRustfsS3Client extends CmsGenericS3Client {
+public class CmsUpdateDBStorageSchema extends org.opencms.setup.db.update21to22.CmsUpdateDBStorageSchema {
+
+    /** Constant for the SQL query properties.<p> */
+    private static final String QUERY_PROPERTY_FILE = "cms_storage_schema_queries.properties";
 
     /**
-     * Creates a new S3 client.
-     * @param endpoint the endpoint
-     * @param bucketName the bucket name
-     * @param accessKey the access key
-     * @param secretKey the secret key
+     * Constructor.<p>
+     *
+     * @throws IOException if the sql queries properties file could not be read
      */
-    public CmsRustfsS3Client(String endpoint, String bucketName, String accessKey, String secretKey) {
+    public CmsUpdateDBStorageSchema()
+    throws IOException {
 
-        super(endpoint, bucketName, accessKey, secretKey, true);
+        super();
+        loadQueryProperties(getPropertyFileLocation() + QUERY_PROPERTY_FILE);
     }
 }

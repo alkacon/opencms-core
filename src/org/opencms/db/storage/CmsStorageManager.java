@@ -34,7 +34,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.generic.CmsSqlManager;
-import org.opencms.db.storage.policy.CmsDefaultStoragePolicy;
+import org.opencms.db.storage.policy.CmsNoExternalStoragePolicy;
 import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.db.storage.policy.I_CmsStoragePolicy;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
@@ -560,7 +560,7 @@ public class CmsStorageManager implements AutoCloseable {
      */
     private I_CmsStoragePolicy createStoragePolicy(CmsStoragePolicyConfiguration configuration) {
 
-        String className = CmsDefaultStoragePolicy.class.getName();
+        String className = CmsNoExternalStoragePolicy.class.getName();
         CmsParameterConfiguration parameters = null;
         if ((configuration != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getClassName())) {
             className = configuration.getClassName();

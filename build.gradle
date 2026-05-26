@@ -1289,7 +1289,7 @@ test {
 }
 
 tasks.register('testStorage', Test) {
-    description = "Runs the storage backend tests and selected VFS regression tests with storage driver configuration."
+    description = "Runs the storage backend tests and selected VFS regression tests with external storage enabled."
     group = 'verification'
     configure coreTestConfig
     classpath = sourceSets.test.runtimeClasspath

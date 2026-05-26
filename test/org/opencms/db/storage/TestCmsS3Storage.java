@@ -35,7 +35,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.storage.s3.CmsGenericS3Client;
+import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.db.storage.s3.I_CmsS3Client;
+import org.opencms.security.I_CmsCredentialsResolver;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -47,6 +49,26 @@ import org.junit.jupiter.api.Test;
  * Tests for the S3 storage backend.<p>
  */
 public class TestCmsS3Storage {
+
+    /**
+     * Credentials resolver test double.<p>
+     */
+    private static class TestCredentialsResolver implements I_CmsCredentialsResolver {
+
+        /**
+         * @see org.opencms.security.I_CmsCredentialsResolver#resolveCredential(java.lang.String, java.lang.String)
+         */
+        public String resolveCredential(String credentialType, String valueFromConfiguration) {
+
+            if (I_CmsCredentialsResolver.S3_ACCESS_KEY.equals(credentialType)) {
+                return "resolved-access";
+            }
+            if (I_CmsCredentialsResolver.S3_SECRET_KEY.equals(credentialType)) {
+                return "resolved-secret";
+            }
+            return valueFromConfiguration;
+        }
+    }
 
     /**
      * S3 client test double.<p>
@@ -251,6 +273,29 @@ public class TestCmsS3Storage {
             assertTrue(e.getMessage().indexOf("s3test") >= 0);
             assertTrue(e.getMessage().indexOf(hash) >= 0);
         }
+    }
+
+    /**
+     * Tests that S3 credentials are resolved through the OpenCms credentials resolver.<p>
+     */
+    @Test
+    public void testS3CredentialsAreResolved() {
+
+        CmsS3ClientConfiguration configuration = CmsS3ClientConfiguration.createDefault(
+            "http://localhost:9000",
+            "bucket",
+            "configured-access",
+            "configured-secret",
+            true);
+
+        CmsS3ClientConfiguration resolved = CmsGenericS3Client.resolveCredentials(
+            configuration,
+            new TestCredentialsResolver());
+
+        assertEquals("resolved-access", resolved.getAccessKey());
+        assertEquals("resolved-secret", resolved.getSecretKey());
+        assertEquals("http://localhost:9000", resolved.getEndpoint());
+        assertEquals("bucket", resolved.getBucketName());
     }
 
     /**

@@ -30,6 +30,9 @@ package org.opencms.db.storage.s3;
 import org.opencms.db.storage.CmsStorageBlobNotFoundException;
 import org.opencms.db.storage.CmsStorageException;
 import org.opencms.db.storage.Messages;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsDefaultCredentialsResolver;
+import org.opencms.security.I_CmsCredentialsResolver;
 
 import java.net.URI;
 import java.time.Duration;
@@ -90,19 +93,20 @@ public class CmsGenericS3Client implements I_CmsS3Client {
      */
     public CmsGenericS3Client(CmsS3ClientConfiguration configuration) {
 
-        m_configuration = configuration;
+        m_configuration = resolveCredentials(configuration);
         ApacheHttpClient.Builder httpClientBuilder = ApacheHttpClient.builder().connectionTimeout(
-            Duration.ofMillis(configuration.getConnectionTimeout())).socketTimeout(
-                Duration.ofMillis(configuration.getSocketTimeout()));
+            Duration.ofMillis(m_configuration.getConnectionTimeout())).socketTimeout(
+                Duration.ofMillis(m_configuration.getSocketTimeout()));
         ClientOverrideConfiguration overrideConfiguration = ClientOverrideConfiguration.builder().apiCallAttemptTimeout(
-            Duration.ofMillis(configuration.getApiCallAttemptTimeout())).apiCallTimeout(
-                Duration.ofMillis(configuration.getApiCallTimeout())).retryPolicy(
-                    RetryPolicy.builder().numRetries(configuration.getMaxRetries()).build()).build();
-        m_s3Client = S3Client.builder().endpointOverride(URI.create(configuration.getEndpoint())).credentialsProvider(
+            Duration.ofMillis(m_configuration.getApiCallAttemptTimeout())).apiCallTimeout(
+                Duration.ofMillis(m_configuration.getApiCallTimeout())).retryPolicy(
+                    RetryPolicy.builder().numRetries(m_configuration.getMaxRetries()).build()).build();
+        m_s3Client = S3Client.builder().endpointOverride(URI.create(m_configuration.getEndpoint())).credentialsProvider(
             StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(configuration.getAccessKey(), configuration.getSecretKey()))).region(
-                    Region.of(configuration.getRegion())).forcePathStyle(configuration.isPathStyle()).httpClientBuilder(
-                        httpClientBuilder).overrideConfiguration(overrideConfiguration).build();
+                AwsBasicCredentials.create(m_configuration.getAccessKey(), m_configuration.getSecretKey()))).region(
+                    Region.of(m_configuration.getRegion())).forcePathStyle(
+                        m_configuration.isPathStyle()).httpClientBuilder(httpClientBuilder).overrideConfiguration(
+                            overrideConfiguration).build();
     }
 
     /**
@@ -163,6 +167,62 @@ public class CmsGenericS3Client implements I_CmsS3Client {
                 apiCallAttemptTimeout,
                 apiCallTimeout,
                 maxRetries));
+    }
+
+    /**
+     * Resolves credentials in the S3 client configuration with the OpenCms credentials resolver.<p>
+     *
+     * @param configuration the original S3 client configuration
+     * @return the S3 client configuration with resolved credentials
+     */
+    public static CmsS3ClientConfiguration resolveCredentials(CmsS3ClientConfiguration configuration) {
+
+        return resolveCredentials(configuration, getCredentialsResolver());
+    }
+
+    /**
+     * Resolves credentials in the S3 client configuration.<p>
+     *
+     * @param configuration the original S3 client configuration
+     * @param credentialsResolver the credentials resolver
+     * @return the S3 client configuration with resolved credentials
+     */
+    public static CmsS3ClientConfiguration resolveCredentials(
+        CmsS3ClientConfiguration configuration,
+        I_CmsCredentialsResolver credentialsResolver) {
+
+        String accessKey = credentialsResolver.resolveCredential(
+            I_CmsCredentialsResolver.S3_ACCESS_KEY,
+            configuration.getAccessKey());
+        String secretKey = credentialsResolver.resolveCredential(
+            I_CmsCredentialsResolver.S3_SECRET_KEY,
+            configuration.getSecretKey());
+        return new CmsS3ClientConfiguration(
+            configuration.getEndpoint(),
+            configuration.getBucketName(),
+            accessKey,
+            secretKey,
+            configuration.isPathStyle(),
+            configuration.getRegion(),
+            configuration.getConnectionTimeout(),
+            configuration.getSocketTimeout(),
+            configuration.getApiCallAttemptTimeout(),
+            configuration.getApiCallTimeout(),
+            configuration.getMaxRetries());
+    }
+
+    /**
+     * Returns the OpenCms credentials resolver, or the default resolver if OpenCms is not initialized far enough.<p>
+     *
+     * @return the credentials resolver
+     */
+    private static I_CmsCredentialsResolver getCredentialsResolver() {
+
+        try {
+            return OpenCms.getCredentialsResolver();
+        } catch (RuntimeException e) {
+            return new CmsDefaultCredentialsResolver();
+        }
     }
 
     @Override

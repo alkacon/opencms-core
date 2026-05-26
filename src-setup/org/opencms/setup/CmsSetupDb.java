@@ -381,6 +381,69 @@ public class CmsSetupDb extends Object {
     }
 
     /**
+     * Checks if the given index is available for the given table in a case insensitive way.<p>
+     *
+     * @param table the table name
+     * @param index the index name
+     *
+     * @return true if the requested index is available, false if not
+     */
+    public boolean hasIndex(String table, String index) {
+
+        String tableName, indexName;
+        boolean result;
+
+        tableName = table == null ? null : table.toUpperCase();
+        indexName = index == null ? null : index.toUpperCase();
+        result = hasIndexCaseSensitive(tableName, indexName);
+
+        if (!result) {
+            tableName = table == null ? null : table.toLowerCase();
+            indexName = index == null ? null : index.toLowerCase();
+            result = result || hasIndexCaseSensitive(tableName, indexName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if the given index is available for the given table in a case sensitive way.<p>
+     *
+     * @param table the table name
+     * @param index the index name
+     *
+     * @return true if the requested index is available, false if not
+     */
+    public boolean hasIndexCaseSensitive(String table, String index) {
+
+        boolean result = false;
+        ResultSet set = null;
+
+        try {
+            set = m_con.getMetaData().getIndexInfo(null, null, table, false, false);
+            while (set.next()) {
+                String indexName = set.getString("INDEX_NAME");
+                if ((indexName != null) && indexName.equalsIgnoreCase(index)) {
+                    result = true;
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            result = false;
+        } finally {
+            try {
+                if (set != null) {
+                    set.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    /**
      * Checks if the given table, column or combination of both is available in the database in case insensitive way.<P>
      *
      * @param table the sought table
@@ -755,6 +818,9 @@ public class CmsSetupDb extends Object {
         Statement stmt = null;
 
         try {
+            if (isMissingOptionalStorageTableDrop(statement)) {
+                return;
+            }
             stmt = m_con.createStatement();
             stmt.execute(statement);
         } finally {
@@ -762,6 +828,21 @@ public class CmsSetupDb extends Object {
                 stmt.close();
             }
         }
+    }
+
+    /**
+     * Checks if the given statement drops the optional storage table while the table is not present.<p>
+     *
+     * @param statement the statement
+     *
+     * @return true if the statement can be skipped
+     */
+    private boolean isMissingOptionalStorageTableDrop(String statement) {
+
+        if (!"DROP TABLE CMS_STORAGE".equalsIgnoreCase(statement.trim().replaceAll("\\s+", " "))) {
+            return false;
+        }
+        return !hasTableOrColumn("CMS_STORAGE", null);
     }
 
     /**
