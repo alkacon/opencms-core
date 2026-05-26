@@ -33,10 +33,11 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.test.OpenCmsTestRunner;
-import org.opencms.test.OpenCmsTestServletRequest;
-import org.opencms.test.OpenCmsTestServletResponse;
 import org.opencms.util.CmsMacroResolver;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -216,8 +217,33 @@ public class TestOpenCmsSingleton extends OpenCmsTestRunner {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
-        HttpServletRequest req = new OpenCmsTestServletRequest();
-        HttpServletResponse res = new OpenCmsTestServletResponse();
+        HttpServletRequest req = (HttpServletRequest)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletRequest.class},
+            new InvocationHandler() {
+
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+                    if (method.getName().equals("getParameter")) {
+                        return null;
+                    } else {
+                        throw new RuntimeException("Not implemented");
+                    }
+
+                }
+            });
+        HttpServletResponse res = (HttpServletResponse)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletResponse.class},
+            new InvocationHandler() {
+
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+                    throw new RuntimeException("Not implemented");
+                }
+            });
 
         CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
         assertEquals("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());

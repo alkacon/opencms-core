@@ -12,8 +12,6 @@ dependencies {
     testGwtCompile sourceSets.modules.output
     testGwtCompile sourceSets.gwt.output
 
-    usedApis('javax.servlet.jsp:javax.servlet.jsp-api:2.3.1') { transitive = false }
-    usedApis('javax.servlet:javax.servlet-api:4.0.0') { transitive = false }
     gwtCompile('ant:ant:1.6.5') { transitive = false }
     gwtCompile('colt:colt:1.2.0') { transitive = false }
     gwtCompile('com.google.code.gson:gson:2.10.1') { transitive = false }
@@ -81,7 +79,7 @@ dependencies {
     distribution('com.google.elemental2:elemental2-core:1.2.3') { transitive = false }
     distribution('com.google.elemental2:elemental2-dom:1.2.3') { transitive = false }
     distribution('com.google.elemental2:elemental2-webstorage:1.2.3') { transitive = false }
-    distribution('org.gwtproject:gwt-servlet:2.13.0') { transitive = false }
+
     distribution('com.google.gwt:gwt-elemental:2.9.0') { transitive = false }
     distribution('com.google.code.gson:gson:2.10.1') { transitive = false }
     distribution('com.googlecode.json-simple:json-simple:1.1.1') { transitive = false }
@@ -94,9 +92,9 @@ dependencies {
     distribution('com.sun.xml.messaging.saaj:saaj-impl:1.3.28') { transitive = false }
     distribution('com.sun.xml.stream.buffer:streambuffer:2.0.0-M2') { transitive = false }
     distribution('com.vaadin:vaadin-compatibility-server:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-server:8.14.3') { transitive = false }
     distribution('com.vaadin:vaadin-compatibility-shared:8.14.3') { transitive = false }
     distribution('com.vaadin:vaadin-push:8.14.3') { transitive = false }
-    distribution('com.vaadin:vaadin-server:8.14.3') { transitive = false }
     distribution('com.vaadin:vaadin-shared:8.14.3') { transitive = false }
     distribution('com.vaadin:vaadin-themes:8.14.3') { transitive = false }
     distribution('com.vaadin.external:gentyref:1.2.0.vaadin1') { transitive = false }
@@ -108,7 +106,6 @@ dependencies {
     distribution('commons-codec:commons-codec:1.21.0') { transitive = false }
     distribution('commons-collections:commons-collections:3.2.2') { transitive = false }
     distribution('org.apache.commons:commons-fileupload2-core:2.0.0-M5') { transitive = false }
-    distribution('org.apache.commons:commons-fileupload2-javax:2.0.0-M5') { transitive = false }
     distribution('commons-io:commons-io:2.21.0') { transitive = false }
     //distribution('cryptix.jce:crytix-jce-provider:20050328') { transitive = false }
     distribution('de.malkusch.whois-server-list:public-suffix-list:2.2.0') { transitive = false }
@@ -119,12 +116,7 @@ dependencies {
     distribution('jakarta.validation:jakarta.validation-api:3.0.2') { transitive = false }
     distribution('javax.validation:validation-api:1.0.0.GA') { transitive = false }
     distribution('javax.activation:activation:1.1.1') { transitive = false }
-    distribution('javax.annotation:javax.annotation-api:1.3.2') { transitive = false }
-    distribution('javax.jws:jsr181-api:1.0-MR1') { transitive = false }
-    distribution('javax.servlet.jsp.jstl:jstl-api:1.2') { transitive = false }
     distribution('javax.xml.bind:jaxb-api:2.1') { transitive = false }
-    distribution('javax.xml.ws:jaxws-api:2.2.6') { transitive = false }
-    distribution('javax.xml.soap:saaj-api:1.3') { transitive = false }
     distribution('jaxen:jaxen:1.2.0') { transitive = false }
     distribution('joda-time:joda-time:2.10.6') { transitive = false }
     distribution('net.arnx:jsonic:1.3.10') { transitive = false }
@@ -134,17 +126,6 @@ dependencies {
     distribution('org.antlr:antlr-runtime:3.5.2') { transitive = false }
     distribution('org.antlr:stringtemplate:3.2.1') { transitive = false }
     distribution('org.antlr:ST4:4.0.8') { transitive = false }
-    distribution('org.apache.bval:org.apache.bval.bundle:0.4') { transitive = false }
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-api:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0') {
-        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
-    }
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0') {
-        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
-    }
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0') {
-        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
-    }
     constraints {
         distribution('org.apache.cxf:cxf-core:3.5.11')
         distribution('org.apache.cxf:cxf-rt-bindings-soap:3.5.11')
@@ -170,12 +151,11 @@ dependencies {
     distribution('org.apache.httpcomponents:httpclient:4.5.14') { transitive = false }
     distribution('org.apache.httpcomponents:httpcore:4.4.16') { transitive = false }
     distribution('org.apache.httpcomponents:httpmime:4.5.14') { transitive = false }
-    distribution('org.apache.jackrabbit:jackrabbit-webdav:2.22.2')
+    
     distribution('org.apache.logging.log4j:log4j-api:2.25.3') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-core:2.25.3') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-jcl:2.25.3') { transitive = false }
-    distribution('org.apache.logging.log4j:log4j-web:2.25.3') { transitive = false }
 //    distribution('org.apache.lucene:lucene-analysis-common:10.3.2')
     distribution('org.apache.lucene:lucene-core:10.3.2')
     distribution('org.apache.lucene:lucene-highlighter:10.3.2')
@@ -202,7 +182,7 @@ dependencies {
     distribution('org.bouncycastle:bcutil-jdk18on:1.79') { transitive = false }
     distribution('org.codehaus.mojo:animal-sniffer-annotations:1.19') { transitive = false }
     distribution('org.dom4j:dom4j:2.1.4') { transitive = false }
-    distribution('org.glassfish.web:javax.servlet.jsp.jstl:1.2.5-b03') { transitive = false }
+
     distribution('org.hibernate:jtidy:r8-20060801') { transitive = false }
     distribution('org.htmlparser:htmlparser:2.1') { transitive = false }
     distribution('org.htmlparser:htmllexer:2.1') { transitive = false }

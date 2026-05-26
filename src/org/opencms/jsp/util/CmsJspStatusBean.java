@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -66,16 +67,16 @@ import org.apache.commons.logging.Log;
 public class CmsJspStatusBean extends CmsJspActionElement {
 
     /** Request attribute key for the error message. */
-    public static final String ERROR_MESSAGE = "javax.servlet.error.message";
+    public static final String ERROR_MESSAGE = RequestDispatcher.ERROR_MESSAGE;
 
     /** Request attribute key for the error request URI. */
-    public static final String ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
+    public static final String ERROR_REQUEST_URI = RequestDispatcher.ERROR_REQUEST_URI;
 
     /** Request attribute key for the error servlet name. */
-    public static final String ERROR_SERVLET_NAME = "javax.servlet.error.servlet_name";
+    public static final String ERROR_SERVLET_NAME = RequestDispatcher.ERROR_SERVLET_NAME;
 
     /** Request attribute key for the error status code. */
-    public static final String ERROR_STATUS_CODE = "javax.servlet.error.status_code";
+    public static final String ERROR_STATUS_CODE = RequestDispatcher.ERROR_STATUS_CODE;
 
     /** Default name for an unknown error status code. */
     public static final String UNKKNOWN_STATUS_CODE = "unknown";
