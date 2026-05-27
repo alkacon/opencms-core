@@ -1743,3 +1743,26 @@ afterEvaluate {
     def uploadArchivesDeps = [tasks.findByName("publishToSonatype"), tasks.findByName("closeSonatypeStagingRepository")]
     tasks.findByName("uploadArchives").dependsOn(uploadArchivesDeps)
 }
+
+
+// For some reason when opencms-core is built together with the Mercury Template,
+// *and* the Jakarta EE Migration plugin is active, Gradle complains that the different 
+// configurations must be identifiable through their set of attributes and capabilities,
+// and archives and signatures conflict in this way with the default configuration.
+// This is really strange, as the attributes are also not distinct if we only compile the core,
+// or use the javax "mode".
+// So we add an artifactType attribute to disambiguate them. The name or values of the attribute
+// are arbitrary for this, it doesn't seem to matter if we just want to keep Gradle from complaining.
+
+configurations.named("archives") {
+    attributes {
+        attribute(Attribute.of("artifactType", String), "archives")
+    }
+}
+
+configurations.named("signatures") {
+    attributes {
+        attribute(Attribute.of("artifactType", String), "signatures")
+    }
+}
+
