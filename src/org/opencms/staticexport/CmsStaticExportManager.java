@@ -83,6 +83,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -101,16 +102,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public static final String DEFAULT_FILE = "index.html";
 
     /** Marker for error message attribute. */
-    public static final String EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
+    public static final String EXPORT_ATTRIBUTE_ERROR_MESSAGE = RequestDispatcher.ERROR_MESSAGE;
 
     /** Marker for error request uri attribute. */
-    public static final String EXPORT_ATTRIBUTE_ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
+    public static final String EXPORT_ATTRIBUTE_ERROR_REQUEST_URI = RequestDispatcher.ERROR_REQUEST_URI;
 
     /** Marker for error servlet name attribute. */
-    public static final String EXPORT_ATTRIBUTE_ERROR_SERVLET_NAME = "javax.servlet.error.servlet_name";
+    public static final String EXPORT_ATTRIBUTE_ERROR_SERVLET_NAME = RequestDispatcher.ERROR_SERVLET_NAME;
 
     /** Marker for error status code attribute. */
-    public static final String EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = "javax.servlet.error.status_code";
+    public static final String EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = RequestDispatcher.ERROR_STATUS_CODE;
 
     /** Name for the backup folder default name. */
     public static final String EXPORT_BACKUP_FOLDER_NAME = "backup";
