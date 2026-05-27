@@ -22,4 +22,7 @@ if (null != external_directories) {
     project(':' + external_directories).name = 'extmodules'
     gradle.ext.withcore = 'true'
 }
-rootProject.name = 'opencms-core'
+def variant = providers.gradleProperty("opencms_variant").orElse("").map(v -> v ? "-$v" : "").get()
+rootProject.name = "opencms-core${variant}"
+
+

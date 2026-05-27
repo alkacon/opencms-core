@@ -14,6 +14,7 @@ plugins {
     id 'com.diffplug.spotless' version '8.5.1'
 }
 
+def pVariant = providers.gradleProperty("opencms_variant").orElse("").map(variant -> variant ? "-$variant" : "")
 
 
 group = "org.opencms"
@@ -1581,7 +1582,7 @@ publishing {
                     artifact art
                 }
                 pom {
-                    artifactId = "opencms-${pub.key}"
+                    artifactId = "opencms-${pub.key}${pVariant.get()}"
                     name = product_name
                     description = product_description
                     packaging = 'jar'
@@ -1647,7 +1648,7 @@ publishing {
             webapp(MavenPublication) {
                 artifact war
                 pom {
-                    artifactId 'opencms-webapp'
+                    artifactId "opencms-webapp${pVariant.get()}"
                     name = product_name
                     description = product_description
                     packaging 'war'
