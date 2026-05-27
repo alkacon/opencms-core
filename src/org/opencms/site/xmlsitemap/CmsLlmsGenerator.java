@@ -148,14 +148,15 @@ public class CmsLlmsGenerator {
         ## INSTRUCTIONS
 
         ### 1. Preserve all existing content
-        - Do **not** fetch, scrape, or visit any URLs — all necessary content is already provided in the document
         - Keep every entry exactly as-is: title, URL, and description text must not be altered
+        - Important: do **not** fetch, scrape, or visit any URLs — all necessary content is already provided in the document
         - Keep the original order of all entries — do not reorder, merge, or remove anything
 
         ### 2. Language version headings (Level 2)
         - Detect whether the document contains entries in more than one language
         - If yes: insert a **level 2 heading (`##`)** before each language group, written in that language
-        - If only one language is present: skip language headings entirely
+        - If only one language is present: skip language headings entirely — even if URL paths suggest multiple language versions
+        - **Example:** All URLs starting with `/en/` do not constitute multiple language versions — they are all the same language
 
         ### 3. Section headings by URL path structure (Level 2 or 3)
         - Determine groupings from the first and second path segments of each URL (e.g. `/products/`, `/products/software/`)
@@ -194,6 +195,7 @@ public class CmsLlmsGenerator {
         ```json
         {
           "url": "https://example.com/index.html",
+          "locale": "en",
           "title": "The page title",
           "excerpt": "An excerpt of the page content",
           "question": "Please generate a summary for this title and excerpt usable in an llms.txt file."
@@ -207,7 +209,7 @@ public class CmsLlmsGenerator {
         1. Base the summary primarily on the **title** and use the excerpt to extract the most relevant information
         2. The excerpt is **unordered** (SOLR index output) - infer structure and relevance from context, not order
         3. Optimize for **LLM readability**: prefer precise, factual, and dense phrasing over fluent prose
-        4. Write in the **same language as the title and excerpt** - do not mix languages
+        4. Write in the **same language as the title and excerpt** and use the information from the **locale** - do not mix languages
         5. If the language cannot be determined, default to: `%s`
         6. Do **not** invent or infer information not present in the input
 
@@ -242,6 +244,7 @@ public class CmsLlmsGenerator {
         }
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_config.getRobotsTxtText())) {
+            // add prefix text
             result = m_config.getRobotsTxtText() + "\n\n" + result;
         }
         return result;
@@ -511,8 +514,8 @@ public class CmsLlmsGenerator {
                     String summary = "";
                     try {
                         ChatRequest q = ChatRequest.builder().messages(
-                            SystemMessage.from(SYSTEM_PROMPT_SUMMARY(Locale.ENGLISH)),
-                            UserMessage.from(getUserQuerySummary(result, content))).build();
+                            SystemMessage.from(SYSTEM_PROMPT_SUMMARY(contentLocale)),
+                            UserMessage.from(getUserQuerySummary(result, content, contentLocale))).build();
                         LOG.info("Sending excerpt query for URL " + url.getUrl() + " to chatbot.");
                         summary = getChatModel().chat(q).aiMessage().text();
                     } catch (Exception e) {
@@ -560,14 +563,16 @@ public class CmsLlmsGenerator {
      *
      * @param llmsPage the page object
      * @param excerpt the page content to summarize
+     * @param contentLocale Locale of the content to summarize
      *
      * @return the user query
      * @throws Exception if creating the JSON fails
      */
-    private String getUserQuerySummary(CmsLlmsPage llmsPage, String excerpt) throws Exception {
+    private String getUserQuerySummary(CmsLlmsPage llmsPage, String excerpt, Locale contentLocale) throws Exception {
 
         ObjectNode userQuery = MAPPER.createObjectNode();
         userQuery.put("url", llmsPage.getUrl());
+        userQuery.put("locale", contentLocale.getLanguage());
         userQuery.put("title", llmsPage.getTitle());
         userQuery.put("excerpt", excerpt);
         userQuery.put("question", "Please generate a summary for this title and excerpt usable in an llms.txt file.");
