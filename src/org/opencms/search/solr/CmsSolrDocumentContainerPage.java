@@ -40,6 +40,7 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -49,11 +50,14 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -70,6 +74,19 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_CONTAINERPAGE_SOLR = "containerpage-solr";
+
+    /**
+     * Sitemap attribute to list (comma-separated) names of containers
+     * whose elements content should not be extracted for the content of the page.
+     * NOTE: For nested containers, we match against the names without prefix.
+     */
+    private static final String SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_NAMES = "search.containers.exclude.names";
+
+    /**
+     * Sitemap attribute to list (comma-separated) types of containers
+     * whose elements content should not be extracted for the content of the page.
+     */
+    private static final String SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_TYPES = "search.containers.exclude.types";
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -122,61 +139,88 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             if (containerBean != null) {
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    cms,
+                    file.getRootPath());
+
+                Collection<String> excludeContainerNames = CmsStringUtil.splitAsSet(
+                    adeConfig.getAttribute(SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_NAMES, ""),
+                    ",",
+                    true);
+                Collection<String> excludeContainerTypes = CmsStringUtil.splitAsSet(
+                    adeConfig.getAttribute(SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_TYPES, ""),
+                    ",",
+                    true);
+
                 for (Map.Entry<String, CmsContainerBean> entry : containerBean.getContainers().entrySet()) {
                     String containerName = entry.getKey();
-                    for (CmsContainerElementBean element : entry.getValue().getElements()) {
-                        // check all elements in this container
-                        // get the formatter configuration for this element
-                        try {
-                            element.initResource(cms);
-                            CmsResource elementResource = element.getResource();
-                            if (!(cms.readProject(index.getProject()).isOnlineProject()
-                                && elementResource.isExpired(System.currentTimeMillis()))) {
-                                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
-                                    cms,
-                                    file.getRootPath());
-                                CmsFormatterConfiguration formatters = adeConfig.getFormatters(
-                                    cms,
-                                    element.getResource());
-                                boolean shouldExtractElement = false;
-                                if ((formatters != null)
-                                    && (element.getFormatterId() != null)
-                                    && (formatters.isSearchContent(element.getFormatterId())
-                                        || adeConfig.isSearchContentFormatter(element.getFormatterId()))) {
-                                    // the content of this element must be included for the container page
-                                    shouldExtractElement = true;
-                                } else if (formatters != null) {
-                                    String key = CmsFormatterUtils.getFormatterKey(containerName, element);
-                                    I_CmsFormatterBean formatter = adeConfig.findFormatter(key);
-                                    if (formatter != null) {
-                                        shouldExtractElement = formatter.isSearchContent();
+                    if (includeContainerForSearch(
+                        entry.getValue(),
+                        containerBean,
+                        excludeContainerNames,
+                        excludeContainerTypes)) {
+                        for (CmsContainerElementBean element : entry.getValue().getElements()) {
+                            // check all elements in this container
+                            // get the formatter configuration for this element
+                            try {
+                                element.initResource(cms);
+                                CmsResource elementResource = element.getResource();
+                                if (!(cms.readProject(index.getProject()).isOnlineProject()
+                                    && elementResource.isExpired(System.currentTimeMillis()))) {
+                                    CmsFormatterConfiguration formatters = adeConfig.getFormatters(
+                                        cms,
+                                        element.getResource());
+                                    boolean shouldExtractElement = false;
+                                    if ((formatters != null)
+                                        && (element.getFormatterId() != null)
+                                        && (formatters.isSearchContent(element.getFormatterId())
+                                            || adeConfig.isSearchContentFormatter(element.getFormatterId()))) {
+                                        // the content of this element must be included for the container page
+                                        shouldExtractElement = true;
+                                    } else if (formatters != null) {
+                                        String key = CmsFormatterUtils.getFormatterKey(containerName, element);
+                                        I_CmsFormatterBean formatter = adeConfig.findFormatter(key);
+                                        if (formatter != null) {
+                                            shouldExtractElement = formatter.isSearchContent();
+                                        }
                                     }
-                                }
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug(
-                                        "Should extract element "
-                                            + element.getResource().getRootPath()
-                                            + ": "
-                                            + shouldExtractElement);
-                                }
-                                if (shouldExtractElement) {
-                                    all.add(
-                                        CmsSolrDocumentXmlContent.extractXmlContent(
-                                            cms,
-                                            elementResource,
-                                            index,
-                                            forceLocale));
-                                }
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(
+                                            "Should extract element "
+                                                + element.getResource().getRootPath()
+                                                + ": "
+                                                + shouldExtractElement);
+                                    }
+                                    if (shouldExtractElement) {
+                                        all.add(
+                                            CmsSolrDocumentXmlContent.extractXmlContent(
+                                                cms,
+                                                elementResource,
+                                                index,
+                                                forceLocale));
+                                    }
 
+                                }
+                            } catch (Exception e) {
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,
+                                        file.getRootPath(),
+                                        element.getId()),
+                                    e);
                             }
-                        } catch (Exception e) {
-                            LOG.debug(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,
-                                    file.getRootPath(),
-                                    element.getId()),
-                                e);
                         }
+                    } else if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            "Skip content extraction for container "
+                                + containerName
+                                + " in  page "
+                                + file.getRootPath()
+                                + " because of type or name excludes configured via sitemap attribute "
+                                + SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_NAMES
+                                + " or "
+                                + SITEMAP_ATTRIBUTE_EXCLUDE_CONTAINER_TYPES
+                                + ".");
                     }
                 }
             }
@@ -211,6 +255,48 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
     public boolean isLocaleDependend() {
 
         return true;
+    }
+
+    /**
+     * Checks if the elements in the provided container should be added to the extracted content of the page.
+     * They are only added if they should be added for the container and all its parent containers.
+     *
+     * @param container the container to check
+     * @param containerPageBean the container page the container is on
+     * @param excludeContainerNames set of container names to skip content extraction for
+     * @param excludeContainerTypes set of container types to skip content extraction for
+     * @return flag, indicating if the container's elements content should be extracted for the page content.
+     */
+    private boolean includeContainerForSearch(
+        CmsContainerBean container,
+        CmsContainerPageBean containerPageBean,
+        Collection<String> excludeContainerNames,
+        Collection<String> excludeContainerTypes) {
+
+        if (container.isNestedContainer()) {
+            // The parent of a nested container is the element (identified by its element instance id)
+            // whose formatter renders this container. Find the container that holds that parent element.
+            String parentInstanceId = container.getParentInstanceId();
+            for (CmsContainerBean c : containerPageBean.getContainers().values()) {
+                boolean containsParentElement = c.getElements().stream().anyMatch(
+                    element -> parentInstanceId.equals(element.getInstanceId()));
+                if (containsParentElement) {
+                    if (!includeContainerForSearch(
+                        c,
+                        containerPageBean,
+                        excludeContainerNames,
+                        excludeContainerTypes)) {
+                        // the elements of the parent container are not included, so this container can't be included as well
+                        return false;
+                    }
+                    // the parent container's elements are included, so check the container itself
+                    break;
+                }
+            }
+        }
+        Set<String> containerTypes = CmsStringUtil.splitAsSet(container.getType(), ",", true);
+        return !excludeContainerNames.contains(container.getSimpleName())
+            && Collections.disjoint(excludeContainerTypes, containerTypes);
     }
 
 }

@@ -31,9 +31,11 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -469,6 +471,28 @@ public class TestCmsStringUtil extends OpenCmsTestRunner {
         expected.put("foo", "");
         expected.put("none", "Label for none");
         assertEquals(expected, options);
+    }
+
+    /**
+     * Tests <code>{@link CmsStringUtil#splitAsSet(String, String, boolean)}</code>.<p>
+     */
+    @Test
+    public void testSplitAsSet() {
+
+        // corner cases where arguments are null
+        Set<String> result = CmsStringUtil.splitAsSet(null, null, false);
+        assertEquals(Collections.emptySet(), result);
+
+        result = CmsStringUtil.splitAsSet(" ", null, false);
+        assertEquals(Collections.emptySet(), result);
+
+        // test without trim, still removing only blank options
+        result = CmsStringUtil.splitAsSet("a, b, c , ,", ",", false);
+        assertEquals(Set.of("a", " b", " c "), result);
+
+        // test with trim
+        result = CmsStringUtil.splitAsSet("a, b, c , ,", ",", true);
+        assertEquals(Set.of("a", "b", "c"), result);
     }
 
     /**

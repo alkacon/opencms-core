@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FunctionConfigs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd">
+  <FunctionConfig language="en">
+    <NiceName><![CDATA[Nested Container]]></NiceName>
+    <Jsp>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/test.contentextraction.containerpage/functions/nested.jsp]]></target>
+        <uuid>546627d9-5a8f-11f1-80f3-0242ac11002b</uuid>
+      </link>
+    </Jsp>
+    <Match>
+      <Types>
+        <ContainerType><![CDATA[nestable]]></ContainerType>
+      </Types>
+    </Match>
+    <StrictContainers>true</StrictContainers>
+  </FunctionConfig>
+</FunctionConfigs>

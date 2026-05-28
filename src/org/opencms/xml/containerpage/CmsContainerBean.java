@@ -248,6 +248,24 @@ public class CmsContainerBean {
     }
 
     /**
+     * Names of nested containers are prefixed by the parent instance id.
+     * This method returns the container name without that prefix, i.e.,
+     * the name as specified in the &lt;cms:container&gt; tag.
+     *
+     * For root containers, name and simple name are identical.
+     *
+     * IMPORTANT: Simple names may be identically for multiple containers on a container page.
+     *
+     * @return the name of the container as specified by the cms:container tag.
+     */
+    public String getSimpleName() {
+
+        return isNestedContainer()
+        ? getName().substring(getParentInstanceId().length() + 1) // +1 for "-"
+        : getName();
+    }
+
+    /**
      * Returns the type of this container.<p>
      *
      * @return the type of this container

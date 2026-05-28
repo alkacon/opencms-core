@@ -43,19 +43,25 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -1675,6 +1681,29 @@ public final class CmsStringUtil {
             params.put(key, value);
         }
         return params;
+    }
+
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings. Empty values are skipped.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     * @param trim flag to indicate if leading and trailing white spaces should be omitted
+     *
+     * @return the Set of splitted substrings
+     */
+    public static Set<String> splitAsSet(String source, String delimiter, boolean trim) {
+
+        if ((null == source) || source.isBlank()) {
+            return Collections.emptySet();
+        }
+        Stream<String> stream = Arrays.stream(
+            null == delimiter ? new String[] {source} : source.split(delimiter)).filter(s -> !s.isBlank());
+        if (trim) {
+            stream = stream.map(String::trim);
+        }
+        return stream.collect(Collectors.toCollection(HashSet::new));
     }
 
     /**
