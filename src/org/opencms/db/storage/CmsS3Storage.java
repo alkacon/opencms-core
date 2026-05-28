@@ -48,7 +48,7 @@ import java.util.UUID;
  * Content is addressed by its unique hash to support deduplication across
  * different resources.<p>
  */
-public class CmsS3Storage extends A_CmsStorage implements I_CmsStorage {
+public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage {
 
     /** The type name of the storage implementation. */
     public static final String STORAGE_TYPE = "s3";
@@ -324,6 +324,20 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsStorage {
     }
 
     /**
+     * @see org.opencms.db.storage.I_CmsEnumerableStorage#visitContentHashes(org.opencms.db.CmsDbContext, org.opencms.db.storage.I_CmsEnumerableStorage.I_CmsContentHashVisitor)
+     */
+    @Override
+    public void visitContentHashes(CmsDbContext dbc, I_CmsContentHashVisitor visitor) throws Exception {
+
+        m_s3Client.visitObjectKeys(key -> {
+            String hash = getHashFromObjectKey(key);
+            if (hash != null) {
+                visitor.visit(hash);
+            }
+        });
+    }
+
+    /**
      * Returns the configured single API call attempt timeout.
      *
      * @return the timeout in milliseconds
@@ -403,5 +417,27 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsStorage {
             + m_configuration.getRegion()
             + ", pathStyle="
             + m_configuration.isPathStyle();
+    }
+
+    /**
+     * Extracts a valid content hash from an object key.<p>
+     *
+     * @param key the object key
+     * @return the content hash, or null if the key is not a content object
+     */
+    private String getHashFromObjectKey(String key) {
+
+        if (key == null) {
+            return null;
+        }
+        int slashPos = key.lastIndexOf('/');
+        String candidate = slashPos >= 0 ? key.substring(slashPos + 1) : key;
+        try {
+            String hash = validateHash(candidate);
+            String expectedKey = getHashedPath(hash);
+            return expectedKey.equals(key) ? hash : null;
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

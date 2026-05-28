@@ -36,6 +36,20 @@ package org.opencms.db.storage.s3;
 public interface I_CmsS3Client extends AutoCloseable {
 
     /**
+     * Visitor for S3 object keys.<p>
+     */
+    interface I_CmsS3ObjectKeyVisitor {
+
+        /**
+         * Visits an S3 object key.<p>
+         *
+         * @param key the object key
+         * @throws Exception if the visitor fails
+         */
+        void visit(String key) throws Exception;
+    }
+
+    /**
      * Closes the client and releases associated resources.<p>
      *
      * @throws Exception if closing the client fails
@@ -88,5 +102,16 @@ public interface I_CmsS3Client extends AutoCloseable {
     default void validateBucketAccess() throws Exception {
 
         // default no-op
+    }
+
+    /**
+     * Visits all object keys in the configured bucket.<p>
+     *
+     * @param visitor the object key visitor
+     * @throws Exception if listing fails
+     */
+    default void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
+
+        throw new UnsupportedOperationException("S3 object listing is not supported by this client.");
     }
 }

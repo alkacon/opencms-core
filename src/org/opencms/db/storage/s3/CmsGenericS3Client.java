@@ -51,9 +51,12 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 /**
  * S3 client using AWS SDK v2 optimized for a local object storage.<p>
@@ -309,6 +312,24 @@ public class CmsGenericS3Client implements I_CmsS3Client {
             throw createStorageException("HEAD_BUCKET", null, e);
         } catch (RuntimeException e) {
             throw createStorageException("HEAD_BUCKET", null, e);
+        }
+    }
+
+    @Override
+    public void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
+
+        try {
+            ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(
+                m_configuration.getBucketName()).build();
+            for (ListObjectsV2Response page : m_s3Client.listObjectsV2Paginator(request)) {
+                for (S3Object object : page.contents()) {
+                    visitor.visit(object.key());
+                }
+            }
+        } catch (S3Exception e) {
+            throw createStorageException("LIST", null, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("LIST", null, e);
         }
     }
 

@@ -39,6 +39,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * File system based storage implementation.<p>
@@ -47,7 +48,7 @@ import java.util.Arrays;
  * It uses a 3-level directory structure based on the content hash to avoid
  * having too many files in a single directory.<p>
  */
-public class CmsFsStorage extends A_CmsStorage implements I_CmsStorage {
+public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage {
 
     /** The type name of the storage implementation. */
     public static final String STORAGE_TYPE = "fs";
@@ -176,6 +177,25 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsStorage {
     }
 
     /**
+     * @see org.opencms.db.storage.I_CmsEnumerableStorage#visitContentHashes(org.opencms.db.CmsDbContext, org.opencms.db.storage.I_CmsEnumerableStorage.I_CmsContentHashVisitor)
+     */
+    @Override
+    public void visitContentHashes(CmsDbContext dbc, I_CmsContentHashVisitor visitor) throws Exception {
+
+        try (Stream<Path> files = Files.walk(m_repository)) {
+            for (Path file : (Iterable<Path>)files::iterator) {
+                if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) {
+                    continue;
+                }
+                String name = file.getFileName().toString();
+                if (isHash(name)) {
+                    visitor.visit(name.toLowerCase());
+                }
+            }
+        }
+    }
+
+    /**
      * Deletes empty parent folders up to, but not including, the repository root.<p>
      *
      * @param start the folder to start with
@@ -212,6 +232,26 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsStorage {
                 Messages.get().getBundle().key(Messages.ERR_STORAGE_HASH_OUTSIDE_REPOSITORY_0));
         }
         return result;
+    }
+
+    /**
+     * Checks if the given string looks like a SHA-512 hash.<p>
+     *
+     * @param value the value
+     * @return true if the value looks like a hash
+     */
+    private boolean isHash(String value) {
+
+        if ((value == null) || (value.length() != 128)) {
+            return false;
+        }
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (!(((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f')) || ((c >= 'A') && (c <= 'F')))) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

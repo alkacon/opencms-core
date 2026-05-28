@@ -29,14 +29,28 @@ package org.opencms.db.storage;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
+
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 /**
  * Optional integration tests for the S3 storage backend.<p>
@@ -59,6 +73,12 @@ public class TestCmsS3StorageIntegration {
     /** Environment variable for path-style access. */
     private static final String ENV_PATH_STYLE = "OPENCMS_S3_TEST_PATH_STYLE";
 
+    /** Environment variable for the S3 listing test object count. */
+    private static final String ENV_LISTING_COUNT = "OPENCMS_S3_TEST_LISTING_COUNT";
+
+    /** Environment variable for the S3 region. */
+    private static final String ENV_REGION = "OPENCMS_S3_TEST_REGION";
+
     /** Environment variable for the S3 test secret key. */
     private static final String ENV_SECRET_KEY = "OPENCMS_S3_TEST_SECRET_KEY";
 
@@ -73,6 +93,12 @@ public class TestCmsS3StorageIntegration {
 
     /** System property for path-style access. */
     private static final String PROP_PATH_STYLE = "opencms.s3.test.pathStyle";
+
+    /** System property for the S3 listing test object count. */
+    private static final String PROP_LISTING_COUNT = "opencms.s3.test.listingCount";
+
+    /** System property for the S3 region. */
+    private static final String PROP_REGION = "opencms.s3.test.region";
 
     /** System property for the S3 test secret key. */
     private static final String PROP_SECRET_KEY = "opencms.s3.test.secretKey";
@@ -100,18 +126,66 @@ public class TestCmsS3StorageIntegration {
     }
 
     /**
+     * Creates a configured S3 client for test setup operations.<p>
+     *
+     * @param endpoint the S3 endpoint
+     * @param accessKey the access key
+     * @param secretKey the secret key
+     * @param pathStyle whether path-style access should be used
+     * @return the S3 client
+     */
+    private static S3Client createS3Client(String endpoint, String accessKey, String secretKey, boolean pathStyle) {
+
+        String region = getConfig(PROP_REGION, ENV_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
+        return S3Client.builder().endpointOverride(URI.create(endpoint)).credentialsProvider(
+            StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey))).region(
+                Region.of(region)).forcePathStyle(pathStyle).build();
+    }
+
+    /**
      * Creates the S3 storage for the configured integration test endpoint.<p>
      *
      * @return the S3 storage
      */
-    private static CmsS3Storage createStorage() {
+    private static CmsS3Storage createStorage() throws Exception {
 
         String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
         String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
         String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
         String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
         boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
+        ensureBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
         return new CmsS3Storage("integration", endpoint, bucket, accessKey, secretKey, pathStyle);
+    }
+
+    /**
+     * Ensures that the configured test bucket exists.<p>
+     *
+     * @param endpoint the S3 endpoint
+     * @param bucket the bucket
+     * @param accessKey the access key
+     * @param secretKey the secret key
+     * @param pathStyle whether path-style access should be used
+     * @throws Exception if the bucket can not be created or accessed
+     */
+    private static void ensureBucket(
+        String endpoint,
+        String bucket,
+        String accessKey,
+        String secretKey,
+        boolean pathStyle)
+    throws Exception {
+
+        try (S3Client client = createS3Client(endpoint, accessKey, secretKey, pathStyle)) {
+            try {
+                client.headBucket(HeadBucketRequest.builder().bucket(bucket).build());
+            } catch (S3Exception e) {
+                if (e.statusCode() != 404) {
+                    throw e;
+                }
+                client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
+            }
+        }
     }
 
     /**
@@ -202,5 +276,36 @@ public class TestCmsS3StorageIntegration {
     public void testValidateAvailableAgainstConfiguredS3Backend() throws Exception {
 
         createStorage().validateAvailable(null);
+    }
+
+    /**
+     * Tests that S3 content hash listing works across more than one S3 listing page.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testVisitContentHashesAgainstConfiguredS3Backend() throws Exception {
+
+        CmsS3Storage storage = createStorage();
+        int objectCount = Integer.parseInt(getConfig(PROP_LISTING_COUNT, ENV_LISTING_COUNT, "1005"));
+        Set<String> expectedHashes = new LinkedHashSet<String>();
+        try {
+            for (int i = 0; i < objectCount; i++) {
+                byte[] content = ("OpenCms S3 listing integration test " + UUID.randomUUID() + " " + i).getBytes(
+                    StandardCharsets.UTF_8);
+                String hash = calculateSha512(content);
+                expectedHashes.add(hash);
+                storage.storeContent(null, hash, content);
+            }
+
+            Set<String> listedHashes = new LinkedHashSet<String>();
+            storage.visitContentHashes(null, hash -> listedHashes.add(hash));
+
+            assertTrue(listedHashes.containsAll(expectedHashes));
+        } finally {
+            for (String hash : expectedHashes) {
+                storage.deleteContent(null, hash);
+            }
+        }
     }
 }

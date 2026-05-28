@@ -158,11 +158,19 @@ sourceSets{
         java.srcDirs=['src-setup']
         resources.srcDirs=['src-setup']
     }
+    tools {
+        java.srcDirs=['tools/storage/src']
+        resources.srcDirs=['tools/storage/src']
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += output + compileClasspath
+    }
     test {
         java {
             srcDirs=['test']
             exclude 'data/**'
         }
+        compileClasspath += sourceSets.tools.output
+        runtimeClasspath += sourceSets.tools.output
         resources {
             srcDirs=['test']
             exclude 'data/**'
@@ -202,6 +210,7 @@ def spotlessJavaTargets = hasSpotlessFilesProperty
         sourceSets.modules.allJava,
         sourceSets.gwt.allJava,
         sourceSets.setup.allJava,
+        sourceSets.tools.allJava,
         sourceSets.test.allJava,
         sourceSets.testGwt.allJava)
 
@@ -278,6 +287,15 @@ configurations {
     testImplementation {
         extendsFrom testCompile
         extendsFrom setupImplementation
+    }
+
+    toolsCompile {
+        description = 'used to compile standalone OpenCms command line tools'
+        extendsFrom compile
+    }
+
+    toolsImplementation {
+        extendsFrom toolsCompile
     }
 
     gwtCompile {
@@ -797,6 +815,64 @@ tasks.register('setupJar', Jar) {
     exclude '**/.gitignore'
 }
 
+tasks.register('storageMigrationJar', Jar) {
+    dependsOn jar, tasks.named('toolsClasses')
+    from sourceSets.tools.output
+    from sourceSets.main.output
+    from {
+        sourceSets.tools.runtimeClasspath.findAll {
+            it.isFile() && it.name.endsWith('.jar')
+        }.collect {
+            zipTree(it)
+        }
+    }
+    archiveFileName = 'opencms-storage-migration.jar'
+    archiveBaseName = 'opencms-storage-migration'
+    destinationDirectory = layout.buildDirectory.dir('tools/storage')
+    group = 'OpenCms core JARs'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/.gitignore'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude 'META-INF/*.SF'
+    manifest {
+        attributes(
+            'Main-Class': 'org.opencms.tools.storage.CmsStorageMigrationTool',
+            'Implementation-Title': 'OpenCms Storage Migration Tool',
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+tasks.register('storageMaintenanceJar', Jar) {
+    dependsOn jar, tasks.named('toolsClasses')
+    from sourceSets.tools.output
+    from sourceSets.main.output
+    from {
+        sourceSets.tools.runtimeClasspath.findAll {
+            it.isFile() && it.name.endsWith('.jar')
+        }.collect {
+            zipTree(it)
+        }
+    }
+    archiveFileName = 'opencms-storage-maintenance.jar'
+    archiveBaseName = 'opencms-storage-maintenance'
+    destinationDirectory = layout.buildDirectory.dir('tools/storage')
+    group = 'OpenCms core JARs'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/.gitignore'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude 'META-INF/*.SF'
+    manifest {
+        attributes(
+            'Main-Class': 'org.opencms.tools.storage.CmsStorageMaintenanceTool',
+            'Implementation-Title': 'OpenCms Storage Maintenance Tool',
+            'Implementation-Version': project.version
+        )
+    }
+}
+
 tasks.register('javadocSetup', Javadoc) {
     dependsOn jar
     source = sourceSets.setup.allJava
@@ -1249,7 +1325,7 @@ tasks.register('updater', Zip) {
 }
 
 tasks.register('bindist', Zip) {
-    dependsOn war
+    dependsOn war, storageMigrationJar, storageMaintenanceJar
     archiveBaseName = 'opencms'
     from layout.buildDirectory.file("distributions/opencms.war").get().asFile
     from(projectDir) {
@@ -1261,6 +1337,10 @@ tasks.register('bindist', Zip) {
             OPENCMS_VERSION_NUMBER: project.version,
             OPENCMS_VERSION: product_name+' '+ project.version
         ])
+    }
+    into('tools/storage') {
+        from tasks.named('storageMigrationJar')
+        from tasks.named('storageMaintenanceJar')
     }
 }
 
@@ -1330,6 +1410,22 @@ tasks.register('testStorage', Test) {
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     useJUnitPlatform()
     outputs.upToDateWhen { false }
+    [
+        'opencms.s3.test.endpoint': 'OPENCMS_S3_TEST_ENDPOINT',
+        'opencms.s3.test.bucket': 'OPENCMS_S3_TEST_BUCKET',
+        'opencms.s3.test.accessKey': 'OPENCMS_S3_TEST_ACCESS_KEY',
+        'opencms.s3.test.secretKey': 'OPENCMS_S3_TEST_SECRET_KEY',
+        'opencms.s3.test.pathStyle': 'OPENCMS_S3_TEST_PATH_STYLE',
+        'opencms.s3.test.region': 'OPENCMS_S3_TEST_REGION',
+        'opencms.s3.test.listingCount': 'OPENCMS_S3_TEST_LISTING_COUNT'
+    ].each { propertyName, environmentName ->
+        Provider<String> value = providers.gradleProperty(propertyName)
+            .orElse(providers.systemProperty(propertyName))
+            .orElse(providers.environmentVariable(environmentName))
+        if (value.present) {
+            systemProperties[propertyName] = value.get()
+        }
+    }
 
     doFirst {
         delete reports.html.outputLocation.get().asFile
@@ -1342,6 +1438,33 @@ tasks.register('testStorage', Test) {
     filter {
         storageBackendTestPatterns.each { includeTestsMatching it }
         storageVfsRegressionTestClasses.each { includeTestsMatching it }
+    }
+}
+
+tasks.register('testStorageMigrationIntegration', Test) {
+    description = "Runs optional storage migration tool integration tests against an explicitly enabled database."
+    group = 'verification'
+    configure coreTestConfig
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.tools.runtimeClasspath
+    testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    useJUnitPlatform()
+    ignoreFailures = false
+    outputs.upToDateWhen { false }
+
+    if (project.hasProperty('storageMigrationTestDbs')) {
+        systemProperties['opencms.storage.migration.test.dbs'] = project.property('storageMigrationTestDbs')
+    }
+
+    doFirst {
+        delete reports.html.outputLocation.get().asFile
+        delete reports.junitXml.outputLocation.get().asFile
+        def dbProduct = systemProperties['db.product'] ?: 'hsqldb'
+        logger.lifecycle("Running storage migration integration tests for db.product=${dbProduct}")
+        logger.lifecycle("Enable databases with -PstorageMigrationTestDbs=${dbProduct} or OPENCMS_STORAGE_MIGRATION_TEST_DBS.")
+    }
+
+    filter {
+        includeTestsMatching 'org.opencms.tools.storage.TestCmsStorageMigrationToolIntegration'
     }
 }
 
@@ -1728,6 +1851,16 @@ tasks.withType(Javadoc) {
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
 tasks.withType(org.gradle.api.tasks.AbstractCopyTask).configureEach {
     duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.FAIL
+}
+
+tasks.named('storageMigrationJar') {
+    duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+    zip64 = true
+}
+
+tasks.named('storageMaintenanceJar') {
+    duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+    zip64 = true
 }
 
 

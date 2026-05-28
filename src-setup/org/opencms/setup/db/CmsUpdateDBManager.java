@@ -284,7 +284,9 @@ public class CmsUpdateDBManager {
             || !setupDb.hasTableOrColumn("CMS_OFFLINE_CONTENTS", "STORAGE")
             || !setupDb.hasTableOrColumn("CMS_OFFLINE_CONTENTS", "HASH")
             || !hasStorageContentIndex(setupDb)
-            || !hasStorageOfflineContentIndex(setupDb);
+            || !hasStorageContentStorageIndex(setupDb)
+            || !hasStorageOfflineContentIndex(setupDb)
+            || !hasStorageOfflineContentStorageIndex(setupDb);
     }
 
     /**
@@ -667,6 +669,20 @@ public class CmsUpdateDBManager {
     }
 
     /**
+     * Checks if the content table storage-leading index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageContentStorageIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_07_IDX")
+            || setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_07")
+            || setupDb.hasIndex("CMS_CONTENTS", "STORAGE_IDX");
+    }
+
+    /**
      * Checks if the offline content table storage index exists.<p>
      *
      * @param setupDb the database connection
@@ -678,6 +694,20 @@ public class CmsUpdateDBManager {
         return setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_01_IDX")
             || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_01")
             || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "HASH_IDX");
+    }
+
+    /**
+     * Checks if the offline content table storage-leading index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageOfflineContentStorageIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_02_IDX")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_02")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "STORAGE_IDX");
     }
 
     /**

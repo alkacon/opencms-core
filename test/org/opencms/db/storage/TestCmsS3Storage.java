@@ -40,7 +40,9 @@ import org.opencms.db.storage.s3.I_CmsS3Client;
 import org.opencms.security.I_CmsCredentialsResolver;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -156,6 +158,16 @@ public class TestCmsS3Storage {
         public void validateBucketAccess() throws Exception {
 
             m_bucketAccessValidated = true;
+        }
+
+        /**
+         * @see org.opencms.db.storage.s3.I_CmsS3Client#visitObjectKeys(org.opencms.db.storage.s3.I_CmsS3Client.I_CmsS3ObjectKeyVisitor)
+         */
+        public void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
+
+            for (String key : m_objects.keySet()) {
+                visitor.visit(key);
+            }
         }
     }
 
@@ -447,5 +459,30 @@ public class TestCmsS3Storage {
         assertTrue(client.m_objects.isEmpty());
         assertNotNull(client.m_deletedKey);
         assertTrue(client.m_deletedKey.startsWith(".opencms-healthcheck/"));
+    }
+
+    /**
+     * Tests that content hash enumeration filters S3 housekeeping objects and invalid keys.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testVisitContentHashesFiltersObjectKeys() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
+        String hash = createHash("abcdef", '1');
+        String secondHash = createHash("123456", 'a');
+        client.m_objects.put("ab/cd/ef/" + hash, new byte[0]);
+        client.m_objects.put("12/34/56/" + secondHash, new byte[0]);
+        client.m_objects.put(".opencms-healthcheck/test", new byte[0]);
+        client.m_objects.put(hash, new byte[0]);
+
+        List<String> hashes = new ArrayList<String>();
+        storage.visitContentHashes(null, hashValue -> hashes.add(hashValue));
+
+        assertEquals(2, hashes.size());
+        assertTrue(hashes.contains(hash));
+        assertTrue(hashes.contains(secondHash));
     }
 }

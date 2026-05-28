@@ -54,17 +54,29 @@ public class CmsUpdateDBStorageSchema extends A_CmsUpdateDBPart {
     /** Query key for creating the CMS_CONTENTS storage index. */
     protected static final String CREATE_CMS_CONTENTS_HASH_INDEX = "CREATE_CMS_CONTENTS_HASH_INDEX";
 
+    /** Query key for creating the CMS_CONTENTS storage-leading index. */
+    protected static final String CREATE_CMS_CONTENTS_STORAGE_INDEX = "CREATE_CMS_CONTENTS_STORAGE_INDEX";
+
     /** Query key for creating CMS_STORAGE. */
     protected static final String CREATE_CMS_STORAGE = "CREATE_CMS_STORAGE";
 
     /** Query key for creating the CMS_OFFLINE_CONTENTS storage index. */
     protected static final String CREATE_CMS_OFFLINE_CONTENTS_HASH_INDEX = "CREATE_CMS_OFFLINE_CONTENTS_HASH_INDEX";
 
+    /** Query key for creating the CMS_OFFLINE_CONTENTS storage-leading index. */
+    protected static final String CREATE_CMS_OFFLINE_CONTENTS_STORAGE_INDEX = "CREATE_CMS_OFFLINE_CONTENTS_STORAGE_INDEX";
+
     /** Query key for the CMS_CONTENTS storage index name. */
     protected static final String INDEX_CMS_CONTENTS_HASH = "INDEX_CMS_CONTENTS_HASH";
 
+    /** Query key for the CMS_CONTENTS storage-leading index name. */
+    protected static final String INDEX_CMS_CONTENTS_STORAGE = "INDEX_CMS_CONTENTS_STORAGE";
+
     /** Query key for the CMS_OFFLINE_CONTENTS storage index name. */
     protected static final String INDEX_CMS_OFFLINE_CONTENTS_HASH = "INDEX_CMS_OFFLINE_CONTENTS_HASH";
+
+    /** Query key for the CMS_OFFLINE_CONTENTS storage-leading index name. */
+    protected static final String INDEX_CMS_OFFLINE_CONTENTS_STORAGE = "INDEX_CMS_OFFLINE_CONTENTS_STORAGE";
 
     /**
      * Executes this update on an existing setup database connection.<p>
@@ -164,6 +176,7 @@ public class CmsUpdateDBStorageSchema extends A_CmsUpdateDBPart {
             addColumn(dbCon, "CMS_CONTENTS", "STORAGE", ADD_CMS_CONTENTS_STORAGE);
             addColumn(dbCon, "CMS_CONTENTS", "HASH", ADD_CMS_CONTENTS_HASH);
             addIndex(dbCon, "CMS_CONTENTS", INDEX_CMS_CONTENTS_HASH, CREATE_CMS_CONTENTS_HASH_INDEX);
+            addIndex(dbCon, "CMS_CONTENTS", INDEX_CMS_CONTENTS_STORAGE, CREATE_CMS_CONTENTS_STORAGE_INDEX);
         }
         if (dbCon.hasTableOrColumn("CMS_OFFLINE_CONTENTS", null)) {
             addColumn(dbCon, "CMS_OFFLINE_CONTENTS", "STORAGE", ADD_CMS_OFFLINE_CONTENTS_STORAGE);
@@ -173,6 +186,11 @@ public class CmsUpdateDBStorageSchema extends A_CmsUpdateDBPart {
                 "CMS_OFFLINE_CONTENTS",
                 INDEX_CMS_OFFLINE_CONTENTS_HASH,
                 CREATE_CMS_OFFLINE_CONTENTS_HASH_INDEX);
+            addIndex(
+                dbCon,
+                "CMS_OFFLINE_CONTENTS",
+                INDEX_CMS_OFFLINE_CONTENTS_STORAGE,
+                CREATE_CMS_OFFLINE_CONTENTS_STORAGE_INDEX);
         }
     }
 

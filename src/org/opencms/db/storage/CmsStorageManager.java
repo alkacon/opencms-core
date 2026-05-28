@@ -321,6 +321,17 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
+     * Returns a configured storage backend by its stable storage identifier.<p>
+     *
+     * @param storage the stable storage identifier
+     * @return the configured storage backend, or null if no such backend is configured
+     */
+    public I_CmsStorage getStorage(String storage) {
+
+        return m_storages.get(storage);
+    }
+
+    /**
      * Loads the content either from the provided local bytes or from external
      * storage.<p>
      *
