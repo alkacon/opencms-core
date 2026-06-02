@@ -303,21 +303,25 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String expiredStr = null;
         CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMessages msg = Messages.get().getBundle(locale);
         if (Boolean.parseBoolean(userSettings.getAdditionalPreference("showElementAvailability", true))) {
-            DateFormat fmt = DateFormat.getDateTimeInstance(
-                DateFormat.SHORT,
-                DateFormat.SHORT,
-                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            String nbsp = "\u00A0";
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            DateFormat dateFmt = DateFormat.getDateInstance(DateFormat.SHORT, wpLocale);
+            DateFormat timeFmt = DateFormat.getTimeInstance(DateFormat.SHORT, wpLocale);
+
             if (res.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                releasedStr = msg.key(
-                    Messages.GUI_AVAILABILITY_INFO_RELEASE_1,
-                    fmt.format(new Date(res.getDateReleased())));
+                releasedStr = nbsp
+                    + dateFmt.format(new Date(res.getDateReleased()))
+                    + nbsp
+                    + nbsp
+                    + timeFmt.format(new Date(res.getDateReleased()));
             }
             if (res.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                expiredStr = msg.key(
-                    Messages.GUI_AVAILABILITY_INFO_EXPIRE_1,
-                    fmt.format(new Date(res.getDateExpired())));
+                expiredStr = nbsp
+                    + dateFmt.format(new Date(res.getDateExpired()))
+                    + nbsp
+                    + nbsp
+                    + timeFmt.format(new Date(res.getDateExpired()));
             }
         }
         return new CmsAvailabilityInfo(releasedStr, expiredStr);
