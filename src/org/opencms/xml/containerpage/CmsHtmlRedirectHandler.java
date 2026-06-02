@@ -34,6 +34,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -109,7 +110,27 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
             // only show NewWindow field if the template.redirect.newwindow.keyword sitemap attribute is set
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(cms, resource.getRootPath());
             String attr = getNewWindowKeyword(config);
-            return attr != null;
+            if (attr == null) {
+                return false;
+            }
+            if (OpenCms.getDefaultFiles().contains(resource.getName())) {
+                try {
+                    CmsProperty prop = cms.readPropertyObject(
+                        CmsResource.getParentFolder(cms.getSitePath(resource)),
+                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                        false);
+                    if (CmsJspNavBuilder.NAVIGATION_LEVEL_FOLDER.equals(prop.getValue())) {
+                        // for nav levels, the navigation properties are set on the folder, not on the redirect itself.
+                        // arguably, we could read/write the property to the folder, but that comes with complications.
+                        // but since the 'Open in New Window' feature is mainly intended for external links, we hide the content
+                        // field itself in the navlevel case
+                        return false;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return true;
         } else {
             return super.isVisible(cms, contentValue, valuePath, resource, contentLocale);
         }
