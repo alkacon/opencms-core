@@ -1605,6 +1605,7 @@ publishing {
                 description = product_description
                 packaging = 'jar'
                 groupId = 'org.opencms'
+                artifactId = "opencms-core${pVariant.get()}"
                 url = 'http://www.opencms.org'
                 scm {
                     url = 'scm:git@github.com:alkacon/opencms-core.git'
