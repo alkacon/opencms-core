@@ -66,9 +66,6 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
  */
 public class CmsLlmsGenerator {
 
-    /** Helper container for storing update results. */
-    protected record CmsLlmsFileContainer(CmsLlmsFile llmsbean, CmsFile llmsFile, boolean updated) {}
-
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLlmsGenerator.class);
 
@@ -361,6 +358,9 @@ public class CmsLlmsGenerator {
         }
         return new CmsLlmsFileContainer(null, null, false);
     }
+
+    /** Helper container for storing update results. */
+    protected record CmsLlmsFileContainer(CmsLlmsFile llmsbean, CmsFile llmsFile, boolean updated) {}
 
     /**
      * returns the initialized chat model to use for generating the llms.txt file.<p>

@@ -201,10 +201,7 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
 
         String result = "";
 
-        CmsLlmsGenerator llmsGenerator = new CmsLlmsGenerator(
-            m_configuration,
-            seoFile,
-            getCmsObject());
+        CmsLlmsGenerator llmsGenerator = new CmsLlmsGenerator(m_configuration, seoFile, getCmsObject());
         result = llmsGenerator.getLlmsText();
 
         return result;
