@@ -32,67 +32,22 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the default resource collectors.<p>
  */
-public class TestDefaultResourceCollectors extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestDefaultResourceCollectors(String arg0) {
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestDefaultResourceCollectors.class.getName());
-
-        suite.addTest(new TestDefaultResourceCollectors("testCollectSingleFile"));
-        suite.addTest(new TestDefaultResourceCollectors("testCollectAllInFolder"));
-        suite.addTest(new TestDefaultResourceCollectors("testCollectAllInFolderDateReleasedDesc"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                } catch (CmsException exc) {
-                    fail(exc.getMessage());
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestDefaultResourceCollectors extends OpenCmsTestRunner {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -116,20 +71,18 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the "singleFile" resource collector.<p>
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public void testCollectSingleFile() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing singleFile resource collector");
-
-        I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
-        List resources = collector.getResults(cms, "singleFile", "/file1");
-
-        CmsResource res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/file1", res.getRootPath());
+        CmsObject cms = setupOpenCms(testInfo);
+        try {
+            initResources(cms);
+        } catch (CmsException exc) {
+            fail(exc.getMessage());
+        }
     }
 
     /**
@@ -137,6 +90,8 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCollectAllInFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -162,6 +117,8 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCollectAllInFolderDateReleasedDesc() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -205,5 +162,24 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
 
         res = (CmsResource)resources.get(1);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
+    }
+
+    /**
+     * Tests the "singleFile" resource collector.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testCollectSingleFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing singleFile resource collector");
+
+        I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
+        List resources = collector.getResults(cms, "singleFile", "/file1");
+
+        CmsResource res = (CmsResource)resources.get(0);
+        assertEquals("/sites/default/file1", res.getRootPath());
     }
 }

@@ -50,8 +50,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.servlet.ServletRequestContext;
+import org.apache.commons.fileupload2.core.AbstractFileUpload;
+import org.apache.commons.fileupload2.javax.JavaxServletRequestContext;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
@@ -162,7 +162,8 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
     public Map<String, String> uploadFiles(
         final CmsUUID sessionId,
         final Set<String> fieldNames,
-        final String formDataId) throws CmsRpcException {
+        final String formDataId)
+    throws CmsRpcException {
 
         try {
             final CmsUgcSession session = getFormSession(sessionId);
@@ -239,7 +240,7 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
     protected void service(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
 
-        boolean isMultiPart = FileUploadBase.isMultipartContent(new ServletRequestContext(request));
+        boolean isMultiPart = AbstractFileUpload.isMultipartContent(new JavaxServletRequestContext(request));
 
         if (isMultiPart) {
             try {

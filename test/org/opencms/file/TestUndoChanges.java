@@ -32,90 +32,37 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  *
  */
-public class TestUndoChanges extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestUndoChanges(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestUndoChanges.class.getName());
-
-        suite.addTest(new TestUndoChanges("testUndoChangesResource"));
-        suite.addTest(new TestUndoChanges("testUndoChangesOnNewResource"));
-        suite.addTest(new TestUndoChanges("testUndoChangesFolder"));
-        suite.addTest(new TestUndoChanges("testUndoChangesFolderRecursive"));
-        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
-        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
-        suite.addTest(new TestUndoChanges("testUndoChangesWithAce"));
-        suite.addTest(new TestUndoChanges("testUndoChangesSharedProperty"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMove"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMoveContent"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolder"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolderAfterEdit"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolderNewFile"));
-        suite.addTest(new TestUndoChanges("testUndoChangesSubfolderAfterMoving"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFileAfterEdit"));
-        suite.addTest(new TestUndoChanges("testUndoChangesScenario1"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestUndoChanges extends OpenCmsTestRunner {
 
     /**
      * Test the touch method to touch a single resource.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChanges(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void undoChanges(OpenCmsTestRunner tc, CmsObject cms, String resource1) throws Throwable {
 
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
@@ -145,12 +92,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      *  Test undoChanges method to a single folder.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolder(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void undoChangesFolder(OpenCmsTestRunner tc, CmsObject cms, String resource1) throws Throwable {
 
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
@@ -206,12 +153,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a single folder and all resources within the folder.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1)
+    public static void undoChangesFolderRecursive(OpenCmsTestRunner tc, CmsObject cms, String resource1)
     throws Throwable {
 
         // create a global storage and store the resource
@@ -259,11 +206,23 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
      * Tests undo changes after a resource was deleted and another
      * resource was copied over the deleted file "as new".<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testUndoChangesAfterCopyNewOverDeleted() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -297,110 +256,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
 
     /**
-     * Tests undo changes of move operations as follows:<p>
-     *
-     * having following start structure:
-     * - (black) /folder
-     * - (black) /folder/subfolder
-     * - (black) /folder/subfolder/subsubfolder
-     *
-     * a. move /folder/subfolder to /subfolder
-     * b. move /subfolder/subsubfolder to /subsubfolder
-     * c. move /subfolder back to its starting location: /folder/subfolder
-     * d. undo changes of move operation for /subsubfolder
-     *
-     * to get following scenario:
-     * - (black) /folder
-     * - (red) /folder/subfolder
-     * - (black) /folder/subfolder/subsubfolder
-     *
-     * e. undo changes of move operation for /folder/subfolder
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testUndoChangesScenario1() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing undo changes after overwriting a deleted file with a new file");
-
-        String folder = "folder";
-        String subfolder = "subfolder";
-        String subsubfolder = "subsubfolder";
-        String file = "file";
-
-        // create starting point
-        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        cms.createResource(folder + "/" + file, CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource(folder + "/" + subfolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        cms.createResource(folder + "/" + subfolder + "/" + file, CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource(folder + "/" + subfolder + "/" + subsubfolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        cms.createResource(
-            folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
-            CmsResourceTypePlain.getStaticTypeId());
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        OpenCms.getPublishManager().publishResource(cms, folder);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        storeResources(cms, "/" + folder, true);
-
-        // a. move /folder/subfolder to /subfolder
-        cms.lockResource(folder + "/" + subfolder);
-        cms.moveResource(folder + "/" + subfolder, "/" + subfolder);
-
-        // b. move /subfolder/subsubfolder to /subsubfolder
-        cms.lockResource(subfolder + "/" + subsubfolder);
-        cms.moveResource(subfolder + "/" + subsubfolder, "/" + subsubfolder);
-
-        // c. move /subfolder back to its starting location: /folder/subfolder
-        cms.moveResource("/" + subfolder, folder + "/" + subfolder);
-
-        // d. undo changes of move operation for /subsubfolder
-        cms.undoChanges("/" + subsubfolder, CmsResource.UNDO_MOVE_CONTENT);
-
-        // check intermediate state
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_TOUCH);
-        assertFilter(cms, "/" + folder + "/" + subfolder + "/" + file, OpenCmsTestResourceFilter.FILTER_TOUCH);
-        assertFilter(
-            cms,
-            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
-            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
-        assertFilter(
-            cms,
-            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
-            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
-
-        // e. undo changes of move operation for /folder/subfolder
-        cms.lockResource(folder + "/" + subfolder);
-        cms.undoChanges(folder + "/" + subfolder, CmsResource.UNDO_MOVE_CONTENT);
-
-        // check final state, the same starting state
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
-        assertFilter(
-            cms,
-            "/" + folder + "/" + subfolder + "/" + file,
-            OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
-        assertFilter(
-            cms,
-            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
-            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
-        assertFilter(
-            cms,
-            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
-            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
-    }
-
-    /**
      * Tests undo changes after a resource was deleted and another
      * resource was copied over the deleted file "as sibling".<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testUndoChangesAfterCopySiblingOverDeleted() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -438,6 +300,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUndoChangesFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -450,6 +314,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUndoChangesFolderRecursive() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -462,6 +328,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testUndoChangesMove() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -524,6 +392,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testUndoChangesMoveContent() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -611,6 +481,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testUndoChangesMovedFileAfterEdit() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -658,6 +530,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testUndoChangesMovedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -690,6 +564,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testUndoChangesMovedFolderAfterEdit() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -738,6 +614,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testUndoChangesMovedFolderNewFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -791,6 +669,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUndoChangesOnNewResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -816,6 +696,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testUndoChangesResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -832,10 +714,114 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
 
     /**
+     * Tests undo changes of move operations as follows:<p>
+     *
+     * having following start structure:
+     * - (black) /folder
+     * - (black) /folder/subfolder
+     * - (black) /folder/subfolder/subsubfolder
+     *
+     * a. move /folder/subfolder to /subfolder
+     * b. move /subfolder/subsubfolder to /subsubfolder
+     * c. move /subfolder back to its starting location: /folder/subfolder
+     * d. undo changes of move operation for /subsubfolder
+     *
+     * to get following scenario:
+     * - (black) /folder
+     * - (red) /folder/subfolder
+     * - (black) /folder/subfolder/subsubfolder
+     *
+     * e. undo changes of move operation for /folder/subfolder
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(16)
+    public void testUndoChangesScenario1() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing undo changes after overwriting a deleted file with a new file");
+
+        String folder = "folder";
+        String subfolder = "subfolder";
+        String subsubfolder = "subsubfolder";
+        String file = "file";
+
+        // create starting point
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder + "/" + file, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(folder + "/" + subfolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder + "/" + subfolder + "/" + file, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(folder + "/" + subfolder + "/" + subsubfolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(
+            folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
+            CmsResourceTypePlain.getStaticTypeId());
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        storeResources(cms, "/" + folder, true);
+
+        // a. move /folder/subfolder to /subfolder
+        cms.lockResource(folder + "/" + subfolder);
+        cms.moveResource(folder + "/" + subfolder, "/" + subfolder);
+
+        // b. move /subfolder/subsubfolder to /subsubfolder
+        cms.lockResource(subfolder + "/" + subsubfolder);
+        cms.moveResource(subfolder + "/" + subsubfolder, "/" + subsubfolder);
+
+        // c. move /subfolder back to its starting location: /folder/subfolder
+        cms.moveResource("/" + subfolder, folder + "/" + subfolder);
+
+        // d. undo changes of move operation for /subsubfolder
+        cms.undoChanges("/" + subsubfolder, CmsResource.UNDO_MOVE_CONTENT);
+
+        // check intermediate state
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(cms, "/" + folder + "/" + subfolder + "/" + file, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(
+            cms,
+            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+        assertFilter(
+            cms,
+            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+
+        // e. undo changes of move operation for /folder/subfolder
+        cms.lockResource(folder + "/" + subfolder);
+        cms.undoChanges(folder + "/" + subfolder, CmsResource.UNDO_MOVE_CONTENT);
+
+        // check final state, the same starting state
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        assertFilter(cms, "/" + folder + "/", OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, "/" + folder + "/" + file, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, "/" + folder + "/" + subfolder + "/", OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+        assertFilter(
+            cms,
+            "/" + folder + "/" + subfolder + "/" + file,
+            OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+        assertFilter(
+            cms,
+            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+        assertFilter(
+            cms,
+            "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
+    }
+
+    /**
      * Tests undo changes after a folder was moved several times.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(17)
+    @Disabled
     public void testUndoChangesSeveralMovedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -884,6 +870,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testUndoChangesSharedProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -950,6 +938,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testUndoChangesSubfolderAfterMoving() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -984,6 +974,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testUndoChangesWithAce() throws Throwable {
 
         CmsObject cms = getCmsObject();

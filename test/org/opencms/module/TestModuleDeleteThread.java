@@ -31,8 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.workplace.threads.CmsModuleDeleteThread;
 
 import java.util.ArrayList;
@@ -40,63 +39,29 @@ import java.util.List;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the deleting of modules using the module delete thread,
  * comparing this to the deletion using the module manager alone.<p>
  */
-public class TestModuleDeleteThread extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestModuleDeleteThread extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestModuleDeleteThread(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestModuleDeleteThread.class.getName());
-
-        // test to delete a module without resources with a single and with two threads
-        suite.addTest(new TestModuleDeleteThread("testModuleDeleteThread"));
-        // test to delete a module with non-existing resources using the module delete thread
-        suite.addTest(new TestModuleDeleteThread("testModuleResourcesDeleteThread"));
-        // test to delete a module with non-existing resources using the CmsModuleManager - to compare with above
-        suite.addTest(new TestModuleDeleteThread("testModuleResourcesDelete"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-                // this test causes issues that are written to the error log channel
-                OpenCmsTestLogAppender.setBreakOnError(false);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
+        OpenCmsTestLogAppender.setBreakOnError(false);
     }
 
     /**
@@ -104,7 +69,11 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(1)
+    @Test
     public void testModuleDeleteThread() throws Exception {
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
 
         echo("Testing to delete a module without resources using the module delete thread.");
         // get a reference to the CmsObject
@@ -218,7 +187,11 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testModuleResourcesDelete() throws Throwable {
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
 
         echo("Test to delete a module with non-existing resources using the CmsModuleManager");
 
@@ -282,7 +255,11 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testModuleResourcesDeleteThread() throws Exception {
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
 
         echo("Test to delete a module with non-existing resources using the module delete thread");
 

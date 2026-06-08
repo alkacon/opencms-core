@@ -40,17 +40,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.HierarchicalContainer;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The category select dialog.<p>
@@ -78,6 +78,7 @@ public class CmsCategorySelectDialog extends CmsBasicDialog {
      * @param contextPath the context path to read the categories from
      */
     public CmsCategorySelectDialog(String contextPath) {
+
         m_selectionHandlers = new ArrayList<I_CmsSelectionHandler<Collection<CmsCategory>>>();
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 

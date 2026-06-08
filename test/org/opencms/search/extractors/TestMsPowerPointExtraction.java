@@ -27,17 +27,19 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-public class TestMsPowerPointExtraction extends OpenCmsTestCase {
+public class TestMsPowerPointExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the PowerPoint text extraction for old OLE2 documents.<p>
@@ -46,6 +48,7 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testPPtExtractionOLE2() throws Exception {
 
         ClassLoader classloader = org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
@@ -97,10 +100,69 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the PowerPoint text extraction for old OLE2 documents.<p>
+     *
+     * Also checks special chars like "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testPPtExtractionOLE2WithoutMetaData() throws Exception {
+
+        ClassLoader classloader = org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
+        URL res = classloader.getResource("org/apache/poi/poifs/filesystem/POIFSFileSystem.class");
+        String path = res.getPath();
+        System.out.println("Core POI came from " + path);
+
+        // open an input stream for the test file
+        @SuppressWarnings("resource")
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.ppt");
+
+        // extract the content
+        I_CmsExtractionResult extractionResult = CmsExtractorMsOfficeOLE2.getExtractor(false).extractText(in);
+        Map<String, String> items = extractionResult.getContentItems();
+
+        System.out.println("\n\n---------------------------------------------------------------");
+        System.out.println("Extracted from MS PowerPoint OLE2 without metadata:");
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
+        }
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
+        assertTrue(result.indexOf("Alkacon Software") > -1);
+        assertTrue(result.indexOf("The OpenCms experts") > -1);
+        assertTrue(result.indexOf("Some content here.") > -1);
+        assertTrue(result.indexOf("Some content there.") > -1);
+        assertTrue(result.indexOf("Some content on a second sheet.") > -1);
+        assertTrue(result.indexOf("Some content on the third sheet.") > -1);
+        // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
+        // this is "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_COMPANY));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_COMMENTS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_MANAGER));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CATEGORY));
+
+        // Tika 3 doesn't provide a subject field for OLE2 documents for some reason, so we can't test it here
+    }
+
+    /**
      * Tests the PowerPoint text extraction for new (MS Office 2007) OOXML documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testPPtExtractionOOXML() throws Exception {
 
         // open an input stream for the test file
@@ -147,5 +209,59 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
 
         // Tika 0.9 extracts the "creator" information from OOXML but not OLE2
         assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_CREATOR));
+    }
+
+    /**
+     * Tests the PowerPoint text extraction for new (MS Office 2007) OOXML documents.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testPPtExtractionOOXMLWithoutMetaData() throws Exception {
+
+        // open an input stream for the test file
+        @SuppressWarnings("resource")
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pptx");
+
+        // extract the content
+        I_CmsExtractionResult extractionResult = CmsExtractorMsOfficeOOXML.getExtractor(false).extractText(in);
+        Map<String, String> items = extractionResult.getContentItems();
+
+        System.out.println("\n\n---------------------------------------------------------------");
+        System.out.println("Extracted from MS PowerPoint (Office 2007 OOXML):");
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
+        }
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
+        assertTrue(result.indexOf("Alkacon Software") > -1);
+        assertTrue(result.indexOf("The OpenCms experts") > -1);
+        assertTrue(result.indexOf("Some content here.") > -1);
+        assertTrue(result.indexOf("Some content there.") > -1);
+        assertTrue(result.indexOf("Some content on a second sheet.") > -1);
+        assertTrue(result.indexOf("Some content on the third sheet.") > -1);
+        // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
+        // this is "&auml; &ouml; &uuml; &Auml; &Ouml; &Uuml; &szlig;"
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_SUBJECT));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CATEGORY));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_MANAGER));
+
+        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information
+        // assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
+        // assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
+
+        // Tika 0.9 extracts the "creator" information from OOXML but not OLE2
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CREATOR));
     }
 }

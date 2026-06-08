@@ -35,8 +35,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -51,34 +50,29 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests involving the resource types from the org.opencms.base module.
  *
  */
-public class TestBaseModule extends OpenCmsTestCase {
+public class TestBaseModule extends OpenCmsTestRunner {
 
-    /**
-     * Test constructor.<p>
-     *
-     * @param name the name of the test
-     */
-    public TestBaseModule(String name) {
+    static {
 
-        super(name);
+        CmsConfigurationCache.DEBUG = true;
     }
 
     /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsConfigurationCache.DEBUG = true;
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestBaseModule.class, "simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -86,6 +80,7 @@ public class TestBaseModule extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testEditorLabels() throws Exception {
 
         try {

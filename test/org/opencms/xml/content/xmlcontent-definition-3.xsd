@@ -22,7 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+			<handler class="org.opencms.xml.content.CmsTestXmlContentHandler" />
 			<validationrules>
 				<rule element="Html" regex="!.*err.*" />
 				<rule element="VfsLink" regex="!/system/workplace/.*" type="warning" />

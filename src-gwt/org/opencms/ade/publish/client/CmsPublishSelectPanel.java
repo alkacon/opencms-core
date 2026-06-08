@@ -726,7 +726,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Updates the dialog title.<p>
-     **/
+     */
     public void updateDialogTitle() {
 
         String title;

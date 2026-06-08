@@ -29,8 +29,7 @@ package org.opencms.main;
 
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.module.CmsModuleVersion;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -38,9 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for {@link CmsSystemInfo}.
@@ -48,57 +50,24 @@ import junit.framework.TestSuite;
  *
  * @since 6.0.0
  */
-public class TestCmsSystemInfo extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSystemInfo extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsSystemInfo(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSystemInfo.class.getName());
-
-        suite.addTest(new TestCmsSystemInfo("testGetConfigurationFileRfsPath"));
-        suite.addTest(new TestCmsSystemInfo("testGetAbsoluteRfsPathRelativeToWebApplication"));
-        suite.addTest(new TestCmsSystemInfo("testGetAbsoluteRfsPathRelativeToWebInf"));
-        suite.addTest(new TestCmsSystemInfo("testOpenCmsVersionPropertiesFile"));
-        suite.addTest(new TestCmsSystemInfo("testOpenCmsVersionAndBuildNumber"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, "/sites/default/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo);
     }
 
     /**
      * Tests {@link CmsSystemInfo#getAbsoluteRfsPathRelativeToWebApplication(String)}.
      */
+    @Order(2)
+    @Test
     public void testGetAbsoluteRfsPathRelativeToWebApplication() {
 
         CmsSystemInfo sysinfo = OpenCms.getSystemInfo();
@@ -127,7 +96,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         path = path.trim();
         assertEquals(true, path.length() != 0);
         file = new File(path).getAbsoluteFile();
-        assertEquals(file.getAbsolutePath() + " does not exist.", true, file.exists());
+        assertEquals(true, file.exists(), file.getAbsolutePath() + " does not exist.");
         assertEquals(true, file.isFile());
 
     }
@@ -135,6 +104,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
     /**
      * Tests {@link CmsSystemInfo#getAbsoluteRfsPathRelativeToWebInf(String)}.
      */
+    @Order(3)
+    @Test
     public void testGetAbsoluteRfsPathRelativeToWebInf() {
 
         CmsSystemInfo sysinfo = OpenCms.getSystemInfo();
@@ -155,7 +126,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         path = path.trim();
         assertEquals(true, path.length() != 0);
         file = new File(path).getAbsoluteFile();
-        assertEquals(path + " does not exist.", true, file.exists());
+        assertEquals(true, file.exists(), path + " does not exist.");
         assertEquals(true, file.isDirectory());
 
         path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(
@@ -164,13 +135,15 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         path = path.trim();
         assertEquals(true, path.length() != 0);
         file = new File(path).getAbsoluteFile();
-        assertEquals(file.getAbsolutePath() + " does not exist.", true, file.exists());
+        assertEquals(true, file.exists(), file.getAbsolutePath() + " does not exist.");
         assertEquals(true, file.isFile());
     }
 
     /**
      * Tests {@link CmsSystemInfo#getConfigurationFileRfsPath()}.
      */
+    @Order(1)
+    @Test
     public void testGetConfigurationFileRfsPath() {
 
         CmsSystemInfo sysinfo = OpenCms.getSystemInfo();
@@ -190,6 +163,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
     /**
      * Tests the OpenCms version and build number.
      */
+    @Order(5)
+    @Test
     public void testOpenCmsVersionAndBuildNumber() {
 
         String configuredVersion = OpenCms.getSystemInfo().getVersionNumber();
@@ -222,7 +197,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         if (versionId.startsWith("Manual")) {
             // assume this is a manual build triggered outside of a CI system
 
-            assertEquals("Unexpected version ID '" + versionId + "'", "Manual build", versionId);
+            assertEquals("Manual build", versionId, "Unexpected version ID '" + versionId + "'");
 
             Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
             CmsSystemInfo.BuildInfoItem value;
@@ -247,25 +222,25 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
             Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
             // make sure we have the required values set
-            assertNotNull("build.date not set", info.get("build.date"));
-            assertNotNull("build.type not set", info.get("build.type"));
-            assertNotNull("build.system not set", info.get("build.system"));
-            assertNotNull("build.gitid not set", info.get("build.gitid"));
-            assertNotNull("build.gitbranch not set", info.get("build.gitbranch"));
+            assertNotNull(info.get("build.date"), "build.date not set");
+            assertNotNull(info.get("build.type"), "build.type not set");
+            assertNotNull(info.get("build.system"), "build.system not set");
+            assertNotNull(info.get("build.gitid"), "build.gitid not set");
+            assertNotNull(info.get("build.gitbranch"), "build.gitbranch not set");
 
             if (!versionId.startsWith("Milestone")) {
                 // don't use build number for Milestone builds as the continuation in the numbers is not assured
-                assertNotNull("build.number not set", info.get("build.number"));
-                assertEquals("Expected keys do not match", "build.number", info.get("build.number").getKeyName());
+                assertNotNull(info.get("build.number"), "build.number not set");
+                assertEquals("build.number", info.get("build.number").getKeyName(), "Expected keys do not match");
             }
 
-            assertEquals("Expected keys do not match", "build.date", info.get("build.date").getKeyName());
-            assertEquals("Expected keys do not match", "build.system", info.get("build.system").getKeyName());
+            assertEquals("build.date", info.get("build.date").getKeyName(), "Expected keys do not match");
+            assertEquals("build.system", info.get("build.system").getKeyName(), "Expected keys do not match");
 
-            assertTrue("The git commit ID should be 7 chars long", info.get("build.gitid").getValue().length() == 7);
+            assertTrue(info.get("build.gitid").getValue().length() == 7, "The git commit ID should be 7 chars long");
             assertTrue(
-                "We always assume the build system name starts with 'Jenkins'",
-                info.get("build.system").getValue().startsWith("Jenkins"));
+                info.get("build.system").getValue().startsWith("Jenkins"),
+                "We always assume the build system name starts with 'Jenkins'");
         } else {
             fail(
                 "No valid version information for test cases found, version id is '"
@@ -277,6 +252,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
     /**
      * Test to make sure that the version info file is available.
      */
+    @Order(4)
+    @Test
     public void testOpenCmsVersionPropertiesFile() {
 
         try {
@@ -331,13 +308,13 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         System.out.println("Configured Version: " + v2 + " [" + configuredVersion + "]");
 
         assertTrue(
+            larger == (v2.compareTo(v1) >= 0),
             "OpenCms Version number not set correctly, expected a version equal or "
                 + (larger ? "larger" : "smaller")
                 + " then ["
                 + expectedVersion
                 + "] but got ["
                 + configuredVersion
-                + "]",
-            larger == (v2.compareTo(v1) >= 0));
+                + "]");
     }
 }

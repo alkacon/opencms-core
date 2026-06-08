@@ -78,7 +78,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.Buffer;
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.logging.Log;
 
 /**
@@ -92,38 +92,23 @@ public abstract class CmsWorkplace {
     /** The debug flag. */
     public static final boolean DEBUG = false;
 
-    /** Path to the JSP workplace frame loader file. */
-    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
-
-    /** Request parameter name for the model file. */
-    public static final String PARAM_MODELFILE = "modelfile";
-
-    /** Request parameter name prefix for the preferred editors. */
-    public static final String INPUT_DEFAULT = "default";
-
-    /** Request parameter name for the resource list. */
-    public static final String PARAM_RESOURCELIST = "resourcelist";
-
-    /** Request parameter name for no settings in start galleries. */
-    public static final String INPUT_NONE = "none";
-
-    /** Path to system folder. */
-    public static final String VFS_PATH_SYSTEM = "/system/";
-
-    /** Path to sites folder. */
-    public static final String VFS_PATH_SITES = "/sites/";
-
-    /** Path to the workplace. */
-    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
-
-    /** Constant for the JSP dialogs path. */
-    public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
+    /** Default value for date last modified, the release and expire date. */
+    public static final String DEFAULT_DATE_STRING = "-";
 
     /** Parameter for the default locale. */
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     /** Parameter for the default language. */
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+
+    /** Path to system folder. */
+    public static final String VFS_PATH_SYSTEM = "/system/";
+
+    /** Path to the workplace. */
+    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
+
+    /** Constant for the JSP dialogs path. */
+    public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
 
     /** Constant for the JSP common files (e.g. error page) path. */
     public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
@@ -158,6 +143,36 @@ public abstract class CmsWorkplace {
     /** Helper variable to deliver the html start part. */
     public static final int HTML_START = 0;
 
+    /** Request parameter name prefix for the preferred editors. */
+    public static final String INPUT_DEFAULT = "default";
+
+    /** Request parameter name for no settings in start galleries. */
+    public static final String INPUT_NONE = "none";
+
+    /** Path to the JSP workplace frame loader file. */
+    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
+
+    /** Request parameter name for the directpublish parameter. */
+    public static final String PARAM_DIRECTPUBLISH = "directpublish";
+
+    /** Request parameter name for the model file. */
+    public static final String PARAM_MODELFILE = "modelfile";
+
+    /** Request parameter name for the new resource type. */
+    public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
+
+    /** Request parameter name for the publishsiblings parameter. */
+    public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
+
+    /** Request parameter name for the relatedresources parameter. */
+    public static final String PARAM_RELATEDRESOURCES = "relatedresources";
+
+    /** Request parameter name for the resource list. */
+    public static final String PARAM_RESOURCELIST = "resourcelist";
+
+    /** Request parameter name for the subresources parameter. */
+    public static final String PARAM_SUBRESOURCES = "subresources";
+
     /** The request parameter for the workplace project selection. */
     public static final String PARAM_WP_EXPLORER_RESOURCE = "wpExplorerResource";
 
@@ -166,6 +181,12 @@ public abstract class CmsWorkplace {
 
     /** The request parameter for the workplace site selection. */
     public static final String PARAM_WP_SITE = "wpSite";
+
+    /** The request parameter for the workplace start selection. */
+    public static final String PARAM_WP_START = "wpStart";
+
+    /** The request parameter for the workplace view selection. */
+    public static final String PARAM_WP_VIEW = "wpView";
 
     /** Constant for the JSP workplace path. */
     public static final String PATH_WORKPLACE = VFS_PATH_WORKPLACE;
@@ -194,29 +215,28 @@ public abstract class CmsWorkplace {
     /** Path to locales. */
     public static final String VFS_PATH_LOCALES = VFS_PATH_WORKPLACE + "locales/";
 
+    /** Absolute path to the model file dialog. */
+    public static final String VFS_PATH_MODELDIALOG = CmsWorkplace.VFS_PATH_COMMONS
+        + "newresource_xmlcontent_modelfile.jsp";
+
     /** Path to modules folder. */
     public static final String VFS_PATH_MODULES = VFS_PATH_SYSTEM + "modules/";
+
+    /** Absolute path to thenew resource dialog. */
+    public static final String VFS_PATH_NEWRESOURCEDIALOG = CmsWorkplace.VFS_PATH_COMMONS
+        + "newresource_xmlcontent.jsp";
 
     /** Path to system image folder. */
     public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
 
-    /** Constant for the direct edit view JSP. */
-    public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
-
-    /** Constant for the explorer view JSP. */
-    public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
+    /** Path to sites folder. */
+    public static final String VFS_PATH_SITES = "/sites/";
 
     /** Constant for the admin view JSP. */
     public static final String VIEW_ADMIN = CmsWorkplace.VFS_PATH_VIEWS + "admin/admin-fs.jsp";
 
-    /** Key name for the request attribute to indicate a multipart request was already parsed. */
-    protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
-
-    /** Key name for the request attribute to reload the folder tree view. */
-    protected static final String REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
-
-    /** Key name for the session workplace class. */
-    protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
+    /** Constant for the direct edit view JSP. */
+    public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
 
     /** The "explorerview" view selection. */
     public static final String VIEW_EXPLORER = "explorerview";
@@ -227,31 +247,17 @@ public abstract class CmsWorkplace {
     /** The "list" view selection. */
     public static final String VIEW_LIST = "listview";
 
-    /** Request parameter name for the directpublish parameter. */
-    public static final String PARAM_DIRECTPUBLISH = "directpublish";
+    /** Constant for the explorer view JSP. */
+    public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
 
-    /** Request parameter name for the publishsiblings parameter. */
-    public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
+    /** Key name for the request attribute to indicate a multipart request was already parsed. */
+    protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
 
-    /** Request parameter name for the relatedresources parameter. */
-    public static final String PARAM_RELATEDRESOURCES = "relatedresources";
+    /** Key name for the request attribute to reload the folder tree view. */
+    protected static final String REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
 
-    /** Request parameter name for the subresources parameter. */
-    public static final String PARAM_SUBRESOURCES = "subresources";
-
-    /** Default value for date last modified, the release and expire date. */
-    public static final String DEFAULT_DATE_STRING = "-";
-
-    /** Absolute path to the model file dialog. */
-    public static final String VFS_PATH_MODELDIALOG = CmsWorkplace.VFS_PATH_COMMONS
-        + "newresource_xmlcontent_modelfile.jsp";
-
-    /** Absolute path to thenew resource dialog. */
-    public static final String VFS_PATH_NEWRESOURCEDIALOG = CmsWorkplace.VFS_PATH_COMMONS
-        + "newresource_xmlcontent.jsp";
-
-    /** Request parameter name for the new resource type. */
-    public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
+    /** Key name for the session workplace class. */
+    protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplace.class);
@@ -264,12 +270,6 @@ public abstract class CmsWorkplace {
 
     /** The URI to the stylesheet resources (cached for performance reasons). */
     private static String m_styleUri;
-
-    /** The request parameter for the workplace view selection. */
-    public static final String PARAM_WP_VIEW = "wpView";
-
-    /** The request parameter for the workplace start selection. */
-    public static final String PARAM_WP_START = "wpStart";
 
     /** The current users OpenCms context. */
     private CmsObject m_cms;
@@ -290,7 +290,7 @@ public abstract class CmsWorkplace {
     private CmsMultiMessages m_messages;
 
     /** The list of multi part file items (if available). */
-    private List<FileItem> m_multiPartFileItems;
+    private List<DiskFileItem> m_multiPartFileItems;
 
     /** The map of parameters read from the current request. */
     private Map<String, String[]> m_parameterMap;
@@ -1696,13 +1696,13 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns a list of FileItem instances parsed from the request, in the order that they were transmitted.<p>
+     * Returns a list of DiskFileItem instances parsed from the request, in the order that they were transmitted.<p>
      *
      * This list is automatically initialized from the createParameterMapFromMultiPart(HttpServletRequest) method.<p>
      *
-     * @return list of FileItem instances parsed from the request, in the order that they were transmitted
+     * @return list of DiskFileItem instances parsed from the request, in the order that they were transmitted
      */
-    public List<FileItem> getMultiPartFileItems() {
+    public List<DiskFileItem> getMultiPartFileItems() {
 
         return m_multiPartFileItems;
     }
@@ -2069,7 +2069,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns all initialized parameters of the current workplace class
-     * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
+     * as request parameters, i.e. in the form <code>key1=value1&amp;key2=value2</code> etc.
      *
      * @return all initialized parameters of the current workplace class
      * as request parameters

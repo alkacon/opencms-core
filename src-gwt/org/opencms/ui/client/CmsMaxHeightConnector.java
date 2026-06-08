@@ -73,6 +73,7 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsMaxHeightConnector() {
+
         m_currentHeight = -1;
         m_rpc = getRpcProxy(I_CmsMaxHeightServerRpc.class);
     }

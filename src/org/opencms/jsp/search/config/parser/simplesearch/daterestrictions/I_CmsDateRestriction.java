@@ -47,6 +47,7 @@ public interface I_CmsDateRestriction {
      * Enum representing a time unit.<p>
      */
     enum TimeUnit {
+
         /** Days. */
         DAYS,
 

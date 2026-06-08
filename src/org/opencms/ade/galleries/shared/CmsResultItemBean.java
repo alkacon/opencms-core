@@ -32,9 +32,7 @@ import org.opencms.gwt.shared.sort.I_CmsHasPath;
 import org.opencms.util.CmsStringUtil;
 
 /**
- * A specific bean holding all info to be displayed in {@link org.opencms.ade.galleries.client.ui.CmsResultListItem}s.<p>
- *
- * @see org.opencms.ade.galleries.client.ui.CmsResultListItem
+ * A specific bean holding all info to be displayed in <code>CmsResultListItem</code>s.<p>
  *
  * @since 8.0.0
  */

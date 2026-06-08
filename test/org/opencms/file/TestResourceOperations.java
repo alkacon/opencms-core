@@ -27,90 +27,45 @@
 
 package org.opencms.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for basic resource operations without test import.<p>
  */
-public class TestResourceOperations extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestResourceOperations extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestResourceOperations(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
+        setupOpenCms(testInfo);
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestResourceOperations.class.getName());
-
-        suite.addTest(new TestResourceOperations("testGetFolderPath"));
-        suite.addTest(new TestResourceOperations("testGetName"));
-        suite.addTest(new TestResourceOperations("testGetParentFolder"));
-        suite.addTest(new TestResourceOperations("testGetPathLevel"));
-        suite.addTest(new TestResourceOperations("testGetPathPart"));
-        suite.addTest(new TestResourceOperations("testIsFolder"));
-        suite.addTest(new TestResourceOperations("testGetFolderPath"));
-        suite.addTest(new TestResourceOperations("testResourceNames"));
-        suite.addTest(new TestResourceOperations("testCreateResources"));
-        suite.addTest(new TestResourceOperations("testConstraintStartsWithDash"));
-
-        suite.addTest(new TestResourceOperations("testCreateReadFile"));
-        suite.addTest(new TestResourceOperations("testPublishFile"));
-        suite.addTest(new TestResourceOperations("testCreateSibling"));
-        suite.addTest(new TestResourceOperations("testCreateAccessFolders"));
-        suite.addTest(
-            new TestResourceOperations("testGenerateFileNameAfterReinitializingResourceManagerWithTemporaryProject"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, null, true);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
-
+    @Test
+    @Order(9)
     public void testConstraintStartsWithDash() throws Throwable {
-        assertTrue("CmsResource.NAME_CONSTRAINTS must start with a '-'.", CmsResource.NAME_CONSTRAINTS.startsWith("-"));
+
+        assertTrue(CmsResource.NAME_CONSTRAINTS.startsWith("-"), "CmsResource.NAME_CONSTRAINTS must start with a '-'.");
     }
 
     /**
@@ -118,6 +73,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testCreateAccessFolders() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -165,6 +122,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testCreateReadFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -184,6 +143,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testCreateResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -214,6 +175,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testCreateSibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -244,6 +207,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(15)
     public void testGenerateFileNameAfterReinitializingResourceManagerWithTemporaryProject() throws Exception {
 
         getCmsObject().createResource("/testGenerateFileName", 0);
@@ -268,6 +233,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testGetFolderPath() throws Throwable {
 
         echo("Testing testGetFolderPath");
@@ -278,10 +245,25 @@ public class TestResourceOperations extends OpenCmsTestCase {
     }
 
     /**
+     * Repeats the legacy duplicate suite entry for {@link #testGetFolderPath()}.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(7)
+    @DisplayName("testGetFolderPath")
+    public void testGetFolderPathDuplicate() throws Throwable {
+
+        testGetFolderPath();
+    }
+
+    /**
      * Tests the static "getName" method.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testGetName() throws Throwable {
 
         echo("Testing testGetName");
@@ -294,6 +276,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testGetParentFolder() throws Throwable {
 
         echo("Testing testGetParentFolder");
@@ -306,6 +290,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testGetPathLevel() throws Throwable {
 
         echo("Testing testGetPathLevel");
@@ -322,6 +308,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testGetPathPart() throws Throwable {
 
         echo("Testing testGetPathPart");
@@ -339,6 +327,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testIsFolder() throws Throwable {
 
         echo("Testing testIsFolder");
@@ -349,6 +339,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testPublishFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -384,6 +376,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testResourceNames() throws Throwable {
 
         CmsObject cms = getCmsObject();

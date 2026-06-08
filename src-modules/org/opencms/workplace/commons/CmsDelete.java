@@ -334,8 +334,9 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
         fillParamValues(request);
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamDeleteSiblings())) {
-            setParamDeleteSiblings(Boolean.toString(
-                getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
+            setParamDeleteSiblings(
+                Boolean.toString(
+                    getSettings().getUserSettings().getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS));
         }
         // check the required permissions to delete the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {

@@ -33,69 +33,38 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /** Test cases for the plain query search configuration parser. */
-public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestCase {
+public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestPlainQuerySearchConfigurationParser(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestPlainQuerySearchConfigurationParser("testSpecialParamExtraction"));
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
      * Tests the extraction of the core, index and maxresults parameters.
      * @throws CmsException if the cms object cannot be retrieved.
      */
-    @org.junit.Test
+    @Test
     public void testSpecialParamExtraction() throws CmsException {
 
         CmsObject cms = getCmsObject();

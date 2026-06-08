@@ -27,22 +27,25 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestMsExcelExtraction extends OpenCmsTestCase {
+public class TestMsExcelExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOLE2() throws Exception {
 
         // open an input stream for the test file
@@ -88,10 +91,60 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the Excel text extraction for old OLE2 documents.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testExcelExtractionOLE2WithoutMetaData() throws Exception {
+
+        // open an input stream for the test file
+        @SuppressWarnings("resource")
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xls");
+
+        // extract the content
+        I_CmsExtractionResult extractionResult = CmsExtractorMsOfficeOLE2.getExtractor(false).extractText(in);
+        Map<String, String> items = extractionResult.getContentItems();
+
+        System.out.println("\n\n---------------------------------------------------------------");
+        System.out.println("Extracted from MS Excel (OLE2) without meta data:");
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
+        }
+
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
+        assertTrue(result.indexOf("Alkacon Software") > -1);
+        assertTrue(result.indexOf("The OpenCms experts") > -1);
+        assertTrue(result.indexOf("Some content here.") > -1);
+        assertTrue(result.indexOf("Some content there.") > -1);
+        assertTrue(result.indexOf("Some content on a second sheet.") > -1);
+        assertTrue(result.indexOf("Some content on the third sheet.") > -1);
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_COMPANY));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_COMMENTS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_MANAGER));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CATEGORY));
+
+    }
+
+    /**
      * Tests the Excel text extraction for new (MS Office 2007) OOXML documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOOXML() throws Exception {
 
         // open an input stream for the test file
@@ -139,5 +192,60 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
 
         // Tika 0.9 extracts the "creator" information from OOXML but not OLE2
         assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_CREATOR));
+    }
+
+    /**
+     * Tests the Excel text extraction for new (MS Office 2007) OOXML documents.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testExcelExtractionOOXMLWithoutMetaData() throws Exception {
+
+        // open an input stream for the test file
+        @SuppressWarnings("resource")
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xlsx");
+
+        // extract the content
+        I_CmsExtractionResult extractionResult = CmsExtractorMsOfficeOOXML.getExtractor(false).extractText(in);
+        Map<String, String> items = extractionResult.getContentItems();
+
+        System.out.println("\n\n---------------------------------------------------------------");
+        System.out.println("Extracted from MS Excel (Office 2007 OOXML) without metadata:");
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
+        }
+
+        //This should be 10, adding 9 for CmsTextExtractor.extractText, and adding one for new CmsExtractionResult.
+        // assertEquals(10, items.size());
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
+        assertTrue(result.indexOf("Alkacon Software") > -1);
+        assertTrue(result.indexOf("The OpenCms experts") > -1);
+        assertTrue(result.indexOf("Some content here.") > -1);
+        assertTrue(result.indexOf("Some content there.") > -1);
+        assertTrue(result.indexOf("Some content on a second sheet.") > -1);
+        assertTrue(result.indexOf("Some content on the third sheet.") > -1);
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_SUBJECT));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_MANAGER));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CATEGORY));
+
+        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information
+        // assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
+        // assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
+
+        // Tika 0.9 extracts the "creator" information from OOXML but not OLE2
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CREATOR));
     }
 }

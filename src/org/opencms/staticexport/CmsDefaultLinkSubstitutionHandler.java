@@ -733,7 +733,7 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     }
 
     /**
-     * Checks if the link target is a secure link.<p
+     * Checks if the link target is a secure link.<p>
      *
      * @param cms the current CMS context
      * @param vfsName the path of the link target

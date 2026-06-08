@@ -44,6 +44,7 @@ public class CmsPatternPanelMonthlyController extends A_CmsPatternPanelControlle
      * @param changeHandler the change handler.
      */
     CmsPatternPanelMonthlyController(final CmsSerialDateValue model, final I_ChangeHandler changeHandler) {
+
         super(model, changeHandler);
         m_view = new CmsPatternPanelMonthlyView(this, m_model);
     }

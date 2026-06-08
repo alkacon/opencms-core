@@ -138,7 +138,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     public static final String ERR_UNMARSHALLING_XML_SCHEMA_NOT_FOUND_2 = "ERR_UNMARSHALLING_XML_SCHEMA_NOT_FOUND_2";
 
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNREGISTERED_TYPE_1 = "ERR_UNREGISTERED_TYPE_1";
 

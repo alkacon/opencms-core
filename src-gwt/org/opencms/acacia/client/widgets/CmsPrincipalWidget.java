@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * The principal select widget.<p>
- **/
+ */
 public class CmsPrincipalWidget extends Composite implements I_CmsEditWidget {
 
     /** Value of the activation. */

@@ -39,7 +39,6 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 

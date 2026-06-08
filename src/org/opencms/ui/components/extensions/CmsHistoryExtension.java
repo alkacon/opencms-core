@@ -46,6 +46,7 @@ public class CmsHistoryExtension extends AbstractExtension {
      * @param ui the UI to extend
      */
     public CmsHistoryExtension(UI ui) {
+
         extend(ui);
     }
 

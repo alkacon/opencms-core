@@ -204,7 +204,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      * Alternatively, the macro can have the form <code>%(number:n)</code> with <code>n = {1...9}</code>, for example <code>%(number:6)</code>.
      * In this case the default digits will be ignored and instead the digits provided as "n" will be used.<p>
      *
-     * @param cms the current OpenCms user context
+     * @param userCms the current OpenCms user context
      * @param namePattern the  pattern to be used when generating the new resource name
      * @param defaultDigits the default number of digits to use for numbering the created file names
      * @param explorerMode if true, the file name is first tried without a numeric macro, also underscores are inserted automatically before the number macro and don't need to be part of the name pattern

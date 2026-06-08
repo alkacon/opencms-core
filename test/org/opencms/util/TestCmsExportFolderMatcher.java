@@ -28,24 +28,27 @@
 package org.opencms.util;
 
 import org.opencms.staticexport.CmsExportFolderMatcher;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @since 6.0.0
  */
-public class TestCmsExportFolderMatcher extends OpenCmsTestCase {
+public class TestCmsExportFolderMatcher extends OpenCmsTestRunner {
 
     private static String checkRes = "/system/opencms.ini";
 
     /**
      * Tests for the resource name translation.<p>
      */
+    @Test
     public void testTranslateResource() {
 
         /** default folders. */
-        ArrayList folders = new ArrayList();
+        ArrayList<String> folders = new ArrayList<String>();
 
         folders.add("\\/sites\\/.*");
         folders.add("\\/system\\/galleries\\/.*");
@@ -55,25 +58,25 @@ public class TestCmsExportFolderMatcher extends OpenCmsTestCase {
 
         boolean test;
         test = matcher.match("/system/opencms.ini");
-        assertEquals(test, true);
+        assertEquals(true, test);
 
         test = matcher.match("/sites/default/index.html");
-        assertEquals(test, true);
+        assertEquals(true, test);
 
         test = matcher.match("/sites/default/folder/index.html");
-        assertEquals(test, true);
+        assertEquals(true, test);
 
         test = matcher.match("/gibtsnicht/index.html");
-        assertEquals(test, false);
+        assertEquals(false, test);
 
         test = matcher.match("/system/galleries/pics/demo.gif");
-        assertEquals(test, true);
+        assertEquals(true, test);
 
         test = matcher.match("/system/modules/org.opencms.welcome/resources/test.gif");
-        assertEquals(test, true);
+        assertEquals(true, test);
 
         test = matcher.match("/system/modules/org.opencms.welcome/templates/test.jsp");
-        assertEquals(test, false);
+        assertEquals(false, test);
 
     }
 

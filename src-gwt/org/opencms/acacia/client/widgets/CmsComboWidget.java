@@ -244,7 +244,7 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget, I_CmsH
      * Helper function for parsing the configuration of the combo-box.<p>
      *
      * @param config the configuration string.
-     * */
+     */
     private void parseConfiguration(String config) {
 
         CmsSelectConfigurationParser parser = new CmsSelectConfigurationParser(config);

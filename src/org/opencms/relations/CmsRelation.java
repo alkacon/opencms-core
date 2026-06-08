@@ -46,7 +46,7 @@ import com.google.common.base.Objects;
 public class CmsRelation {
 
     /**
-     * A comparator for the source & target path plus the relation type of 2 relations.<p>
+     * A comparator for the source &amp; target path plus the relation type of 2 relations.<p>
      */
     public static final Comparator<CmsRelation> COMPARATOR = new Comparator<CmsRelation>() {
 

@@ -37,7 +37,8 @@ import org.opencms.util.CmsStringUtil;
  * <ul>
  * <li>{@link #FALSE}: Direct edit is disabled.
  * <li>{@link #AUTO}: Direct edit button HTML is inserted automatically.
- * <li>{@link #MANUAL}: Direct edit button HTML is inserted manually by using &ltcms: editable mode="manual" /&gt tags.
+ * <li>{@link #MANUAL}: Direct edit button HTML is inserted manually by using
+ * <code>&lt;cms: editable mode="manual" /&gt;</code> tags.
  * </ul>
  *
  * There is one global option set for the page / template.

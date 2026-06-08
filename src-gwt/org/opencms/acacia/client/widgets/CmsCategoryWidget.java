@@ -68,7 +68,7 @@ import jsinterop.base.Js;
 
 /**
  * Provides a standard HTML form category widget, for use on a widget dialog.<p>
- **/
+ */
 public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_CmsHasResizeOnShow {
 
     /**
@@ -172,7 +172,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
 
     /** If true, the categories are shown separate for each repository. */
     private boolean m_showWithRepository;
-
 
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
@@ -364,6 +363,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
      * Is called to open the popup.<p>
      */
     protected void openPopup() {
+
         elemental2.dom.Element myElem = Js.cast(getElement());
         boolean center = false;
         int spaceForTree = (int)(DomGlobal.window.innerHeight - myElem.getBoundingClientRect().bottom) - 115;
@@ -374,7 +374,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
         if (m_cmsPopup == null) {
             int width = Math.max(getOffsetWidth(), CmsPopup.WIDE_WIDTH);
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), width);
-
 
             m_cmsCategoryTree = new CmsCategoryTree(
                 m_selected,
@@ -415,7 +414,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
 
     /**
      * Generates the right height for the view.<p>
-     * */
+     */
     protected void setHeight() {
 
         if (m_categoryField.getValuesSet() > 0) {
@@ -494,7 +493,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
      * Help function to parse the configuration.<p>
      * @param configuration the value to be parsed.
      *
-     * */
+     */
     private void parseConfiguration(String configuration) {
 
         Map<String, String> configOptions = CmsWidgetUtil.parsePipeSeparatedConfigString(configuration);

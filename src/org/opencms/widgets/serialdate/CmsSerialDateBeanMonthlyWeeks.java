@@ -77,6 +77,7 @@ public class CmsSerialDateBeanMonthlyWeeks extends A_CmsSerialDateBean {
         int interval,
         SortedSet<WeekOfMonth> weeksOfMonth,
         WeekDay weekDay) {
+
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
         m_interval = interval;
         m_weeksOfMonth = weeksOfMonth;

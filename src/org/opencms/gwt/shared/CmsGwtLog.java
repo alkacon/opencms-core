@@ -38,7 +38,7 @@ public class CmsGwtLog {
     /**
      * Logs a message to the browser console if possible.<p>
      *
-     * @param message the message to log
+     * @param mesage the message to log
      */
     public static void log(String mesage) {
 

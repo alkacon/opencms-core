@@ -50,12 +50,18 @@ public class CmsSitemapChange implements IsSerializable, Comparable<CmsSitemapCh
     /** The change types. */
     public enum ChangeType {
         /** Making a detail page the default. */
-        bumpDetailPage, /** The clip-board only change. */
-        clipboardOnly, /** The create/new change. */
-        create, /** The delete resource change. */
-        delete, /** The modify change. */
-        modify, /** The remove from navigation change. */
-        remove, /** The undelete resource change. */
+        bumpDetailPage,
+        /** The clip-board only change. */
+        clipboardOnly,
+        /** The create/new change. */
+        create,
+        /** The delete resource change. */
+        delete,
+        /** The modify change. */
+        modify,
+        /** The remove from navigation change. */
+        remove,
+        /** The undelete resource change. */
         undelete
     }
 

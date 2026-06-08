@@ -73,6 +73,7 @@ public class CmsGalleryFilteredNavTreeBuilder {
          * @param navElement the navigation element
          */
         NavigationNode(CmsJspNavElement navElement) {
+
             m_navElement = navElement;
         }
 
@@ -303,6 +304,7 @@ public class CmsGalleryFilteredNavTreeBuilder {
      * @param rootPath the root path
      */
     public CmsGalleryFilteredNavTreeBuilder(CmsObject cms, String rootPath) {
+
         CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
         m_navBuilder = navBuilder;
         CmsJspNavElement rootNav = navBuilder.getNavigationForResource(

@@ -148,7 +148,8 @@ public class CmsTranslationUtil {
     /**
      * Collects the translatable XML values for the given locale.<p>
      *
-     * @param xmlContent the XML content
+     * @param cms the CMS context
+     * @param m_xmlContent the XML content
      * @param locale the locale to read
      *
      * @return the translatable values

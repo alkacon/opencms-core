@@ -47,9 +47,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.CustomField;
 import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.ui.Window;
 
 /**
  * The category select field.<p>
@@ -70,7 +70,7 @@ implements I_CmsSelectionHandler<Collection<CmsCategory>> {
     private CmsCategoryTree m_tree;
 
     /**
-     * @see com.vaadin.ui.AbstractField#getType()
+     * @see com.vaadin.v7.ui.AbstractField#getType()
      */
     @Override
     public Class<? extends String> getType() {
@@ -88,7 +88,7 @@ implements I_CmsSelectionHandler<Collection<CmsCategory>> {
     }
 
     /**
-     * @see com.vaadin.ui.AbstractField#getInternalValue()
+     * @see com.vaadin.v7.ui.AbstractField#getInternalValue()
      */
     @Override
     protected String getInternalValue() {
@@ -146,7 +146,7 @@ implements I_CmsSelectionHandler<Collection<CmsCategory>> {
     }
 
     /**
-     * @see com.vaadin.ui.AbstractField#setInternalValue(java.lang.Object)
+     * @see com.vaadin.v7.ui.AbstractField#setInternalValue(java.lang.Object)
      */
     @Override
     protected void setInternalValue(String newValue) {

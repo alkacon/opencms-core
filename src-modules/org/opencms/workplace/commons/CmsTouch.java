@@ -126,7 +126,8 @@ public class CmsTouch extends CmsMultiDialog {
         long timeStamp,
         boolean recursive,
         boolean correctDate,
-        boolean touchContent) throws CmsException {
+        boolean touchContent)
+    throws CmsException {
 
         CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
         if (!correctDate) {

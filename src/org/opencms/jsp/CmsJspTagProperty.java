@@ -208,7 +208,7 @@ public class CmsJspTagProperty extends TagSupport {
 
         /** Constructor.<p>
          * @param name the string representation of the constant
-         **/
+         */
         private FileUse(String name) {
 
             m_name = name;

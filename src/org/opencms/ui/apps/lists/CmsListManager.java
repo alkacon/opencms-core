@@ -858,8 +858,8 @@ I_CmsCachableApp, I_CmsResultFacetsManager {
                     && ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED) == null)
                         || ((Boolean)item.getItemProperty(
                             CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue())) {
-                                style += OpenCmsTheme.IN_NAVIGATION + " ";
-                            }
+                    style += OpenCmsTheme.IN_NAVIGATION + " ";
+                }
                 if (INFO_PROPERTY_LABEL.equals(propertyId)) {
                     if (blacklisted.booleanValue()) {
                         style += OpenCmsTheme.TABLE_COLUMN_BOX_BLACK;
@@ -1157,23 +1157,23 @@ I_CmsCachableApp, I_CmsResultFacetsManager {
             crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX))) {
-                crumbs.put(
-                    CmsListManagerConfiguration.APP_ID,
-                    CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
-                String title = "";
-                try {
-                    title = A_CmsUI.getCmsObject().readPropertyObject(
-                        m_currentResource,
-                        CmsPropertyDefinition.PROPERTY_TITLE,
-                        false).getValue();
-                } catch (Exception e) {
-                    // ignore
-                }
-                if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = m_currentResource.getName();
-                }
-                crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_VIEW_1, title));
+            crumbs.put(
+                CmsListManagerConfiguration.APP_ID,
+                CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_TITLE_0));
+            String title = "";
+            try {
+                title = A_CmsUI.getCmsObject().readPropertyObject(
+                    m_currentResource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+            } catch (Exception e) {
+                // ignore
             }
+            if ((m_currentResource != null) && CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = m_currentResource.getName();
+            }
+            crumbs.put("", CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_VIEW_1, title));
+        }
         return crumbs;
     }
 

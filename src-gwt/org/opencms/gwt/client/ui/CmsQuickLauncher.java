@@ -92,7 +92,7 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
          * Processes a click on a quick launch item.
          *
          * @param data the bean representing the quick launch item
-         * */
+         */
         void handleQuickLaunch(CmsQuickLaunchData data);
     }
 
@@ -158,6 +158,7 @@ public class CmsQuickLauncher extends CmsMenuButton implements I_CmsToolbarButto
          * @param iconHtml the icon HTML prefixed with 'fonticon:'
          */
         protected FontIconHtml(String iconHtml) {
+
             m_html = iconHtml.substring(FONT_ICON_PREFIX.length());
         }
 

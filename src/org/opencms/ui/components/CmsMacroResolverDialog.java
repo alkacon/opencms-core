@@ -51,8 +51,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Class for a dialog to show macros of a sitemap folder and allow the user to edit them.<p>
@@ -88,6 +88,7 @@ public class CmsMacroResolverDialog extends CmsBasicDialog {
      * @param resource (folder) to resolve macros in.
      */
     public CmsMacroResolverDialog(Runnable okAction, Runnable cancelAction, CmsResource resource) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_okAction = okAction;
 
@@ -205,10 +206,11 @@ public class CmsMacroResolverDialog extends CmsBasicDialog {
      */
     private Properties getLocalizedBundle(CmsObject cms, String path) throws CmsException, IOException {
 
-        CmsResource bundleResource = cms.readResource(path
-            + CmsSiteManager.MACRO_FOLDER
-            + "/"
-            + getAvailableLocalVariant(cms, path + CmsSiteManager.MACRO_FOLDER + "/", CmsSiteManager.BUNDLE_NAME));
+        CmsResource bundleResource = cms.readResource(
+            path
+                + CmsSiteManager.MACRO_FOLDER
+                + "/"
+                + getAvailableLocalVariant(cms, path + CmsSiteManager.MACRO_FOLDER + "/", CmsSiteManager.BUNDLE_NAME));
 
         Properties ret = new Properties();
         InputStreamReader reader = new InputStreamReader(

@@ -48,6 +48,7 @@ public class CmsFocusAwareTextBox extends CmsTextBox {
 
     /** Default constructor. */
     public CmsFocusAwareTextBox() {
+
         super();
         super.addFocusHandler(new FocusHandler() {
 

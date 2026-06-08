@@ -64,7 +64,7 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
      * @param type the project type
      * @param name the project name
      * @param description the project description
-     **/
+     */
     public CmsProjectBean(CmsUUID id, int type, String name, String description) {
 
         m_id = id;

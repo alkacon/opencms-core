@@ -50,6 +50,7 @@ public class CmsRectangle {
      * Hidden default constructor.<p>
      */
     protected CmsRectangle() {
+
         // do nothing
     }
 

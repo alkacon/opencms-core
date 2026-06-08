@@ -75,7 +75,7 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
      *
      * It may be empty if we are on the new indexsource dialog (/searchindex/new-indexsource.jsp).<p>
      *
-     **/
+     */
     public static final String PARAM_INDEXSOURCE = "indexsource";
 
     /** The user object that is edited on this dialog. */

@@ -35,9 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItemWidget}s.<p>
- *
- * @see org.opencms.gwt.client.ui.CmsListItemWidget
+ * A bean holding all info to be displayed in <code>CmsListItemWidget</code>s.<p>
  *
  * @since 8.0.0
  */

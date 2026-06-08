@@ -27,22 +27,24 @@
 
 package org.opencms.ugc;
 
-import org.apache.commons.fileupload.FileItem;
+import java.io.IOException;
+
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
- * Implementation of the I_CmsFormDataItem which delegates its methods to a FileItem from Apache Commons Upload.<p>
+ * Implementation of the I_CmsFormDataItem which delegates its methods to a DiskFileItem from Apache Commons Upload.<p>
  */
 public class CmsUgcDataItem implements I_CmsFormDataItem {
 
     /** The wrapped file item. */
-    private FileItem m_fileItem;
+    private DiskFileItem m_fileItem;
 
     /**
      * Creates a new instance.<p>
      *
      * @param item the file item to wrap
      */
-    public CmsUgcDataItem(FileItem item) {
+    public CmsUgcDataItem(DiskFileItem item) {
 
         m_fileItem = item;
     }
@@ -53,7 +55,11 @@ public class CmsUgcDataItem implements I_CmsFormDataItem {
     @Override
     public byte[] getData() {
 
-        return m_fileItem.get();
+        try {
+            return m_fileItem.get();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

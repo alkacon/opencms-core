@@ -27,8 +27,14 @@
 
 package org.opencms.search;
 
+import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A document type specifies which document factory class is used to pull the
@@ -40,13 +46,16 @@ import java.util.List;
  *
  * @since 6.0.0
  */
-public class CmsSearchDocumentType {
+public class CmsSearchDocumentType implements I_CmsConfigurationParameterHandler {
 
     /** The name of the document factory class. */
     private String m_className;
 
     /** The mimetype to trigger the document factory class. */
     private List<String> m_mimeTypes;
+
+    /** The parameters for the document factory class. */
+    private Map<String, String> m_params;
 
     /** The logical key/name of this document type. */
     private String m_name;
@@ -59,8 +68,19 @@ public class CmsSearchDocumentType {
      */
     public CmsSearchDocumentType() {
 
-        m_resourceTypes = new ArrayList<String>();
-        m_mimeTypes = new ArrayList<String>();
+        m_resourceTypes = new ArrayList<>();
+        m_mimeTypes = new ArrayList<>();
+        m_params = new HashMap<>();
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        m_params.put(paramName, paramValue);
+
     }
 
     /**
@@ -94,6 +114,15 @@ public class CmsSearchDocumentType {
     }
 
     /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    @Override
+    public CmsParameterConfiguration getConfiguration() {
+
+        return new CmsParameterConfiguration(m_params);
+    }
+
+    /**
      * Returns the mimetypes to trigger the document factory class.<p>
      *
      * @return the mimetypes to trigger the document factory class
@@ -121,6 +150,16 @@ public class CmsSearchDocumentType {
     public List<String> getResourceTypes() {
 
         return m_resourceTypes;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    @Override
+    public void initConfiguration() throws CmsConfigurationException {
+
+        // Do nothing
+
     }
 
     /**

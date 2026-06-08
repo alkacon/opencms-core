@@ -52,10 +52,10 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.v7.ui.ComboBox;
 
 /**
  * Dialog used to copy container pages including their elements.<p>
@@ -84,6 +84,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
          */
         @SuppressWarnings("synthetic-access")
         public TargetInfo(CmsObject cms, String path) {
+
             try {
                 if (CmsStringUtil.isPrefixPath(CmsResource.VFS_FOLDER_SITES, path)
                     || (OpenCms.getSiteManager().getSiteForRootPath(path) != null)) {
@@ -205,6 +206,7 @@ public class CmsCopyPageDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsCopyPageDialog(I_CmsDialogContext context) {
+
         m_context = context;
         displayResourceInfo(context.getResources());
         initButtons();

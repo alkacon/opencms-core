@@ -44,4 +44,15 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
         return CmsSqlManager.getInstance(classname);
     }
+
+    /**
+     * @see org.opencms.db.generic.CmsVfsDriver#initSqlManager(String, java.util.List)
+     */
+    @Override
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(
+        String classname,
+        java.util.List<String> additionalQueryProperties) {
+
+        return CmsSqlManager.getInstance(classname, additionalQueryProperties);
+    }
 }

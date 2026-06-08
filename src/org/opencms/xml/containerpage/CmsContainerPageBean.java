@@ -69,7 +69,7 @@ public class CmsContainerPageBean {
      * Creates a new container page bean.<p>
      *
      * @param containers the containers
-     **/
+     */
     public CmsContainerPageBean(List<CmsContainerBean> containers) {
 
         // we want to preserve container order

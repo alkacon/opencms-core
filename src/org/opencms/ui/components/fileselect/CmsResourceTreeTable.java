@@ -143,7 +143,7 @@ public class CmsResourceTreeTable extends TreeTable {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.ui.Table.CellStyleGenerator#getStyle(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+         * @see com.vaadin.v7.ui.Table.CellStyleGenerator#getStyle(com.vaadin.v7.ui.Table, java.lang.Object, java.lang.Object)
          */
         public String getStyle(Table source, Object itemId, Object propertyId) {
 

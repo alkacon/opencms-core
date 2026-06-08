@@ -53,6 +53,7 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
 
     /** The various style options for the checkable date panel. */
     public static enum Style {
+
         /** One column. */
         ONE_COLUMN,
         /** Two columns. */
@@ -107,6 +108,7 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
      * @param dateFormat The date format to use.
      */
     public CmsCheckableDatePanel(String dateFormat) {
+
         this(dateFormat, Style.ONE_COLUMN, false);
     }
 
@@ -116,6 +118,7 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
      * @param style the style to use for displaying the dates.
      */
     public CmsCheckableDatePanel(String dateFormat, Style style) {
+
         this(dateFormat, style, false);
     }
 
@@ -126,6 +129,7 @@ public class CmsCheckableDatePanel extends Composite implements HasValueChangeHa
      * @param onlyLabels flag, indicating if only labels should be shown.
      */
     public CmsCheckableDatePanel(String dateFormat, Style style, boolean onlyLabels) {
+
         m_panel = new FlowPanel();
         m_style = null == style ? Style.ONE_COLUMN : style;
         m_width = m_style.getWidth();

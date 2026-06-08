@@ -40,8 +40,10 @@ public class CmsUploadProgessInfo implements IsSerializable {
     public static enum UPLOAD_STATE {
 
         /** Upload is finished. */
-        finished, /** Upload not started. */
-        notStarted, /** Upload is running. */
+        finished,
+        /** Upload not started. */
+        notStarted,
+        /** Upload is running. */
         running
     }
 

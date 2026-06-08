@@ -57,7 +57,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  *
- * */
+ */
 public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
 
     /** Configuration parameter to indicate the multi-select needs to be activated by a check box. */
@@ -343,7 +343,7 @@ public class CmsMultiSelectWidget extends Composite implements I_CmsEditWidget {
      * Generate a string with all selected checkboxes separated with ','.
      *
      * @return a string with all selected checkboxes
-     * */
+     */
     private String generateValue() {
 
         String result = "";

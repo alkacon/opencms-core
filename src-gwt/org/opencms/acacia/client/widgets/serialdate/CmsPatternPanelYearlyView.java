@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * The yearly pattern panel.<p>
- * */
+ */
 public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
@@ -117,6 +117,7 @@ public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialD
      * @param model the model that provides the values.
      */
     public CmsPatternPanelYearlyView(CmsPatternPanelYearlyController controller, I_CmsObservableSerialDateValue model) {
+
         m_controller = controller;
         m_model = model;
         m_model.registerValueChangeObserver(this);
@@ -259,7 +260,7 @@ public class CmsPatternPanelYearlyView extends Composite implements I_CmsSerialD
 
     /**
      * Creates the 'at' selection view.<p>
-     * */
+     */
     private void initSelectBoxes() {
 
         m_atNumber.getOpener().setStyleName(

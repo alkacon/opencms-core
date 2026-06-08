@@ -77,7 +77,8 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         if (checkTypeId(type)) {
 

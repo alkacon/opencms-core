@@ -44,6 +44,7 @@ public class CmsTooManyPublishResourcesException extends RuntimeException {
      * @param count the amount of publish resources
      */
     public CmsTooManyPublishResourcesException(int count) {
+
         super();
         m_count = count;
     }

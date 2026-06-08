@@ -17,7 +17,7 @@ public interface I_CmsContextMenuServerRpc extends ServerRpc {
 
     /**
      * Called by the client widget when context menu item is clicked.<p>
-     * 
+     *
      * @param itemId id of the clicked item
      * @param menuClosed will be true if menu was closed after the click
      */
@@ -25,7 +25,7 @@ public interface I_CmsContextMenuServerRpc extends ServerRpc {
 
     /**
      * Called by the client side when context menu is about to be opened.<p>
-     * 
+     *
      * @param x mouse x coordinate
      * @param y mouse y coordinate
      * @param connectorIdOfComponent component connector id on which the click was made

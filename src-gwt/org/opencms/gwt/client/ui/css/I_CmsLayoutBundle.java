@@ -1194,14 +1194,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String export();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         @ClassName("oc-inline-editable")
         String inlineEditable();
 
@@ -1300,35 +1300,35 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String lockClosed();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String lockIcon();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String lockOpen();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String lockSharedClosed();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String lockSharedOpen();
 
         /**
@@ -1356,28 +1356,28 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String secure();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String stateIcon();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String titleDeleted();
 
         /**
          * CSS class accessor.<p>
          *
          * @return a CSS class
-         **/
+         */
         String titleInput();
 
         /**

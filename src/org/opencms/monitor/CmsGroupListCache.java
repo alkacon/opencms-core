@@ -198,7 +198,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      * Gets the cached bare roles for the given user id, or null if none are cached.
      *
      * <p>These are just the roles of the user, but with no OU information.
-    
+     *
      * @param userId the user id
      * @return the bare roles for the user
      */

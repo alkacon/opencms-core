@@ -32,8 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -42,35 +41,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-
-import junit.framework.Test;
 
 /**
  * Test class for alias methods.
  */
-public class TestAliases extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestAliases extends OpenCmsTestRunner {
 
     /**
-     * Creates a new instance.<p>
-     *
-     * @param name the test name
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestAliases(String name) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(name);
-    }
-
-    /**
-     * Creates a test suite instance.<p>
-     *
-     * @return the test suite instance
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestAliases.class, "systemtest", "/");
+        setupOpenCms(testInfo, "systemtest", "/");
     }
 
     /**
@@ -97,11 +91,11 @@ public class TestAliases extends OpenCmsTestCase {
         }
         MapDifference<String, Boolean> difference = Maps.difference(aliasMapFromDb, aliasMapFromParameters);
         assertTrue(
+            difference.areEqual(),
             "Aliases for "
                 + resource.getRootPath()
                 + " (left) don't match expected aliases (right): "
-                + difference.toString(),
-            difference.areEqual());
+                + difference.toString());
     }
 
     /**
@@ -109,12 +103,18 @@ public class TestAliases extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testAddAlias() throws Exception {
 
         CmsObject cms = getCmsObject();
         CmsAliasManager aliasManager = OpenCms.getAliasManager();
-        CmsResource foo1 = cms.createResource("/system/foo1", CmsResourceTypePlain.getStaticTypeId());
-        CmsResource bar1 = cms.createResource("/system/bar1", CmsResourceTypePlain.getStaticTypeId());
+        CmsResource foo1 = cms.createResource(
+            "/system/foo1",
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.RESOURCE_TYPE_NAME));
+        CmsResource bar1 = cms.createResource(
+            "/system/bar1",
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.RESOURCE_TYPE_NAME));
         CmsAlias alias = new CmsAlias(foo1.getStructureId(), "", "/xyzzy1", CmsAliasMode.page);
         CmsAlias alias2 = new CmsAlias(bar1.getStructureId(), "", "/xyzzy2", CmsAliasMode.page);
         aliasManager.saveAliases(cms, foo1.getStructureId(), Collections.singletonList(alias));
@@ -129,7 +129,7 @@ public class TestAliases extends OpenCmsTestCase {
         aliasManager.saveAliases(cms, foo1.getStructureId(), aliases);
         checkAliases(foo1, "/xyzzy3", "/xyzzy4");
         checkAliases(bar1, "/xyzzy2");
-        assertTrue("At least 3 aliases", aliasManager.getAliasesForSite(cms, "").size() >= 3);
+        assertTrue(aliasManager.getAliasesForSite(cms, "").size() >= 3, "At least 3 aliases");
     }
 
     /**
@@ -137,6 +137,8 @@ public class TestAliases extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(2)
     public void testRewrites() throws Exception {
 
         CmsUUID id = new CmsUUID();

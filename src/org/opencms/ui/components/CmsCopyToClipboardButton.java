@@ -43,6 +43,7 @@ public class CmsCopyToClipboardButton extends Button {
      * Hiding the constructor.<p>
      */
     public CmsCopyToClipboardButton() {
+
         super();
     }
 
@@ -53,6 +54,7 @@ public class CmsCopyToClipboardButton extends Button {
      * @param selector the selector string to the element to select
      */
     public CmsCopyToClipboardButton(String text, String selector) {
+
         super(text);
         getState().setSelector(selector);
     }

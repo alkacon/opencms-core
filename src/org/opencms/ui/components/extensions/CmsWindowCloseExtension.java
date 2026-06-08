@@ -53,6 +53,7 @@ public class CmsWindowCloseExtension extends AbstractExtension implements I_CmsW
      * @param ui the UI to extend
      */
     public CmsWindowCloseExtension(UI ui) {
+
         extend(ui);
         registerRpc(this);
         m_listeners = new ArrayList<I_CmsWindowCloseListener>();

@@ -117,10 +117,11 @@ public class CmsOverviewSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "rebuildMode", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "locale", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "project", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(
-            getSearchIndexIndex(),
-            "fieldConfigurationName",
-            PAGES[0],
-            new CmsDisplayWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                getSearchIndexIndex(),
+                "fieldConfigurationName",
+                PAGES[0],
+                new CmsDisplayWidget()));
     }
 }

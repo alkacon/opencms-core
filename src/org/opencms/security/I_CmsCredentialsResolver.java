@@ -45,6 +45,12 @@ public interface I_CmsCredentialsResolver {
     /** Credential type for LDAP users. */
     String LDAP_USER = "ldap_user";
 
+    /** Credential type for S3 access keys. */
+    String S3_ACCESS_KEY = "s3_access_key";
+
+    /** Credential type for S3 secret keys. */
+    String S3_SECRET_KEY = "s3_secret_key";
+
     /**
      * Translates user names or passwords for authentication.<p>
      *

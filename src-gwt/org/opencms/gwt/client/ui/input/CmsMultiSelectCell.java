@@ -170,7 +170,7 @@ public class CmsMultiSelectCell extends A_CmsSelectCell {
      * @param count
      *
      *@return the new grid
-     * */
+     */
     private Grid getGridLayout(int count) {
 
         Grid grid = new Grid();

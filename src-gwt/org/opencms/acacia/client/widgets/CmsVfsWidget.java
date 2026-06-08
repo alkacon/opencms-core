@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  *
- * */
+ */
 public class CmsVfsWidget extends Composite implements I_CmsEditWidget {
 
     /** Value of the activation. */

@@ -31,23 +31,26 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for searching in special fields of extracted document text.<p>
  *
  */
-public class TestCmsSearchFields extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearchFields extends OpenCmsTestRunner {
 
     /** Name of the index used for testing. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
@@ -56,50 +59,13 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
     public static final String INDEX_ONLINE = "Online project (VFS)";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsSearchFields(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchFields.class.getName());
-
-        suite.addTest(new TestCmsSearchFields("testSearchInFields"));
-        suite.addTest(new TestCmsSearchFields("testExcerptCreationFromFields"));
-        suite.addTest(new TestCmsSearchFields("testSearchWithFieldQuery"));
-        suite.addTest(new TestCmsSearchFields("testSearchWithCombinedFieldQuery"));
-        suite.addTest(new TestCmsSearchFields("testExcerptCreationWithFieldQuery"));
-        suite.addTest(new TestCmsSearchFields("testSearchWithResouceTypeLimitaion"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -107,6 +73,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testExcerptCreationFromFields() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -175,6 +143,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(5)
+    @Test
     public void testExcerptCreationWithFieldQuery() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -265,6 +235,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(1)
+    @Test
     public void testSearchInFields() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -315,6 +287,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testSearchWithCombinedFieldQuery() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -352,6 +326,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(3)
+    @Test
     public void testSearchWithFieldQuery() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -415,6 +391,8 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(6)
+    @Test
     public void testSearchWithResouceTypeLimitaion() throws Exception {
 
         CmsObject cms = getCmsObject();

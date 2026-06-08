@@ -78,7 +78,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      *
      * It may be emtpy if we are on the new index dialog (/searchindex/new-index.jsp).<p>
      *
-     **/
+     */
     public static final String PARAM_INDEXNAME = "indexname";
 
     /** The user object that is edited on this dialog. */

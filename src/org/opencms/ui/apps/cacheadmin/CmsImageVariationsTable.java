@@ -35,9 +35,9 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.List;
 
+import com.vaadin.server.Resource;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.server.Resource;
 import com.vaadin.v7.ui.Table;
 
 /**

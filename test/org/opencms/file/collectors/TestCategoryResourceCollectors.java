@@ -34,8 +34,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -45,25 +44,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
- *
  */
-public class TestCategoryResourceCollectors extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCategoryResourceCollectors(String arg0) {
-
-        super(arg0);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCategoryResourceCollectors extends OpenCmsTestRunner {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -133,47 +125,42 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
+     * Prints the given list of search results to STDOUT.<p>
      *
-     * @return the test suite
+     * @param resources the list to print
      */
-    public static Test suite() {
+    public static void printResults(List resources) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        Iterator i = resources.iterator();
+        int count = 0;
+        i = resources.iterator();
+        System.out.println("\n\n--------------------------");
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            count++;
+            System.out.print(CmsStringUtil.padRight("" + count, 4));
+            System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
+            System.out.println(
+                CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN),
+                    17));
+        }
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCategoryResourceCollectors.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllInFolderResourceType"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllInFolderSortByCategory"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllInFolderSortByDate"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllResourcesResourceType"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllResourcesSortByCategory"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllResourcesSortByDate"));
-        suite.addTest(new TestCategoryResourceCollectors("testCollectAllInFolderSubTree"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                    fail(exc.getMessage());
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo);
+        try {
+            initResources(getCmsObject());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
     }
 
     /**
@@ -181,6 +168,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCollectAllInFolderResourceType() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -206,6 +195,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCollectAllInFolderSortByCategory() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -240,6 +231,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCollectAllInFolderSortByDate() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -284,33 +277,12 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
     }
 
     /**
-     * Prints the given list of search results to STDOUT.<p>
-     *
-     * @param resources the list to print
-     */
-    public static void printResults(List resources) {
-
-        Iterator i = resources.iterator();
-        int count = 0;
-        i = resources.iterator();
-        System.out.println("\n\n--------------------------");
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            count++;
-            System.out.print(CmsStringUtil.padRight("" + count, 4));
-            System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
-            System.out.println(
-                CmsStringUtil.padRight(
-                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN),
-                    17));
-        }
-    }
-
-    /**
      * Test the collection of resources for a category / given categories in a given folder with inculding the sub tree of the folder.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testCollectAllInFolderSubTree() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -348,6 +320,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testCollectAllResourcesResourceType() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -373,6 +347,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testCollectAllResourcesSortByCategory() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -422,6 +398,8 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testCollectAllResourcesSortByDate() throws Throwable {
 
         CmsObject cms = getCmsObject();

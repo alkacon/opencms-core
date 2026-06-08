@@ -37,8 +37,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -46,69 +45,34 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for VFS permissions.<p>
  */
-public class TestPermissions extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPermissions extends OpenCmsTestRunner {
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPermissions.class.getName());
-
-        suite.addTest(new TestPermissions("testLockStatusPermission"));
-        suite.addTest(new TestPermissions("testPublishPermissions"));
-        suite.addTest(new TestPermissions("testSiblingPermissions"));
-        suite.addTest(new TestPermissions("testVisiblePermission"));
-        suite.addTest(new TestPermissions("testVisiblePermissionForFolder"));
-        suite.addTest(new TestPermissions("testFilterForFolder"));
-        suite.addTest(new TestPermissions("testDefaultPermissions"));
-        suite.addTest(new TestPermissions("testPermissionOverwrite"));
-        suite.addTest(new TestPermissions("testPermissionInheritance"));
-        suite.addTest(new TestPermissions("testUserDeletion"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestPermissions(String arg0) {
-
-        super(arg0);
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testDefaultPermissions() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -134,6 +98,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testFilterForFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -168,6 +134,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testLockStatusPermission() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -209,6 +177,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testPermissionInheritance() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -295,6 +265,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testPermissionOverwrite() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -317,6 +289,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testPublishPermissions() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -480,6 +454,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSiblingPermissions() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -541,6 +517,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testUserDeletion() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -583,6 +561,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testVisiblePermission() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -659,6 +639,8 @@ public class TestPermissions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testVisiblePermissionForFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -712,7 +694,7 @@ public class TestPermissions extends OpenCmsTestCase {
             CmsPermissionSet.ACCESS_VIEW,
             false,
             CmsResourceFilter.ONLY_VISIBLE);
-        assertFalse("the user has view access permission despite the view permission has been removed", hasViewAccess);
+        assertFalse(hasViewAccess, "the user has view access permission despite the view permission has been removed");
         // read again now including invisible resources
         resultList = cms.readResources(folder, CmsResourceFilter.ALL);
         if (resultList.size() != 6) {

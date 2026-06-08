@@ -176,7 +176,7 @@ public class CmsDetailPageInfo implements Serializable {
      * Returns the resource icon style classes.<p>
      *
      * @return the resource icon style classes
-     **/
+     */
     public String getIconClasses() {
 
         return m_iconClasses;

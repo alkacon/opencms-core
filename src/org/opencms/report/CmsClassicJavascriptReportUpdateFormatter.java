@@ -55,6 +55,7 @@ public class CmsClassicJavascriptReportUpdateFormatter implements I_CmsReportUpd
      * @param locale the locale
      */
     public CmsClassicJavascriptReportUpdateFormatter(Locale locale) {
+
         m_locale = locale;
     }
 

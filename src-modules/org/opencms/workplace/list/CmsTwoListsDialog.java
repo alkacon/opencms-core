@@ -67,62 +67,6 @@ public class CmsTwoListsDialog {
     }
 
     /**
-     * Generates the dialog starting html code.<p>
-     *
-     * @return html code
-     */
-    protected String defaultActionHtml() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append(defaultActionHtmlStart());
-        result.append(defaultActionHtmlContent());
-        result.append(defaultActionHtmlEnd());
-        return result.toString();
-    }
-
-    /**
-     * Returns the html code for the default action content.<p>
-     *
-     * @return html code
-     */
-    protected String defaultActionHtmlContent() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n");
-        result.append("\t<tr>\n");
-        result.append("\t\t<td width='50%' valign='top'>\n");
-        result.append("\t\t\t").append(m_firstWp.defaultActionHtmlContent()).append("\n");
-        result.append("\t\t</td>\n");
-        result.append("\t\t<td width='20'>&nbsp;</td>");
-        result.append("\t\t<td width='50%' valign='top'>\n");
-        result.append("\t\t\t").append(m_secondWp.defaultActionHtmlContent()).append("\n");
-        result.append("\t\t</td>\n");
-        result.append("\t</tr>\n");
-        result.append("</table>\n");
-        return result.toString();
-    }
-
-    /**
-     * Generates the dialog ending html code.<p>
-     *
-     * @return html code
-     */
-    protected String defaultActionHtmlEnd() {
-
-        return m_activeWp.defaultActionHtmlEnd();
-    }
-
-    /**
-     * Generates the dialog starting html code.<p>
-     *
-     * @return html code
-     */
-    protected String defaultActionHtmlStart() {
-
-        return m_activeWp.defaultActionHtmlStart();
-    }
-
-    /**
      * Display method for two list dialogs.<p>
      *
      * @throws JspException if dialog actions fail
@@ -132,21 +76,6 @@ public class CmsTwoListsDialog {
     public void displayDialog() throws JspException, IOException, ServletException {
 
         displayDialog(false);
-    }
-
-    /**
-     * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
-     *
-     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
-     */
-    public void writeDialog() throws IOException {
-
-        if (m_activeWp.isForwarded() || m_passiveWp.isForwarded()) {
-            return;
-        }
-
-        JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
-        out.print(defaultActionHtml());
     }
 
     /**
@@ -215,5 +144,76 @@ public class CmsTwoListsDialog {
     public A_CmsListDialog getSecondWp() {
 
         return m_secondWp;
+    }
+
+    /**
+     * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
+     *
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     */
+    public void writeDialog() throws IOException {
+
+        if (m_activeWp.isForwarded() || m_passiveWp.isForwarded()) {
+            return;
+        }
+
+        JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
+        out.print(defaultActionHtml());
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     *
+     * @return html code
+     */
+    protected String defaultActionHtml() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(defaultActionHtmlStart());
+        result.append(defaultActionHtmlContent());
+        result.append(defaultActionHtmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Returns the html code for the default action content.<p>
+     *
+     * @return html code
+     */
+    protected String defaultActionHtmlContent() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n");
+        result.append("\t<tr>\n");
+        result.append("\t\t<td width='50%' valign='top'>\n");
+        result.append("\t\t\t").append(m_firstWp.defaultActionHtmlContent()).append("\n");
+        result.append("\t\t</td>\n");
+        result.append("\t\t<td width='20'>&nbsp;</td>");
+        result.append("\t\t<td width='50%' valign='top'>\n");
+        result.append("\t\t\t").append(m_secondWp.defaultActionHtmlContent()).append("\n");
+        result.append("\t\t</td>\n");
+        result.append("\t</tr>\n");
+        result.append("</table>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog ending html code.<p>
+     *
+     * @return html code
+     */
+    protected String defaultActionHtmlEnd() {
+
+        return m_activeWp.defaultActionHtmlEnd();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     *
+     * @return html code
+     */
+    protected String defaultActionHtmlStart() {
+
+        return m_activeWp.defaultActionHtmlStart();
     }
 }

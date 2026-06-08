@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
  * &lt;jsp:useBean id="cmsbean" class="org.opencms.jsp.CmsJspBean"&gt;
- * &lt% cmsbean.init(pageContext, request, response); %&gt;
+ * &lt;% cmsbean.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
  * <p>

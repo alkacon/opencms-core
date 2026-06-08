@@ -64,14 +64,6 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
     private List<String> m_additionalParams;
 
     /**
-     * Required constructor for subclasses.<p>
-     */
-    protected CmsExtendedCollectorData() {
-
-        // NOOP
-    }
-
-    /**
      * Creates a new extended collector data set.<p>
      *
      * The input data String must have the following format:<br>
@@ -144,6 +136,14 @@ public class CmsExtendedCollectorData extends CmsCollectorData {
                 m_additionalParams = args.subList(3, args.size());
             }
         }
+    }
+
+    /**
+     * Required constructor for subclasses.<p>
+     */
+    protected CmsExtendedCollectorData() {
+
+        // NOOP
     }
 
     /**

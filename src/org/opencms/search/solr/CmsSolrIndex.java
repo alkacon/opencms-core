@@ -128,7 +128,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /**
      * Constant for additional parameter to set the maximally processed results (start + rows) for searches with this index.
      * It overwrites the global configuration from {@link CmsSolrConfiguration#getMaxProcessedResults()} for this index.
-    **/
+    */
     public static final String SOLR_SEARCH_MAX_PROCESSED_RESULTS = "search.solr.maxProcessedResults";
 
     /** Constant for additional parameter to set the fields the select handler should return at maximum. */
@@ -1408,6 +1408,24 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void setSolrServer(SolrClient client) {
 
         m_solr = client;
+    }
+
+    /**
+     * Shuts down the search index.<p>
+     *
+     * This will close the local Lucene index searcher instance.<p>
+     */
+    @Override
+    public void shutDown() {
+
+        super.shutDown();
+        if (m_solr != null) {
+            try {
+                m_solr.close();
+            } catch (IOException e) {
+                LOG.warn("Failed to close the solr client.", e);
+            }
+        }
     }
 
     /**

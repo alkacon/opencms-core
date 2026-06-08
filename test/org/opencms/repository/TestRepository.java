@@ -31,57 +31,23 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
- * Test for Webdav repositories.<p>
+ * Test for WebDav repositories.<p>
  */
-public class TestRepository extends OpenCmsTestCase {
+public class TestRepository extends OpenCmsTestRunner {
 
-    /**
-     * Create test instance.<p>
-     *
-     * @param name the test name
-     */
-    public TestRepository(String name) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(name);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestRepository.class.getName());
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-        suite.addTest(new TestRepository("testPropertyCachingBug"));
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -89,6 +55,7 @@ public class TestRepository extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testPropertyCachingBug() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
@@ -101,7 +68,7 @@ public class TestRepository extends OpenCmsTestCase {
             true);
         System.out.println(templateElements);
         assertTrue(
-            "template-elements property should not be empty",
-            !CmsStringUtil.isEmptyOrWhitespaceOnly(templateElements.getValue()));
+            !CmsStringUtil.isEmptyOrWhitespaceOnly(templateElements.getValue()),
+            "template-elements property should not be empty");
     }
 }

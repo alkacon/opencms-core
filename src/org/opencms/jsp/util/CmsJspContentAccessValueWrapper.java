@@ -1063,7 +1063,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      *
      * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>.
      *
-     * @deprecated use {@link #getCmsObject()} instead
+     * @deprecated use <code>getCmsObject()</code> instead
      *
      * @return the wrapped OpenCms user context
      */

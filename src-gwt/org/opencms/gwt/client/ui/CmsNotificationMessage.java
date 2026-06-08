@@ -74,6 +74,7 @@ public class CmsNotificationMessage extends Composite {
      * @param message the message content
      */
     public CmsNotificationMessage(CmsNotification.Mode mode, CmsNotification.Type type, String message) {
+
         m_mode = mode;
         m_closeButton = new CmsPushButton(I_CmsButton.CLOSE);
         m_closeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);

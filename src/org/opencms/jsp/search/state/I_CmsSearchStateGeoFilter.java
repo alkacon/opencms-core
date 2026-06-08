@@ -76,7 +76,7 @@ public interface I_CmsSearchStateGeoFilter {
 
     /**
      * Sets the units.
-     * @param the units
+     * @param units the units
      */
     void setUnits(String units);
 }

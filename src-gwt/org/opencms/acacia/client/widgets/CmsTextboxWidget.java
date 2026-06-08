@@ -60,7 +60,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
  *
- * */
+ */
 public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**

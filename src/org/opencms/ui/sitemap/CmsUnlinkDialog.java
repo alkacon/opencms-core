@@ -92,6 +92,7 @@ public class CmsUnlinkDialog extends CmsBasicDialog {
      * @param otherResource the other resource
      */
     public CmsUnlinkDialog(I_CmsDialogContext context, CmsResource otherResource) {
+
         super();
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_context = context;

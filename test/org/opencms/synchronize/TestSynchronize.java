@@ -36,8 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
@@ -45,60 +44,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * JUnit test cases for the VFS/RFS synchronization.<p>
  *
  * @since 6.0.0
  */
-public class TestSynchronize extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSynchronize extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSynchronize(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSynchronize.class.getName());
-
-        suite.addTest(new TestSynchronize("testSynchronize"));
-        suite.addTest(new TestSynchronize("testLoadSaveSynchronizeSettings"));
-        suite.addTest(new TestSynchronize("testSynchronizeSeveralFolders"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -106,6 +71,8 @@ public class TestSynchronize extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testLoadSaveSynchronizeSettings() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -159,6 +126,8 @@ public class TestSynchronize extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testSynchronize() throws Exception {
 
         String source = "/sites/default/";
@@ -185,10 +154,11 @@ public class TestSynchronize extends OpenCmsTestCase {
             cms.getRequestContext().setSiteRoot("/");
             storeResources(cms, source);
 
-            echo("Synchronizing "
-                + syncSettings.getSourceListInVfs()
-                + " with "
-                + syncSettings.getDestinationPathInRfs());
+            echo(
+                "Synchronizing "
+                    + syncSettings.getSourceListInVfs()
+                    + " with "
+                    + syncSettings.getDestinationPathInRfs());
 
             // synchronize everything to the RFS
             new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
@@ -246,6 +216,8 @@ public class TestSynchronize extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testSynchronizeSeveralFolders() throws Exception {
 
         // save what gets synchronized

@@ -60,6 +60,12 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
         /** The CMIS service interfaces. */
         private static Set<Class<?>> m_serviceInterfaces = new HashSet<Class<?>>();
 
+        static {
+            for (Class<?> svcInterface : CmisService.class.getInterfaces()) {
+                m_serviceInterfaces.add(svcInterface);
+            }
+        }
+
         /** The wrapped service. */
         private CmisService m_service;
 
@@ -71,12 +77,6 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
         public LoggingServiceProxy(CmisService service) {
 
             m_service = service;
-        }
-
-        static {
-            for (Class<?> svcInterface : CmisService.class.getInterfaces()) {
-                m_serviceInterfaces.add(svcInterface);
-            }
         }
 
         /**

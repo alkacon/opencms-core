@@ -291,7 +291,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
          * Gets the current driver manager.
          *
          * @return the driver manager to use
-         **/
+         */
         public CmsDriverManager getDriverManager() {
 
             return m_driverManager;
@@ -2223,7 +2223,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     if ((content != null) && resource.isFile()) {
                         // also update file content if required
-                        getVfsDriver(dbc).writeContent(dbc, newResource.getResourceId(), content);
+                        getVfsDriver(dbc).writeContent(dbc, newResource, content);
                     }
                 }
 
@@ -5707,7 +5707,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * is a sibling in a "labeled" site folder.<p>
      *
      * This method is used when creating a new sibling
-     * (use the <code>newResource</code> parameter & <code>action = 1</code>)
+     * (use the <code>newResource</code> parameter &amp; <code>action = 1</code>)
      * or deleting/importing a resource (call with <code>action = 2</code>).<p>
      *
      * @param dbc the current database context
@@ -10042,7 +10042,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      *
-     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
+     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List, boolean)
      */
     public void updateRelationsForResource(
         CmsDbContext dbc,
@@ -10404,7 +10404,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         getVfsDriver(dbc).writeResource(dbc, dbc.currentProject().getUuid(), resource, UPDATE_RESOURCE_STATE);
 
         byte[] contents = resource.getContents();
-        getVfsDriver(dbc).writeContent(dbc, resource.getResourceId(), contents);
+        getVfsDriver(dbc).writeContent(dbc, resource, contents);
         // log it
         log(
             dbc,

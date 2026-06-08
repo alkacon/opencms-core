@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Wraps an edit widget to supply a widget label.<p>
- **/
+ */
 public class CmsFormWidgetWrapper extends Composite
 implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHasDisplayDirection {
 

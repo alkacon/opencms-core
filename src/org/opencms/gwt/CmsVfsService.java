@@ -144,9 +144,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -158,6 +155,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -303,21 +303,25 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String expiredStr = null;
         CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMessages msg = Messages.get().getBundle(locale);
         if (Boolean.parseBoolean(userSettings.getAdditionalPreference("showElementAvailability", true))) {
-            DateFormat fmt = DateFormat.getDateTimeInstance(
-                DateFormat.SHORT,
-                DateFormat.SHORT,
-                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            String nbsp = "\u00A0";
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            DateFormat dateFmt = DateFormat.getDateInstance(DateFormat.SHORT, wpLocale);
+            DateFormat timeFmt = DateFormat.getTimeInstance(DateFormat.SHORT, wpLocale);
+
             if (res.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-                releasedStr = msg.key(
-                    Messages.GUI_AVAILABILITY_INFO_RELEASE_1,
-                    fmt.format(new Date(res.getDateReleased())));
+                releasedStr = nbsp
+                    + dateFmt.format(new Date(res.getDateReleased()))
+                    + nbsp
+                    + nbsp
+                    + timeFmt.format(new Date(res.getDateReleased()));
             }
             if (res.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-                expiredStr = msg.key(
-                    Messages.GUI_AVAILABILITY_INFO_EXPIRE_1,
-                    fmt.format(new Date(res.getDateExpired())));
+                expiredStr = nbsp
+                    + dateFmt.format(new Date(res.getDateExpired()))
+                    + nbsp
+                    + nbsp
+                    + timeFmt.format(new Date(res.getDateExpired()));
             }
         }
         return new CmsAvailabilityInfo(releasedStr, expiredStr);
@@ -372,12 +376,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
+     * Returns a bean to display the <code>CmsListItemWidget</code> including the lock state.<p>
      *
      * @param cms the CMS context
      * @param resource the resource to get the page info for
      *
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * @return a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @throws CmsLoaderException if the resource type could not be found
      * @throws CmsException if something else goes wrong
@@ -1693,11 +1697,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * Returns a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @param res the resource to get the page info for
      *
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * @return a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @throws CmsLoaderException if the resource type could not be found
      * @throws CmsException if something else goes wrong

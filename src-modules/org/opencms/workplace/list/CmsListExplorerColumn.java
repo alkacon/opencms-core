@@ -48,6 +48,24 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
     }
 
     /**
+     * Generates the needed style sheet definitions.<p>
+     *
+     * @return html code
+     */
+    public static String getExplorerStyleDef() {
+
+        StringBuffer result = new StringBuffer(256);
+        result.append("<style type='text/css'>\n");
+        result.append(".fc, .fc .link a { color: #b40000; }\n");
+        result.append(".fn, .fn .link a { color: #0000aa; }\n");
+        result.append(".fd, .fd .link a { color: #000000; text-decoration: line-through; }\n");
+        result.append(".fp, .fp .link a { color: #888888; }\n");
+        result.append(".nf, .nf .link a { color:#000000; }\n");
+        result.append("</style>");
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
     @Override
@@ -69,23 +87,5 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
         html.append(super.htmlCell(item, isPrintable));
         html.append("</td></tr></table>");
         return html.toString();
-    }
-
-    /**
-     * Generates the needed style sheet definitions.<p>
-     *
-     * @return html code
-     */
-    public static String getExplorerStyleDef() {
-
-        StringBuffer result = new StringBuffer(256);
-        result.append("<style type='text/css'>\n");
-        result.append(".fc, .fc .link a { color: #b40000; }\n");
-        result.append(".fn, .fn .link a { color: #0000aa; }\n");
-        result.append(".fd, .fd .link a { color: #000000; text-decoration: line-through; }\n");
-        result.append(".fp, .fp .link a { color: #888888; }\n");
-        result.append(".nf, .nf .link a { color:#000000; }\n");
-        result.append("</style>");
-        return result.toString();
     }
 }

@@ -37,8 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -50,30 +49,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the cms search indexer.<p>
  */
-public class TestCmsSearch extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearch extends OpenCmsTestRunner {
 
     /** Name of the index used for testing. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
 
     /** Name of the search index created using API. */
     public static final String INDEX_TEST = "Test new index";
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsSearch(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Prints the given list of search results to STDOUT.<p>
@@ -143,46 +137,13 @@ public class TestCmsSearch extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * Overrides the OpenCms test setup.
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearch.class.getName());
-
-        suite.addTest(new TestCmsSearch("testCmsSearchIndexer"));
-        suite.addTest(new TestCmsSearch("testCmsSearchUppercaseFolderName"));
-        suite.addTest(new TestCmsSearch("testCmsSearchDocumentTypes"));
-        suite.addTest(new TestCmsSearch("testCmsSearchXmlContent"));
-        suite.addTest(new TestCmsSearch("testIndexGeneration"));
-        suite.addTest(new TestCmsSearch("testQueryEncoding"));
-        suite.addTest(new TestCmsSearch("testSearchIssueWithSpecialFoldernames"));
-        suite.addTest(new TestCmsSearch("testShutdownWhileIndexing"));
-        suite.addTest(new TestCmsSearch("testHasAnalyzerForAll"));
-
-        // This test is intended only for performance/resource monitoring
-        // suite.addTest(new TestCmsSearch("testCmsSearchLargeResult"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -190,6 +151,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testCmsSearchDocumentTypes() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -212,6 +175,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testCmsSearchIndexer() throws Throwable {
 
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
@@ -224,6 +189,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(10)
+    @Test
+    @Disabled
     public void testCmsSearchLargeResult() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -370,6 +338,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testCmsSearchUppercaseFolderName() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -393,6 +363,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(4)
+    @Test
     public void testCmsSearchXmlContent() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -436,6 +408,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Order(9)
+    @Test
     public void testHasAnalyzerForAll() throws Exception {
 
         OpenCms.getSearchManager().getAnalyzer(new Locale("all"));
@@ -449,13 +423,15 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(5)
+    @Test
     public void testIndexGeneration() throws Throwable {
 
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_TEST);
         searchIndex.setProject("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
+        searchIndex.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 
@@ -492,6 +468,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      * Tests if <code>{@link CmsSearch#setQuery(String)}</code> modifies
      * the query in an undesireable way (changes url encoded Strings). <p>
      */
+    @Order(6)
+    @Test
     public void testQueryEncoding() {
 
         // without encoding
@@ -512,6 +490,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(7)
+    @Test
     public void testSearchIssueWithSpecialFoldernames() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -548,6 +528,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(8)
+    @Test
     public void testShutdownWhileIndexing() throws Throwable {
 
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);

@@ -73,6 +73,23 @@ public final class CmsWorkplaceUserInfoEntry {
     }
 
     /**
+     * Returns the class type.<p>
+     *
+     * @return the class type
+     */
+    public Class<?> getClassType() {
+
+        if (m_type == null) {
+            return String.class;
+        }
+        try {
+            return Class.forName(m_type);
+        } catch (ClassNotFoundException e) {
+            return String.class;
+        }
+    }
+
+    /**
      * Returns the key.<p>
      *
      * @return the key
@@ -80,6 +97,36 @@ public final class CmsWorkplaceUserInfoEntry {
     public String getKey() {
 
         return m_key;
+    }
+
+    /**
+     * Returns the optional flag.<p>
+     *
+     * @return the optional flag
+     */
+    public String getOptional() {
+
+        return m_optional;
+    }
+
+    /**
+     * Returns the configured widget parameters.<p>
+     *
+     * @return the configured widget parameters
+     */
+    public String getParams() {
+
+        return m_params;
+    }
+
+    /**
+     * Returns the configured class name type.<p>
+     *
+     * @return the configured class name type
+     */
+    public String getType() {
+
+        return m_type;
     }
 
     /**
@@ -123,55 +170,8 @@ public final class CmsWorkplaceUserInfoEntry {
      *
      * @return the optional flag
      */
-    public String getOptional() {
-
-        return m_optional;
-    }
-
-    /**
-     * Returns the optional flag.<p>
-     *
-     * @return the optional flag
-     */
     public boolean isOptional() {
 
         return Boolean.valueOf(m_optional).booleanValue();
-    }
-
-    /**
-     * Returns the configured widget parameters.<p>
-     *
-     * @return the configured widget parameters
-     */
-    public String getParams() {
-
-        return m_params;
-    }
-
-    /**
-     * Returns the configured class name type.<p>
-     *
-     * @return the configured class name type
-     */
-    public String getType() {
-
-        return m_type;
-    }
-
-    /**
-     * Returns the class type.<p>
-     *
-     * @return the class type
-     */
-    public Class<?> getClassType() {
-
-        if (m_type == null) {
-            return String.class;
-        }
-        try {
-            return Class.forName(m_type);
-        } catch (ClassNotFoundException e) {
-            return String.class;
-        }
     }
 }

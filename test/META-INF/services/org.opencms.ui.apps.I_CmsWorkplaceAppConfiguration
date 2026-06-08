@@ -1,2 +1,2 @@
-org.opencms.ui.apps.AppConfiguration
-org.opencms.ui.apps.MyOtherApp
+org.opencms.ui.apps.CmsTestAppConfiguration
+org.opencms.ui.apps.CmsTestMyOtherApp

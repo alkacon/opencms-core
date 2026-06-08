@@ -27,8 +27,6 @@
 
 package org.opencms.ugc;
 
-import static org.junit.Assert.assertNotEquals;
-
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -43,7 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ugc.CmsUgcSession.PathComparator;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsFileUtil;
@@ -62,14 +60,16 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.base.Optional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import junit.framework.Test;
+import com.google.common.base.Optional;
 
 /**
  * Tests the form session methods.<p>
  */
-public class TestFormSession extends OpenCmsTestCase {
+public class TestFormSession extends OpenCmsTestRunner {
 
     /** Schema id. */
     private static final String SCHEMA_ID_IMAGE = "http://www.opencms.org/image.xsd";
@@ -84,24 +84,13 @@ public class TestFormSession extends OpenCmsTestCase {
     private static final String SCHEMA_ID_TEXTBLOCK = "http://www.opencms.org/textblock.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestFormSession(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        Test wrapper = generateSetupTestWrapper(TestFormSession.class, "simpletest", "/");
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -120,6 +109,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testAddValues() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -148,6 +138,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testAssignProjectToCreatedResources() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -179,13 +170,13 @@ public class TestFormSession extends OpenCmsTestCase {
             new byte[] {1, 2, 3, 4, 5});
         CmsProject expectedProject = session.getProject();
         assertEquals(
-            "Project id doesn't match session project",
             expectedProject.getUuid(),
-            contentRes.getProjectLastModified());
+            contentRes.getProjectLastModified(),
+            "Project id doesn't match session project");
         assertEquals(
-            "Project id doesn't match session project",
             expectedProject.getUuid(),
-            uploadRes.getProjectLastModified());
+            uploadRes.getProjectLastModified(),
+            "Project id doesn't match session project");
     }
 
     /**
@@ -193,6 +184,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testAutoPublish() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -244,6 +236,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateContent() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -269,8 +262,8 @@ public class TestFormSession extends OpenCmsTestCase {
         CmsUgcSession session = new CmsUgcSession(cms, config);
         CmsResource createdContent = session.createXmlContent();
         assertTrue(
-            "The content should be created in the content folder",
-            createdContent.getRootPath().startsWith(contentFolder.getRootPath()));
+            createdContent.getRootPath().startsWith(contentFolder.getRootPath()),
+            "The content should be created in the content folder");
         assertEquals(
             createdContent.getTypeId(),
             OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId());
@@ -301,6 +294,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testDeleteValues() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -332,6 +326,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testFailEditMultipleContents() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -408,6 +403,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testGetValues() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -428,21 +424,22 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testPathComparator() throws Exception {
 
         PathComparator comp = new PathComparator(true);
-        assertEquals("Equal paths should be equal", 0, comp.compare("Title[1]", "Title[1]"));
+        assertEquals(0, comp.compare("Title[1]", "Title[1]"), "Equal paths should be equal");
         assertEquals(
-            "Parent path should come before child path",
             -1,
-            comp.compare("Paragraph[1]", "Paragraph[1]/Headline[1]"));
+            comp.compare("Paragraph[1]", "Paragraph[1]/Headline[1]"),
+            "Parent path should come before child path");
         // elements with the same name should be listed in reverse order to avoid deletion issues
         assertEquals(
-            "Index 2 should come after index 11 as they are required to be in reverse order",
             1,
-            comp.compare("Paragraph[2]", "Paragraph[11]"));
-        assertEquals("A should come before B", -1, comp.compare("A[1]", "B[1]"));
-        assertEquals("A should come before B at lower levels", -1, comp.compare("Foo[1]/A[1]", "Foo[1]/B[1]"));
+            comp.compare("Paragraph[2]", "Paragraph[11]"),
+            "Index 2 should come after index 11 as they are required to be in reverse order");
+        assertEquals(-1, comp.compare("A[1]", "B[1]"), "A should come before B");
+        assertEquals(-1, comp.compare("Foo[1]/A[1]", "Foo[1]/B[1]"), "A should come before B at lower levels");
 
     }
 
@@ -451,6 +448,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testQueueMaxLength() throws Exception {
 
         int maxLength = 10;
@@ -485,6 +483,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testQueueWaitTime() throws Exception {
 
         int waitTime = 500;
@@ -512,7 +511,7 @@ public class TestFormSession extends OpenCmsTestCase {
         countdown.await(); // wait until all threads have finished
         long t2 = System.currentTimeMillis();
         System.out.println("delta-t=" + (t2 - t1) + ", expected=" + (waitTime * (numThreads - 1)));
-        assertTrue("The elapsed time is below expected wait time", (t2 - t1) >= ((numThreads - 1) * waitTime));
+        assertTrue((t2 - t1) >= ((numThreads - 1) * waitTime), "The elapsed time is below expected wait time");
     }
 
     /**
@@ -520,6 +519,7 @@ public class TestFormSession extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testSessionCleanup() throws Exception {
 
         CmsObject cms = getCmsObject();

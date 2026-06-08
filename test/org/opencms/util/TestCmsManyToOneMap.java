@@ -27,20 +27,28 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Collections;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Sets;
 
 /**
  * Tests for CmsManyToOneMap.<p>
  */
-public class TestCmsManyToOneMap extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsManyToOneMap extends OpenCmsTestRunner {
 
     /**
      * Test for adding entries.<p>
      */
+    @Test
+    @Order(1)
     public void testAdd() {
 
         CmsManyToOneMap<String, String> map = new CmsManyToOneMap<String, String>();
@@ -63,6 +71,8 @@ public class TestCmsManyToOneMap extends OpenCmsTestCase {
     /**
      * Test for copying.<p>
      */
+    @Test
+    @Order(2)
     public void testCopy() {
 
         CmsManyToOneMap<String, String> map = new CmsManyToOneMap<String, String>();
@@ -88,6 +98,8 @@ public class TestCmsManyToOneMap extends OpenCmsTestCase {
     /**
      * Test for removing keys.<p>
      */
+    @Test
+    @Order(4)
     public void testRemoveKey() {
 
         CmsManyToOneMap<String, String> map = new CmsManyToOneMap<String, String>();
@@ -109,6 +121,8 @@ public class TestCmsManyToOneMap extends OpenCmsTestCase {
     /**
      * Test for removing values.<p>
      */
+    @Test
+    @Order(3)
     public void testRemoveValue() {
 
         CmsManyToOneMap<String, String> map = new CmsManyToOneMap<String, String>();

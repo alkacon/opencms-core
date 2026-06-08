@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
@@ -52,7 +52,7 @@ public class CmsUgcUploadHelper {
     private static final Log LOG = CmsLog.getLog(CmsUgcUploadHelper.class);
 
     /** The stored form data. */
-    private ConcurrentHashMap<String, List<FileItem>> m_storedFormData = new ConcurrentHashMap<String, List<FileItem>>();
+    private ConcurrentHashMap<String, List<DiskFileItem>> m_storedFormData = new ConcurrentHashMap<String, List<DiskFileItem>>();
 
     /**
      * Passes the form data with the given ID to the handler object, then removes it and deletes its stored data.<p>
@@ -65,12 +65,12 @@ public class CmsUgcUploadHelper {
      */
     public void consumeFormData(String formDataId, I_CmsFormDataHandler handler) throws Exception {
 
-        List<FileItem> items = m_storedFormData.get(formDataId);
+        List<DiskFileItem> items = m_storedFormData.get(formDataId);
 
         if (items != null) {
             Map<String, I_CmsFormDataItem> itemMap = Maps.newHashMap();
             LOG.debug(formDataId + ": Processing file items");
-            for (FileItem item : items) {
+            for (DiskFileItem item : items) {
                 LOG.debug(formDataId + ": " + item.toString());
                 if (!item.isFormField() && CmsStringUtil.isEmptyOrWhitespaceOnly(item.getName())) {
                     LOG.debug(formDataId + ": skipping previous file field because it is empty");
@@ -84,7 +84,7 @@ public class CmsUgcUploadHelper {
             } catch (Exception e) {
                 storedException = e;
             }
-            for (FileItem item : items) {
+            for (DiskFileItem item : items) {
                 item.delete();
             }
             m_storedFormData.remove(formDataId);
@@ -102,7 +102,7 @@ public class CmsUgcUploadHelper {
     void processFormSubmitRequest(HttpServletRequest request) {
 
         String formDataId = getFormDataId(request);
-        List<FileItem> items = CmsRequestUtil.readMultipartFileItems(request);
+        List<DiskFileItem> items = CmsRequestUtil.readMultipartFileItems(request);
         m_storedFormData.put(formDataId, items);
     }
 

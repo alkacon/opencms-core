@@ -63,6 +63,19 @@ public class CmsParameterEscaper {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsParameterEscaper.class);
 
+    static {
+        try {
+            // Don't hardcode the resource path, use the package of this class as the location
+            String packageName = CmsParameterEscaper.class.getPackage().getName();
+            String resourceName = packageName.replace(".", "/") + "/" + DEFAULT_POLICY;
+            InputStream stream = CmsParameterEscaper.class.getClassLoader().getResourceAsStream(resourceName);
+            Policy policy = Policy.getInstance(stream);
+            defaultPolicy = policy;
+        } catch (PolicyException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
     /** The AntiSamy instance for cleaning HTML. */
     private AntiSamy m_antiSamy;
 
@@ -77,19 +90,6 @@ public class CmsParameterEscaper {
 
     /** The names of parameters which shouldn't be escaped. */
     private Set<String> m_exceptions = new HashSet<String>();
-
-    static {
-        try {
-            // Don't hardcode the resource path, use the package of this class as the location
-            String packageName = CmsParameterEscaper.class.getPackage().getName();
-            String resourceName = packageName.replace(".", "/") + "/" + DEFAULT_POLICY;
-            InputStream stream = CmsParameterEscaper.class.getClassLoader().getResourceAsStream(resourceName);
-            Policy policy = Policy.getInstance(stream);
-            defaultPolicy = policy;
-        } catch (PolicyException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-    }
 
     /**
      * Helper method for reading an AntiSamy policy file from the VFS.<p>

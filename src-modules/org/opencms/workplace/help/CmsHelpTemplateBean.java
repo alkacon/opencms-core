@@ -227,10 +227,11 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("\">\n");
         result.append("\t<title>");
         if (CmsStringUtil.isNotEmpty(getParamHelpresource())) {
-            result.append(getJsp().property(
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                getParamHelpresource(),
-                key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
+            result.append(
+                getJsp().property(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    getParamHelpresource(),
+                    key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
         } else {
             result.append(key(Messages.GUI_HELP_FRAMESET_TITLE_0));
         }
@@ -401,28 +402,31 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // display navigation buttons
             result.append(buttonBar(HTML_START));
             result.append(buttonBarStartTab(0, 5));
-            result.append(button(
-                "javascript:history.back();",
-                null,
-                "back.png",
-                org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0,
-                buttonStyle,
-                resourcePath));
-            result.append(button(
-                "javascript:history.forward();",
-                null,
-                "next.png",
-                org.opencms.search.Messages.GUI_HELP_BUTTON_NEXT_0,
-                buttonStyle,
-                resourcePath));
+            result.append(
+                button(
+                    "javascript:history.back();",
+                    null,
+                    "back.png",
+                    org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0,
+                    buttonStyle,
+                    resourcePath));
+            result.append(
+                button(
+                    "javascript:history.forward();",
+                    null,
+                    "next.png",
+                    org.opencms.search.Messages.GUI_HELP_BUTTON_NEXT_0,
+                    buttonStyle,
+                    resourcePath));
 
-            result.append(button(
-                "javascript:top.body.location.href='" + CmsEncoder.escapeXml(getParamHomelink()) + "';",
-                null,
-                "contents.png",
-                org.opencms.search.Messages.GUI_HELP_BUTTON_CONTENTS_0,
-                buttonStyle,
-                resourcePath));
+            result.append(
+                button(
+                    "javascript:top.body.location.href='" + CmsEncoder.escapeXml(getParamHomelink()) + "';",
+                    null,
+                    "contents.png",
+                    org.opencms.search.Messages.GUI_HELP_BUTTON_CONTENTS_0,
+                    buttonStyle,
+                    resourcePath));
             //search
             result.append("<td style=\"vertical-align: top;\">");
             result.append("<input type=\"text\" name=\"query2\" class=\"onlineform\" style=\"width: 120px\" value=\"");
@@ -447,13 +451,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // display close button
             result.append(buttonBar(HTML_START));
             result.append(buttonBarSeparator(5, 0));
-            result.append(button(
-                "javascript:top.close();",
-                null,
-                "close",
-                org.opencms.search.Messages.GUI_HELP_BUTTON_CLOSE_0,
-                buttonStyle,
-                resourcePath));
+            result.append(
+                button(
+                    "javascript:top.close();",
+                    null,
+                    "close",
+                    org.opencms.search.Messages.GUI_HELP_BUTTON_CLOSE_0,
+                    buttonStyle,
+                    resourcePath));
             result.append(buttonBar(HTML_END));
 
             result.append("\t</td>\n");
@@ -656,13 +661,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
                                 + "="
                                 + getLocale()));
                 } else {
-                    result.append(getJsp().link(
-                        "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
-                            + nav.getResourceName()
-                            + "&"
-                            + CmsLocaleManager.PARAMETER_LOCALE
-                            + "="
-                            + getLocale()));
+                    result.append(
+                        getJsp().link(
+                            "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
+                                + nav.getResourceName()
+                                + "&"
+                                + CmsLocaleManager.PARAMETER_LOCALE
+                                + "="
+                                + getLocale()));
                     //                    result.append(getJsp().link(nav.getResourceName()));
                 }
                 result.append("\">");

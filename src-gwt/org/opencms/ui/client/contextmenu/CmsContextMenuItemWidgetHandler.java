@@ -47,6 +47,7 @@ public class CmsContextMenuItemWidgetHandler implements ClickHandler, MouseOverH
      * @param connector the server connector
      */
     public CmsContextMenuItemWidgetHandler(CmsContextMenuItemWidget widget, ServerConnector connector) {
+
         this.m_widget = widget;
 
         m_contextMenuRpc = RpcProxy.create(I_CmsContextMenuServerRpc.class, connector);

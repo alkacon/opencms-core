@@ -33,72 +33,34 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for copy operation.<p>
  */
-public class TestCopy extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCopy extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * Overrides the OpenCms test setup.
      */
-    public TestCopy(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCopy.class.getName());
-
-        suite.addTest(new TestCopy("testCopyFolderRecursive"));
-        suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
-        suite.addTest(new TestCopy("testCopyFolderDateIssue"));
-        suite.addTest(new TestCopy("testCopyFolderAsNew"));
-        suite.addTest(new TestCopy("testCopyOverwriteDeletedFile"));
-        suite.addTest(new TestCopy("testCopyOverwriteLockedDeletedFile"));
-        suite.addTest(new TestCopy("testCopyFolderWithLockedSibling"));
-        suite.addTest(new TestCopy("testCopyCategories"));
-        suite.addTest(new TestCopy("testCopySiblings"));
-        suite.addTest(new TestCopy("testCopyShallow"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -106,6 +68,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(8)
     public void testCopyCategories() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -150,6 +114,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(4)
     public void testCopyFolderAsNew() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -215,6 +181,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testCopyFolderDateIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -256,6 +224,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testCopyFolderRecursive() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -294,6 +264,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(7)
     public void testCopyFolderWithLockedSibling() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -341,6 +313,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(5)
     public void testCopyOverwriteDeletedFile() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -425,6 +399,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(6)
     public void testCopyOverwriteLockedDeletedFile() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -455,6 +431,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(10)
     public void testCopyShallow() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -475,6 +453,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(9)
     public void testCopySiblings() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -513,6 +493,8 @@ public class TestCopy extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testCopySingleResourceAsNew() throws Exception {
 
         CmsObject cms = getCmsObject();

@@ -28,23 +28,31 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import com.google.common.base.Optional;
 
 /**
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  */
-public class TestCmsStringUtil extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsStringUtil extends OpenCmsTestRunner {
 
     /**
      * Tests content replacement during import.<p>
      */
+    @Test
+    @Order(2)
     public void testCmsContentReplacement() {
 
         String content, result, context, search, replace;
@@ -88,15 +96,17 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
 
         System.err.println(this.getClass().getName() + ".testCmsContentReplacement():");
         System.err.println(test);
-        assertEquals(test, result);
+        assertEquals(result, test);
 
         test = CmsStringUtil.substituteContextPath(content, context);
-        assertEquals(test, result);
+        assertEquals(result, test);
     }
 
     /**
      * Combined tests.<p>
      */
+    @Test
+    @Order(19)
     public void testCombined() {
 
         String test;
@@ -105,17 +115,19 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         String replace = "${path}";
         test = CmsStringUtil.substitute(content, search, replace);
         assertEquals(
-            test,
-            "<p>A paragraph with text...<img src=\"${path}empty.gif\"></p>\n<a href=\"${path}test.jpg\">");
+            "<p>A paragraph with text...<img src=\"${path}empty.gif\"></p>\n<a href=\"${path}test.jpg\">",
+            test);
         test = CmsStringUtil.substitute(test, replace, search);
         assertEquals(
-            test,
-            "<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">");
+            "<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">",
+            test);
     }
 
     /**
      * Tests for complext import patterns.<p>
      */
+    @Test
+    @Order(15)
     public void testComplexPatternForImport() {
 
         String content = "<cms:link>/pics/test.gif</cms:link> <img src=\"/pics/test.gif\"> script = '/pics/test.gif' <cms:link> /pics/othertest.gif </cms:link>\n"
@@ -124,14 +136,16 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         String replace = "$1/system/galleries/pics/";
         String test = CmsStringUtil.substitutePerl(content, search, replace, "g");
         assertEquals(
-            test,
             "<cms:link>/system/galleries/pics/test.gif</cms:link> <img src=\"/system/galleries/pics/test.gif\"> script = '/system/galleries/pics/test.gif' <cms:link> /system/galleries/pics/othertest.gif </cms:link>\n"
-                + "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");
+                + "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>",
+            test);
     }
 
     /**
      * Tests the parseDuration method.<p>
      */
+    @Test
+    @Order(10)
     public void testDuration() {
 
         long second = 1000;
@@ -152,18 +166,22 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests for the escape patterns.<p>
      */
+    @Test
+    @Order(21)
     public void testEscapePattern() {
 
         String test;
         test = CmsStringUtil.escapePattern("/opencms/opencms");
-        assertEquals(test, "\\/opencms\\/opencms");
+        assertEquals("\\/opencms\\/opencms", test);
         test = CmsStringUtil.escapePattern("/opencms/$");
-        assertEquals(test, "\\/opencms\\/\\$");
+        assertEquals("\\/opencms\\/\\$", test);
     }
 
     /**
      * Tests the body tag extraction.<p>
      */
+    @Test
+    @Order(16)
     public void testExtractHtmlBody() {
 
         String content, result;
@@ -171,42 +189,44 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
 
         content = "<html><body>" + innerContent + "</body></html>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = "<html><body style='css' background-color:#ffffff>" + innerContent + "</body></html>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = "<html>\n<title>Test</title>\n<body style='css' background-color:#ffffff>"
             + innerContent
             + "</body>\n</html>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = "<html>< body style='css' background-color:#ffffff>" + innerContent + "</ BODY>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = "<BODY>" + innerContent + "</boDY></html></body><body>somemoretext</BODY>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = innerContent + "</boDY></html>";
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = "<html><BODY>" + innerContent;
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
 
         content = innerContent;
         result = CmsStringUtil.extractHtmlBody(content);
-        assertEquals(result, innerContent);
+        assertEquals(innerContent, result);
     }
 
     /**
      * Tests the xml encoding extraction.<p>
      */
+    @Test
+    @Order(4)
     public void testExtractXmlEncoding() {
 
         String xml, result;
@@ -217,17 +237,19 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
             + "<opencms/>";
 
         result = CmsStringUtil.extractXmlEncoding(xml);
-        assertEquals(result, CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.ENCODING_UTF_8, result);
 
         xml = "<?xml version=\"1.0\" encoding='ISO-8859-1'?>\n" + "<opencms/>";
 
         result = CmsStringUtil.extractXmlEncoding(xml);
-        assertEquals(result, "ISO-8859-1");
+        assertEquals("ISO-8859-1", result);
     }
 
     /**
      * Tests for the resource name formatting.<p>
      */
+    @Test
+    @Order(22)
     public void testFormatResourceName() {
 
         String test;
@@ -255,6 +277,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test for getting the common prefix of two paths.
      */
+    @Test
+    @Order(3)
     public void testGetCommonPrefixPath() {
 
         assertEquals("/", CmsStringUtil.getCommonPrefixPath("/foo", "/bar"));
@@ -274,6 +298,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(20)
     public void testGetRelativeSubPath() throws Exception {
 
         assertEquals("/", CmsStringUtil.getRelativeSubPath("/foo", "/foo/"));
@@ -288,6 +314,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test case for join path method-<p>
      */
+    @Test
+    @Order(17)
     public void testJoinPath() {
 
         assertEquals("/system/", CmsStringUtil.joinPaths("/system/"));
@@ -312,6 +340,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test case for {@link CmsStringUtil#lastIndexOf(String, char[])} method.<p>
      */
+    @Test
+    @Order(13)
     public void testLastIndexOf() {
 
         int result;
@@ -326,6 +356,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Further tests.<p>
      */
+    @Test
+    @Order(12)
     public void testLine() {
 
         String content = "<edittemplate><![CDATA[<H4><IMG style=\"WIDTH: 77px; HEIGHT: 77px\" alt=\"Homepage animation\" hspace=8 src=\"/opencms/opencms/pics/alkacon/x_hp_ani04.gif\" align=right vspace=8 border=0><IMG style=\"WIDTH: 307px; HEIGHT: 52px\" alt=\"Homepage animation\" hspace=0 src=\"/opencms/opencms/pics/alkacon/x_hp_ani05.gif\" vspace=8 border=0></H4>\n<P>Alkacon Software provides software development services for the digital business. We are specialized in web - based content management solutions build on open source Java Software. </P>\n<P>Alkacon Software is a major contributor to the <A href=\"http://www.opencms.org\" target=_blank>OpenCms Project</A>. OpenCms is an enterprise - ready content management platform build in Java from open source components. OpenCms can easily be deployed on almost any existing IT infrastructure and provides powerful features especially suited for large enterprise internet or intranet applications. </P>\n<P>Alkacon Software offers standard <A href=\"/alkacon/en/services/opencms/index.html\" target=_self>service and support </A>packages for OpenCms, providing an optional layer of security and convenience often required for mission critical OpenCms installations.</P>\n<UL>\n<LI><IMG style=\"WIDTH: 125px; HEIGHT: 34px\" alt=OpenCms hspace=3 src=\"/opencms/opencms/pics/alkacon/logo_opencms_125.gif\" align=right border=0>Learn more about our <A href=\"/alkacon/en/services/index.html\" target=_self>Services</A> \n<LI>Subscribe to our&nbsp;<A href=\"/alkacon/en/company/contact/newsletter.html\" target=_self>Company Newsletter</A> \n<LI>Questions? <A href=\"/alkacon/en/company/contact/index.html\" target=_self>Contact us</A></LI></UL>\n<P>&nbsp;</P>]]></edittemplate>";
@@ -333,13 +365,15 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         String replace = "/system/galleries/pics/";
         String test = CmsStringUtil.substitute(content, search, replace);
         assertEquals(
-            test,
-            "<edittemplate><![CDATA[<H4><IMG style=\"WIDTH: 77px; HEIGHT: 77px\" alt=\"Homepage animation\" hspace=8 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani04.gif\" align=right vspace=8 border=0><IMG style=\"WIDTH: 307px; HEIGHT: 52px\" alt=\"Homepage animation\" hspace=0 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani05.gif\" vspace=8 border=0></H4>\n<P>Alkacon Software provides software development services for the digital business. We are specialized in web - based content management solutions build on open source Java Software. </P>\n<P>Alkacon Software is a major contributor to the <A href=\"http://www.opencms.org\" target=_blank>OpenCms Project</A>. OpenCms is an enterprise - ready content management platform build in Java from open source components. OpenCms can easily be deployed on almost any existing IT infrastructure and provides powerful features especially suited for large enterprise internet or intranet applications. </P>\n<P>Alkacon Software offers standard <A href=\"/alkacon/en/services/opencms/index.html\" target=_self>service and support </A>packages for OpenCms, providing an optional layer of security and convenience often required for mission critical OpenCms installations.</P>\n<UL>\n<LI><IMG style=\"WIDTH: 125px; HEIGHT: 34px\" alt=OpenCms hspace=3 src=\"/opencms/opencms/system/galleries/pics/alkacon/logo_opencms_125.gif\" align=right border=0>Learn more about our <A href=\"/alkacon/en/services/index.html\" target=_self>Services</A> \n<LI>Subscribe to our&nbsp;<A href=\"/alkacon/en/company/contact/newsletter.html\" target=_self>Company Newsletter</A> \n<LI>Questions? <A href=\"/alkacon/en/company/contact/index.html\" target=_self>Contact us</A></LI></UL>\n<P>&nbsp;</P>]]></edittemplate>");
+            "<edittemplate><![CDATA[<H4><IMG style=\"WIDTH: 77px; HEIGHT: 77px\" alt=\"Homepage animation\" hspace=8 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani04.gif\" align=right vspace=8 border=0><IMG style=\"WIDTH: 307px; HEIGHT: 52px\" alt=\"Homepage animation\" hspace=0 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani05.gif\" vspace=8 border=0></H4>\n<P>Alkacon Software provides software development services for the digital business. We are specialized in web - based content management solutions build on open source Java Software. </P>\n<P>Alkacon Software is a major contributor to the <A href=\"http://www.opencms.org\" target=_blank>OpenCms Project</A>. OpenCms is an enterprise - ready content management platform build in Java from open source components. OpenCms can easily be deployed on almost any existing IT infrastructure and provides powerful features especially suited for large enterprise internet or intranet applications. </P>\n<P>Alkacon Software offers standard <A href=\"/alkacon/en/services/opencms/index.html\" target=_self>service and support </A>packages for OpenCms, providing an optional layer of security and convenience often required for mission critical OpenCms installations.</P>\n<UL>\n<LI><IMG style=\"WIDTH: 125px; HEIGHT: 34px\" alt=OpenCms hspace=3 src=\"/opencms/opencms/system/galleries/pics/alkacon/logo_opencms_125.gif\" align=right border=0>Learn more about our <A href=\"/alkacon/en/services/index.html\" target=_self>Services</A> \n<LI>Subscribe to our&nbsp;<A href=\"/alkacon/en/company/contact/newsletter.html\" target=_self>Company Newsletter</A> \n<LI>Questions? <A href=\"/alkacon/en/company/contact/index.html\" target=_self>Contact us</A></LI></UL>\n<P>&nbsp;</P>]]></edittemplate>",
+            test);
     }
 
     /**
      * Test for the isPrefixPath method.
      */
+    @Test
+    @Order(1)
     public void testPrefixPath() {
 
         assertTrue(CmsStringUtil.isPrefixPath("/", "/a"));
@@ -358,6 +392,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test for the isProperPrefixPath method.
      */
+    @Test
+    @Order(23)
     public void testProperPrefixPath() {
 
         assertTrue(CmsStringUtil.isProperPrefixPath("/", "/a"));
@@ -376,6 +412,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests the 'removePrefixPath' method.
      */
+    @Test
+    @Order(9)
     public void testRemovePrefixPath() {
 
         assertEquals(java.util.Optional.empty(), CmsStringUtil.removePrefixPath("/foo", "/foobar"));
@@ -396,6 +434,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests <code>{@link CmsStringUtil#replacePrefix(String, String, String, boolean)}</code>.<p>
      */
+    @Test
+    @Order(8)
     public void testReplacePrefix() {
 
         assertEquals(Optional.absent(), CmsStringUtil.replacePrefix("foo", "x", "y", false));
@@ -410,6 +450,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test for the splitAsMap() method.
      */
+    @Test
+    @Order(14)
     public void testSplitAsMap() throws Exception {
 
         String config = "\n"
@@ -432,6 +474,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests <code>{@link CmsStringUtil#splitAsArray(String, char)}</code>.<p>
      */
+    @Test
+    @Order(11)
     public void testSplitCharDelimiter() {
 
         String toSplit;
@@ -532,6 +576,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test for the splitOptions() method.
      */
+    @Test
+    @Order(18)
     public void testSplitOptions() throws Exception {
 
         String config = "\n"
@@ -556,6 +602,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests <code>{@link CmsStringUtil#splitAsArray(String, String)}</code>.<p>
      */
+    @Test
+    @Order(25)
     public void testSplitStringDelimiter() {
 
         String toSplit;
@@ -765,6 +813,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests the basic String substitution.<p>
      */
+    @Test
+    @Order(6)
     public void testSubstitute() {
 
         String test, result;
@@ -775,22 +825,46 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
 
         test = CmsStringUtil.substitute(content, search, replace);
         System.out.println(test);
-        assertEquals(test, "<a href=\"\\${path}test.jpg\">");
+        assertEquals("<a href=\"\\${path}test.jpg\">", test);
 
         test = CmsStringUtil.substitute(test, replace, search);
-        assertEquals(test, "<a href=\"/opencms/opencms/test.jpg\">");
+        assertEquals("<a href=\"/opencms/opencms/test.jpg\">", test);
 
         content = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pics/";
         result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";
         test = CmsStringUtil.substitute(content, "i", "u");
-        assertEquals(test, result);
+        assertEquals(result, test);
 
         content = "/delim//delim fake at start/delim//not a delim//delim//delim//delim fake at end/delim/";
         result = "REPLACED!/delim fake at startREPLACED!/not a delim/REPLACED!REPLACED!/delim fake at endREPLACED!";
         test = CmsStringUtil.substitute(content, "/delim/", "REPLACED!");
-        assertEquals(test, result);
+        assertEquals(result, test);
     }
 
+    @Test
+    public void testToggleKeyword() {
+
+        assertEquals("foo bar", CmsStringUtil.toggleKeyword("foo xyz bar", "xyz", false));
+        assertEquals("foo bar", CmsStringUtil.toggleKeyword("foo xyz xyz bar", "xyz", false));
+        assertEquals("foo xyzbar", CmsStringUtil.toggleKeyword("foo xyzbar", "xyz", false));
+        assertEquals("fooxyz bar", CmsStringUtil.toggleKeyword("fooxyz bar", "xyz", false));
+        assertEquals("foo", CmsStringUtil.toggleKeyword("foo bar", "bar", false));
+        assertEquals("bar", CmsStringUtil.toggleKeyword("foo bar", "foo", false));
+
+        assertEquals("foo bar xyz", CmsStringUtil.toggleKeyword("foo bar", "xyz", true));
+        assertEquals("foo bar xyz", CmsStringUtil.toggleKeyword("foo bar     ", "xyz", true));
+        assertEquals("foo barxyz xyz", CmsStringUtil.toggleKeyword("foo barxyz", "xyz", true));
+        assertEquals("foo xyz bar", CmsStringUtil.toggleKeyword("foo xyz bar", "xyz", true));
+        assertEquals("xyz foo bar", CmsStringUtil.toggleKeyword("xyz foo bar", "xyz", true));
+
+        assertEquals("", CmsStringUtil.toggleKeyword("xyz", "xyz", false));
+        assertEquals("", CmsStringUtil.toggleKeyword("", "xyz", false));
+        assertEquals("xyz", CmsStringUtil.toggleKeyword("", "xyz", true));
+
+    }
+
+    @Test
+    @Order(7)
     public void testTransformProperties() {
 
         String nl = "\n";
@@ -810,6 +884,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Tests path component translation.
      */
+    @Test
+    @Order(5)
     public void testTranslatePathComponents() {
 
         String[] substitutions = {"s/ /_/g", "s/[^a-z0-9_]/x/g"};
@@ -823,6 +899,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test case for {@link CmsStringUtil#trimToSize(String, int)} method.<p>
      */
+    @Test
+    @Order(24)
     public void testTrimToSize() {
 
         String text, result, expected;
@@ -891,6 +969,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     /**
      * Test case for {@link CmsStringUtil#trimToSize(String, int, int, String)}.<p>
      */
+    @Test
+    @Order(26)
     public void testTrimToSizeText() {
 
         String text, result, expected;

@@ -61,16 +61,6 @@ public class CmsPageSaveStatus implements IsSerializable {
     protected CmsPageSaveStatus() {}
 
     /**
-     * Gets the time at which the page was saved.
-     *
-     * @return the time at which the page was saved
-     */
-    public long getTimestamp() {
-
-        return m_timestamp;
-    }
-
-    /**
      * Gets the id of the saved page.
      *
      * @return the id of the saved page
@@ -78,6 +68,16 @@ public class CmsPageSaveStatus implements IsSerializable {
     public CmsUUID getPageId() {
 
         return m_pageId;
+    }
+
+    /**
+     * Gets the time at which the page was saved.
+     *
+     * @return the time at which the page was saved
+     */
+    public long getTimestamp() {
+
+        return m_timestamp;
     }
 
 }

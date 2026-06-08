@@ -82,9 +82,11 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
                 tmpProjects.put(Integer.valueOf(res.getInt("PUBLISH_TAG")), internalCreateProject(res, null));
             }
         } catch (SQLException e) {
-            throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(
-                org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
+            throw new CmsDbSqlException(
+                org.opencms.db.generic.Messages.get().container(
+                    org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
+                    CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }

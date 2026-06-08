@@ -34,64 +34,49 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for lock operation.<p>
  */
-public class TestFill extends OpenCmsTestCase {
+public class TestFill extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestFill(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
-     * Test suite for this test class.<p>
+     * fills the db with resources in average: <br>
+     *    <ul>
+     *        <li>10 folders in 5 subfolders
+     *        <li>20 files in each folder, 75% binary / 30% text files,<li>
+     *        <li>with 10 properties, 60% individual / 30% shared properties.<li>
+     *    </ul>
+     * that is a total of app. 10000 files, and 100000 property values. <p>
      *
-     * @return the test suite
+     * @throws Throwable if something goes wrong
      */
-    public static Test suite() {
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
+    public void testFillResources() throws Throwable {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestFill.class.getName());
-
-        //suite.addTest(new TestFill("testFillResources"));
-        suite.addTest(new TestFill("testPermissionsWithOUs"));
-        suite.addTest(new TestFill("testResWithProps"));
-        suite.addTest(new TestFill("testReadFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        CmsObject cms = getCmsObject();
+        echo("Test filling the db with tons of files");
+        long t = System.currentTimeMillis();
+        int nFiles = generateContent(cms, "/", 10, 5, 10, 0.6, 20, 0.75);
+        t = System.currentTimeMillis() - t;
+        echo("" + nFiles + " files have been created in " + t + " msecs");
     }
 
     /**
@@ -99,6 +84,8 @@ public class TestFill extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testPermissionsWithOUs() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -150,32 +137,13 @@ public class TestFill extends OpenCmsTestCase {
     }
 
     /**
-     * fills the db with resources in average: <br>
-     *    <ul>
-     *        <li>10 folders in 5 subfolders
-     *        <li>20 files in each folder, 75% binary / 30% text files,<li>
-     *        <li>with 10 properties, 60% individual / 30% shared properties.<li>
-     *    </ul>
-     * that is a total of app. 10000 files, and 100000 property values. <p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testFillResources() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Test filling the db with tons of files");
-        long t = System.currentTimeMillis();
-        int nFiles = generateContent(cms, "/", 10, 5, 10, 0.6, 20, 0.75);
-        t = System.currentTimeMillis() - t;
-        echo("" + nFiles + " files have been created in " + t + " msecs");
-    }
-
-    /**
      * Performance test for readFile.<p>
      * 10,000 files will be read and 20% of them are binary.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testReadFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -201,6 +169,8 @@ public class TestFill extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testResWithProps() throws Throwable {
 
         CmsObject cms = getCmsObject();

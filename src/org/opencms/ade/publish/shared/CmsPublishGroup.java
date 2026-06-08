@@ -53,7 +53,7 @@ public class CmsPublishGroup implements IsSerializable {
      *
      * @param name the group name
      * @param resources the resources
-     **/
+     */
     public CmsPublishGroup(String name, List<CmsPublishResource> resources) {
 
         m_name = name;

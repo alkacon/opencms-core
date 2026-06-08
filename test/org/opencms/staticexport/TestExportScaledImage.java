@@ -31,90 +31,40 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.servlet.http.Part;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * @since 6.0.0
  */
-public class TestExportScaledImage extends OpenCmsTestCase {
+public class TestExportScaledImage extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestExportScaledImage(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestExportScaledImage.class.getName());
-
-        suite.addTest(new TestExportScaledImage("testExportScaledImage"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "../org/opencms/staticexport/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/", "../org/opencms/staticexport/");
     }
 
     /**
@@ -122,6 +72,7 @@ public class TestExportScaledImage extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testExportScaledImage() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -145,671 +96,78 @@ public class TestExportScaledImage extends OpenCmsTestCase {
             CmsImageScaler.PARAM_SCALE + "=" + scaleParams);
         CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
         // Request and response are provided only with information needed to get scaling running at all.
-        OpenCms.getStaticExportManager().export(new HttpServletRequest() {
+        HttpServletRequest testRequest = (HttpServletRequest)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletRequest.class},
+            new InvocationHandler() {
 
-            public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public String changeSessionId() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public AsyncContext getAsyncContext() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Object getAttribute(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Enumeration<String> getAttributeNames() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getAuthType() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getCharacterEncoding() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public int getContentLength() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public long getContentLengthLong() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public String getContentType() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getContextPath() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Cookie[] getCookies() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public long getDateHeader(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public DispatcherType getDispatcherType() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getHeader(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Enumeration<String> getHeaderNames() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Enumeration<String> getHeaders(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public ServletInputStream getInputStream() throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public int getIntHeader(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public String getLocalAddr() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Locale getLocale() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Enumeration<Locale> getLocales() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getLocalName() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public int getLocalPort() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public String getMethod() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getParameter(String name) {
-
-                if (Objects.equals(CmsImageScaler.PARAM_SCALE, name)) {
-                    return scaleParams;
+                    if (method.getName().equals("getParameter")) {
+                        if (Objects.equals(CmsImageScaler.PARAM_SCALE, args[0])) {
+                            return scaleParams;
+                        }
+                        return null;
+                    } else {
+                        if (method.getReturnType() == int.class) {
+                            return Integer.valueOf(0);
+                        } else if (method.getReturnType() == long.class) {
+                            return Long.valueOf(0);
+                        } else if (method.getReturnType() == boolean.class) {
+                            return Boolean.FALSE;
+                        }
+                        return null;
+                    }
                 }
-                return null;
-            }
-
-            public Map<String, String[]> getParameterMap() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Enumeration<String> getParameterNames() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String[] getParameterValues(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Part getPart(String name) throws IOException, ServletException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Collection<Part> getParts() throws IOException, ServletException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getPathInfo() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getPathTranslated() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getProtocol() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getQueryString() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public BufferedReader getReader() throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getRealPath(String path) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getRemoteAddr() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getRemoteHost() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public int getRemotePort() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public String getRemoteUser() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public RequestDispatcher getRequestDispatcher(String path) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getRequestedSessionId() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getRequestURI() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public StringBuffer getRequestURL() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getScheme() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getServerName() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public int getServerPort() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public ServletContext getServletContext() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getServletPath() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public HttpSession getSession() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public HttpSession getSession(boolean create) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Principal getUserPrincipal() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public boolean isAsyncStarted() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isAsyncSupported() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isRequestedSessionIdFromCookie() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isRequestedSessionIdFromUrl() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isRequestedSessionIdFromURL() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isRequestedSessionIdValid() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isSecure() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public boolean isUserInRole(String role) {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public void login(String username, String password) throws ServletException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void logout() throws ServletException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void removeAttribute(String name) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setAttribute(String name, Object o) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public AsyncContext startAsync() throws IllegalStateException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
-            throws IllegalStateException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
-            throws IOException, ServletException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-        }, new HttpServletResponse() {
-
-            public void addCookie(Cookie cookie) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void addDateHeader(String name, long date) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void addHeader(String name, String value) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void addIntHeader(String name, int value) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public boolean containsHeader(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public String encodeRedirectUrl(String url) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String encodeRedirectURL(String url) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String encodeUrl(String url) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String encodeURL(String url) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public void flushBuffer() throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public int getBufferSize() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public String getCharacterEncoding() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getContentType() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public String getHeader(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Collection<String> getHeaderNames() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Collection<String> getHeaders(String name) {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public Locale getLocale() {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public ServletOutputStream getOutputStream() throws IOException {
-
-                // Returning dummy output stream, since we do not want to actually write somewhere in the output stream
-                return new ServletOutputStream() {
-
-                    @Override
-                    public boolean isReady() {
-
-                        // Returning default, since the method is never called in the test case.
-                        return false;
+            });
+        HttpServletResponse testResponse = (HttpServletResponse)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletResponse.class},
+            new InvocationHandler() {
+
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+                    if (method.getName().equals("getOutputStream")) {
+                        // Returning dummy output stream, since we do not want to actually write somewhere in the output stream
+                        return new ServletOutputStream() {
+
+                            @Override
+                            public boolean isReady() {
+
+                                // Returning default, since the method is never called in the test case.
+                                return false;
+                            }
+
+                            @Override
+                            public void setWriteListener(WriteListener writeListener) {
+
+                                // Returning default, since the method is never called in the test case.
+
+                            }
+
+                            @Override
+                            public void write(int b) throws IOException {
+
+                                // Returning default, since the method is never called in the test case.
+
+                            }
+                        };
+                    } else {
+                        if (method.getReturnType() == int.class) {
+                            return Integer.valueOf(0);
+                        } else if (method.getReturnType() == long.class) {
+                            return Long.valueOf(0);
+                        } else if (method.getReturnType() == boolean.class) {
+                            return Boolean.FALSE;
+                        }
+                        return null;
                     }
+                }
+            });
 
-                    @Override
-                    public void setWriteListener(WriteListener writeListener) {
-
-                        // Returning default, since the method is never called in the test case.
-
-                    }
-
-                    @Override
-                    public void write(int b) throws IOException {
-
-                        // Returning default, since the method is never called in the test case.
-
-                    }
-                };
-            }
-
-            public int getStatus() {
-
-                // Returning default, since the method is never called in the test case.
-                return 0;
-            }
-
-            public PrintWriter getWriter() throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-                return null;
-            }
-
-            public boolean isCommitted() {
-
-                // Returning default, since the method is never called in the test case.
-                return false;
-            }
-
-            public void reset() {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void resetBuffer() {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void sendError(int sc) throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void sendError(int sc, String msg) throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void sendRedirect(String location) throws IOException {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setBufferSize(int size) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setCharacterEncoding(String charset) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setContentLength(int len) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setContentLengthLong(long len) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setContentType(String type) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setDateHeader(String name, long date) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setHeader(String name, String value) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setIntHeader(String name, int value) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setLocale(Locale loc) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setStatus(int sc) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-
-            public void setStatus(int sc, String sm) {
-
-                // Returning default, since the method is never called in the test case.
-
-            }
-        }, exportCms, data);
+        OpenCms.getStaticExportManager().export(testRequest, testResponse, exportCms, data);
 
         File f = new File(exportPath);
         assertTrue(f.exists());

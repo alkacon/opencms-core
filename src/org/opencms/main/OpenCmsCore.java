@@ -69,7 +69,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.CmsGwtServiceContext;
+import org.opencms.gwt.CmsGwtServiceContext2;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
@@ -267,7 +267,7 @@ public final class OpenCmsCore {
     private CmsFlexCache m_flexCache;
 
     /** The context objects for GWT services. */
-    private Map<String, CmsGwtServiceContext> m_gwtServiceContexts;
+    private Map<String, CmsGwtServiceContext2> m_gwtServiceContexts;
 
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
@@ -1948,7 +1948,7 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
-        m_gwtServiceContexts = new HashMap<String, CmsGwtServiceContext>();
+        m_gwtServiceContexts = new HashMap<String, CmsGwtServiceContext2>();
 
         // automatic servlet container recognition and specific behavior:
         CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
@@ -2130,7 +2130,7 @@ public final class OpenCmsCore {
      *
      * This is the final step that is called on the servlets "init()" method.
      * It registers the servlets request handler and also outputs the final
-     * startup message. The servlet should auto-load since the &ltload-on-startup&gt;
+     * startup message. The servlet should auto-load since the <code>&lt;load-on-startup&gt;</code>
      * parameter is set in the 'web.xml' by default.<p>
      *
      * @param servlet the OpenCms servlet
@@ -2583,6 +2583,16 @@ public final class OpenCmsCore {
                 System.err.println(Messages.get().getBundle().key(Messages.LOG_CONSOLE_TOTAL_RUNTIME_1, runtime));
 
             }
+            try {
+                final javax.management.MBeanServer mbs = java.lang.management.ManagementFactory.getPlatformMBeanServer();
+                final javax.management.ObjectName mxbeanName = new javax.management.ObjectName(
+                    "org.opencms.mx:type=CmsDiagnosticsMXBean");
+                if (mbs.isRegistered(mxbeanName)) {
+                    mbs.unregisterMBean(mxbeanName);
+                }
+            } catch (Throwable e) {
+                CmsLog.INIT.error(e.getLocalizedMessage(), e);
+            }
             m_instance = null;
         }
     }
@@ -2980,9 +2990,9 @@ public final class OpenCmsCore {
      */
     private synchronized CmsGwtService getGwtService(String serviceName, ServletConfig servletConfig) throws Throwable {
 
-        CmsGwtServiceContext context = m_gwtServiceContexts.get(serviceName);
+        CmsGwtServiceContext2 context = m_gwtServiceContexts.get(serviceName);
         if (context == null) {
-            context = new CmsGwtServiceContext(serviceName);
+            context = new CmsGwtServiceContext2(serviceName);
             m_gwtServiceContexts.put(serviceName, context);
         }
         CmsGwtService gwtService = (CmsGwtService)Class.forName(serviceName).newInstance();

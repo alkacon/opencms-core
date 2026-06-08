@@ -65,6 +65,12 @@ implements FieldUpdater<CmsRewriteAliasTableRow, String> {
     /** Mapping from option texts to the real values. */
     private static BiMap<CmsAliasMode, String> optionMapping = HashBiMap.create();
 
+    static {
+        optionMapping.put(CmsAliasMode.permanentRedirect, CmsAliasMessages.messagePermanentRedirect());
+        optionMapping.put(CmsAliasMode.redirect, CmsAliasMessages.messageRedirect());
+        optionMapping.put(CmsAliasMode.passthrough, CmsAliasMessages.messagePassthrough());
+    }
+
     /** The rewrite alias table. */
     private CmsRewriteAliasTable m_table;
 
@@ -80,12 +86,6 @@ implements FieldUpdater<CmsRewriteAliasTableRow, String> {
         setFieldUpdater(this);
         setSortable(true);
 
-    }
-
-    static {
-        optionMapping.put(CmsAliasMode.permanentRedirect, CmsAliasMessages.messagePermanentRedirect());
-        optionMapping.put(CmsAliasMode.redirect, CmsAliasMessages.messageRedirect());
-        optionMapping.put(CmsAliasMode.passthrough, CmsAliasMessages.messagePassthrough());
     }
 
     /**

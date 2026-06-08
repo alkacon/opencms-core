@@ -85,7 +85,8 @@ public class CmsRedirectLoader implements I_CmsResourceLoader, I_CmsFlexCacheEna
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException {
+        HttpServletResponse res)
+    throws CmsException {
 
         return cms.readFile(resource).getContents();
     }

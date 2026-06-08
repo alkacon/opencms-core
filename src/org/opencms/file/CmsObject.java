@@ -4061,7 +4061,7 @@ public final class CmsObject {
      * permissions on the target resource, but the user has to be a member of the given group and have write access to the resource.
      *
      * @param res the target resource
-     * @param group a group (current user must be a member)
+     * @param groupName a group name (current user must be a member)
      * @param restricted true if the restriction status should be set
      * @throws CmsException if something goes wrong
      */

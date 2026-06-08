@@ -32,28 +32,31 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.setup.xml.CmsXmlConfigUpdater;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 
 import org.dom4j.Document;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the setup xml helper class.<p>
  *
  * @since 6.1.8
  */
-public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSetupXmlHelper extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsSetupXmlHelper(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        super(arg0);
+        initConfiguration();
     }
 
     /**
@@ -61,12 +64,15 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testSystemConfigPosition() throws Exception {
+
         String[] elements = {"internationalization", "mail", "memorymonitor", "flexcache", "userdata"};
         int prev = -1;
-        for (String elem: elements) {
+        for (String elem : elements) {
             int pos = CmsXmlConfigUpdater.getSystemConfigPosition(elem);
-            assertTrue("Wrong order for opencms-system.xml elements", prev < pos);
+            assertTrue(prev < pos, "Wrong order for opencms-system.xml elements");
             prev = pos;
         }
     }
@@ -76,6 +82,8 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testXmlModification() throws Exception {
 
         String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "base");
@@ -192,7 +200,7 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         // compare documents
         xmlHelper.flushAll();
         Document cur = xmlHelper.getDocument(inputFile);
-        assertEquals(ori, cur);
+        assertXmlEquals(ori, cur);
 
         // remove test file
         new File(base + inputFile).delete();

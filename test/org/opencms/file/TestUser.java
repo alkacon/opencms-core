@@ -34,10 +34,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
+import org.opencms.util.CmsDataTypeUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
+import java.io.InvalidClassException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,64 +52,45 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import com.google.common.collect.Sets;
 
 /**
  * Unit tests for OpenCms user object.<p>
  */
-public class TestUser extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestUser extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestUser(String arg0) {
+    static class Evil implements Serializable {
 
-        super(arg0);
+        private String m_text;
+
+        public Evil(String text) {
+
+            m_text = text;
+        }
+
+        @Override
+        public String toString() {
+
+            return getClass().getSimpleName() + "[" + m_text + "]";
+        }
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        //return OpenCmsTestCase.generateSetupTestWrapper(TestUser.class, "simpletest", "/");
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestUser.class.getName());
-
-        suite.addTest(new TestUser("testUserCreation"));
-        suite.addTest(new TestUser("testUserInfo"));
-        suite.addTest(new TestUser("testUserExport"));
-        suite.addTest(new TestUser("testUserSelfManagement"));
-        suite.addTest(new TestUser("testSearchByEmail"));
-        suite.addTest(new TestUser("testSearchByAnyGroups"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", false);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/", false);
     }
 
     /**
@@ -113,6 +98,8 @@ public class TestUser extends OpenCmsTestCase {
      *
      * @throws Throwable
      */
+    @Test
+    @Order(6)
     public void testSearchByAnyGroups() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -129,7 +116,7 @@ public class TestUser extends OpenCmsTestCase {
         params.setAnyGroups(Arrays.asList(searchGroup1, searchGroup2));
         params.setPaging(9999, 1);
         List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(cms, params);
-        assertEquals("Wrong result set size", 3, users.size());
+        assertEquals(3, users.size(), "Wrong result set size");
         Set<String> userNames = users.stream().map(u -> u.getName()).collect(Collectors.toSet());
         assertEquals(new HashSet<>(Arrays.asList("ytest1", "ytest2", "ytest3")), userNames);
 
@@ -140,6 +127,8 @@ public class TestUser extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testSearchByEmail() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -169,10 +158,40 @@ public class TestUser extends OpenCmsTestCase {
     }
 
     /**
+     * Tests serialization filtering.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(7)
+    public void testSerializationFiltering() throws Exception {
+
+        List<Object> list = new ArrayList<>();
+        list.add(new CmsUUID());
+        list.add(Long.valueOf(42));
+        list.add(Boolean.TRUE);
+        list.add("foo");
+        list.add(new ArrayList<>());
+        assertEquals(list, CmsDataTypeUtil.dataDeserialize(CmsDataTypeUtil.dataSerialize(list), "java.util.List"));
+
+        list.add(new Evil("don't deserialize me"));
+        byte[] serialized = CmsDataTypeUtil.dataSerialize(list);
+        try {
+            CmsDataTypeUtil.dataDeserialize(serialized, "java.util.List");
+            fail("deserialization should have failed");
+        } catch (InvalidClassException e) {
+            // ignore, ok
+        }
+
+    }
+
+    /**
      * Test user creation.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testUserCreation() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -192,6 +211,8 @@ public class TestUser extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUserExport() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -240,6 +261,8 @@ public class TestUser extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUserInfo() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -272,6 +295,8 @@ public class TestUser extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUserSelfManagement() throws Throwable {
 
         CmsObject cms = getCmsObject();

@@ -417,7 +417,8 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
         CmsObject cms,
         String resource,
         CmsMessages messages,
-        I_CmsWidgetParameter param) throws JSONException {
+        I_CmsWidgetParameter param)
+    throws JSONException {
 
         JSONObject result = super.getAdditionalGalleryInfo(cms, resource, messages, param);
         result.put("isAdvancedWidget", true);

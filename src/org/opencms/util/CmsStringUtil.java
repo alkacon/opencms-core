@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -175,6 +176,12 @@ public final class CmsStringUtil {
     /** Minute constant. */
     private static final long MINUTES = 1000 * 60;
 
+    /** Pattern matching sequences of non-slash characters. */
+    private static final Pattern NOT_SLASHES = Pattern.compile("[^/]+");
+
+    /** Cache for compiled regular expressions. */
+    private static final ConcurrentHashMap<String, Pattern> patternCache = new ConcurrentHashMap<String, Pattern>();
+
     /** Second constant. */
     private static final long SECONDS = 1000;
 
@@ -185,9 +192,6 @@ public final class CmsStringUtil {
 
     /** Regex that matches an xml head. */
     private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
-
-    /** Pattern matching sequences of non-slash characters. */
-    private static final Pattern NOT_SLASHES = Pattern.compile("[^/]+");
 
     /**
      * Default constructor (empty), private because this class has only
@@ -239,6 +243,17 @@ public final class CmsStringUtil {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Compiles a regular expression, but uses a cache to avoid compiling the same regex multiple times.
+     *
+     * @param regex the regex to compile
+     * @return the pattern corresponding to the regex
+     */
+    public static Pattern cachePattern(String regex) {
+
+        return patternCache.computeIfAbsent(regex, Pattern::compile);
     }
 
     /**
@@ -1011,6 +1026,19 @@ public final class CmsStringUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Checks if the given string contains a keyword that is not adjacent to non-space characters.
+     * @param text the text to find the keyword in
+     * @param keyword the keyword
+     *
+     * @return true if the text has the keyword
+     */
+    public static boolean hasKeyword(String text, String keyword) {
+
+        Pattern keywordPattern = cachePattern("(?<!\\S)" + Pattern.quote(keyword) + "(?!\\S)");
+        return keywordPattern.matcher(text).find();
     }
 
     /**
@@ -1906,12 +1934,45 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Treats the given string as a whitespace-separated list of keywords and either adds a keyword to it or removes it.
+     *
+     * @param str the string to treat as a list of keyword
+     * @param keyword the keyword to add / remove
+     * @param enable true if the keyword should be added, false if it should be removed
+     *
+     * @return the modified string
+     */
+    public static String toggleKeyword(String str, String keyword, boolean enable) {
+
+        Pattern keywordPattern = cachePattern("(?<!\\S)" + Pattern.quote(keyword) + "(?!\\S)");
+        String textWithoutKeyword = keywordPattern.matcher(str).replaceAll("");
+        boolean alreadyHadKeyword = !textWithoutKeyword.equals(str);
+        if (alreadyHadKeyword) {
+            textWithoutKeyword = textWithoutKeyword.trim().replaceAll(" +", " ");
+        }
+        String result;
+        if (!alreadyHadKeyword && enable) {
+            result = str.stripTrailing();
+            if (result.length() > 0) {
+                result = result + " " + keyword;
+            } else {
+                result = keyword;
+            }
+        } else if (alreadyHadKeyword && !enable) {
+            result = textWithoutKeyword;
+        } else {
+            result = str;
+        }
+        return result;
+    }
+
+    /**
      * Returns the java String literal for the given String. <p>
      *
      * This is the form of the String that had to be written into source code
      * using the unicode escape sequence for special characters. <p>
      *
-     * Example: "&Auml" would be transformed to "\\u00C4".<p>
+     * Example: "&amp;Auml" would be transformed to "\\u00C4".<p>
      *
      * @param s a string that may contain non-ascii characters
      *

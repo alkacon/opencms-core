@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * Dialog to import user data.<p>
@@ -108,9 +108,9 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
         // get the file item from the multipart request
         Iterator it = getMultiPartFileItems().iterator();
-        FileItem fi = null;
+        DiskFileItem fi = null;
         while (it.hasNext()) {
-            fi = (FileItem)it.next();
+            fi = (DiskFileItem)it.next();
             if (fi.getName() != null) {
                 // found the file object, leave iteration
                 break;

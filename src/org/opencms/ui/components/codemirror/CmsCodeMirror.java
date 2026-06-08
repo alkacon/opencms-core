@@ -58,6 +58,7 @@ implements Property<String>, Property.ValueChangeNotifier {
 
     /** The available editor languages. */
     public enum CodeMirrorLanguage {
+
         /** CSS. */
         CSS("css", new String[] {"css"}),
         /** HTML. */
@@ -183,6 +184,7 @@ implements Property<String>, Property.ValueChangeNotifier {
 
     /** The available editor themes. */
     public enum CodeMirrorTheme {
+
         /** Theme. */
         AMBIANCE("ambiance"),
         /** Theme. */

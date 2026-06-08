@@ -22,16 +22,16 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.Table;
-import com.vaadin.v7.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.util.ReflectTools;
+import com.vaadin.v7.event.ItemClickEvent;
+import com.vaadin.v7.ui.Table;
+import com.vaadin.v7.ui.Tree;
 
 /**
  * ContextMenu is an extension which can be attached to any Vaadin component to
@@ -61,6 +61,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param contextMenu the context menu
          */
         public ContextMenuClosedEvent(CmsContextMenu contextMenu) {
+
             super(contextMenu);
             m_contextMenu = contextMenu;
         }
@@ -124,6 +125,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param itemState the item state
          */
         protected ContextMenuItem(ContextMenuItem parent, ContextMenuItemState itemState) {
+
             m_parent = parent;
 
             if (itemState == null) {
@@ -460,6 +462,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param component the component
          */
         public ContextMenuItemClickEvent(Object component) {
+
             super(component);
         }
     }
@@ -618,6 +621,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param component the component
          */
         public ContextMenuOpenedOnComponentEvent(CmsContextMenu contextMenu, int x, int y, Component component) {
+
             super(component);
 
             m_contextMenu = contextMenu;
@@ -689,6 +693,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param propertyId the property id
          */
         public ContextMenuOpenedOnTableFooterEvent(CmsContextMenu contextMenu, Table sourceTable, Object propertyId) {
+
             super(sourceTable);
 
             m_contextMenu = contextMenu;
@@ -739,6 +744,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param propertyId the property id
          */
         public ContextMenuOpenedOnTableHeaderEvent(CmsContextMenu contextMenu, Table sourceTable, Object propertyId) {
+
             super(sourceTable);
 
             m_contextMenu = contextMenu;
@@ -797,6 +803,7 @@ public class CmsContextMenu extends AbstractExtension {
             Table table,
             Object itemId,
             Object propertyId) {
+
             super(table);
 
             m_contextMenu = contextMenu;
@@ -858,6 +865,7 @@ public class CmsContextMenu extends AbstractExtension {
          * @param itemId the item id
          */
         public ContextMenuOpenedOnTreeItemEvent(CmsContextMenu contextMenu, Tree tree, Object itemId) {
+
             super(tree);
 
             m_contextMenu = contextMenu;
@@ -931,6 +939,7 @@ public class CmsContextMenu extends AbstractExtension {
      * Constructor.<p>
      */
     public CmsContextMenu() {
+
         registerRpc(m_serverRPC);
 
         m_items = new HashMap<String, CmsContextMenu.ContextMenuItem>();
@@ -1113,7 +1122,7 @@ public class CmsContextMenu extends AbstractExtension {
      * Opens the context menu to given coordinates. ContextMenu must extend
      * component before calling this method. This method is only intended for
      * opening the context menu from server side when using
-     * {@link #ContextMenuOpenedListener.ComponentListener}.<p>
+     * <code>ContextMenuOpenedListener.ComponentListener</code>.<p>
      *
      * @param x the client x position
      * @param y the client y position

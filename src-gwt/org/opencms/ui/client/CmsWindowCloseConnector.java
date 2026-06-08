@@ -54,6 +54,7 @@ public class CmsWindowCloseConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsWindowCloseConnector() {
+
         m_rpc = getRpcProxy(I_CmsWindowCloseServerRpc.class);
     }
 

@@ -152,26 +152,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the user id parameter value.<p>
-     *
-     * @return the user id parameter value
-     */
-    public String getParamGroupid() {
-
-        return m_paramGroupid;
-    }
-
-    /**
-     * Returns the Group name parameter.<p>
-     *
-     * @return the Group name parameter
-     */
-    public String getParamGroupname() {
-
-        return m_paramGroupname;
-    }
-
-    /**
      * Returns the right icon path for the given list item.<p>
      *
      * @param item the list item to get the icon path for
@@ -190,6 +170,26 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         } catch (CmsException e) {
             return A_CmsUsersList.PATH_BUTTONS + "user.png";
         }
+    }
+
+    /**
+     * Returns the user id parameter value.<p>
+     *
+     * @return the user id parameter value
+     */
+    public String getParamGroupid() {
+
+        return m_paramGroupid;
+    }
+
+    /**
+     * Returns the Group name parameter.<p>
+     *
+     * @return the Group name parameter
+     */
+    public String getParamGroupname() {
+
+        return m_paramGroupname;
     }
 
     /**
@@ -230,20 +230,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             }
         }
         return m_hasUsersInOtherOus.booleanValue();
-    }
-
-    /**
-     * Makes a list item for a given user.<p>
-     *
-     * @param user the user
-     *
-     * @return the list item
-     */
-    protected CmsListItem makeListItemForUser(CmsUser user) {
-
-        CmsListItem item = getList().newItem(user.getId().toString());
-        setUserData(user, item);
-        return item;
     }
 
     /**
@@ -291,18 +277,6 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Checks whether users of other OUs should be shown.<p>
-     *
-     * @return true if users of other OUs should be shown
-     */
-    protected boolean hasOuDetail() {
-
-        CmsListMetadata meta = getList().getMetadata();
-        CmsListItemDetails detail = meta.getItemDetailDefinition(LIST_DETAIL_OTHEROU);
-        return (detail != null) && detail.isVisible();
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     @Override
@@ -322,43 +296,27 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Makes a list item from a user.<p>
-     *
-     * @param user a user
-     *
-     * @return a list item
-     */
-    protected CmsListItem makeListItem(CmsUser user) {
-
-        CmsListItem item = getList().newItem(user.getId().toString());
-        setUserData(user, item);
-        return item;
-    }
-
-    /**
-     * Sets all needed data of the user into the list item object.<p>
-     *
-     * @param user the user to set the data for
-     * @param item the list item object to set the data into
-     */
-    protected void setUserData(CmsUser user, CmsListItem item) {
-
-        item.set(LIST_COLUMN_LOGIN, user.getName());
-        item.set(LIST_COLUMN_NAME, user.getSimpleName());
-        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
-        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
-    }
-
-    /**
      * Returns a list of users to display.<p>
      *
      * @param withOtherOus if not set only users of the current ou should be returned
      *
-     * @return a list of <code><{@link CmsUser}</code>s
+     * @return a list of {@link CmsUser}s
      *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsUser> getUsers(boolean withOtherOus) throws CmsException;
+
+    /**
+     * Checks whether users of other OUs should be shown.<p>
+     *
+     * @return true if users of other OUs should be shown
+     */
+    protected boolean hasOuDetail() {
+
+        CmsListMetadata meta = getList().getMetadata();
+        CmsListItemDetails detail = meta.getItemDetailDefinition(LIST_DETAIL_OTHEROU);
+        return (detail != null) && detail.isVisible();
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
@@ -385,6 +343,34 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         addMessages(Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
+    }
+
+    /**
+     * Makes a list item from a user.<p>
+     *
+     * @param user a user
+     *
+     * @return a list item
+     */
+    protected CmsListItem makeListItem(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        setUserData(user, item);
+        return item;
+    }
+
+    /**
+     * Makes a list item for a given user.<p>
+     *
+     * @param user the user
+     *
+     * @return the list item
+     */
+    protected CmsListItem makeListItemForUser(CmsUser user) {
+
+        CmsListItem item = getList().newItem(user.getId().toString());
+        setUserData(user, item);
+        return item;
     }
 
     /**
@@ -516,6 +502,20 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
      * @param metadata the list metadata object
      */
     protected abstract void setStateActionCol(CmsListMetadata metadata);
+
+    /**
+     * Sets all needed data of the user into the list item object.<p>
+     *
+     * @param user the user to set the data for
+     * @param item the list item object to set the data into
+     */
+    protected void setUserData(CmsUser user, CmsListItem item) {
+
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_NAME, user.getSimpleName());
+        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()

@@ -146,7 +146,7 @@ public interface I_CmsGalleryServiceAsync {
      * @param filter the search filter
      *
      * @param resultCallback the callback for the result
-     * */
+     */
     void loadVfsEntryBean(String path, String filter, AsyncCallback<CmsVfsEntryBean> resultCallback);
 
     /**

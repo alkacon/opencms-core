@@ -102,7 +102,8 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws ServletException, IOException, CmsException;
+        HttpServletResponse res)
+    throws ServletException, IOException, CmsException;
 
     /**
      * Static exports the contents of the requested file and it's sub-elements.<p>

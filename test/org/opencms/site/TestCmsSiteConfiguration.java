@@ -28,8 +28,7 @@
 package org.opencms.site;
 
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests the site configuration.<p>
@@ -45,28 +46,13 @@ import junit.framework.Test;
  *
  * @since 9.5
  */
-public class TestCmsSiteConfiguration extends OpenCmsTestCase {
+public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsSiteConfiguration(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCmsSiteConfiguration.class, "simpletest", "/");
-
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -74,6 +60,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testSiteConfiguration() throws Throwable {
 
         echo("Testing the basic site configuration");
@@ -81,25 +68,25 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
         CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
         Map<CmsSiteMatcher, CmsSite> mapOfSites = siteManager.getSites();
 
-        assertNotNull("Configured map of sites must not be null", mapOfSites);
+        assertNotNull(mapOfSites, "Configured map of sites must not be null");
 
         List<CmsSite> sites = new ArrayList<CmsSite>(mapOfSites.values());
-        assertTrue("Expected 8 configured sites but found " + sites.size(), sites.size() == 8);
+        assertTrue(sites.size() == 8, "Expected 8 configured sites but found " + sites.size());
 
         for (CmsSite site : sites) {
             echo("Found configured site: " + site);
-            assertNotNull("Site " + site + " has a null site matcher", site.getSiteMatcher());
+            assertNotNull(site.getSiteMatcher(), "Site " + site + " has a null site matcher");
         }
 
         assertTrue(
-            "Default site at http://localhost:8080 not found",
-            sites.contains(new CmsSite("/sites/default/", "http://localhost:8080")));
+            sites.contains(new CmsSite("/sites/default/", "http://localhost:8080")),
+            "Default site at http://localhost:8080 not found");
         assertTrue(
-            "Site at http://localhost:8081 not found",
-            sites.contains(new CmsSite("/sites/default/folder1/", "http://localhost:8081")));
+            sites.contains(new CmsSite("/sites/default/folder1/", "http://localhost:8081")),
+            "Site at http://localhost:8081 not found");
         assertTrue(
-            "Site at http://localhost:8082 not found",
-            sites.contains(new CmsSite("/sites/testsite/", "http://localhost:8082")));
+            sites.contains(new CmsSite("/sites/testsite/", "http://localhost:8082")),
+            "Site at http://localhost:8082 not found");
     }
 
     /**
@@ -107,6 +94,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testSiteMatcher() throws Exception {
 
         OpenCmsTestLogAppender.setBreakOnError(false);

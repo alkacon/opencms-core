@@ -555,9 +555,8 @@ public abstract class A_CmsGroupEditor extends Composite {
                 m_editorDialog.setPopupPosition(
                     m_groupContainerPosition.getLeft() - requiredWidth,
                     m_groupContainerPosition.getTop() - 1);
-            } else if ((m_groupContainerPosition.getTop() - Window.getScrollTop()) > (contentHeight
-                + DIALOG_BASE_HEIGHT
-                + 50)) {
+            } else if ((m_groupContainerPosition.getTop()
+                - Window.getScrollTop()) > (contentHeight + DIALOG_BASE_HEIGHT + 50)) {
                 // else place above if there is enough space
 
                 m_editorDialog.setPopupPosition(

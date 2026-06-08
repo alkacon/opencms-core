@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Composite;
  * If there is no value in the content xml, the value<br>
  * set in the configuration string of the xsd is shown.<p>
  *
- * */
+ */
 public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidget, I_CmsHasResizeOnShow {
 
     /** Value of the activation. */

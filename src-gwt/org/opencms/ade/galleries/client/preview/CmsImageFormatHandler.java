@@ -58,10 +58,14 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     /** Default image formats. */
     private enum DefaultRestriction {
         /** Big image format. */
-        big, /** Free image format. */
-        free, /** Original format. */
-        original, /** Small image format. */
-        small, /** User defined image format. */
+        big,
+        /** Free image format. */
+        free,
+        /** Original format. */
+        original,
+        /** Small image format. */
+        small,
+        /** User defined image format. */
         user
     }
 

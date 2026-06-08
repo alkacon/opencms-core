@@ -31,8 +31,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsUUID;
 
@@ -40,34 +39,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.base.Optional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import junit.framework.Test;
+import com.google.common.base.Optional;
 
 /**
  * Test cases for the org.opencms.editors.usergenerated package.
  */
-public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
+public class TestFormSessionSecurityLimits extends OpenCmsTestRunner {
 
     /**
-     * Creates a new test instance.<p<
-     *
-     * @param name the test name
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestFormSessionSecurityLimits(String name) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestFormSessionSecurityLimits.class, "systemtest", "/");
+        setupOpenCms(testInfo, "systemtest", "/");
     }
 
     /**
@@ -75,6 +65,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testErrorNoUploadsAllowed() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -111,6 +102,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testLimits() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -198,6 +190,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testNoLimits() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -228,4 +221,5 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
             fail("Exception was thrown: " + e);
         }
     }
+
 }

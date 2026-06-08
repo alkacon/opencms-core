@@ -47,6 +47,7 @@ public final class CmsHistoryListUtil {
      * Hidden default constructor.<p>
      */
     private CmsHistoryListUtil() {
+
         // nothing
     }
 

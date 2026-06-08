@@ -135,8 +135,9 @@ public class CmsTagReplaceDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(
-            Messages.get().getBundle(getLocale()).key(Messages.GUI_TAGREPLACE_DIALOG_BLOCK_SETTINGS_0)));
+        result.append(
+            createWidgetBlockStart(
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_TAGREPLACE_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetBlockEnd());
 

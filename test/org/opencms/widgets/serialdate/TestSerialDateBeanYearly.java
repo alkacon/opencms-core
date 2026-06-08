@@ -29,7 +29,7 @@ package org.opencms.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,13 +41,21 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /** Test cases for @{link org.opencms.widgets.serialdate.CmsSerialDateBeanYearly}. */
-public class TestSerialDateBeanYearly extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSerialDateBeanYearly extends OpenCmsTestRunner {
 
     /** empty sorted set of dates. */
     private static final SortedSet<Date> EMPTY_SORTED_SET_DATES = new TreeSet<>();
 
     /** Test for 29th of February. */
+    @Test
+    @Order(1)
     public void testGetDatesDayComplex() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi
@@ -81,7 +89,7 @@ public class TestSerialDateBeanYearly extends OpenCmsTestCase {
             Month.FEBRUARY); //month
         beanDates = bean.getDatesAsLong();
         Iterator<Long> it = beanDates.iterator();
-        assertEquals("There should be two dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be two dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -99,13 +107,15 @@ public class TestSerialDateBeanYearly extends OpenCmsTestCase {
             Month.FEBRUARY); //month
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
     }
 
     /** Tests for 15th of January. */
+    @Test
+    @Order(2)
     public void testGetDatesDaySimple() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi
@@ -139,7 +149,7 @@ public class TestSerialDateBeanYearly extends OpenCmsTestCase {
             Month.JANUARY); //month
         beanDates = bean.getDatesAsLong();
         Iterator<Long> it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -157,7 +167,7 @@ public class TestSerialDateBeanYearly extends OpenCmsTestCase {
             Month.JANUARY); //month
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }

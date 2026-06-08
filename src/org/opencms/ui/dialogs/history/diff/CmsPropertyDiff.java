@@ -58,7 +58,8 @@ public class CmsPropertyDiff extends A_CmsAttributeDiff {
     public List<CmsAttributeComparison> getDifferences(
         CmsObject cms,
         CmsHistoryResourceBean v1,
-        CmsHistoryResourceBean v2) throws CmsException {
+        CmsHistoryResourceBean v2)
+    throws CmsException {
 
         return filterDifferent(
             CmsResourceComparison.compareProperties(

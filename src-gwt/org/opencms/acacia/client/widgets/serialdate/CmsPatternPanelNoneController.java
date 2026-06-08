@@ -41,6 +41,7 @@ public class CmsPatternPanelNoneController implements I_CmsSerialDatePatternCont
         }
 
         public void onValueChange() {
+
             // Do nothing
         }
     };

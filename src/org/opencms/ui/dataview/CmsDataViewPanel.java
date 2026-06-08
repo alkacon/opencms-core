@@ -48,18 +48,18 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.ColumnGenerator;
@@ -86,12 +86,13 @@ public class CmsDataViewPanel extends VerticalLayout {
          * @param container the data container
          */
         public PagedTable(IndexedContainer container) {
+
             super();
             setContainerDataSource(container);
         }
 
         /**
-         * @see com.vaadin.ui.Table#sort(java.lang.Object[], boolean[])
+         * @see com.vaadin.v7.ui.Table#sort(java.lang.Object[], boolean[])
          */
         @Override
         public void sort(Object[] propertyId, boolean[] ascending) throws UnsupportedOperationException {
@@ -160,6 +161,7 @@ public class CmsDataViewPanel extends VerticalLayout {
     * @param multiselect true if multi-selection should be allowed
     */
     public CmsDataViewPanel(I_CmsDataView viewInstance, boolean multiselect) {
+
         m_dataView = viewInstance;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 

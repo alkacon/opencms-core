@@ -1,0 +1,350 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: https://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: https://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.db.oracle;
+
+import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDbIoException;
+import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.generic.CmsSqlManager;
+import org.opencms.db.generic.Messages;
+import org.opencms.db.storage.CmsStorageManager.StorageResult;
+import org.opencms.db.storage.policy.CmsStoragePolicyContext;
+import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+/**
+ * Oracle implementation of the storage VFS driver methods.<p>
+ */
+public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsResource, byte[])
+     */
+    @Override
+    public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, byte[] content)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        StorageResult storageResult = m_storageManager.prepareContent(
+            dbc,
+            new CmsStoragePolicyContext(content, resource));
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_OFFLINE_CONTENTS_WRITE_STORAGE");
+            stmt.setString(1, resource.getResourceId().toString());
+            stmt.setString(2, storageResult.getStorage());
+            stmt.setString(3, storageResult.getHash());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+
+        internalWriteContent(dbc, projectId, resource.getResourceId(), storageResult.getFileContent(), -1);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#createOnlineContent(CmsDbContext, CmsUUID, byte[], int, boolean, boolean)
+     */
+    @Override
+    public void createOnlineContent(
+        CmsDbContext dbc,
+        CmsUUID resourceId,
+        byte[] contents,
+        int publishTag,
+        boolean keepOnline,
+        boolean needToUpdateContent)
+    throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        String oldOnlineStorage = null;
+        String oldOnlineHash = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            boolean dbcHasProjectId = (dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID();
+            if (needToUpdateContent || dbcHasProjectId) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_FILES_CONTENT");
+                stmt.setString(1, resourceId.toString());
+                res = stmt.executeQuery();
+                if (res.next()) {
+                    oldOnlineStorage = res.getString("STORAGE");
+                    oldOnlineHash = res.getString("HASH");
+                }
+                m_sqlManager.closeAll(dbc, null, stmt, res);
+                stmt = null;
+                res = null;
+
+                String storage = null;
+                String hash = null;
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_OFFLINE_FILES_CONTENT");
+                stmt.setString(1, resourceId.toString());
+                res = stmt.executeQuery();
+                if (res.next()) {
+                    storage = res.getString("STORAGE");
+                    hash = res.getString("HASH");
+                }
+                m_sqlManager.closeAll(dbc, null, stmt, res);
+                stmt = null;
+                res = null;
+
+                if (dbcHasProjectId || !OpenCms.getSystemInfo().isHistoryEnabled()) {
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_DELETE");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                    stmt = null;
+                } else {
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                    stmt = null;
+                }
+
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_ONLINE_CONTENTS_WRITE_STORAGE");
+                stmt.setString(1, resourceId.toString());
+                stmt.setString(2, storage);
+                stmt.setString(3, hash);
+                stmt.setInt(4, publishTag);
+                stmt.setInt(5, publishTag);
+                stmt.setInt(6, keepOnline ? 1 : 0);
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, conn, stmt, null);
+                conn = null;
+                stmt = null;
+
+                if ((contents != null) && (contents.length > 0) && CmsStringUtil.isEmpty(hash)) {
+                    internalWriteContent(dbc, CmsProject.ONLINE_PROJECT_ID, resourceId, contents, publishTag);
+                }
+                if (CmsStringUtil.isNotEmpty(oldOnlineHash)) {
+                    m_storageManager.deleteContent(dbc, oldOnlineStorage, oldOnlineHash);
+                }
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_HISTORY_CONTENTS_UPDATE");
+                stmt.setInt(1, publishTag);
+                stmt.setString(2, resourceId.toString());
+                stmt.executeUpdate();
+                m_sqlManager.closeAll(dbc, null, stmt, null);
+                stmt = null;
+
+                if (!keepOnline) {
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_ONLINE_CONTENTS_HISTORY");
+                    stmt.setString(1, resourceId.toString());
+                    stmt.executeUpdate();
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
+                    stmt = null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#initSqlManager(String)
+     */
+    @Override
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsVfsDriver#initSqlManager(String, java.util.List)
+     */
+    @Override
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(
+        String classname,
+        java.util.List<String> additionalQueryProperties) {
+
+        return CmsSqlManager.getInstance(classname, additionalQueryProperties);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsResource, byte[])
+     */
+    @Override
+    public void writeContent(CmsDbContext dbc, CmsResource resource, byte[] content) throws CmsDataAccessException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        String oldStorage = null;
+        String oldHash = null;
+        StorageResult storageResult = m_storageManager.prepareContent(
+            dbc,
+            new CmsStoragePolicyContext(content, resource));
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_OFFLINE_FILES_CONTENT");
+            stmt.setString(1, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                oldStorage = res.getString("STORAGE");
+                oldHash = res.getString("HASH");
+            }
+            m_sqlManager.closeAll(dbc, null, stmt, res);
+            stmt = null;
+            res = null;
+
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_OFFLINE_CONTENTS_UPDATE_STORAGE");
+            stmt.setString(1, storageResult.getStorage());
+            stmt.setString(2, storageResult.getHash());
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.executeUpdate();
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+            conn = null;
+            stmt = null;
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        internalWriteContent(
+            dbc,
+            dbc.currentProject().getUuid(),
+            resource.getResourceId(),
+            storageResult.getFileContent(),
+            -1);
+        if (CmsStringUtil.isNotEmpty(oldHash)) {
+            m_storageManager.deleteContent(dbc, oldStorage, oldHash);
+        }
+    }
+
+    /**
+     * Writes the resource content with the specified resource id.<p>
+     *
+     * @param dbc the current database context
+     * @param projectId the id of the current project
+     * @param resourceId the id of the resource used to identify the content to update
+     * @param contents the new content of the file
+     * @param publishTag the publish tag if to be written to the online content
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    protected void internalWriteContent(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsUUID resourceId,
+        byte[] contents,
+        int publishTag)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        PreparedStatement commit = null;
+        Connection conn = null;
+        ResultSet res = null;
+
+        boolean wasInTransaction = false;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_ONLINE_CONTENTS_UPDATECONTENT");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ORACLE_OFFLINE_CONTENTS_UPDATECONTENT");
+            }
+
+            wasInTransaction = !conn.getAutoCommit();
+            if (!wasInTransaction) {
+                conn.setAutoCommit(false);
+            }
+
+            stmt.setString(1, resourceId.toString());
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+                stmt.setInt(2, publishTag);
+                stmt.setInt(3, publishTag);
+            }
+            res = stmt.executeQuery();
+            if (!res.next()) {
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.LOG_READING_RESOURCE_1, resourceId));
+            }
+            OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
+            output.write(contents, 0, contents.length);
+            output.close();
+
+            if (!wasInTransaction) {
+                commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
+                commit.execute();
+                m_sqlManager.closeAll(dbc, null, commit, null);
+            }
+
+            m_sqlManager.closeAll(dbc, null, stmt, res);
+
+            commit = null;
+            stmt = null;
+            res = null;
+
+            if (!wasInTransaction) {
+                conn.setAutoCommit(true);
+            }
+        } catch (IOException e) {
+            throw new CmsDbIoException(
+                Messages.get().container(Messages.ERR_WRITING_TO_OUTPUT_STREAM_1, resourceId),
+                e);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            org.opencms.db.oracle.CmsSqlManager.closeAllInTransaction(
+                m_sqlManager,
+                dbc,
+                conn,
+                stmt,
+                res,
+                commit,
+                wasInTransaction);
+        }
+    }
+}

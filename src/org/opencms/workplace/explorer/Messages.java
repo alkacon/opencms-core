@@ -409,7 +409,7 @@ public final class Messages extends A_CmsMessageBundle {
     /**
      * Message constant for key in the resource bundle.<p>
      *
-     * @deprecated use {@link #GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1} with {@link CmsNewResource#getSuffixHtml()} instead
+     * @deprecated use {@link #GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1} with <code>CmsNewResource.getSuffixHtml()</code> instead
      */
     @Deprecated
     public static final String GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0 = "GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0";

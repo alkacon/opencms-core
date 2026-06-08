@@ -28,20 +28,23 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtml2TextConverter}</code>.<p>
  *
  * @since 6.2.0
  */
-public class TestCmsHtml2TextConverter extends OpenCmsTestCase {
+public class TestCmsHtml2TextConverter extends OpenCmsTestRunner {
 
     /**
      * Tests the HTML extractor.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testHtmlExtractor() throws Exception {
 
         String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);

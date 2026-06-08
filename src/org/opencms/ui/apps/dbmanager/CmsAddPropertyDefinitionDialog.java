@@ -36,12 +36,12 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsStringUtil;
 
-import com.vaadin.v7.data.Validator;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Class for dialog to create property definition.<p>
@@ -105,6 +105,7 @@ public class CmsAddPropertyDefinitionDialog extends CmsBasicDialog {
      * @param table to be updated
      */
     public CmsAddPropertyDefinitionDialog(final Window window, final CmsPropertyTable table) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_ok.addClickListener(new ClickListener() {

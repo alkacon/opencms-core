@@ -57,6 +57,7 @@ public class CmsSitemapTreeNode extends CssLayout {
 
     /** Creates a new instance. */
     public CmsSitemapTreeNode() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         setOpen(false);
         setContent(new Label("[content not set]"));
@@ -118,7 +119,7 @@ public class CmsSitemapTreeNode extends CssLayout {
     }
 
     /**
-     * Opens / closes the list of children.<p<
+     * Opens / closes the list of children.<p>
      *
      * @param isOpen true if the children should be opened, false if they should be closed
      */

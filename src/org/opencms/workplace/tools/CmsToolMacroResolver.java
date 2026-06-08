@@ -184,6 +184,14 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
     }
 
     /**
+     * @see org.opencms.util.I_CmsMacroResolver#isKeepEmptyMacros()
+     */
+    public boolean isKeepEmptyMacros() {
+
+        return false;
+    }
+
+    /**
      * Resolves the macros in the given input.<p>
      *
      * Calls <code>{@link #resolveMacros(String)}</code> until no more macros can
@@ -207,13 +215,5 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         }
         // return the result
         return result;
-    }
-
-    /**
-     * @see org.opencms.util.I_CmsMacroResolver#isKeepEmptyMacros()
-     */
-    public boolean isKeepEmptyMacros() {
-
-        return false;
     }
 }

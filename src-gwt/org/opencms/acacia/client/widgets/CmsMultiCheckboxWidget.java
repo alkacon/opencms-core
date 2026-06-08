@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * @since 8.5.0
  *
- * */
+ */
 public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget {
 
     /** Value of the activation. */
@@ -112,9 +112,6 @@ public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget
 
         ValueChangeEvent.fire(this, m_multicheckbox.getFormValueAsString());
     }
-
-    /**
-
 
     /**
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
@@ -202,7 +199,7 @@ public class CmsMultiCheckboxWidget extends Composite implements I_CmsEditWidget
      *
      * @param config the configuration string
      * @return Map of option and value of the checkbox
-     * */
+     */
     private Map<String, String> parseconfig(String config) {
 
         Map<String, String> result = new HashMap<String, String>();

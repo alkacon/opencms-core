@@ -51,7 +51,7 @@ public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
 
     /**
      * Tells the client to initialize the client-to-server RPC.
-     **/
+     */
     void initServerRpc();
 
     /**

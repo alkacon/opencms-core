@@ -48,6 +48,18 @@ import java.util.Map;
  */
 public class CmsUpdateDBManager {
 
+    /** Property for controlling the storage schema update. */
+    public static final String PARAM_STORAGE_SCHEMA_UPDATE = "setup.storage.schema.update";
+
+    /** Automatic storage schema update mode. */
+    public static final String STORAGE_SCHEMA_UPDATE_AUTO = "auto";
+
+    /** Disabled storage schema update mode. */
+    public static final String STORAGE_SCHEMA_UPDATE_FALSE = "false";
+
+    /** Enabled storage schema update mode. */
+    public static final String STORAGE_SCHEMA_UPDATE_TRUE = "true";
+
     /** The database name. */
     private String m_dbName;
 
@@ -59,6 +71,12 @@ public class CmsUpdateDBManager {
 
     /** List of xml update plugins. */
     private List<I_CmsUpdateDBPart> m_plugins;
+
+    /** List of schema based update plugins. */
+    private List<I_CmsUpdateDBPart> m_schemaPlugins;
+
+    /** If true, the storage schema should be updated if needed. */
+    private boolean m_updateStorageSchema;
 
     /**
      * Default constructor.<p>
@@ -217,6 +235,7 @@ public class CmsUpdateDBManager {
             CmsUUID.init(props.get("server.ethernet.address"));
 
             m_dbName = props.get("db.name");
+            m_updateStorageSchema = isStorageSchemaUpdateEnabled(props.get(PARAM_STORAGE_SCHEMA_UPDATE));
 
             List<String> pools = CmsStringUtil.splitAsList(props.get("db.pools"), ',');
             for (String pool : pools) {
@@ -232,6 +251,42 @@ public class CmsUpdateDBManager {
         } else {
             throw new Exception("setup bean not initialized");
         }
+    }
+
+    /**
+     * Checks if the storage schema update is enabled by configuration.<p>
+     *
+     * @param value the configured value
+     *
+     * @return true if the storage schema should be updated if needed
+     */
+    public boolean isStorageSchemaUpdateEnabled(String value) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            return false;
+        }
+        String normalizedValue = value.trim().toLowerCase();
+        return STORAGE_SCHEMA_UPDATE_AUTO.equals(normalizedValue) || STORAGE_SCHEMA_UPDATE_TRUE.equals(normalizedValue);
+    }
+
+    /**
+     * Checks if the storage schema is missing or incomplete.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the storage schema needs to be updated
+     */
+    public boolean needsStorageSchemaUpdate(CmsSetupDb setupDb) {
+
+        return !setupDb.hasTableOrColumn("CMS_STORAGE", null)
+            || !setupDb.hasTableOrColumn("CMS_CONTENTS", "STORAGE")
+            || !setupDb.hasTableOrColumn("CMS_CONTENTS", "HASH")
+            || !setupDb.hasTableOrColumn("CMS_OFFLINE_CONTENTS", "STORAGE")
+            || !setupDb.hasTableOrColumn("CMS_OFFLINE_CONTENTS", "HASH")
+            || !hasStorageContentIndex(setupDb)
+            || !hasStorageContentStorageIndex(setupDb)
+            || !hasStorageOfflineContentIndex(setupDb)
+            || !hasStorageOfflineContentStorageIndex(setupDb);
     }
 
     /**
@@ -267,7 +322,7 @@ public class CmsUpdateDBManager {
             setupDb.closeConnection();
         }
 
-        return currentVersion != m_detectedVersion;
+        return (currentVersion != m_detectedVersion) || (m_updateStorageSchema && needsStorageSchemaUpdate());
     }
 
     /**
@@ -279,6 +334,7 @@ public class CmsUpdateDBManager {
             // add a list of plugins to execute
             // be sure to use the right order
             m_plugins = new ArrayList<I_CmsUpdateDBPart>();
+            m_schemaPlugins = new ArrayList<I_CmsUpdateDBPart>();
 
             if (getDetectedVersion() < 7) {
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBDropOldIndexes());
@@ -293,9 +349,13 @@ public class CmsUpdateDBManager {
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBAlterTables());
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBDropBackupTables());
                 m_plugins.add(new org.opencms.setup.db.update6to7.CmsUpdateDBCreateIndexes7());
-            } else {
+            } else if (getDetectedVersion() < 8.5) {
                 m_plugins.add(new org.opencms.setup.db.update7to8.CmsUpdateDBNewTables());
                 m_plugins.add(new org.opencms.setup.db.update7to8.CmsUpdatePasswordColumn());
+            }
+
+            if (m_updateStorageSchema) {
+                m_schemaPlugins.add(new org.opencms.setup.db.update21to22.CmsUpdateDBStorageSchema());
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -332,28 +392,37 @@ public class CmsUpdateDBManager {
         System.out.println("JDBC Connection Url Params: " + getDbParams(pool));
         System.out.println("Database User:              " + getDbUser(pool));
 
-        // get the db implementation name
-        String dbName = getDbName();
-        String name = null;
-        if (dbName.indexOf("mysql") > -1) {
-            getMySqlEngine(dbPoolData);
-            name = "mysql";
-        } else if (dbName.indexOf("oracle") > -1) {
-            getOracleTablespaces(dbPoolData);
-            name = "oracle";
-        } else if (dbName.indexOf("postgresql") > -1) {
-            getPostgreSqlTablespaces(dbPoolData);
-            name = "postgresql";
-        } else {
-            System.out.println("db " + dbName + " not supported");
-            return;
+        String legacyDbName = getLegacyUpdateDbName(dbPoolData);
+        if (legacyDbName != null) {
+            executeUpdatePlugins(dbPoolData, m_plugins, legacyDbName);
+        } else if (!m_plugins.isEmpty()) {
+            System.out.println("db " + getDbName() + " not supported for legacy DB updates");
         }
 
-        // execute update
-        Iterator<I_CmsUpdateDBPart> it = m_plugins.iterator();
+        String schemaDbName = getSchemaUpdateDbName(dbPoolData);
+        if (schemaDbName != null) {
+            executeUpdatePlugins(dbPoolData, m_schemaPlugins, schemaDbName);
+        } else if (!m_schemaPlugins.isEmpty()) {
+            System.out.println("db " + getDbName() + " not supported for schema DB updates");
+        }
+    }
+
+    /**
+     * Executes the given update plugins.<p>
+     *
+     * @param dbPoolData the database pool data
+     * @param plugins the update plugins
+     * @param dbName the database implementation name
+     */
+    protected void executeUpdatePlugins(
+        Map<String, String> dbPoolData,
+        List<I_CmsUpdateDBPart> plugins,
+        String dbName) {
+
+        Iterator<I_CmsUpdateDBPart> it = plugins.iterator();
         while (it.hasNext()) {
             I_CmsUpdateDBPart updatePart = it.next();
-            I_CmsUpdateDBPart dbUpdater = getInstanceForDb(updatePart, name);
+            I_CmsUpdateDBPart dbUpdater = getInstanceForDb(updatePart, dbName);
             if (dbUpdater != null) {
                 dbUpdater.execute(dbPoolData);
             }
@@ -379,6 +448,29 @@ public class CmsUpdateDBManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Returns the database implementation name for legacy database updates.<p>
+     *
+     * @param dbPoolData the database pool data
+     *
+     * @return the database implementation name, or null if the database is not supported by the legacy updater
+     */
+    protected String getLegacyUpdateDbName(Map<String, String> dbPoolData) {
+
+        String dbName = getDbName();
+        if (dbName.indexOf("mysql") > -1) {
+            getMySqlEngine(dbPoolData);
+            return "mysql";
+        } else if (dbName.indexOf("oracle") > -1) {
+            getOracleTablespaces(dbPoolData);
+            return "oracle";
+        } else if (dbName.indexOf("postgresql") > -1) {
+            getPostgreSqlTablespaces(dbPoolData);
+            return "postgresql";
+        }
+        return null;
     }
 
     /**
@@ -528,5 +620,117 @@ public class CmsUpdateDBManager {
 
         dbPoolData.put("dataTablespace", dataTablespace);
         System.out.println("Data Tablespace:            " + dataTablespace);
+    }
+
+    /**
+     * Returns the database implementation name for schema based database updates.<p>
+     *
+     * @param dbPoolData the database pool data
+     *
+     * @return the database implementation name, or null if the database is not supported
+     */
+    protected String getSchemaUpdateDbName(Map<String, String> dbPoolData) {
+
+        String dbName = getDbName();
+        if (dbName.indexOf("mysql") > -1) {
+            getMySqlEngine(dbPoolData);
+            return "mysql";
+        } else if (dbName.indexOf("oracle") > -1) {
+            getOracleTablespaces(dbPoolData);
+            return "oracle";
+        } else if (dbName.indexOf("postgresql") > -1) {
+            getPostgreSqlTablespaces(dbPoolData);
+            return "postgresql";
+        } else if (dbName.indexOf("mssql") > -1) {
+            return "mssql";
+        } else if (dbName.indexOf("hsqldb") > -1) {
+            return "hsqldb";
+        } else if (dbName.indexOf("db2") > -1) {
+            return "db2";
+        } else if (dbName.indexOf("as400") > -1) {
+            return "as400";
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the content table storage index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageContentIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_05_IDX")
+            || setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_06_IDX")
+            || setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_06")
+            || setupDb.hasIndex("CMS_CONTENTS", "HASH_IDX");
+    }
+
+    /**
+     * Checks if the content table storage-leading index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageContentStorageIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_07_IDX")
+            || setupDb.hasIndex("CMS_CONTENTS", "CMS_CONTENTS_07")
+            || setupDb.hasIndex("CMS_CONTENTS", "STORAGE_IDX");
+    }
+
+    /**
+     * Checks if the offline content table storage index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageOfflineContentIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_01_IDX")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_01")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "HASH_IDX");
+    }
+
+    /**
+     * Checks if the offline content table storage-leading index exists.<p>
+     *
+     * @param setupDb the database connection
+     *
+     * @return true if the index exists
+     */
+    protected boolean hasStorageOfflineContentStorageIndex(CmsSetupDb setupDb) {
+
+        return setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_02_IDX")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "CMS_OFFLINE_CONTENTS_02")
+            || setupDb.hasIndex("CMS_OFFLINE_CONTENTS", "STORAGE_IDX");
+    }
+
+    /**
+     * Checks if the storage schema is missing or incomplete for the default database pool.<p>
+     *
+     * @return true if the storage schema needs to be updated
+     */
+    protected boolean needsStorageSchemaUpdate() {
+
+        String pool = "default";
+        CmsSetupDb setupDb = new CmsSetupDb(null);
+
+        try {
+            setupDb.setConnection(
+                getDbDriver(pool),
+                getDbUrl(pool),
+                getDbParams(pool),
+                getDbUser(pool),
+                m_dbPools.get(pool).get("pwd"));
+
+            return needsStorageSchemaUpdate(setupDb);
+        } finally {
+            setupDb.closeConnection();
+        }
     }
 }

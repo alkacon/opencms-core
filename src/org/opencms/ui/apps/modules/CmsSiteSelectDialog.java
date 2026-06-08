@@ -33,12 +33,12 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.ui.ComboBox;
 
 /**
  * The dialog for selecting a site when exporting / deleting a module without a module site.<p>
@@ -85,6 +85,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
      * Creates a new instance.<p>
      */
     public CmsSiteSelectDialog() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
         IndexedContainer container = CmsVaadinUtils.getAvailableSitesContainer(cms, CAPTION_PROP);
@@ -156,7 +157,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     }
 
     /**
-     * Sets the callback that should be called when the dialog finishes.<p<
+     * Sets the callback that should be called when the dialog finishes.<p>
      *
      * @param callback the callback to call when the dialog finishes
      */

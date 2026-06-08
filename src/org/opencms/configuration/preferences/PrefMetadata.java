@@ -42,6 +42,6 @@ public @interface PrefMetadata {
     /**
      * @return the class to be used for the preference
      */
-    Class<?>type();
+    Class<?> type();
 
 }

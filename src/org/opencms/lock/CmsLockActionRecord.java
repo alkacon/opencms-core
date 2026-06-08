@@ -35,8 +35,10 @@ public class CmsLockActionRecord {
     /** A type for the different locking actions. */
     public enum LockChange {
         /** The lock was changed. */
-        changed, /** The resource was locked. */
-        locked, /** The lock state was not modified. */
+        changed,
+        /** The resource was locked. */
+        locked,
+        /** The lock state was not modified. */
         unchanged;
     }
 

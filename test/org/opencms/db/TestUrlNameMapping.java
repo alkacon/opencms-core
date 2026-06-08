@@ -37,8 +37,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -46,29 +45,25 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import com.google.common.collect.Lists;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import junit.framework.Test;
+import com.google.common.collect.Lists;
 
 /**
  * Tests the URL name mapping facilities of OpenCms.<p>
  *
  * @since 8.0.0
  */
-public class TestUrlNameMapping extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestUrlNameMapping extends OpenCmsTestRunner {
 
     /** The counter used for generating new file names. */
     private static int m_fileCounter;
-
-    /**
-     * Test constructor.<p>
-     *
-     * @param arg0
-     */
-    public TestUrlNameMapping(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Creates an XML content for testing URL name mappings.<p>
@@ -96,14 +91,13 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
     }
 
     /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
+     * Overrides the OpenCms test setup.
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestUrlNameMapping.class, "systemtest", "/");
+        setupOpenCms(testInfo, "systemtest", "/");
     }
 
     /**
@@ -165,6 +159,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(10)
     public void testChangeReplaceSetting() throws Exception {
 
         CmsResource resource = createFile();
@@ -186,6 +182,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(20)
     public void testDeleteChanged() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -225,6 +223,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(30)
     public void testDeleteNew() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -241,6 +241,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(40)
     public void testMultipleIdMapping() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -264,6 +266,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(50)
     public void testMultipleIdMappingWithDot() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -287,6 +291,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(60)
     public void testMultipleNameMapping() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -310,6 +316,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(70)
     public void testMultipleNameMappingCache() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -328,9 +336,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         CmsLockUtil.tryUnlock(cms, res);
         for (String name : new String[] {returnedName1, returnedName2}) {
             assertEquals(
-                "Structure id for name " + name + " should match the resource's structure id.",
                 res.getStructureId(),
-                OpenCms.getADEManager().getDetailIdCache(false).getDetailId(name));
+                OpenCms.getADEManager().getDetailIdCache(false).getDetailId(name),
+                "Structure id for name " + name + " should match the resource's structure id.");
         }
 
     }
@@ -340,6 +348,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(80)
     public void testOverwrite() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -358,6 +368,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(90)
     public void testPublish() throws Exception {
 
         CmsObject onlineCms = getOnlineCmsObject();
@@ -377,6 +389,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(100)
     public void testReplaceProperty() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -401,7 +415,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         assertEquals(res1.getStructureId(), cms.readIdForUrlName(basename + "A"));
         assertEquals(res1.getStructureId(), cms.readIdForUrlName(basename + "X"));
-        assertNull("Url name should have been removed", cms.readIdForUrlName(basename + "B"));
+        assertNull(cms.readIdForUrlName(basename + "B"), "Url name should have been removed");
         assertEquals(res2.getStructureId(), cms.readIdForUrlName(basename + "Y"));
     }
 
@@ -410,6 +424,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(110)
     public void testSimpleMapping() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -429,6 +445,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(120)
     public void testUndo() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -452,6 +470,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
     *
     * @throws Exception
     */
+    @Test
+    @Order(130)
     public void testUrlNameReplace() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -466,9 +486,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name1));
         publish();
         assertEquals(res.getStructureId(), cms.readIdForUrlName(name2));
-        assertNull("Old URL name should not be found", cms.readIdForUrlName(name1));
+        assertNull(cms.readIdForUrlName(name1), "Old URL name should not be found");
         CmsObject onlineCms = getOnlineCmsObject();
-        assertNull("Old URL name should not be found", onlineCms.readIdForUrlName(name1));
+        assertNull(onlineCms.readIdForUrlName(name1), "Old URL name should not be found");
 
     }
 

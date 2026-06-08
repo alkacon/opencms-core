@@ -165,6 +165,9 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     /** Count the numbers of values shown. */
     private int m_valuesSet;
 
+    /** Flag, indicating if the tree is separated by repository. */
+    private boolean m_isByRepository = false;
+
     /**
      * Category field widgets for ADE forms.<p>
      */
@@ -203,20 +206,48 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      *
      * The selection might contain either category paths or site paths of categories.
      *
+     * @param isByRepository flag, indicating if the categories are shown by repository.
      * @param category a category path
      * @param selection a set containing either category paths or category site paths
      * @return true if the category is a parent category of any element of the given selection
      */
-    public static boolean isParentCategoryOfSelected(String category, Collection<String> selection) {
+    public static boolean isParentCategoryOfSelected(
+        boolean isByRepository,
+        String category,
+        Collection<String> selection) {
 
-        category = normalizePath(category);
+        category = normalizePath(isByRepository ? category : removeCategoryPrefix(category));
         for (String selected : selection) {
-            selected = normalizePath(removeCategoryPrefix(selected));
+            selected = normalizePath(isByRepository ? selected : removeCategoryPrefix(selected));
             if (selected.startsWith(category)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Removes the category folder portion from the path of a category.
+     *
+     *  <p>If the argument doesn't have a category folder portion, it will be returned unchanged.
+     *
+     * @param selected a category site path (or in some cases just a category path)
+     * @return the category path (with the category folder stripped)
+     */
+    public static String removeCategoryPrefix(String selected) {
+
+        String globalFolder = "/system/categories/";
+        String localName = normalizePath(CmsCoreProvider.get().getCategoryBaseFolder());
+        String result = selected;
+        if (selected.startsWith(globalFolder)) {
+            result = selected.substring(globalFolder.length() - 1); // keep the slash
+        } else {
+            int namePos = selected.indexOf(localName);
+            if (namePos != -1) {
+                result = selected.substring((namePos + localName.length()) - 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -237,30 +268,6 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
     }
 
     /**
-     * Removes the category folder portion from the path of a category.
-     *
-     *  <p>If the argument doesn't have a category folder portion, it will be returned unchanged.
-     *
-     * @param selected a category site path (or in some cases just a category path)
-     * @return the category path (with the category folder stripped)
-     */
-    private static String removeCategoryPrefix(String selected) {
-
-        String globalFolder = "/system/categories/";
-        String localName = normalizePath(CmsCoreProvider.get().getCategoryBaseFolder());
-        String result = selected;
-        if (selected.startsWith(globalFolder)) {
-            result = selected.substring(globalFolder.length() - 1); // keep the slash
-        } else {
-            int namePos = selected.indexOf(localName);
-            if (namePos != -1) {
-                result = selected.substring((namePos + localName.length()) - 1);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Builds and shows the category tree.<p>
      *
      * @param treeEntries List of category entries
@@ -274,12 +281,16 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         m_categories.clear();
 
         if ((treeEntries != null) && !treeEntries.isEmpty()) {
+            m_isByRepository = treeEntries.get(0).getPath().length() <= 1; // either "" or "/" in case of by repository
             // add the first level and children
             for (CmsCategoryTreeEntry category : treeEntries) {
                 // set the category tree item and add to list
                 CmsTreeItem treeItem;
-                boolean hasSelectedChildren = hasSelectedChildren(category.getChildren(), selectedCategories);
-                if (!category.getPath().isEmpty() || hasSelectedChildren) {
+                boolean hasSelectedChildren = isParentCategoryOfSelected(
+                    m_isByRepository,
+                    category.getSitePath(),
+                    selectedCategories);
+                if (!(category.getPath().length() <= 1) || hasSelectedChildren) {
                     if (m_selectParent || !hasSelectedChildren) {
                         treeItem = buildTreeItem(category, selectedCategories, false);
                         if (treeItem.isOpen()) {
@@ -450,7 +461,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * Sets if the parent category should be selected with the child or not.
      *
      * @param value if the parent categories should be selected or not
-     * */
+     */
     public void setParentSelection(boolean value) {
 
         m_selectParent = value;
@@ -502,11 +513,12 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem;
                 boolean isPartofPath = false;
-                isPartofPath = isParentCategoryOfSelected(child.getPath(), selectedCategories);
+                isPartofPath = isParentCategoryOfSelected(m_isByRepository, child.getSitePath(), selectedCategories);
                 if (isPartofPath) {
                     m_singleSidePath = child.getSitePath();
                     m_valuesSet++;
-                    if (m_selectParent || !hasSelectedChildren(child.getChildren(), selectedCategories)) {
+                    if (m_selectParent
+                        || !isParentCategoryOfSelected(m_isByRepository, child.getSitePath(), selectedCategories)) {
                         m_allSidePath.add(child.getSitePath());
                         treeItem = buildTreeItem(child, selectedCategories, false);
                     } else {
@@ -550,7 +562,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
         boolean isPartofPath = false;
-        isPartofPath = isParentCategoryOfSelected(category.getPath(), selectedCategories);
+        isPartofPath = isParentCategoryOfSelected(m_isByRepository, category.getSitePath(), selectedCategories);
         if (isPartofPath) {
             m_categories.add(treeItem);
             treeItem.setOpen(true);
@@ -558,27 +570,4 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         return treeItem;
     }
 
-    /**
-     * Checks if it has selected children.<p>
-     *
-     * @param children the children to check
-     * @param selectedCategories list of all selected categories
-     *
-     * @return true if it has selected children
-     * */
-    private boolean hasSelectedChildren(List<CmsCategoryTreeEntry> children, Collection<String> selectedCategories) {
-
-        boolean result = false;
-        if (children == null) {
-            return false;
-        }
-        for (CmsCategoryTreeEntry child : children) {
-            result = selectedCategories.contains(child.getSitePath());
-            if (result || hasSelectedChildren(child.getChildren(), selectedCategories)) {
-                return true;
-            }
-        }
-
-        return result;
-    }
 }

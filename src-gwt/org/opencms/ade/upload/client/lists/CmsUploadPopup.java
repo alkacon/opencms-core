@@ -44,7 +44,8 @@ public class CmsUploadPopup extends CmsPopup {
     /**
      * Creates a new instance.
      *
-     * @param data the editable data
+     * @param uploadFolder the upload folder
+     * @param postCreateHandler the post-create handler
      * @param context the upload context
      * @param info the list info bean to display
      */

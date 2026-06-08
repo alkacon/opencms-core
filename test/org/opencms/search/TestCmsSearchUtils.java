@@ -28,17 +28,19 @@
 package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.document.DateTools;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests some search utilities that don't require an OpenCms context.<p>
  */
-public class TestCmsSearchUtils extends OpenCmsTestCase {
+public class TestCmsSearchUtils extends OpenCmsTestRunner {
 
     /**
      * Prints a list of String to System.out.<p>
@@ -60,49 +62,50 @@ public class TestCmsSearchUtils extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testDateRangeGeneration() throws Exception {
 
         long startDate = DateTools.stringToTime("20060101");
         long endDate = DateTools.stringToTime("20081231");
         List<String> range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 85, range.size());
+        assertEquals(85, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20071231");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 84, range.size());
+        assertEquals(84, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20061231");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 72, range.size());
+        assertEquals(72, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060101");
         endDate = DateTools.stringToTime("20060131");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 31, range.size());
+        assertEquals(31, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060131");
         endDate = DateTools.stringToTime("20060201");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 2, range.size());
+        assertEquals(2, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060201");
         endDate = DateTools.stringToTime("20060301");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 29, range.size());
+        assertEquals(29, range.size(), "Date range result list does not have required size");
 
         startDate = DateTools.stringToTime("20060201");
         endDate = DateTools.stringToTime("20060201");
         range = CmsSearchIndex.getDateRangeSpan(startDate, endDate);
         printStringList(range);
-        assertEquals("Date range result list does not have required size", 1, range.size());
+        assertEquals(1, range.size(), "Date range result list does not have required size");
     }
 
     /**
@@ -110,6 +113,7 @@ public class TestCmsSearchUtils extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testParentFolderTokenizer() throws Exception {
 
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens(null));

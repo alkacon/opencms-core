@@ -36,7 +36,7 @@ public interface I_CmsFormDataItem {
      * Gets the data from the field as a byte array.
      *
      * @return the field data
-     **/
+     */
     public byte[] getData();
 
     /**

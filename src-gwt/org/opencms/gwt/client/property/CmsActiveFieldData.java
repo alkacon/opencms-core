@@ -51,6 +51,7 @@ public class CmsActiveFieldData {
      * @param property the property name
      */
     public CmsActiveFieldData(I_CmsFormField field, String tab, String property) {
+
         m_field = field;
         m_page = tab;
         m_property = property;

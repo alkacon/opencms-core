@@ -1350,7 +1350,17 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#synchronizeAndTransform(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.List, java.util.Collection)
+     * Synchronizes and transforms the edited content.<p>
+     *
+     * @param entityId the entity id
+     * @param clientId the client id
+     * @param editedEntity the edited entity
+     * @param deletedEntities the deleted entities
+     * @param skipPaths the paths to skip
+     *
+     * @return the content augmentation details
+     *
+     * @throws CmsRpcException if something goes wrong
      */
     public CmsContentAugmentationDetails synchronizeAndTransform(
         String entityId,

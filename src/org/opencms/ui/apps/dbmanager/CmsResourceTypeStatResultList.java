@@ -71,7 +71,7 @@ public class CmsResourceTypeStatResultList {
      *
      * @param resList a given instance or null
      * @return an instance
-     * */
+     */
     public static CmsResourceTypeStatResultList init(CmsResourceTypeStatResultList resList) {
 
         if (resList == null) {

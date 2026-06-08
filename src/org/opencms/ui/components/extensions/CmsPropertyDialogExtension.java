@@ -92,6 +92,7 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
      * @param updateListener the update listener
      */
     public CmsPropertyDialogExtension(UI ui, I_CmsUpdateListener<String> updateListener) {
+
         extend(ui);
         m_updateListener = updateListener;
         registerRpc(this, I_CmsPropertyServerRpc.class);

@@ -51,6 +51,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /** Constants for <code>type</code> attribute interpretation. */
     public enum Type {
+
         /** Bread crumb navigation. */
         breadCrumb,
         /** Navigation for folder. */

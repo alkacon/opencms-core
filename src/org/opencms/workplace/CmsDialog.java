@@ -70,7 +70,7 @@ public class CmsDialog extends CmsToolDialog {
     /** Value for the action: close popup window. */
     public static final int ACTION_CLOSEPOPUP = 6;
 
-    /** Value for the action: save & close popup window. */
+    /** Value for the action: save &amp; close popup window. */
     public static final int ACTION_CLOSEPOPUP_SAVE = 7;
 
     /** Value for the action: confirmed. */
@@ -1938,10 +1938,7 @@ public class CmsDialog extends CmsToolDialog {
         // in case the close link points to the new workplace, make sure to set the new location on the top frame
         JspWriter out = getJsp().getJspContext().getOut();
         try {
-            out.write(
-                "<html><head><script >top.location.href=\""
-                    + workplaceLink
-                    + "\";</script></head>\n");
+            out.write("<html><head><script >top.location.href=\"" + workplaceLink + "\";</script></head>\n");
             out.write("</html>\n");
         } finally {
             out.close();

@@ -622,7 +622,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
 
     /**
      * Clones/copies the resource types.<p>
-
+     *
      * @param sourceModule the source module
      * @param targetModule the target module
      * @param sourcePathPart the source path part
@@ -942,7 +942,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException in case writing the file fails
      * @throws UnsupportedEncodingException in case of the wrong encoding
-
+     *
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
 
@@ -1021,7 +1021,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      *
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException if the file content could not be read with the determined encoding
-
+     *
      */
     private void replacesMessages(Map<String, String> descKeys, List<CmsResource> resources)
     throws CmsException, UnsupportedEncodingException {

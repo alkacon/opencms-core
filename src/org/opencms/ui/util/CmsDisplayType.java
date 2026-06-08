@@ -31,6 +31,7 @@ package org.opencms.ui.util;
  * Represents the three possible display types (small, medium, wide).
  */
 public enum CmsDisplayType {
+
     /** Wide. */
     wide(1241),
     /** Medium. *s*/
@@ -47,6 +48,7 @@ public enum CmsDisplayType {
      * @param width the minimum width
      */
     private CmsDisplayType(int width) {
+
         m_minWidth = width;
     }
 

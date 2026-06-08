@@ -53,6 +53,7 @@ public class CmsImportFile {
      * @param path of the file
      */
     public CmsImportFile(String path) {
+
         m_path = path;
     }
 

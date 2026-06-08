@@ -89,6 +89,7 @@ public class CmsNewResourceInfo extends CmsListInfoBean {
         CmsUUID copyResourceId,
         boolean editable,
         String subTitle) {
+
         super(title, subTitle, null);
         setResourceType(typeName);
         m_id = id;

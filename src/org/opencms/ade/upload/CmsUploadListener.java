@@ -34,7 +34,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 
-import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload2.core.ProgressListener;
 import org.apache.commons.logging.Log;
 
 /**
@@ -168,7 +168,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      * <li>0 = no item so far
      * <li>1 = first item is being read, ...
      * </ul>
-
+     *
      * @return the number of the field, which is currently being read.
      */
     public int getItem() {
@@ -252,7 +252,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      * <li> stops the watcher if the upload has reached more than 100 percent
      * </ul>
      *
-     * @see org.apache.commons.fileupload.ProgressListener#update(long, long, int)
+     * This method implements the Commons FileUpload progress listener update callback.
      */
     public void update(long done, long total, int item) {
 

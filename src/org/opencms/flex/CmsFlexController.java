@@ -34,12 +34,14 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -124,6 +126,20 @@ public class CmsFlexController {
 
     /** Set of uncacheable attributes. */
     private static Set<String> uncacheableAttributes = new HashSet<String>();
+
+    static {
+        for (String attr : Arrays.asList(
+            RequestDispatcher.ERROR_EXCEPTION,
+            RequestDispatcher.ERROR_EXCEPTION_TYPE,
+            RequestDispatcher.ERROR_MESSAGE,
+            RequestDispatcher.ERROR_REQUEST_URI,
+            RequestDispatcher.ERROR_SERVLET_NAME,
+            RequestDispatcher.ERROR_STATUS_CODE)) {
+
+            // global rule: don't cache error page attributes.
+            CmsFlexController.registerUncacheableAttribute(attr);
+        }
+    }
 
     /** Fake HTTP header used to store information about the content type in a CmsFlexResponse. Should never be actually sent to the client. */
     public static final String HEADER_OPENCMS_CONTENT_TYPE = "X-OpenCms-Content-Type";

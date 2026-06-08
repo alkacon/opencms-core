@@ -27,25 +27,44 @@
 
 package org.opencms.i18n;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Tests for the OpenCms locale manager.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsLocaleManager extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsLocaleManager extends OpenCmsTestRunner {
+
+    /**
+     * Initializes the shared test configuration without booting OpenCms.<p>
+     */
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
+
+        initConfiguration();
+    }
 
     /**
      * Tests selection of the default locale.<p>
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testDefaultLocaleSelection() throws Exception {
 
         CmsLocaleManager localeManager = new CmsLocaleManager();
@@ -78,6 +97,8 @@ public class TestCmsLocaleManager extends OpenCmsTestCase {
     }
 
     /** Tests if locale variants are returned correctly. */
+    @Order(1)
+    @Test
     public void testGetLocaleVariants() {
 
         String base = "base";

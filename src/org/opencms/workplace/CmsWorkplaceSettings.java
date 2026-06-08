@@ -327,7 +327,7 @@ public class CmsWorkplaceSettings {
      *
      * @param galleryKey the key for which to look up the gallery
      * @return the last saved gallery for the given gallery key
-     **/
+     */
     public String getLastUsedGallery(String galleryKey) {
 
         String result = m_lastUsedGalleries.get(galleryKey);

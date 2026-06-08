@@ -58,6 +58,18 @@ public class CmsListCsvExportDialog extends CmsDialog {
     }
 
     /**
+     * Public constructor with JSP variables.<p>
+     *
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsListCsvExportDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
      * Generates the CSV file for the given list.<p>
      *
      * @return CSV file
@@ -68,18 +80,6 @@ public class CmsListCsvExportDialog extends CmsDialog {
 
         CmsHtmlList list = A_CmsListDialog.getListObject(Class.forName(getParamListclass()), getSettings());
         return list.listCsv();
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     *
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsListCsvExportDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
     }
 
     /**

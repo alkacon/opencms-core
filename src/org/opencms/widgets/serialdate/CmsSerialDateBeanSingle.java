@@ -45,6 +45,7 @@ public class CmsSerialDateBeanSingle extends A_CmsSerialDateBean {
      * @param isWholeDay flag, indicating if the event lasts the whole day.
      */
     public CmsSerialDateBeanSingle(Date startDate, Date endDate, boolean isWholeDay) {
+
         super(startDate, endDate, isWholeDay, EndType.SINGLE, null, 1, null);
 
     }

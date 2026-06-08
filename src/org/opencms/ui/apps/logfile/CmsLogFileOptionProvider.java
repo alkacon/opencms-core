@@ -52,6 +52,7 @@ public final class CmsLogFileOptionProvider {
      * Hidden default constructor.<p>
      */
     private CmsLogFileOptionProvider() {
+
         // hidden default constructor
     }
 

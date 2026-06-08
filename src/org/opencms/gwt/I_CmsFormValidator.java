@@ -59,6 +59,7 @@ public interface I_CmsFormValidator {
         CmsObject cms,
         Map<String, CmsValidationQuery> queries,
         Map<String, String> values,
-        String config) throws Exception;
+        String config)
+    throws Exception;
 
 }

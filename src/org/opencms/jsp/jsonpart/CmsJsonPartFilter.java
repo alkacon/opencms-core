@@ -79,6 +79,7 @@ public class CmsJsonPartFilter implements Filter {
          * @param request the wrapped request
          */
         public RequestWrapper(HttpServletRequest request) {
+
             super(request);
         }
 
@@ -144,6 +145,7 @@ public class CmsJsonPartFilter implements Filter {
          * @param response the original response
          */
         public ResponseWrapper(HttpServletResponse response) {
+
             super(response);
         }
 
@@ -167,6 +169,21 @@ public class CmsJsonPartFilter implements Filter {
         public ServletOutputStream getOutputStream() {
 
             return new ServletOutputStream() {
+
+                /**
+                 * @see javax.servlet.ServletOutputStream#isReady()
+                 */
+                @Override
+                public boolean isReady() {
+
+                    return null != m_byteStream;
+                }
+
+                /**
+                 * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
+                 */
+                @Override
+                public void setWriteListener(WriteListener writeListener) {}
 
                 /**
                  * @see java.io.OutputStream#write(byte[])
@@ -194,22 +211,6 @@ public class CmsJsonPartFilter implements Filter {
 
                     m_byteStream.write(b);
                 }
-
-                /**
-                 * @see javax.servlet.ServletOutputStream#isReady()
-                 */
-                @Override
-                public boolean isReady() {
-
-                    return null != m_byteStream;
-                }
-
-                /**
-                 * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
-                 */
-                @Override
-                public void setWriteListener(WriteListener writeListener) {
-                }
             };
         }
 
@@ -234,6 +235,7 @@ public class CmsJsonPartFilter implements Filter {
          */
         @Override
         public void setContentLength(int len) {
+
             // ignore
         }
     }
@@ -266,6 +268,7 @@ public class CmsJsonPartFilter implements Filter {
      * @see javax.servlet.Filter#destroy()
      */
     public void destroy() {
+
         // do nothing
     }
 
@@ -303,6 +306,7 @@ public class CmsJsonPartFilter implements Filter {
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig filterConfig) {
+
         // do nothing
     }
 

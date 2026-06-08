@@ -59,6 +59,7 @@ public class CmsResourceTypeStatResult {
      * @param count of found resources
      */
     public CmsResourceTypeStatResult(I_CmsResourceType type, String siteRoot, int count) {
+
         m_type = type;
         m_count = count;
         m_siteRoot = siteRoot;
@@ -92,7 +93,9 @@ public class CmsResourceTypeStatResult {
         String res;
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(m_siteRoot);
         if (site == null) {
-            res = CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_RESULTS_ROOT_1, Integer.valueOf(m_count));
+            res = CmsVaadinUtils.getMessageText(
+                Messages.GUI_DATABASEAPP_STATS_RESULTS_ROOT_1,
+                Integer.valueOf(m_count));
         } else {
             res = CmsVaadinUtils.getMessageText(
                 Messages.GUI_DATABASEAPP_STATS_RESULTS_2,

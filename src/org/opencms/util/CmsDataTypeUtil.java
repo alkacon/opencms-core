@@ -27,18 +27,28 @@
 
 package org.opencms.util;
 
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
 
 /**
  *
@@ -47,6 +57,9 @@ import org.apache.commons.codec.binary.Base64;
  * @since 6.5.6
  */
 public final class CmsDataTypeUtil {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDataTypeUtil.class);
 
     /**
      * Hides the public constructor.<p>
@@ -70,7 +83,7 @@ public final class CmsDataTypeUtil {
     public static Object dataDeserialize(byte[] data, String type) throws IOException, ClassNotFoundException {
 
         // check the type of the stored data
-        Class<?> clazz = Class.forName(type);
+        Class<?> clazz = Class.forName(type, false, CmsDataTypeUtil.class.getClassLoader());
 
         if (isParseable(clazz)) {
             // this is parseable data
@@ -80,6 +93,10 @@ public final class CmsDataTypeUtil {
         // this is a serialized object
         ByteArrayInputStream bin = new ByteArrayInputStream(data);
         ObjectInputStream oin = new ObjectInputStream(bin);
+
+        ObjectInputFilter filter = getDeserializationFilter();
+        oin.setObjectInputFilter(filter);
+
         return oin.readObject();
     }
 
@@ -119,7 +136,7 @@ public final class CmsDataTypeUtil {
      */
     public static Object dataImport(String value, String type) throws ClassNotFoundException, IOException {
 
-        Class<?> clazz = Class.forName(type);
+        Class<?> clazz = Class.forName(type, false, CmsDataTypeUtil.class.getClassLoader());
         if (CmsDataTypeUtil.isParseable(clazz)) {
             return CmsDataTypeUtil.parse(value, clazz);
         }
@@ -288,6 +305,49 @@ public final class CmsDataTypeUtil {
     public static String format(short data) {
 
         return Short.valueOf(data).toString();
+    }
+
+    /**
+     * Gets the deserialization filter.
+     *
+     * <p>First tries to read the filter as a string from the runtime property org.opencms.util.CmsDataTypeUtil.deserializationFilter, and if that is not found,
+     * uses a default filter that only deserializes boxed primitives, Strings, ArrayLists, HashMaps, Dates, CmsUUIDs.
+     *
+     * <p>This uses the configuration format from java.io.ObjectInputFilter.Config.createFilter().
+     *
+     * @return the deserialization filter
+     */
+    public static final ObjectInputFilter getDeserializationFilter() {
+
+        Object filterObj = OpenCms.getRuntimeProperty(CmsDataTypeUtil.class.getName() + ".deserializationFilter");
+        if (filterObj != null) {
+            try {
+                return ObjectInputFilter.Config.createFilter((String)filterObj);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        List<Class<?>> classes = Arrays.asList(
+            String.class,
+            Boolean.class,
+            Number.class,
+            Byte.class,
+            Short.class,
+            Character.class,
+            Integer.class,
+            Long.class,
+            Float.class,
+            Double.class,
+            Object.class /*need this for the internal array of type Object[] in ArrayList - this does *not* automatically allow subclasses*/,
+            ArrayList.class,
+            HashMap.class,
+            Map.Entry.class /*need this for HashMap */,
+            Hashtable.class /* for some unknown purpose, dataSerialize replaces Maps with this */,
+            Date.class,
+            CmsUUID.class);
+        String policy = classes.stream().map(c -> c.getName()).collect(Collectors.joining(";")) + ";!*";
+        return ObjectInputFilter.Config.createFilter(policy);
+
     }
 
     /**

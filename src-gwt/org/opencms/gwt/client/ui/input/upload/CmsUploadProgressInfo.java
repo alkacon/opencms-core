@@ -83,16 +83,6 @@ public class CmsUploadProgressInfo extends FlowPanel {
     }
 
     /**
-     * Sets the upload content length.<p>
-     *
-     * @param contentLength the upload content length
-     */
-    public void setContentLength(long contentLength) {
-
-        m_contentLength = contentLength;
-    }
-
-    /**
      * Finishes the state of the progress bar.<p>
      */
     public void finish() {
@@ -111,6 +101,16 @@ public class CmsUploadProgressInfo extends FlowPanel {
                 Integer.valueOf(fileCount),
                 getFileText(),
                 length));
+    }
+
+    /**
+     * Sets the upload content length.<p>
+     *
+     * @param contentLength the upload content length
+     */
+    public void setContentLength(long contentLength) {
+
+        m_contentLength = contentLength;
     }
 
     /**

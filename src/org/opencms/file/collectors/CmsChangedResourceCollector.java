@@ -170,7 +170,8 @@ public class CmsChangedResourceCollector extends A_CmsResourceCollector {
         String param,
         boolean tree,
         boolean asc,
-        int numResults) throws CmsException {
+        int numResults)
+    throws CmsException {
 
         Map<String, String> params = getParameters(param);
 

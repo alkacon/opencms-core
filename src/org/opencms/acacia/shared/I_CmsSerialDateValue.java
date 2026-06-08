@@ -112,6 +112,7 @@ public interface I_CmsSerialDateValue {
 
     /** Months as enumeration. */
     public enum Month {
+
         /** January */
         JANUARY,
         /** February */
@@ -193,6 +194,7 @@ public interface I_CmsSerialDateValue {
 
     /** Enumeration representing the week days. */
     public enum WeekDay {
+
         /** Sunday */
         SUNDAY,
         /** Monday */

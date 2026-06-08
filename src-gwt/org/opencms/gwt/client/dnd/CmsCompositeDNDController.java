@@ -59,7 +59,6 @@ public class CmsCompositeDNDController implements I_CmsDNDController {
         };
     }
 
-
     /**
      * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onAnimationStart(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
      */
@@ -151,6 +150,7 @@ public class CmsCompositeDNDController implements I_CmsDNDController {
      */
     @Override
     public void postClear(I_CmsDraggable draggable, I_CmsDropTarget target) {
+
         m_controllers.forEach(controller -> {
             controller.postClear(draggable, target);
 
@@ -162,7 +162,8 @@ public class CmsCompositeDNDController implements I_CmsDNDController {
      */
     @Override
     public boolean startPlacementMode(I_CmsDraggable draggable, CmsDNDHandler handler) {
-        for (I_CmsDNDController controller: m_controllers) {
+
+        for (I_CmsDNDController controller : m_controllers) {
             if (controller.startPlacementMode(draggable, handler)) {
                 return true;
             }

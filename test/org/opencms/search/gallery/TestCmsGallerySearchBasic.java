@@ -43,8 +43,7 @@ import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -54,24 +53,18 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the basic OpenCms gallery search functions.<p>
  */
-public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsGallerySearchBasic(String arg0) {
-
-        super(arg0);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsGallerySearchBasic extends OpenCmsTestRunner {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
@@ -141,38 +134,13 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsGallerySearchBasic.class.getName());
-
-        suite.addTest(new TestCmsGallerySearchBasic("testGallerySearchIndexCreation"));
-        suite.addTest(new TestCmsGallerySearchBasic("testGallerySortSearchResults"));
-        suite.addTest(new TestCmsGallerySearchBasic("testSearchById"));
-        suite.addTest(new TestCmsGallerySearchBasic("testSearchForMovedFiles"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "", "/../org/opencms/search/gallery");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "", "/../org/opencms/search/gallery");
     }
 
     /**
@@ -180,6 +148,8 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(1)
     public void testGallerySearchIndexCreation() throws Exception {
 
         echo("Testing dynamic creation of special index for galleries");
@@ -190,8 +160,8 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
         // make sure the ADE index actually exists
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
-        assertNotNull("Index for galleries not initialized", index);
-        assertEquals("Index for galleries not of required class", CmsSolrIndex.class, index.getClass());
+        assertNotNull(index, "Index for galleries not initialized");
+        assertEquals(CmsSolrIndex.class, index.getClass(), "Index for galleries not of required class");
     }
 
     /**
@@ -199,6 +169,8 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testGallerySortSearchResults() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -361,6 +333,8 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(3)
     public void testSearchById() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -379,6 +353,8 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(4)
     public void testSearchForMovedFiles() throws Exception {
 
         CmsObject cms = getCmsObject();

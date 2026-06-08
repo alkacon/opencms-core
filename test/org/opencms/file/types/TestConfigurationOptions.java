@@ -33,62 +33,31 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the resource type configuration options.<p>
- *
  */
-public class TestConfigurationOptions extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestConfigurationOptions extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestConfigurationOptions(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestConfigurationOptions.class.getName());
-
-        suite.addTest(new TestConfigurationOptions("testDefaultPropertyCreation"));
-        suite.addTest(new TestConfigurationOptions("testCopyResourcesOnCreation"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -96,12 +65,13 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCopyResourcesOnCreation() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing 'copy resources' on resource creation");
 
-        // create a new type "10", default tests have this configured as "link gallery" folder
         String resourcename = "/newlinkgallery/";
 
         cms.createResource(resourcename, 10);
@@ -109,16 +79,13 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         List subResources = cms.readResources(resourcename, CmsResourceFilter.ALL);
         assertTrue(subResources.size() > 15);
 
-        // read some of the newly created copy resources to make sure they exist
         CmsResource res;
 
         res = cms.readResource(resourcename + "newname.html");
-        // must have 1 additional sibling
         assertTrue(res.getSiblingCount() == 2);
 
         cms.readResource(resourcename + "mytypes");
         res = cms.readResource(resourcename + "mytypes/text.txt");
-        // should have no sibling
         assertTrue(res.getSiblingCount() == 1);
 
         cms.readResource(resourcename + "subfolder11");
@@ -130,6 +97,8 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testDefaultPropertyCreation() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -138,19 +107,15 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         String resourcename = "/folder1/article_test.html";
         byte[] content = new byte[0];
 
-        // resource 27 is article (xml content) with default properties
-        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
+        cms.createResource(resourcename, ARTICLE_TYPEID, content, null);
 
-        // ensure created resource type
-        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
-        // project must be current project
+        assertResourceType(cms, resourcename, ARTICLE_TYPEID);
         assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
-        // state must be "new"
         assertState(cms, resourcename, CmsResource.STATE_NEW);
-        // the user last modified must be the current user
         assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
-        CmsProperty property1, property2;
+        CmsProperty property1;
+        CmsProperty property2;
         property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
         property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertTrue(property1.isIdentical(property2));
@@ -169,7 +134,6 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertTrue(property1.isIdentical(property2));
 
-        // publish the project
         cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();

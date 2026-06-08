@@ -95,16 +95,6 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
     }
 
     /**
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return m_channel.hashCode() + m_content.hashCode() + m_order + m_type.hashCode();
-    }
-
-    /**
      * @see org.opencms.newsletter.I_CmsNewsletterContent#getChannel()
      */
     public String getChannel() {
@@ -134,5 +124,15 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
     public CmsNewsletterContentType getType() {
 
         return m_type;
+    }
+
+    /**
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_channel.hashCode() + m_content.hashCode() + m_order + m_type.hashCode();
     }
 }

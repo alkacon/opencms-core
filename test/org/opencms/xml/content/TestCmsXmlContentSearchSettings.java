@@ -28,7 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -40,14 +40,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for search settings.<p>
  */
-public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
+public class TestCmsXmlContentSearchSettings extends OpenCmsTestRunner {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/xmlcontent-searchsettings-image.xsd";
@@ -56,49 +54,11 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/xmlcontent-searchsettings.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContentSearchSettings(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentSearchSettings.class.getName());
-        suite.addTest(new TestCmsXmlContentSearchSettings("testSearchSettings"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                // noop
-            }
-
-            @Override
-            protected void tearDown() {
-
-                // noop
-            }
-        };
-
-        return wrapper;
-    }
-
-    /**
      * Test unmarshalling an XML content from a String.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
     public void testSearchSettings() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -146,14 +106,14 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsTestCase {
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                 if (contentHandler.isSearchable(value)) {
                     // value is search-able and the extraction is not empty, so added to the textual content
-                    assertTrue("This value should be in the list of goods", goods.contains(value.getPath()));
+                    assertTrue(goods.contains(value.getPath()), "This value should be in the list of goods");
                 } else {
                     nogoods.add(value.getPath());
                 }
             }
         }
         for (String ns : nogoods) {
-            assertTrue("The value with XPath: " + ns + "should not be searchable", !goods.contains(ns));
+            assertTrue(!goods.contains(ns), "The value with XPath: " + ns + "should not be searchable");
         }
     }
 

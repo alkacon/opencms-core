@@ -41,8 +41,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -57,15 +56,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.opentest4j.AssertionFailedError;
 
-import junit.framework.ComparisonFailure;
-import junit.framework.Test;
+import com.google.common.collect.Lists;
 
 /**
  * Lightweight tests for the ADE configuration mechanism which mostly do not read the configuration data from the VFS.<p>
  */
-public class TestConfig extends OpenCmsTestCase {
+public class TestConfig extends OpenCmsTestRunner {
 
     /** Empty detail page list. **/
     public static final List<CmsDetailPageInfo> NO_DETAILPAGES = Collections.<CmsDetailPageInfo> emptyList();
@@ -80,24 +81,13 @@ public class TestConfig extends OpenCmsTestCase {
     public static final List<CmsResourceTypeConfig> NO_TYPES = Collections.<CmsResourceTypeConfig> emptyList();
 
     /**
-     * Test constructor.<p>
-     *
-     * @param name the name
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestConfig(String name) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestConfig.class, "ade-config", "/");
+        setupOpenCms(testInfo, "ade-config", "/");
     }
 
     /**
@@ -150,6 +140,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreatable() throws Exception {
 
         String baseDirectory = "/sites/default/testCreatable";
@@ -207,6 +198,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateContentsLocally() throws Exception {
 
         String typename = "plain";
@@ -243,6 +235,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateContentsLocally2() throws Exception {
 
         String typename = "plain";
@@ -310,6 +303,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateContentsLocally3() throws Exception {
 
         String typename = "plain";
@@ -363,6 +357,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateContentsLocally4() throws Exception {
 
         String typename = "plain";
@@ -395,6 +390,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCreateElements() throws Exception {
 
         String typename = "plain";
@@ -435,6 +431,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDefaultFolderName() throws Exception {
 
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)");
@@ -456,6 +453,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDefaultFolderName2() throws Exception {
 
         CmsResourceTypeConfig typeConf1 = new CmsResourceTypeConfig("foo", false, null, "pattern_%(number)");
@@ -488,6 +486,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testDetailPageFiltering() throws Exception {
 
         CmsDetailPageInfo foo1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a1", "a", "foo", null, "");
@@ -563,6 +562,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDetailPages2() throws Exception {
 
         CmsDetailPageInfo a1 = new CmsDetailPageInfo(
@@ -667,6 +667,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDiscardInheritedModelPages() throws Exception {
 
         CmsModelPageConfig m1 = new CmsModelPageConfig(rootCms().readResource("/sites/default/a1"), true, false);
@@ -698,6 +699,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testDiscardInheritedProperties() throws Exception {
 
         CmsPropertyConfig foo = createPropertyConfig("foo", "foo1");
@@ -725,6 +727,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception  -
      */
+    @Test
     public void testDiscardInheritedTypes() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -763,6 +766,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDiscardInheritedTypesMultilevel() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -809,6 +813,7 @@ public class TestConfig extends OpenCmsTestCase {
      * Tests inheritance of folder names for resource types.<p>
      * @throws Exception -
      */
+    @Test
     public void testInheritedFolderName1() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/somefolder/.content", "blah");
@@ -841,6 +846,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testInheritedFolderName2() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/somefolder/.content", "blah");
@@ -873,6 +879,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testInheritNamePattern() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -903,6 +910,7 @@ public class TestConfig extends OpenCmsTestCase {
      * Tests inheritance of property definitions.<p>
      * @throws Exception -
      */
+    @Test
     public void testInheritProperties() throws Exception {
 
         List<CmsPropertyConfig> propConf1 = list(
@@ -948,6 +956,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testInheritResourceTypes1() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -982,6 +991,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testModelPages1() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1022,6 +1032,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testModelPages2() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1057,6 +1068,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testOverrideResourceType() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -1091,6 +1103,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testParseConfiguration() throws Exception {
 
         CmsObject cms = rootCms();
@@ -1141,6 +1154,7 @@ public class TestConfig extends OpenCmsTestCase {
      * Tests the parsing of module configurations.<p>
      * @throws Exception -
      */
+    @Test
     public void testParseModuleConfiguration() throws Exception {
 
         CmsObject cms = rootCms();
@@ -1189,6 +1203,7 @@ public class TestConfig extends OpenCmsTestCase {
     /**
      * Tests setting translation parsing.
      */
+    @Test
     public void testParseSettingTranslation() {
 
         Map<String, String> map = CmsSettingTranslator.parseSettingTranslationMap(
@@ -1204,6 +1219,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testPluginInheritance() throws Exception {
 
         CmsUUID a = new CmsUUID(CmsUUID.getNullUUID().toString().replaceAll("0", "a"));
@@ -1240,6 +1256,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testRemoveResourceType() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -1279,6 +1296,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testReorderResourceTypes() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor("/.content", "foldername");
@@ -1318,6 +1336,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testResolveFolderName1() throws Exception {
 
         CmsContentFolderDescriptor folder = new CmsContentFolderDescriptor(
@@ -1341,6 +1360,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testResourceTypeConfigObjectsNotSame() throws Exception {
 
         CmsResourceTypeConfig c1 = new CmsResourceTypeConfig("c", false, null, "foo");
@@ -1358,6 +1378,7 @@ public class TestConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testUnsetTypeAvailability() throws Exception {
 
         List<CmsResourceTypeConfig> types = new ArrayList<CmsResourceTypeConfig>();
@@ -1436,7 +1457,7 @@ public class TestConfig extends OpenCmsTestCase {
             return;
         }
         if ((path1 == null) || (path2 == null)) {
-            throw new ComparisonFailure("comparison failure", path1, path2);
+            throw new AssertionFailedError("comparison failure", path1, path2);
         }
         assertEquals(CmsStringUtil.joinPaths("/", path1, "/"), CmsStringUtil.joinPaths("/", path2, "/"));
     }

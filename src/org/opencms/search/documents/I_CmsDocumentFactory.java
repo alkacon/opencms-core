@@ -52,6 +52,11 @@ import java.util.List;
  */
 public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
 
+    default void addConfigurationParameter(String key, String value) {
+
+        // do noting
+    }
+
     /**
      * Creates the Lucene Document for the given VFS resource and the given search index.<p>
      *
@@ -72,8 +77,7 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      *
      * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, I_CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
      */
-    I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, I_CmsSearchIndex index)
-    throws CmsException;
+    I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, I_CmsSearchIndex index) throws CmsException;
 
     /**
      * Returns the disk based cache used to store the raw extraction results.<p>

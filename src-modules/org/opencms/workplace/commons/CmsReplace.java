@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * The replace resource dialog handles the replacement of a single VFS file.<p>
@@ -97,8 +97,8 @@ public class CmsReplace extends CmsDialog {
 
         try {
             // get the file item from the multipart request
-            Iterator<FileItem> i = getMultiPartFileItems().iterator();
-            FileItem fi = null;
+            Iterator<DiskFileItem> i = getMultiPartFileItems().iterator();
+            DiskFileItem fi = null;
             while (i.hasNext()) {
                 fi = i.next();
                 if (fi.getName() != null) {

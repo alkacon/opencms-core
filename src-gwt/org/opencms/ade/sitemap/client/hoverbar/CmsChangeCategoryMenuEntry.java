@@ -67,6 +67,7 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
             // this context menu handler only implements the refreshResource method
 
             public void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback) {
+
                 // do nothing
             }
 
@@ -88,10 +89,12 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
             }
 
             public void leavePage(String targetUri) {
+
                 // do nothing
             }
 
             public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
                 // do nothing
             }
 
@@ -101,6 +104,7 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
             }
 
             public void unlockResource(CmsUUID structureId) {
+
                 // do nothing
             }
         };

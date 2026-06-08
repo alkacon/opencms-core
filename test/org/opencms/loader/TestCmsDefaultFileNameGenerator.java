@@ -27,17 +27,18 @@
 
 package org.opencms.loader;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the default file name generation.<p>
  */
-public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
+public class TestCmsDefaultFileNameGenerator extends OpenCmsTestRunner {
 
     /** List of names with 5 digits. */
     public static final Set<String> NAMES_5 = new HashSet<>(
@@ -52,6 +53,7 @@ public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testFileNumbering() throws Exception {
 
         CmsDefaultFileNameGenerator defaultGenerator = new CmsDefaultFileNameGenerator();

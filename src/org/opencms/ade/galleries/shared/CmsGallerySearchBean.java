@@ -609,7 +609,7 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /**
      * Gets the template context information.
-     * 
+     *
      * @return the template context information
      */
     public CmsTemplateContextInfo getTemplateContextInfo() {

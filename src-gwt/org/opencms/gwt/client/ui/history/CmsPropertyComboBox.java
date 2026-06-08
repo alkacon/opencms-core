@@ -45,6 +45,7 @@ public class CmsPropertyComboBox extends CmsComboBox {
      * @param options the widget options
      */
     public CmsPropertyComboBox(Map<String, String> options) {
+
         super(options);
     }
 

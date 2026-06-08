@@ -70,9 +70,9 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
      *
      * The logic used is:
      * <pre>
-     * if (hasFile && (hasSuffix || hasProperty || hasAttribute)) return false;
-     * if (hasProperty && hasAttribute) return false;
-     * if (hasSuffix && !(hasProperty || hasAttribute)) return false;
+     * if (hasFile &amp;&amp; (hasSuffix || hasProperty || hasAttribute)) return false;
+     * if (hasProperty &amp;&amp; hasAttribute) return false;
+     * if (hasSuffix &amp;&amp; !(hasProperty || hasAttribute)) return false;
      * </pre>
      *
      * @param data the tag data

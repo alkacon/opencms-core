@@ -27,14 +27,15 @@
 
 package org.opencms.importexport;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
-/**
- * Basic test cases for import/export utilities.<p>
- *
- * @since 6.0.0
- */
-public class TestCmsImport extends OpenCmsTestCase {
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsImport extends OpenCmsTestRunner {
 
     /**
      * Runs a test for the conversion of the digest encoding.<p>
@@ -44,6 +45,8 @@ public class TestCmsImport extends OpenCmsTestCase {
      * @deprecated old import version 4 issue
      */
     @Deprecated
+    @Test
+    @Order(2)
     public void testConvertDigestEncoding() throws Throwable {
 
         A_CmsImport imp = new CmsImportVersion4();
@@ -76,6 +79,8 @@ public class TestCmsImport extends OpenCmsTestCase {
      * @deprecated old import version 2 issue
      */
     @Deprecated
+    @Test
+    @Order(1)
     public void testSetDirectories() {
 
         String[] rules = {

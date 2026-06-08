@@ -95,7 +95,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Gets the default file path, if available.
-     * 
+     *
      * @return the default file path
      */
     @Override

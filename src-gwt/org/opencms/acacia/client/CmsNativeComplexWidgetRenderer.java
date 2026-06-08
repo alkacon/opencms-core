@@ -205,11 +205,11 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
      * @return the native renderer instance
      */
     protected native JavaScriptObject createNativeInstance(String initCall) /*-{
-		if ($wnd[initCall]) {
-			return $wnd[initCall]();
-		} else {
-			throw ("No init function found: " + initCall);
-		}
+        if ($wnd[initCall]) {
+            return $wnd[initCall]();
+        } else {
+            throw ("No init function found: " + initCall);
+        }
     }-*/;
 
     /**
@@ -241,15 +241,15 @@ public class CmsNativeComplexWidgetRenderer implements I_CmsEntityRenderer {
         com.google.gwt.dom.client.Element element,
         CmsEntity entity,
         JavaScriptObject config) /*-{
-		var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
-		entityWrapper.setEntity(entity);
-		var backEndWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
-		if (nativeRenderer && nativeRenderer[renderFunction]) {
-			nativeRenderer[renderFunction](element, entityWrapper,
-					backEndWrapper, config);
-		} else if ($wnd.console) {
-			$wnd.console.log("Rendering function not found: " + renderFunction);
-		}
+        var entityWrapper = new $wnd.acacia.CmsEntityWrapper();
+        entityWrapper.setEntity(entity);
+        var backEndWrapper = new $wnd.acacia.CmsEntityBackendWrapper();
+        if (nativeRenderer && nativeRenderer[renderFunction]) {
+            nativeRenderer[renderFunction](element, entityWrapper,
+                    backEndWrapper, config);
+        } else if ($wnd.console) {
+            $wnd.console.log("Rendering function not found: " + renderFunction);
+        }
     }-*/;
 
     /**

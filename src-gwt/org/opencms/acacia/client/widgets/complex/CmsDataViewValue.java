@@ -53,6 +53,7 @@ public class CmsDataViewValue {
      * @param data the additional data
      */
     public CmsDataViewValue(String id, String title, String description, String data) {
+
         super();
         m_id = id;
         m_title = title;

@@ -47,6 +47,7 @@ public class CmsContextMenuState extends AbstractComponentState {
          * Constructor.<p>
          */
         public ContextMenuItemState() {
+
             m_children = new ArrayList<CmsContextMenuState.ContextMenuItemState>();
             m_styles = new HashSet<String>();
         }
@@ -147,16 +148,6 @@ public class CmsContextMenuState extends AbstractComponentState {
         }
 
         /**
-         * Returns whether a separator should be displayed.<p>
-         *
-         * @return <code>true</code> if a separator should be displayed
-         */
-        public boolean isSeparator() {
-
-            return m_separator;
-        }
-
-        /**
          * Returns whether the item is enabled.<p>
          *
          * @return <code>true</code> if the item is enabled
@@ -164,6 +155,16 @@ public class CmsContextMenuState extends AbstractComponentState {
         public boolean isEnabled() {
 
             return m_enabled;
+        }
+
+        /**
+         * Returns whether a separator should be displayed.<p>
+         *
+         * @return <code>true</code> if a separator should be displayed
+         */
+        public boolean isSeparator() {
+
+            return m_separator;
         }
 
         /**
@@ -263,6 +264,7 @@ public class CmsContextMenuState extends AbstractComponentState {
      * Constructor.<p>
      */
     public CmsContextMenuState() {
+
         m_rootItems = new ArrayList<CmsContextMenuState.ContextMenuItemState>();
     }
 

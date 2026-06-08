@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
  * &lt;jsp:useBean id="cms" class="org.opencms.jsp.CmsJspActionElement"&gt;
- * &lt% cms.init(pageContext, request, response); %&gt;
+ * &lt;% cms.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
  *

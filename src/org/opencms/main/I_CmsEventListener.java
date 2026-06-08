@@ -406,7 +406,7 @@ public interface I_CmsEventListener {
     /** Key name for passing a comma separated list of search index names in the data map. */
     String KEY_INDEX_NAMES = "indexNames";
 
-    /** Event attribute to mark publish events as 'instant publish', which happens when resources in online-only folders are modified. */ 
+    /** Event attribute to mark publish events as 'instant publish', which happens when resources in online-only folders are modified. */
     String KEY_INSTANT_PUBLISH = "instantPublish";
 
     /** Key name for passing a flag, indicating if we are in the online project. */

@@ -40,6 +40,7 @@ public class CmsClientLock implements IsSerializable {
      * The available lock types. Replace with {@link org.opencms.lock.CmsLockType} as soon that fulfills the serializable convention.
      */
     public enum LockType {
+
         /**
          * A lock that allows the user to edit the resource's structure record,
          * it's resource record, and its content record.<p>
@@ -130,6 +131,16 @@ public class CmsClientLock implements IsSerializable {
         }
 
         /**
+         * Return the lock mode/type.<p>
+         *
+         * @return the lock mode/type
+         */
+        public int getMode() {
+
+            return m_mode;
+        }
+
+        /**
          * Returns <code>true</code> if this lock is in fact unlocked.<p>
          *
          * Only if this is <code>true</code>, the result lock is equal to the <code>NULL</code> lock,
@@ -166,16 +177,6 @@ public class CmsClientLock implements IsSerializable {
                 default:
                     return "unlocked";
             }
-        }
-
-        /**
-         * Return the lock mode/type.<p>
-         *
-         * @return the lock mode/type
-         */
-        public int getMode() {
-
-            return m_mode;
         }
     }
 

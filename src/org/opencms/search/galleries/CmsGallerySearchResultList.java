@@ -78,6 +78,22 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     }
 
     /**
+     * Calculates the result pages.<p>
+     *
+     * @param pageIndex the index of the current page
+     * @param matchesPerPage the matches per page
+     */
+    public void calculatePages(int pageIndex, int matchesPerPage) {
+
+        m_pageIndex = pageIndex;
+        // calculate the number of pages for this search result
+        m_pageCount = m_hitCount / matchesPerPage;
+        if ((m_hitCount % matchesPerPage) != 0) {
+            m_pageCount++;
+        }
+    }
+
+    /**
      * Returns the hit count of all results found in the last search.<p>
      *
      * Since this list will only contain the result objects for the current display page,
@@ -127,21 +143,5 @@ public class CmsGallerySearchResultList extends ArrayList<CmsGallerySearchResult
     public void setHitCount(int hitCount) {
 
         m_hitCount = hitCount;
-    }
-
-    /**
-     * Calculates the result pages.<p>
-     *
-     * @param pageIndex the index of the current page
-     * @param matchesPerPage the matches per page
-     */
-    public void calculatePages(int pageIndex, int matchesPerPage) {
-
-        m_pageIndex = pageIndex;
-        // calculate the number of pages for this search result
-        m_pageCount = m_hitCount / matchesPerPage;
-        if ((m_hitCount % matchesPerPage) != 0) {
-            m_pageCount++;
-        }
     }
 }

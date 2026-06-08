@@ -27,6 +27,7 @@
 
 package org.opencms.search.documents;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -100,6 +101,15 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             result.append(mimeType);
         }
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsSearchIndex#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String key, String value) {
+
+        // by default no parameters are excepted
+
     }
 
     /**
@@ -181,6 +191,17 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
+     * Returns the empty configuration.
+     * Override the method if your document factory is configurable.
+     *
+     * @see org.opencms.search.I_CmsSearchIndex#getConfiguration()
+     */
+    public CmsParameterConfiguration getConfiguration() {
+
+        return new CmsParameterConfiguration();
+    }
+
+    /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
     public List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException {
@@ -217,6 +238,15 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+
+        // Do nothing by default
+
     }
 
     /**

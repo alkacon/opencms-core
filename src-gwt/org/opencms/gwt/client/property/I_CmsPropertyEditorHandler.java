@@ -59,7 +59,7 @@ public interface I_CmsPropertyEditorHandler {
 
     /**
      * Gets the default file path, if available.
-     * 
+     *
      *  @return the default file path
      */
     String getDefaultFilePath();

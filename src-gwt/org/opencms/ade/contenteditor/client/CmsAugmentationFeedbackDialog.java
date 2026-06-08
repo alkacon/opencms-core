@@ -61,7 +61,7 @@ public class CmsAugmentationFeedbackDialog extends CmsPopup {
     /**
      * Creates a new instance.
      *
-     * @param title the title
+     * @param caption the title
      * @param htmlMessage the HTML message to display
      */
     public CmsAugmentationFeedbackDialog(String caption, String htmlMessage) {

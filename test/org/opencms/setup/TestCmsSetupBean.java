@@ -28,7 +28,7 @@
 package org.opencms.setup;
 
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,19 +36,19 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 /**
  * @since 6.0.0
  */
-public class TestCmsSetupBean extends OpenCmsTestCase {
+public class TestCmsSetupBean extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsSetupBean(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        super(arg0);
+        initConfiguration();
     }
 
     /**
@@ -56,6 +56,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
      *
      * @throws IOException if something goes wrong
      */
+    @Test
     public void testSaveProperties() throws IOException {
 
         CmsSetupBean bean = new CmsSetupBean();
@@ -69,7 +70,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         System.out.println("URL path decoded: '" + decodedPath + "'");
         System.out.println("File: '" + input + "'");
         // make sure the test properties file is found
-        assertTrue("Test property file '" + input.getAbsolutePath() + "' not found", input.exists());
+        assertTrue(input.exists(), "Test property file '" + input.getAbsolutePath() + "' not found");
 
         String inputFile = input.getAbsolutePath();
         String outputFile = input.getParent() + "/output.properties";
@@ -83,14 +84,14 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
             for (String message : bean.getErrors()) {
                 System.out.println(message);
             }
-            assertTrue("There shouldn't be any errors copying the properties files", !bean.getErrors().isEmpty());
+            assertTrue(!bean.getErrors().isEmpty(), "There shouldn't be any errors copying the properties files");
         }
         bean.saveProperties(oldProperties, outputFile, false);
         if (!bean.getErrors().isEmpty()) {
             for (String message : bean.getErrors()) {
                 System.out.println(message);
             }
-            assertTrue("There shouldn't be any errors saving the properties files", !bean.getErrors().isEmpty());
+            assertTrue(!bean.getErrors().isEmpty(), "There shouldn't be any errors saving the properties files");
         }
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);

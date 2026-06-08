@@ -76,6 +76,7 @@ public class CmsDataViewFilter {
         String helpText,
         LinkedHashMap<String, String> options,
         String value) {
+
         m_options = new LinkedHashMap<String, String>(options);
         m_id = id;
         m_niceName = niceName;

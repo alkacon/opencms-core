@@ -43,10 +43,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Provides buttons for showing the two versions being compared.<p>

@@ -30,8 +30,7 @@ package org.opencms.jsp.search.config.parser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,58 +42,24 @@ import java.util.Locale;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the simple configuration parser used by cms:simplesearch.
  *
  * TODO: We have very low test coverage - improve.
  */
-public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSimpleSearchConfigurationParser(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSimpleSearchConfigurationParser("testTypeRestrictionWithoutPreconfiguredRestrictions"));
-        suite.addTest(
-            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithPreconfiguredRestrictionWithoutType"));
-        suite.addTest(
-            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithPreconfiguredRestrictionWithType"));
-        suite.addTest(
-            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithComplexPreconfiguredRestriction"));
-        suite.addTest(
-            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithComplexExactPreconfiguredRestriction"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testMultipleRestrictionsWithType"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testRuleForUnknownType"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testInfixRule"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testPrefixRule"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testPostfixRule"));
-        suite.addTest(new TestSimpleSearchConfigurationParser("testExactRule"));
-        return suite;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSimpleSearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
      * Test if excact is correctly added.
      */
-    @org.junit.Test
+    @Test
+    @Order(11)
     public void testExactRule() {
 
         // Set up the configuration bean
@@ -123,7 +88,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test if infix is correctly added.
      */
-    @org.junit.Test
+    @Test
+    @Order(8)
     public void testInfixRule() {
 
         // Set up the configuration bean
@@ -151,7 +117,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(6)
     public void testMultipleRestrictionsWithType() {
 
         // Set up the configuration bean
@@ -183,7 +150,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test if postfix is correctly added.
      */
-    @org.junit.Test
+    @Test
+    @Order(10)
     public void testPostfixRule() {
 
         // Set up the configuration bean
@@ -210,7 +178,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test if prefix is correctly added.
      */
-    @org.junit.Test
+    @Test
+    @Order(9)
     public void testPrefixRule() {
 
         // Set up the configuration bean
@@ -237,7 +206,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Check, if the restriction is ignored, if it is for a type that is not present.
      */
-    @org.junit.Test
+    @Test
+    @Order(7)
     public void testRuleForUnknownType() {
 
         // Set up the configuration bean
@@ -264,7 +234,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(5)
     public void testTypeRestrictionWithComplexExactPreconfiguredRestriction() {
 
         // Set up the configuration bean
@@ -303,7 +274,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(4)
     public void testTypeRestrictionWithComplexPreconfiguredRestriction() {
 
         // Set up the configuration bean
@@ -344,7 +316,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(1)
     public void testTypeRestrictionWithoutPreconfiguredRestrictions() {
 
         // Set up the configuration bean
@@ -364,7 +337,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(2)
     public void testTypeRestrictionWithPreconfiguredRestrictionWithoutType() {
 
         // Set up the configuration bean
@@ -394,7 +368,8 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-    @org.junit.Test
+    @Test
+    @Order(3)
     public void testTypeRestrictionWithPreconfiguredRestrictionWithType() {
 
         // Set up the configuration bean

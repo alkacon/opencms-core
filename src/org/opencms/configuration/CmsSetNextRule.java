@@ -64,7 +64,7 @@ import org.xml.sax.Attributes;
  * If no subsequent <code>CallParamRule</code> are matched for <code>CmsObject</code>
  * which is the case in the OpenCms usage the first argument <code>CmsObject</code>
  * will be null at method invocation time. <p>
-
+ *
  * This is an alternative for <code>{@link org.apache.commons.digester3.SetNextRule}</code>
  * if a parent to child-property configuration has been done but the setter for that
  * property requires additional arguments that are only available at real runtime

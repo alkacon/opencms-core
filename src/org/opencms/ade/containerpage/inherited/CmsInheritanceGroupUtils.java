@@ -111,7 +111,8 @@ public final class CmsInheritanceGroupUtils {
     public static Set<String> getNamesOfGroupsContainingResource(
         CmsObject cms,
         CmsResource inheritanceConfig,
-        CmsResource target) throws CmsException {
+        CmsResource target)
+    throws CmsException {
 
         Set<String> names = new HashSet<String>();
         CmsContainerConfigurationParser parser = new CmsContainerConfigurationParser(cms);

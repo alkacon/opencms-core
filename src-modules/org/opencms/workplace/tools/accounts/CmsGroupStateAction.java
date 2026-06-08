@@ -69,7 +69,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
      * @param cms the cms context
      * @param direct the direct group flag
      *
-     * @Deprecated cms object no longer needed
+     * Deprecated: cms object no longer needed
      */
     public CmsGroupStateAction(String id, CmsObject cms, boolean direct) {
 

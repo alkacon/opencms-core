@@ -89,7 +89,7 @@ public class CmsLoginOuSelector extends CustomComponent {
     }
 
     /**
-     * Gets the selected OU.<p<
+     * Gets the selected OU.<p>
      *
      * @return the selected OU
      */

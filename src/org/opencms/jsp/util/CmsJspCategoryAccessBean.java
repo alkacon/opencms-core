@@ -70,6 +70,7 @@ public class CmsJspCategoryAccessBean {
      * @param resource the resource for which the categories should be read.
      */
     public CmsJspCategoryAccessBean(CmsObject cms, CmsResource resource) {
+
         this(cms, getCategories(cms, resource), "");
     }
 
@@ -81,6 +82,7 @@ public class CmsJspCategoryAccessBean {
      * @param mainCategoryPath path of the main category for which only sub-categories should be wrapped.
      */
     CmsJspCategoryAccessBean(CmsObject cms, List<CmsCategory> categories, String mainCategoryPath) {
+
         m_cms = cms;
         m_mainCategoryPath = mainCategoryPath.isEmpty() || mainCategoryPath.endsWith("/")
         ? mainCategoryPath

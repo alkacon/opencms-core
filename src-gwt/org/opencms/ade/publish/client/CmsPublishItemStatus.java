@@ -56,7 +56,8 @@ public class CmsPublishItemStatus {
      */
     public enum State {
         /** Normal state. */
-        normal, /** State for items which should be published. */
+        normal,
+        /** State for items which should be published. */
         publish,
 
         /** State for items which should be removed. */
@@ -68,9 +69,12 @@ public class CmsPublishItemStatus {
      */
     enum Signal {
         /** User selected publish. */
-        publish, /** User selected remove. */
-        remove, /** User deselected publish. */
-        unpublish, /** User deselected remove. */
+        publish,
+        /** User selected remove. */
+        remove,
+        /** User deselected publish. */
+        unpublish,
+        /** User deselected remove. */
         unremove;
     }
 

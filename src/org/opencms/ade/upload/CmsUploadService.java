@@ -38,11 +38,11 @@ import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.fileupload.InvalidFileNameException;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * Handles all RPC services related to the upload dialog.<p>
@@ -93,7 +93,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
             for (String fileName : fileNames) {
 
                 try {
-                    Streams.checkFileName(fileName);
+                    DiskFileItem.checkFileName(fileName);
                     String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder, false);
                     if (existsResource(newResName, isRootPath)) {
                         if (isDeletedResource(newResName, isRootPath)) {
@@ -102,7 +102,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
                             existingResourceNames.add(fileName);
                         }
                     }
-                } catch (InvalidFileNameException e) {
+                } catch (InvalidPathException e) {
                     invalidFileNames.add(fileName);
                 }
             }

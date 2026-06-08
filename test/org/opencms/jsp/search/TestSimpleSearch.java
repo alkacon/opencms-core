@@ -43,70 +43,39 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /** Test cases for the simple search configuration via contents of type "list_config". */
-public class TestSimpleSearch extends OpenCmsTestCase {
+public class TestSimpleSearch extends OpenCmsTestRunner {
 
     /** The VFS folder where the list contents are placed in. */
     private static final String LIST_BASE_FOLDER = "/system/modules/org.opencms.test.modules.listtype/resources/lists/";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * Overrides the OpenCms test setup.
      */
-    public TestSimpleSearch(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSimpleSearch("testFolderAndCategoryRestrictions"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        // disable all lucene indexes
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
@@ -114,7 +83,7 @@ public class TestSimpleSearch extends OpenCmsTestCase {
      * combined category folder restrictions and examines if the results are as expected.
      * @throws CmsException thrown if something unexpected goes wrong.
      */
-    @org.junit.Test
+    @Test
     public void testFolderAndCategoryRestrictions() throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());

@@ -73,7 +73,8 @@ public class CmsDynamicCategoryFieldList {
      * @param content the content which the fields should be added to
      */
     public void ensureFields(CmsObject cms, CmsXmlContent content) {
-        for (Locale locale: content.getLocales()) {
+
+        for (Locale locale : content.getLocales()) {
             ensureFields(cms, content, locale);
         }
     }

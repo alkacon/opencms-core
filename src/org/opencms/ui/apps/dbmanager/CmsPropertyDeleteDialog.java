@@ -47,18 +47,18 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog to delete property definitions.<p>
@@ -109,6 +109,7 @@ public class CmsPropertyDeleteDialog extends CmsBasicDialog {
      * @param runnable to update table
      */
     public CmsPropertyDeleteDialog(final String propName, final Window window, final Runnable runnable) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         displayResourceInfoDirectly(

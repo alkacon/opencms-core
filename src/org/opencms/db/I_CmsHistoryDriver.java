@@ -68,7 +68,8 @@ public interface I_CmsHistoryDriver {
     CmsPropertyDefinition createPropertyDefinition(
         CmsDbContext dbc,
         String name,
-        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException;
+        CmsPropertyDefinition.CmsPropertyType type)
+    throws CmsDataAccessException;
 
     /**
      * Deletes all historical versions of a resource

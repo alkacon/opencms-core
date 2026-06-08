@@ -55,6 +55,7 @@ public class CmsDateBoxEvent extends GwtEvent<I_CmsDateBoxEventHandler> {
      * @param isUserTyping true if the event was caused by a user key press that may have changed the value.<p>
      */
     public CmsDateBoxEvent(Date date, boolean isUserTyping) {
+
         m_date = date;
         m_isUserTyping = isUserTyping;
     }

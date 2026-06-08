@@ -309,7 +309,7 @@ public class CmsFlexBucketConfiguration {
     /**
      * Returns true if for the given set of published paths, the complete Flex cache should be cleared based on this configuration.<p>
      *
-     * @param publishedResources a publish list
+     * @param publishedPaths a publish list
      * @return true if the complete Flex cache should be cleared
      */
     public boolean shouldClearAll(Collection<String> publishedPaths) {

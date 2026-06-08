@@ -73,7 +73,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     private static final long serialVersionUID = 8119684308154724518L;
 
     /** The service class context. */
-    private CmsGwtServiceContext m_context;
+    private CmsGwtServiceContext2 m_context;
 
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;
@@ -183,6 +183,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String msg) {
+
         LOG.info(msg);
     }
 
@@ -191,6 +192,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String message, Throwable t) {
+
         LOG.info(message, t);
     }
 
@@ -247,7 +249,7 @@ public class CmsGwtService extends RemoteServiceServlet {
      *
      * @param context the new service context
      */
-    public synchronized void setContext(CmsGwtServiceContext context) {
+    public synchronized void setContext(CmsGwtServiceContext2 context) {
 
         m_context = context;
     }

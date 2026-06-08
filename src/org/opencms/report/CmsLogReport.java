@@ -54,6 +54,7 @@ public class CmsLogReport extends A_CmsReport {
      * @param channel the log channel
      */
     public CmsLogReport(Locale locale, Class<?> channel) {
+
         this(locale, (Object)channel);
 
     }

@@ -28,7 +28,6 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.search.fields.CmsSearchField;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;

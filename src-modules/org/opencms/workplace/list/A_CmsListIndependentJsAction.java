@@ -48,6 +48,15 @@ public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAct
     }
 
     /**
+     * The js code to execute.<p>
+     *
+     * @param wp the workplace context
+     *
+     * @return js code to execute
+     */
+    public abstract String jsCode(CmsWorkplace wp);
+
+    /**
      * @see org.opencms.workplace.list.CmsListIndependentAction#resolveOnClic(org.opencms.workplace.CmsWorkplace)
      */
     @Override
@@ -66,13 +75,4 @@ public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAct
         }
         return onClic.toString();
     }
-
-    /**
-     * The js code to execute.<p>
-     *
-     * @param wp the workplace context
-     *
-     * @return js code to execute
-     */
-    public abstract String jsCode(CmsWorkplace wp);
 }

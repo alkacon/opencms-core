@@ -57,9 +57,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 @ExportPackage("opencmsugc")
 public class CmsXmlContentUgcApi implements Exportable {
 
-    /** The request counter. */
-    private CmsRequestCounter m_requestCounter = new CmsRequestCounter();
-
     /** Service instance. */
     @NoExport
     public static final I_CmsUgcEditServiceAsync SERVICE = GWT.create(I_CmsUgcEditService.class);
@@ -67,6 +64,19 @@ public class CmsXmlContentUgcApi implements Exportable {
     /** The service URL. */
     @NoExport
     public static final String SERVICE_URL;
+
+    static {
+        String url = Window.Location.getHref();
+        // cut off fragment, parameters, and trailing slash, then append service name
+        url = url.replaceAll("#.*$", "").replaceAll("\\?.*$", "").replaceAll("/$", "")
+            + "/org.opencms.ugc.CmsUgcEditService.gwt";
+        SERVICE_URL = url;
+        ((ServiceDefTarget)SERVICE).setServiceEntryPoint(SERVICE_URL);
+
+    }
+
+    /** The request counter. */
+    private CmsRequestCounter m_requestCounter = new CmsRequestCounter();
 
     /**
      * Default constructor for gwt-exporter.<p>
@@ -87,16 +97,6 @@ public class CmsXmlContentUgcApi implements Exportable {
 
             }
         });
-
-    }
-
-    static {
-        String url = Window.Location.getHref();
-        // cut off fragment, parameters, and trailing slash, then append service name
-        url = url.replaceAll("#.*$", "").replaceAll("\\?.*$", "").replaceAll("/$", "")
-            + "/org.opencms.ugc.CmsUgcEditService.gwt";
-        SERVICE_URL = url;
-        ((ServiceDefTarget)SERVICE).setServiceEntryPoint(SERVICE_URL);
 
     }
 

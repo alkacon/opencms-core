@@ -805,7 +805,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> imple
     }
 
     /**
-     * @see java.util.Map#toString()
+     * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {

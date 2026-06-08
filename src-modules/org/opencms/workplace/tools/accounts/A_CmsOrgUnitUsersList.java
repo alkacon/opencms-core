@@ -115,26 +115,6 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     }
 
     /**
-     * Returns the notOuUsers.<p>
-     *
-     * @return the notOuUsers
-     */
-    public List<CmsUser> getNotOuUsers() {
-
-        return m_notOuUsers;
-    }
-
-    /**
-     * Returns the ouUsers.<p>
-     *
-     * @return the ouUsers
-     */
-    public List<CmsUser> getOuUsers() {
-
-        return m_ouUsers;
-    }
-
-    /**
      * Returns the right icon path for the given list item.<p>
      *
      * @param item the list item to get the icon path for
@@ -153,6 +133,26 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
         } catch (CmsException e) {
             return A_CmsUsersList.PATH_BUTTONS + "user.png";
         }
+    }
+
+    /**
+     * Returns the notOuUsers.<p>
+     *
+     * @return the notOuUsers
+     */
+    public List<CmsUser> getNotOuUsers() {
+
+        return m_notOuUsers;
+    }
+
+    /**
+     * Returns the ouUsers.<p>
+     *
+     * @return the ouUsers
+     */
+    public List<CmsUser> getOuUsers() {
+
+        return m_ouUsers;
     }
 
     /**
@@ -236,7 +236,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * Returns a list of users to display.<p>
      *
-     * @return a list of <code><{@link CmsUser}</code>s
+     * @return a list of {@link CmsUser}s
      *
      * @throws CmsException if something goes wrong
      */

@@ -66,7 +66,8 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         CmsSearchIndex index,
         CmsSearchParameters params,
         Query query,
-        Analyzer analyzer) throws IOException, InvalidTokenOffsetsException {
+        Analyzer analyzer)
+    throws IOException, InvalidTokenOffsetsException {
 
         if ((doc == null) || (index == null) || (params == null) || (analyzer == null) || (query == null)) {
             return null;

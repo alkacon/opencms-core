@@ -27,8 +27,6 @@
 
 package org.opencms.jsp.util;
 
-import static org.junit.Assert.assertNotEquals;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -38,40 +36,30 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
  */
-public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
+public class TestCmsJspResourceWrapper extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsJspResourceWrapper(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCmsJspResourceWrapper.class, "simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -79,6 +67,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testBasics() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -143,6 +132,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testNavElements() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -186,6 +176,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testParentFolders() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -245,6 +236,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testProperties() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -299,6 +291,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testRelations() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -326,6 +319,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testResourceIdentities() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -373,6 +367,7 @@ public class TestCmsJspResourceWrapper extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testXml() throws Exception {
 
         CmsObject cms = getCmsObject();

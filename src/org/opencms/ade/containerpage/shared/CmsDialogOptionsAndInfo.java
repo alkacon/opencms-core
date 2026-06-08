@@ -59,6 +59,7 @@ public class CmsDialogOptionsAndInfo implements IsSerializable {
      * Default constructor for serialization.<p>
      */
     protected CmsDialogOptionsAndInfo() {
+
         // hidden default constructor for serialization
     }
 

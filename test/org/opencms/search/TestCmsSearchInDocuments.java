@@ -39,8 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -49,15 +48,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for searching in extracted document text.<p>
  *
  */
-public class TestCmsSearchInDocuments extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearchInDocuments extends OpenCmsTestRunner {
 
     /** Name of the index used for testing. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
@@ -66,49 +69,13 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
     public static final String INDEX_ONLINE = "Online project (VFS)";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsSearchInDocuments(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchInDocuments.class.getName());
-
-        suite.addTest(new TestCmsSearchInDocuments("testSearchIndexGeneration"));
-        suite.addTest(new TestCmsSearchInDocuments("testSearchInDocuments"));
-        suite.addTest(new TestCmsSearchInDocuments("testExceptGeneration"));
-        suite.addTest(new TestCmsSearchInDocuments("testExceptHighlighting"));
-        suite.addTest(new TestCmsSearchInDocuments("testExceptEscaping"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -116,6 +83,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(5)
+    @Test
     public void testExceptEscaping() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -158,6 +127,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(3)
+    @Test
     public void testExceptGeneration() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -234,6 +205,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testExceptHighlighting() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -316,6 +289,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(1)
+    @Test
     public void testSearchIndexGeneration() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -401,6 +376,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testSearchInDocuments() throws Exception {
 
         CmsObject cms = getCmsObject();

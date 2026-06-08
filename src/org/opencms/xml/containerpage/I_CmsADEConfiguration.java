@@ -37,7 +37,7 @@ import java.util.Locale;
 import javax.servlet.ServletRequest;
 
 /**
- * Configurable & expandable configuration.<p>
+ * Configurable &amp; expandable configuration.<p>
  *
  * @since 7.6
  */

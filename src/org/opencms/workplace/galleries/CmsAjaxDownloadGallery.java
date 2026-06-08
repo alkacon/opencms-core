@@ -166,8 +166,9 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
                 mt = "text/plain";
             } else if (mt.equals("text/html")) {
                 mt = "text/html";
-            } else
-                if (mt.equals("application/zip") || mt.equals("application/x-gzip") || mt.equals("application/x-tar")) {
+            } else if (mt.equals("application/zip")
+                || mt.equals("application/x-gzip")
+                || mt.equals("application/x-tar")) {
                 mt = "application/archiv";
             } else {
                 mt = "unknown/mimetype";

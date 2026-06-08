@@ -87,7 +87,7 @@ public class CmsEditProjectForm extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -110,7 +110,7 @@ public class CmsEditProjectForm extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -268,12 +268,14 @@ public class CmsEditProjectForm extends CmsBasicDialog {
             m_fieldName.addValidator(new Validator() {
 
                 public void validate(Object value) throws InvalidValueException {
+
                     m_fieldName.setComponentError(null);
                     CmsObject cms = A_CmsUI.getCmsObject();
                     String projectName = CmsStringUtil.joinPaths(m_fieldOU.getValue(), m_fieldName.getValue());
                     try {
                         cms.readProject(projectName);
-                        throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PROJECT_WITH_SAME_NAME_EXISTS_0));
+                        throw new InvalidValueException(
+                            CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PROJECT_WITH_SAME_NAME_EXISTS_0));
 
                     } catch (CmsException e) {
                         // ignore

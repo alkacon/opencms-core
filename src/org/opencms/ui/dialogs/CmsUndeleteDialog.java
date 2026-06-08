@@ -78,6 +78,7 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsUndeleteDialog(I_CmsDialogContext context) {
+
         m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(
             this,

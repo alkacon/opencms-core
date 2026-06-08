@@ -92,9 +92,9 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Logger> {
 
     /**Log folder path.*/
-    protected static final String LOG_FOLDER =
-            OpenCms.getSystemInfo().getLogFileRfsFolder() == null ?
-                    "" : OpenCms.getSystemInfo().getLogFileRfsFolder();
+    protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsFolder() == null
+    ? ""
+    : OpenCms.getSystemInfo().getLogFileRfsFolder();
 
     /**Path to channel settings view.*/
     protected static String PATH_LOGCHANNEL = "log-channel";
@@ -184,7 +184,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
      *
      * @param logchannel the channel that has do be checked
      * @return true if the the log channel has a single log file
-     * */
+     */
     public static boolean isloggingactivated(Logger logchannel) {
 
         boolean check = false;

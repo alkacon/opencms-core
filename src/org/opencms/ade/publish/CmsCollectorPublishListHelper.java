@@ -49,12 +49,6 @@ import com.google.common.collect.Sets;
  */
 public class CmsCollectorPublishListHelper {
 
-    /** The CMS context being used by this class. */
-    private CmsObject m_cms;
-
-    /** The collector information. */
-    private I_CmsContentLoadCollectorInfo m_info;
-
     /** Boolean constant. */
     public static final boolean OFFLINE = false;
 
@@ -63,6 +57,12 @@ public class CmsCollectorPublishListHelper {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCollectorPublishListHelper.class);
+
+    /** The CMS context being used by this class. */
+    private CmsObject m_cms;
+
+    /** The collector information. */
+    private I_CmsContentLoadCollectorInfo m_info;
 
     /** The number of resources which should be fetched via the collector. */
     private int m_collectorLimit;

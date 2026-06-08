@@ -188,7 +188,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
-     * */
+     */
     @Override
     public void setName(String name) {
 
@@ -254,7 +254,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * Generates the format select box.<p>
-     **/
+     */
     private void generatesFormatSelection() {
 
         if (m_configuration.isUseFormats()) {

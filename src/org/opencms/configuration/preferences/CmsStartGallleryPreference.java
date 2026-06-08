@@ -37,11 +37,11 @@ import org.opencms.xml.content.CmsXmlContentProperty;
  */
 public class CmsStartGallleryPreference extends A_CmsPreference {
 
-    /** The default value. */
-    private String m_value;
-
     /** Prefix used for editor preference settings. */
     public static final String GALLERY_PREFIX = "gallery.";
+
+    /** The default value. */
+    private String m_value;
 
     /** The gallery type for which this preference controls the start gallery. */
     private String m_galleryType;

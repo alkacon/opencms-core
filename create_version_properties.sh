@@ -2,11 +2,11 @@
 
 # The OpenCms Version number.
 #
-# If this script is used in the build process, 
+# If this script is used in the build process,
 # you need to change the version number only here and no where else.
 # It can be accessed in OpenCms by OpenCms.getSystemInfo().getVersionNumber().
 #
-OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-9.5.x}"
+OPENCMS_VERSION_NUMBER="${OpenCmsNumber:-unknown}"
 OPENCMS_VERSION_NUMBER="${OpenCmsVersionNumber:-$OPENCMS_VERSION_NUMBER}"
 
 #
@@ -28,13 +28,13 @@ OPENCMS_BUILD_TYPE="${OpenCmsBuildType:-Manual}"
 OPENCMS_BUILD_SYSTEM="${OpenCmsBuildSystem:-Jenkins}"
 
 # The output path/filename where the properties are written.
-# 
+#
 # The idea of this script is as follows:
 # In the RCS there is a 'static' variation of the version properties.
-# If this script is used, the 'static' file from the RCS will 
+# If this script is used, the 'static' file from the RCS will
 # be replaced by a dynamically generated version that contains
 # more detailed information about the build.
-# 
+#
 OUTPUT_BASE="$WORKSPACE"
 
 OUTPUT_FILE="$OUTPUT_BASE/version.properties"
@@ -42,7 +42,7 @@ OUTPUT_FILE="$OUTPUT_BASE/version.properties"
 #
 # Variables set by the CI/build system.
 #
-# These will be provided to OpenCms as list of variables that 
+# These will be provided to OpenCms as list of variables that
 # can be accessed by OpenCms.getSystemInfo().getBuildInfo().
 #
 JENKINS_BUILD_NUMBER="${JENKINS_BUILD_NUMBER:-#$BUILD_NUMBER}"
@@ -110,7 +110,7 @@ echo "build.gitbranch=$OPENCMS_GIT_BRANCH_SHOWN" >> "$OUTPUT_FILE"
 #
 if [ $OPENCMS_BUILD_TYPE != "Milestone" ]; then
     echo "nicename.build.number=Build Number" >> "$OUTPUT_FILE"
-fi    
+fi
 echo "nicename.build.date=Build Date" >> "$OUTPUT_FILE"
 echo "nicename.build.type=Build Type" >> "$OUTPUT_FILE"
 echo "nicename.build.system=Build System" >> "$OUTPUT_FILE"

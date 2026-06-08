@@ -29,9 +29,7 @@ package org.opencms.gwt.client.ui.input.form;
 
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
-
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 

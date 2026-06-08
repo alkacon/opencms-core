@@ -168,7 +168,8 @@ public class CmsPointerLoader extends CmsDumpLoader {
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException {
+        HttpServletResponse res)
+    throws CmsException {
 
         return cms.readFile(resource).getContents();
     }

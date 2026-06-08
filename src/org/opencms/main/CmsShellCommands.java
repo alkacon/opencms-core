@@ -81,6 +81,7 @@ import org.opencms.ui.apps.search.CmsSourceSearchForm.SearchType;
 import org.opencms.ui.favorites.CmsFavoriteDAO;
 import org.opencms.ui.favorites.CmsFavoriteEntry;
 import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
+import org.opencms.ui.login.CmsLoginController;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -150,6 +151,23 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void addBookmark(String user, String siteRoot, String sitePath, String project) throws Exception {
 
+        addBookmark(user, siteRoot, sitePath, project, null);
+    }
+
+    /**
+     * Adds bookmark for the givne user/site root/path/project combination, using a custom title
+     *
+     * @param user the user for whom to set the bookmark
+     * @param siteRoot the site root
+     * @param sitePath the site path of the resource
+     * @param project the name of the project
+     * @param title the custom bookmark title (if empty, the page title is used)
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void addBookmark(String user, String siteRoot, String sitePath, String project, String title)
+    throws Exception {
+
         CmsObject cms = OpenCms.initCmsObject(m_cms);
         if (project != null) {
             cms.getRequestContext().setCurrentProject(cms.readProject(project));
@@ -174,6 +192,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             entry.setProjectId(currProject.getId());
             entry.setSiteRoot(siteRoot);
         }
+        entry.setCustomTitle(title);
         entries.add(entry);
         favDao.saveFavorites(entries);
     }
@@ -539,7 +558,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+     *
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1445,6 +1464,19 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Removes the user from the given role.<p>
+     *
+     * @param user name of the user
+     * @param role name of the role, for example 'EDITOR'
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void removeUserFromRole(String user, String role) throws CmsException {
+
+        OpenCms.getRoleManager().removeUserFromRole(m_cms, CmsRole.valueOfRoleName(role), user);
+    }
+
+    /**
      * Replaces elements on container pages.<p>
      *
      * @param elementPath to be found in container pages
@@ -1599,6 +1631,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @throws Exception if something goes wrong
      */
     public void replaceModuleFromDefault(String importFile) throws Exception {
+
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
@@ -1744,6 +1777,26 @@ class CmsShellCommands implements I_CmsShellCommands {
             site.getParameters().put(key, value);
             OpenCms.writeConfiguration(CmsSitesConfiguration.class);
         }
+    }
+
+    /**
+     * Enables or disables a user.<p>
+     *
+     * A disabled user can no longer log in.<p>
+     *
+     * @param username the name of the user
+     * @param enabled <code>true</code> to enable, <code>false</code> to deactivate the user
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void setUserEnabled(String username, boolean enabled) throws CmsException {
+
+        CmsUser user = m_cms.readUser(username);
+        user.setEnabled(enabled);
+        if (enabled) {
+            user.getAdditionalInfo().remove(CmsLoginController.KEY_ACCOUNT_LOCKED);
+        }
+        m_cms.writeUser(user);
     }
 
     /**

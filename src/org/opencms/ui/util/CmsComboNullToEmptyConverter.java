@@ -40,7 +40,7 @@ public class CmsComboNullToEmptyConverter implements Converter<Object, String> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+     * @see com.vaadin.v7.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
      */
     public String convertToModel(Object value, Class<? extends String> targetType, Locale locale)
     throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
@@ -49,7 +49,7 @@ public class CmsComboNullToEmptyConverter implements Converter<Object, String> {
     }
 
     /**
-     * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
+     * @see com.vaadin.v7.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
      */
     public Object convertToPresentation(String value, Class<? extends Object> targetType, Locale locale)
     throws com.vaadin.v7.data.util.converter.Converter.ConversionException {
@@ -62,7 +62,7 @@ public class CmsComboNullToEmptyConverter implements Converter<Object, String> {
     }
 
     /**
-     * @see com.vaadin.data.util.converter.Converter#getModelType()
+     * @see com.vaadin.v7.data.util.converter.Converter#getModelType()
      */
     public Class<String> getModelType() {
 
@@ -70,7 +70,7 @@ public class CmsComboNullToEmptyConverter implements Converter<Object, String> {
     }
 
     /**
-     * @see com.vaadin.data.util.converter.Converter#getPresentationType()
+     * @see com.vaadin.v7.data.util.converter.Converter#getPresentationType()
      */
     public Class<Object> getPresentationType() {
 

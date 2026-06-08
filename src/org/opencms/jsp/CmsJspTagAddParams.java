@@ -70,6 +70,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
          * @param request the current request
          */
         public ParamState(CmsFlexRequest request) {
+
             m_request = request;
         }
 

@@ -48,9 +48,10 @@ public class CmsSitemapTreeNodeOpener extends Button {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance.<p<
+     * Creates a new instance.<p>
      */
     public CmsSitemapTreeNodeOpener() {
+
         super();
         addStyleName("opencms-font-icon");
         addStyleName("o-sitemap-tree-opener");

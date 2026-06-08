@@ -34,9 +34,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public enum CmsAliasImportStatus implements IsSerializable {
     /** The alias target or mode has changed. */
-    aliasChanged, /** The alias could not be imported. */
-    aliasImportError, /** The alias was newly created. */
-    aliasNew, /** The alias line could not be parsed. */
+    aliasChanged,
+    /** The alias could not be imported. */
+    aliasImportError,
+    /** The alias was newly created. */
+    aliasNew,
+    /** The alias line could not be parsed. */
     aliasParseError;
 
 }

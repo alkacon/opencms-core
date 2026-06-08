@@ -65,6 +65,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue {
      * @param value JSON representation of the serial date as string.
      */
     public CmsSerialDateValue(String value) {
+
         if ((null != value) && !value.isEmpty()) {
             try {
                 JSONObject json = new JSONObject(value);

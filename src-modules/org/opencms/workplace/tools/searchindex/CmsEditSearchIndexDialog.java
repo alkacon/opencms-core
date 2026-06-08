@@ -125,38 +125,42 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         } else {
             addWidget(new CmsWidgetDialogParameter(getSearchIndexIndex(), "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(
-            getSearchIndexIndex(),
-            "rebuildMode",
-            "",
-            PAGES[0],
-            new CmsSelectWidget(getRebuildModeWidgetConfiguration()),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            getSearchIndexIndex(),
-            "localeString",
-            "",
-            PAGES[0],
-            new CmsSelectWidget(getLocaleWidgetConfiguration()),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            getSearchIndexIndex(),
-            "project",
-            "",
-            PAGES[0],
-            new CmsSelectWidget(getProjectWidgetConfiguration()),
-            0,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            getSearchIndexIndex(),
-            "fieldConfigurationName",
-            "",
-            PAGES[0],
-            new CmsSelectWidget(getFieldConfigurationWidgetConfiguration()),
-            0,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                getSearchIndexIndex(),
+                "rebuildMode",
+                "",
+                PAGES[0],
+                new CmsSelectWidget(getRebuildModeWidgetConfiguration()),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                getSearchIndexIndex(),
+                "localeString",
+                "",
+                PAGES[0],
+                new CmsSelectWidget(getLocaleWidgetConfiguration()),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                getSearchIndexIndex(),
+                "project",
+                "",
+                PAGES[0],
+                new CmsSelectWidget(getProjectWidgetConfiguration()),
+                0,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                getSearchIndexIndex(),
+                "fieldConfigurationName",
+                "",
+                PAGES[0],
+                new CmsSelectWidget(getFieldConfigurationWidgetConfiguration()),
+                0,
+                1));
     }
 
     /**

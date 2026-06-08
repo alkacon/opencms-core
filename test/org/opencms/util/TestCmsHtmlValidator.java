@@ -27,20 +27,22 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.htmlparser.util.ParserException;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the HTML validator.<p>
  */
-public class TestCmsHtmlValidator extends OpenCmsTestCase {
+public class TestCmsHtmlValidator extends OpenCmsTestRunner {
 
     /**
      * Test HTML validation.<p>
      *
      * @throws ParserException in case parsing fails
      */
+    @Test
     public void testValidation() throws ParserException {
 
         CmsHtmlValidator validator = new CmsHtmlValidator();

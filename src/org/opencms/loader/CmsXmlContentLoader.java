@@ -66,6 +66,15 @@ public class CmsXmlContentLoader extends A_CmsXmlDocumentLoader {
     }
 
     /**
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplatePropertyDefinition()
+     */
+    @Override
+    protected String getTemplatePropertyDefinition() {
+
+        return CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS;
+    }
+
+    /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
      */
     @Override
@@ -73,14 +82,5 @@ public class CmsXmlContentLoader extends A_CmsXmlDocumentLoader {
     throws CmsException {
 
         return CmsXmlContentFactory.unmarshal(cms, resource, req);
-    }
-
-    /**
-     * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplatePropertyDefinition()
-     */
-    @Override
-    protected String getTemplatePropertyDefinition() {
-
-        return CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS;
     }
 }

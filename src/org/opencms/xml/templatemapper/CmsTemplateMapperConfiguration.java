@@ -94,6 +94,7 @@ public class CmsTemplateMapperConfiguration {
      * Creates an empty mapper configuration which is not active for any path.<p>
      */
     public CmsTemplateMapperConfiguration() {
+
         // do nothing
     }
 

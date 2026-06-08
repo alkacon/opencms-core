@@ -50,6 +50,7 @@ public class CmsPrincipalSelectExtension extends AbstractExtension implements I_
      * @param ui the select widget
      */
     private CmsPrincipalSelectExtension(UI ui) {
+
         extend(ui);
         registerRpc(this);
     }

@@ -90,6 +90,7 @@ public class CmsAccountInfo {
      * @param editable the editable flag
      */
     public CmsAccountInfo(Field field, String addInfoKey, boolean editable) {
+
         m_field = field;
         m_addInfoKey = addInfoKey;
         m_editable = editable;
@@ -103,6 +104,7 @@ public class CmsAccountInfo {
      * @param editable the editable flag
      */
     public CmsAccountInfo(String field, String addInfoKey, String editable) {
+
         m_field = Field.valueOf(field);
         m_addInfoKey = addInfoKey;
         m_editable = Boolean.parseBoolean(editable);

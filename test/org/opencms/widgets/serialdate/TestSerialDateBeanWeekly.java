@@ -29,7 +29,7 @@ package org.opencms.widgets.serialdate;
 
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,13 +40,16 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.jupiter.api.Test;
+
 /** Test cases for @{link org.opencms.widgets.serialdate.CmsSerialDateBeanWeekly}. */
-public class TestSerialDateBeanWeekly extends OpenCmsTestCase {
+public class TestSerialDateBeanWeekly extends OpenCmsTestRunner {
 
     /** empty sorted set of dates. */
     private static final SortedSet<Date> EMPTY_SORTED_SET_DATES = new TreeSet<>();
 
     /** Several tests for @{link org.opencms.widgets.serialdate.I_CmsSerialDateBean#getDates}. */
+    @Test
     public void testGetDates() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi
@@ -93,7 +96,7 @@ public class TestSerialDateBeanWeekly extends OpenCmsTestCase {
             weekDays);
         beanDates = bean.getDatesAsLong();
         Iterator<Long> it = beanDates.iterator();
-        assertEquals("There should be nine dates", 9, beanDates.size());
+        assertEquals(9, beanDates.size(), "There should be nine dates");
         for (int i = 0; i < 9; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -111,7 +114,7 @@ public class TestSerialDateBeanWeekly extends OpenCmsTestCase {
             weekDays);
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be five dates", 5, beanDates.size());
+        assertEquals(5, beanDates.size(), "There should be five dates");
         assertEquals(dates.get(0).getTimeInMillis(), it.next().longValue());
         assertEquals(dates.get(3).getTimeInMillis(), it.next().longValue());
         assertEquals(dates.get(4).getTimeInMillis(), it.next().longValue());
@@ -131,7 +134,7 @@ public class TestSerialDateBeanWeekly extends OpenCmsTestCase {
             weekDays);
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be nine dates", 9, beanDates.size());
+        assertEquals(9, beanDates.size(), "There should be nine dates");
         for (int i = 0; i < 9; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -149,7 +152,7 @@ public class TestSerialDateBeanWeekly extends OpenCmsTestCase {
             weekDays);
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be five dates", 5, beanDates.size());
+        assertEquals(5, beanDates.size(), "There should be five dates");
         assertEquals(dates.get(0).getTimeInMillis(), it.next().longValue());
         assertEquals(dates.get(3).getTimeInMillis(), it.next().longValue());
         assertEquals(dates.get(4).getTimeInMillis(), it.next().longValue());

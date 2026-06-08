@@ -65,6 +65,15 @@ public class XMLTokener extends JSONTokener {
      */
     public static final java.util.HashMap<String, Character> ENTITY;
 
+    static {
+        ENTITY = new java.util.HashMap<String, Character>(8);
+        ENTITY.put("amp", XML.AMP);
+        ENTITY.put("apos", XML.APOS);
+        ENTITY.put("gt", XML.GT);
+        ENTITY.put("lt", XML.LT);
+        ENTITY.put("quot", XML.QUOT);
+    }
+
     /**
      * Construct an XMLTokener from a string.<p>
      *
@@ -73,15 +82,6 @@ public class XMLTokener extends JSONTokener {
     public XMLTokener(String s) {
 
         super(s);
-    }
-
-    static {
-        ENTITY = new java.util.HashMap<String, Character>(8);
-        ENTITY.put("amp", XML.AMP);
-        ENTITY.put("apos", XML.APOS);
-        ENTITY.put("gt", XML.GT);
-        ENTITY.put("lt", XML.LT);
-        ENTITY.put("quot", XML.QUOT);
     }
 
     /**
@@ -112,10 +112,10 @@ public class XMLTokener extends JSONTokener {
     /**
      * Get the next XML outer token, trimming whitespace.<p>
      *
-     * There are two kinds of tokens: the '<' character which begins a markup tag, and the content
+     * There are two kinds of tokens: the '&lt;' character which begins a markup tag, and the content
      * text between markup tags.<p>
      *
-     * @return  a string, or a '<' Character, or null if there is no more source text
+     * @return  a string, or a '&lt;' Character, or null if there is no more source text
      * @throws JSONException if something goes wrong
      */
     public Object nextContent() throws JSONException {
@@ -173,10 +173,10 @@ public class XMLTokener extends JSONTokener {
     }
 
     /**
-     * Returns the next XML meta token. This is used for skipping over <!...>
-     * and <?...?> structures.<p>
+     * Returns the next XML meta token. This is used for skipping over &lt;!...&gt;
+     * and &lt;?...?&gt; structures.<p>
      *
-     * @return syntax characters (<code>< > / = ! ?</code>) are returned as
+     * @return syntax characters (<code>&lt; &gt; / = ! ?</code>) are returned as
      *  Character, and strings and names are returned as Boolean. We don't care
      *  what the values actually are
      * @throws JSONException if a string is not properly closed or if the XML

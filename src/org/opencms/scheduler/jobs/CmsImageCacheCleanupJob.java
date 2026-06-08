@@ -141,7 +141,10 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
             // in case of an error, use maxage of one week
             maxAge = 24f * 7f;
             LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2, maxAgeStr, Float.valueOf(maxAge)));
+                Messages.get().getBundle().key(
+                    Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2,
+                    maxAgeStr,
+                    Float.valueOf(maxAge)));
         }
 
         // now perform the image cache cleanup

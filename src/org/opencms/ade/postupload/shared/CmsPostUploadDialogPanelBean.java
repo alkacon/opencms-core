@@ -93,7 +93,7 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the high-res preview link.
-     * 
+     *
      * @return the high-res preview link
      */
     public String getHighResPreviewLink() {
@@ -193,7 +193,7 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the high-res preview link.
-     * 
+     *
      * @param highResPreviewLink the high-res preview link
      */
     public void setHighResPreviewLink(String highResPreviewLink) {
@@ -213,7 +213,7 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the full-size preview permalink.
-     * 
+     *
      * @param permalink the full-size preview permalink
      */
     public void setPermalink(String permalink) {

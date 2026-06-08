@@ -109,7 +109,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
 
     /** The threads. */
     private CmsSchedulerThread[] m_workers;
-    
+
     private String schedulerInstanceName, schedulerInstanceId;
 
     /**
@@ -298,6 +298,16 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         return true;
     }
 
+    public void setInstanceId(String schedInstId) {
+
+        schedulerInstanceId = schedInstId;
+    }
+
+    public void setInstanceName(String schedName) {
+
+        schedulerInstanceName = schedName;
+    }
+
     /**
      * Terminate any worker threads in this thread group.<p>
      *
@@ -341,7 +351,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                         try {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug(
-                                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_WAITING_1, Integer.valueOf(i)));
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_THREAD_POOL_WAITING_1,
+                                        Integer.valueOf(i)));
                             }
 
                             // note: with waiting infinite - join(0) - the application
@@ -359,7 +371,9 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             int activeCount = m_threadGroup.activeCount();
             if ((activeCount > 0) && LOG.isInfoEnabled()) {
                 LOG.info(
-                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_STILL_ACTIVE_1, Integer.valueOf(activeCount)));
+                    Messages.get().getBundle().key(
+                        Messages.LOG_THREAD_POOL_STILL_ACTIVE_1,
+                        Integer.valueOf(activeCount)));
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_SHUTDOWN_0));
@@ -420,15 +434,5 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                 m_nextRunnableLock.notifyAll();
             }
         }
-    }
-
-    public void setInstanceId(String schedInstId) {
-
-        schedulerInstanceId = schedInstId;
-    }
-
-    public void setInstanceName(String schedName) {
-
-        schedulerInstanceName = schedName;
     }
 }

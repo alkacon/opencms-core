@@ -31,35 +31,25 @@ import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
  */
-public class TestCmsJspUtils extends OpenCmsTestCase {
+public class TestCmsJspUtils extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsJspUtils(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCmsJspUtils.class, "simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -67,6 +57,7 @@ public class TestCmsJspUtils extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testLinkWrapper() throws Exception {
 
         CmsObject cms = getCmsObject();

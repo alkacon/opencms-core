@@ -43,37 +43,37 @@ import org.opencms.workplace.list.CmsListOrderEnum;
  *
  * <h5>1. Include content in JSP</h5>
  * <pre>
- <%
- CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
- CmsWidgetDialog wpWidget = new &lt;TYPE&gt;(actionElement);
-
- // perform the widget actions (write later)
- wpWidget.displayDialog(true);
- A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(actionElement);
-
- // perform the list actions (write later)
- wpList.displayDialog(true);
- // write the content of widget dialog
- wpWidget.writeDialog();
- // write the content of list dialog
- wpList.writeDialog();
- %>
+ * &lt;%
+ * CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
+ * CmsWidgetDialog wpWidget = new &lt;TYPE&gt;(actionElement);
+ *
+ * // perform the widget actions (write later)
+ * wpWidget.displayDialog(true);
+ * A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(actionElement);
+ *
+ * // perform the list actions (write later)
+ * wpList.displayDialog(true);
+ * // write the content of widget dialog
+ * wpWidget.writeDialog();
+ * // write the content of list dialog
+ * wpList.writeDialog();
+ * %&gt;
  * </pre>
  *
  * <h5>2. Include in code of other CmsDialog</h5>
- <pre>
- protected String createDialogHtml(String dialog) {
-
- StringBuffer result = new StringBuffer(1024);
-
- result.append(createWidgetTableStart());
- // do your dialog output here....
- ...
- result.append(createWidgetTableEnd());
- // create the list :
- A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(getJsp());
- wpList.writeDialog();
- </pre>
+ * <pre>
+ * protected String createDialogHtml(String dialog) {
+ *
+ * StringBuffer result = new StringBuffer(1024);
+ *
+ * result.append(createWidgetTableStart());
+ * // do your dialog output here....
+ * ...
+ * result.append(createWidgetTableEnd());
+ * // create the list :
+ * A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(getJsp());
+ * wpList.writeDialog();
+ * </pre>
  *
  *
  * @since 6.0.0

@@ -30,61 +30,28 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit test for {@link org.opencms.file.CmsResourceFilter}.<p>
  */
-public class TestResourceFilter extends OpenCmsTestCase {
+public class TestResourceFilter extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestResourceFilter(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestResourceFilter.class.getName());
-
-        suite.addTest(new TestResourceFilter("testAddRequireFolder"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -93,14 +60,13 @@ public class TestResourceFilter extends OpenCmsTestCase {
      * @param folderFilter the filter that is excpected to only let through folders.
      *
      * @throws CmsException if access to test resources from VFS fails.
-     *
      */
     public void assertFilterFolderOnly(CmsResourceFilter folderFilter) throws CmsException {
 
         CmsObject cms = getCmsObject();
         List folders = cms.readResources("/", folderFilter);
         assertNotNull(folders);
-        assertTrue("Zero folders in test system found. ", folders.size() > 0);
+        assertTrue(folders.size() > 0, "Zero folders in test system found. ");
 
         int resourceTypeFolder = CmsResourceTypeFolder.RESOURCE_TYPE_ID;
         CmsResource resource;
@@ -108,13 +74,12 @@ public class TestResourceFilter extends OpenCmsTestCase {
         while (itResources.hasNext()) {
             resource = (CmsResource)itResources.next();
             assertTrue(
+                resourceTypeFolder == resource.getTypeId(),
                 "Filter let a resource of type "
                     + OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName()
                     + " pass: "
-                    + resource.getRootPath(),
-                resourceTypeFolder == resource.getTypeId());
+                    + resource.getRootPath());
         }
-
     }
 
     /**
@@ -123,6 +88,7 @@ public class TestResourceFilter extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testAddRequireFolder() throws Exception {
 
         CmsResourceFilter filterFolder = CmsResourceFilter.ALL.addRequireFolder();

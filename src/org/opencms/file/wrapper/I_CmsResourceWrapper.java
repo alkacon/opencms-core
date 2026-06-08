@@ -140,7 +140,8 @@ public interface I_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException;
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Deletes a resource given its name.<p>

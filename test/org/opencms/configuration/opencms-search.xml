@@ -2,7 +2,7 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 
 <opencms>
-    <search class="org.opencms.configuration.CmsCustomSearchManager">
+    <search class="org.opencms.configuration.CmsTestCustomSearchManager">
         <directory>index</directory>
         <timeout>60000</timeout>
         <offlineUpdateFrequency>30000</offlineUpdateFrequency>
@@ -83,6 +83,7 @@
             <documenttype>
                 <name>pdf</name>
                 <class>org.opencms.search.documents.CmsDocumentPdf</class>
+                <param name="extract.metadata">false</param>
                 <mimetypes>
                     <mimetype>application/pdf</mimetype>
                 </mimetypes>

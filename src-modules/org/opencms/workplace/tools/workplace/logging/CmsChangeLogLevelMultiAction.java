@@ -36,7 +36,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Action handler for multiple actions from logging view.<p>
- * */
+ */
 public class CmsChangeLogLevelMultiAction extends CmsListMultiAction {
 
     /**

@@ -47,7 +47,7 @@ public class CmsDateField extends DateTimeField {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance.<p<
+     * Creates a new instance.<p>
      */
     public CmsDateField() {
 

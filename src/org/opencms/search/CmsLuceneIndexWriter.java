@@ -136,10 +136,10 @@ public class CmsLuceneIndexWriter implements I_CmsIndexWriter {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexWriter#optimize()
-     *
      * As optimize is deprecated with Lucene 3.5, this implementation
      * actually calls {@link IndexWriter#forceMerge(int)}.<p>
+     *
+     * @see org.opencms.search.I_CmsIndexWriter#optimize()
      */
     public void optimize() throws IOException {
 

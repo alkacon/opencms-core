@@ -162,7 +162,7 @@ public class CmsSchemaInfo {
 
         /**
          * Gets the localized description
-         * 
+         *
          * @param locale the locale
          * @return the description for the given locale
          */
@@ -667,8 +667,8 @@ public class CmsSchemaInfo {
 
         /**
          * Gets the localized description.
-         * 
-         * @param locale the locale 
+         *
+         * @param locale the locale
          * @return the description for the locale
          */
         @Override
@@ -852,9 +852,9 @@ public class CmsSchemaInfo {
 
     /**
      * Creates the message object for the given locale.
-     * 
-     * @param locale the locale 
-     * @return the messages for the given locale 
+     *
+     * @param locale the locale
+     * @return the messages for the given locale
      */
     private CmsMultiMessages createMessages(Locale locale) {
 
@@ -891,8 +891,8 @@ public class CmsSchemaInfo {
 
     /**
      * Gets or creates the localized tab information for the given locale.
-     * 
-     * @param locale the locale 
+     *
+     * @param locale the locale
      * @return the localized tab information
      */
     private List<CmsTabInfo> getTabInfos(Locale locale) {

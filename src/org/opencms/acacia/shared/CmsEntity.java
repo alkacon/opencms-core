@@ -28,7 +28,6 @@
 package org.opencms.acacia.shared;
 
 import org.opencms.acacia.shared.CmsEntityChangeEvent.ChangeType;
-import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.io.Serializable;
 import java.util.ArrayList;

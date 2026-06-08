@@ -60,6 +60,7 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
      * Creates a new instance.<p>
      */
     public CmsContextMenuItemProviderGroup() {
+
         Iterator<I_CmsContextMenuItemProvider> providersIt = ServiceLoader.load(
             I_CmsContextMenuItemProvider.class).iterator();
         while (providersIt.hasNext()) {

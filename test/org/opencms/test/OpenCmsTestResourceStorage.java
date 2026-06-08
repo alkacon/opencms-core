@@ -128,16 +128,6 @@ public class OpenCmsTestResourceStorage {
     }
 
     /**
-     * Returns the size of the storage.<p>
-     *
-     * @return the size of the storage
-     */
-    public int size() {
-
-        return m_storage.size();
-    }
-
-    /**
      * Gets an precalculate resource state from the storage.<p>
      *
      * @param resourceName the name of the resource to get  the state
@@ -178,27 +168,6 @@ public class OpenCmsTestResourceStorage {
     }
 
     /**
-     * Sets the mapping for resourcenames.<p>
-     *
-     * @param source the source resource name
-     * @param target the target resource name
-     */
-    public void setMapping(String source, String target) {
-
-        m_sourceNameMapping = source;
-        m_targetNameMapping = target;
-    }
-
-    /**
-     * Resets the mapping for resourcenames.<p>
-     */
-    public void resetMapping() {
-
-        m_sourceNameMapping = null;
-        m_targetNameMapping = null;
-    }
-
-    /**
      * Does the name mapping of a resourceName.<p>
      *
      * This is required to find resources in the resource storage afer their path in the vfs
@@ -218,6 +187,37 @@ public class OpenCmsTestResourceStorage {
             }
         }
         return resourceName;
+    }
+
+    /**
+     * Resets the mapping for resourcenames.<p>
+     */
+    public void resetMapping() {
+
+        m_sourceNameMapping = null;
+        m_targetNameMapping = null;
+    }
+
+    /**
+     * Sets the mapping for resourcenames.<p>
+     *
+     * @param source the source resource name
+     * @param target the target resource name
+     */
+    public void setMapping(String source, String target) {
+
+        m_sourceNameMapping = source;
+        m_targetNameMapping = target;
+    }
+
+    /**
+     * Returns the size of the storage.<p>
+     *
+     * @return the size of the storage
+     */
+    public int size() {
+
+        return m_storage.size();
     }
 
     /**

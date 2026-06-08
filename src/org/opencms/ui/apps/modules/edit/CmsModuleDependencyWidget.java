@@ -38,9 +38,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.ui.TextField;
 
 /**
@@ -61,6 +61,7 @@ public class CmsModuleDependencyWidget extends FormLayout {
      * Creates a new instance.<p>
      */
     public CmsModuleDependencyWidget() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         IndexedContainer container = new IndexedContainer();
         List<String> moduleNames = Lists.newArrayList();

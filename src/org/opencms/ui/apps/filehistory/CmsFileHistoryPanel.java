@@ -172,11 +172,10 @@ public class CmsFileHistoryPanel extends VerticalLayout {
     /**Vaadin component.*/
     private ComboBox m_numberVersions;
 
-    /**     *
-
+    /**
+     *
      * public constructor.<p>
      *
-     * @param app instance of calling app
      */
     public CmsFileHistoryPanel() {
 

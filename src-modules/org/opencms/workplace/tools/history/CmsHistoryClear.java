@@ -56,6 +56,16 @@ public class CmsHistoryClear {
     }
 
     /**
+     * Returns the clear deleted mode.<p>
+     *
+     * @return the clear deleted mode
+     */
+    public String getClearDeletedMode() {
+
+        return m_clearDeletedMode;
+    }
+
+    /**
      * Returns the date versions older than will be cleared.<p>
      *
      * @return the date versions older than will be cleared
@@ -73,16 +83,6 @@ public class CmsHistoryClear {
     public int getKeepVersions() {
 
         return m_keepVersions;
-    }
-
-    /**
-     * Returns the clear deleted mode.<p>
-     *
-     * @return the clear deleted mode
-     */
-    public String getClearDeletedMode() {
-
-        return m_clearDeletedMode;
     }
 
     /**

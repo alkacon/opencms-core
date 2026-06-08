@@ -27,16 +27,19 @@
 
 package org.opencms.module;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the module name generation.<p>
  */
-public class TestCmsModuleNameGeneration extends OpenCmsTestCase {
+public class TestCmsModuleNameGeneration extends OpenCmsTestRunner {
 
     /**
      * Tests version increment.<p>
      */
+    @Test
     public void testNameGeneration() {
 
         String name;

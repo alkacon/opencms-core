@@ -27,9 +27,9 @@
 
 package org.opencms.loader;
 
+import com.alkacon.simapi.CmykJpegReader.ByteArrayImageInputStream;
 import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
-import com.alkacon.simapi.CmykJpegReader.ByteArrayImageInputStream;
 import com.alkacon.simapi.filter.GrayscaleFilter;
 import com.alkacon.simapi.filter.ShadowFilter;
 
@@ -380,7 +380,8 @@ public class CmsImageScaler {
 
     /**
      * Gets image dimensions for given file
-     * @param imgFile image file
+     * @param path the image file path
+     * @param content the image file content
      * @return dimensions of image
      * @throws IOException if the file is not a known image
      */

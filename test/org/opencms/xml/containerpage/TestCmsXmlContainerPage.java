@@ -39,8 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -57,24 +56,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.antlr.stringtemplate.StringTemplate;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML container pages.<p>
  */
-public class TestCmsXmlContainerPage extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param name JUnit parameters
-     */
-    public TestCmsXmlContainerPage(String name) {
-
-        super(name);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContainerPage extends OpenCmsTestRunner {
 
     /**
      * Helper method which generates the XML for a container page with the specified contents.<p>
@@ -127,20 +120,6 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContainerPage.class.getName());
-        return generateSetupTestWrapper(TestCmsXmlContainerPage.class, "adetest", "/sites/default/", "ade-setup");
-    }
-
-    /**
      * Surrounds a given string with an opening and closing XML element with a given name.
      *
      * @param name the name of the XML element
@@ -151,6 +130,16 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     public static final String tagWrap(String name, String content) {
 
         return "<" + name + ">" + content + "</" + name + ">";
+    }
+
+    /**
+     * Overrides the OpenCms test setup.
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "adetest", "/sites/default/", "ade-setup");
     }
 
     /**
@@ -174,6 +163,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(1)
     public void testContainerBeanIsFromMasterLocaleIfAvailable() throws Exception {
 
         CmsResource a = createElementResource();
@@ -201,7 +192,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         CmsContainerPageBean pageBean = cntPage.getContainerPage(cms);
         List<CmsContainerElementBean> elems = pageBean.getContainers().get("cnt").getElements();
         assertEquals(1, elems.size());
-        assertEquals("structure id of the variable 'a' expected", a.getStructureId(), elems.get(0).getId());
+        assertEquals(a.getStructureId(), elems.get(0).getId(), "structure id of the variable 'a' expected");
     }
 
     /**
@@ -209,6 +200,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(2)
     public void testGetContainerBeanFromDifferentLocaleIfMasterLocaleNotAvailable() throws Exception {
 
         CmsResource b = createElementResource();
@@ -231,7 +224,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         CmsContainerPageBean pageBean = cntPage.getContainerPage(cms);
         List<CmsContainerElementBean> elems = pageBean.getContainers().get("cnt").getElements();
         assertEquals(1, elems.size());
-        assertEquals("structure id of the variable 'b' expected", b.getStructureId(), elems.get(0).getId());
+        assertEquals(b.getStructureId(), elems.get(0).getId(), "structure id of the variable 'b' expected");
     }
 
     /**
@@ -239,6 +232,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(3)
     public void testOverwriteExistingLocales() throws Exception {
 
         CmsResource a = createElementResource();
@@ -296,6 +291,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUnmarshal() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -400,6 +397,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testWriteNewFormat() throws Exception {
 
         CmsObject cms = getCmsObject();

@@ -48,6 +48,7 @@ public class CmsContextMenuItemWidget extends FocusWidget {
      */
     @SuppressWarnings("deprecation")
     public CmsContextMenuItemWidget() {
+
         m_root = new FlowPanel();
         m_root.setStylePrimaryName("v-context-menu-item-basic");
 

@@ -116,7 +116,10 @@ import junit.framework.TestSuite;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  *
  * @since 6.0.0
+ *
+ * @deprecated Use {@see OpenCmsTestRunner} instead.
  */
+@Deprecated(since = "22", forRemoval = false)
 public class OpenCmsTestCase extends TestCase {
 
     /**
@@ -218,6 +221,9 @@ public class OpenCmsTestCase extends TestCase {
     /** Key for tests on Oracle database. */
     public static final String DB_ORACLE = "oracle";
 
+    /** Property / Environment name for selecting an alternative test configuration folder. */
+    public static final String PROP_TEST_CONFIG_FOLDER = "test.config.folder";
+
     /** The OpenCms/database configuration. */
     public static CmsParameterConfiguration m_configuration;
 
@@ -291,17 +297,76 @@ public class OpenCmsTestCase extends TestCase {
 
         super(arg0);
         if (initialize) {
-            OpenCmsTestLogAppender.setBreakOnError(false);
-            if (m_resourceStorages == null) {
-                m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
-            }
-
-            // initialize configuration
             initConfiguration();
-
-            // set "OpenCmsLog" system property to enable the logger
-            OpenCmsTestLogAppender.setBreakOnError(true);
         }
+    }
+
+    /**
+     * Compares two lists of CmsProperty objects and creates a list of all properties which are
+     * not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of properies to exclude in the test or null
+     * @return string of non matching properties
+     * @throws CmsException if something goes wrong
+     */
+    public static String compareProperties(
+        CmsObject cms,
+        String resourceName,
+        OpenCmsTestResourceStorageEntry storedResource,
+        List<CmsProperty> excludeList)
+    throws CmsException {
+
+        String noMatches = "";
+        List<CmsProperty> storedProperties = storedResource.getProperties();
+        List<CmsProperty> properties = cms.readPropertyObjects(resourceName, false);
+        List<CmsProperty> unmatchedProperties;
+        unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
+        if (unmatchedProperties.size() > 0) {
+            noMatches += "[Properies missing " + unmatchedProperties.toString() + "]\n";
+        }
+        unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
+        if (unmatchedProperties.size() > 0) {
+            noMatches += "[Properies additional " + unmatchedProperties.toString() + "]\n";
+        }
+        return noMatches;
+    }
+
+    /**
+     * Tests if the given xml document objects are equals (or both null).<p>
+     *
+     * @param expected first document to compare
+     * @param actual second document to compare
+     *
+     * @return an error message if the documents are not equal, otherwise null
+     */
+    public static String compareXmlDocuments(Document expected, Document actual) {
+
+        if ((expected == null) && (actual == null)) {
+            return null;
+        }
+
+        if (((expected == null) && (actual != null)) || ((expected != null) && (actual == null))) {
+            return "Documents not equal (not both null)";
+        }
+
+        if ((expected != null) && (actual != null)) {
+            InternalNodeComparator comparator = new InternalNodeComparator();
+            if (comparator.compare((Node)expected, (Node)actual) != 0) {
+                return "Comparison of documents failed: "
+                    + "name = "
+                    + expected.getName()
+                    + ", "
+                    + "path = "
+                    + comparator.m_node1.getUniquePath()
+                    + "\nNode 1:"
+                    + comparator.m_node1.asXML()
+                    + "\nNode 2:"
+                    + comparator.m_node2.asXML();
+            }
+        }
+        return null;
     }
 
     /**
@@ -324,6 +389,35 @@ public class OpenCmsTestCase extends TestCase {
         }
         renamedFile.deleteOnExit();
         return renamedFile;
+    }
+
+    /**
+     * Creates a user compare fail message.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param message the message to show
+     * @param user1 the id of the first (expected) user
+     * @param user2 the id of the second (found) user
+     * @return a user compare fail message
+     *
+     * @throws CmsException if one of the users can't be read
+     */
+    public static String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
+    throws CmsException {
+
+        StringBuffer result = new StringBuffer();
+        result.append("[");
+        result.append(message);
+        result.append(" (");
+        result.append(cms.readUser(user1).getName());
+        result.append(") ");
+        result.append(user1);
+        result.append(" != (");
+        result.append(cms.readUser(user2).getName());
+        result.append(") ");
+        result.append(user1);
+        result.append("]");
+        return result.toString();
     }
 
     /**
@@ -732,6 +826,16 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Should return the additional connection name.<p>
+     *
+     * @return the name of the additional connection
+     */
+    public static String getConnectionName() {
+
+        return "additional";
+    }
+
+    /**
      * Returns the currently used database/configuration.<p>
      *
      * @return he currently used database/configuration
@@ -924,6 +1028,123 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Initializes the OpenCms configuration and test data paths, and restores the
+     * JUnit 6 default of failing tests on later logged errors unless callers opt out.<p>
+     */
+    public static void initConfiguration() {
+
+        initConfiguration(true);
+    }
+
+    /**
+     * Initializes the OpenCms configuration and test data paths.<p>
+     *
+     * <p>The {@code breakOnErrorAfterInit} flag controls the log-appender behavior after
+     * configuration-only setup. Most Jupiter tests keep the stricter JUnit 6 default and
+     * fail on later logged errors. Some migrated legacy tests intentionally assert behavior
+     * that logs an error without failing, and can pass {@code false} to preserve that mode.
+     *
+     * @param breakOnErrorAfterInit if true, later logged errors fail the test; if false,
+     *     later logged errors stay non-breaking after configuration-only setup
+     */
+    public static void initConfiguration(boolean breakOnErrorAfterInit) {
+
+        if (m_configuration == null) {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            if (m_resourceStorages == null) {
+                m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
+            }
+
+            initTestDataPath();
+            m_configuration = OpenCmsTestProperties.getInstance().getConfiguration();
+            m_dbProduct = OpenCmsTestProperties.getInstance().getDbProduct();
+            int index = 0;
+            boolean cont;
+            do {
+                cont = false;
+                if (m_configuration.containsKey(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
+                    addTestDataPath(m_configuration.get(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index));
+                    cont = true;
+                    index++;
+                }
+            } while (cont);
+            String propertyFile = "";
+            try {
+                propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
+                m_configuration = new CmsParameterConfiguration(propertyFile);
+            } catch (Exception e) {
+                fail("Error while reading configuration from '" + propertyFile + "'\n" + e.toString());
+                return;
+            }
+
+            String key = "setup";
+            m_setupConnection = new ConnectionData();
+            m_setupConnection.m_dbName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_setupConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
+            m_setupConnection.m_userName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "user");
+            m_setupConnection.m_userPassword = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "password");
+            m_setupConnection.m_jdbcDriver = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
+            m_setupConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
+            m_setupConnection.m_jdbcUrlParams = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
+
+            key = "default";
+            m_defaultConnection = new ConnectionData();
+            m_defaultConnection.m_dbName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_defaultConnection.m_userName = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
+            m_defaultConnection.m_userPassword = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
+            m_defaultConnection.m_jdbcDriver = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
+            m_defaultConnection.m_jdbcUrl = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
+            m_defaultConnection.m_jdbcUrlParams = m_configuration.get(
+                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
+
+            key = getConnectionName();
+            if (m_configuration.get(CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
+                m_additionalConnection = new ConnectionData();
+                m_additionalConnection.m_dbName = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
+                m_additionalConnection.m_userName = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
+                m_additionalConnection.m_userPassword = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
+                m_additionalConnection.m_jdbcDriver = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
+                m_additionalConnection.m_jdbcUrl = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
+                m_additionalConnection.m_jdbcUrlParams = m_configuration.get(
+                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
+            }
+
+            m_defaultTablespace = m_configuration.get("db.oracle.defaultTablespace");
+            m_indexTablespace = m_configuration.get("db.oracle.indexTablespace");
+            m_tempTablespace = m_configuration.get("db.oracle.temporaryTablespace");
+
+            System.out.println(
+                "----- Starting tests on database "
+                    + m_dbProduct
+                    + " ("
+                    + m_setupConnection.m_jdbcUrl
+                    + ") "
+                    + "-----");
+
+        }
+
+        // Apply the requested post-init logging mode even when the configuration was already initialized.
+        OpenCmsTestLogAppender.setBreakOnError(breakOnErrorAfterInit);
+    }
+
+    /**
      * Initializes the path to the test data configuration files
      * using the default path.<p>
      */
@@ -938,7 +1159,7 @@ public class OpenCmsTestCase extends TestCase {
             try {
                 OpenCmsTestProperties.getInstance();
             } catch (RuntimeException rte) {
-                OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+                OpenCmsTestProperties.initialize(org.opencms.test.OpenCmsTestProperties.TEST_PROPERTIES_PATH);
             }
             // set data path
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
@@ -1231,7 +1452,15 @@ public class OpenCmsTestCase extends TestCase {
                 "Importing to  : " + targetFolder});
 
         // set default values, if parameters are null
-        configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
+        if (configFolder == null) {
+            String testConfigFolder = System.getProperty(PROP_TEST_CONFIG_FOLDER);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(testConfigFolder)) {
+                testConfigFolder = m_configuration.get(PROP_TEST_CONFIG_FOLDER);
+            }
+            configFolder = CmsStringUtil.isEmptyOrWhitespaceOnly(testConfigFolder)
+            ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/")
+            : getTestDataPath("WEB-INF/" + testConfigFolder + "/");
+        }
         testName = testName == null ? getCurrentTestClass() : testName;
         specialConfigFolder = specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null;
 
@@ -1679,38 +1908,6 @@ public class OpenCmsTestCase extends TestCase {
         } else {
             checkErrors(setupDb);
         }
-    }
-
-    /**
-     * Compares two lists of CmsProperty objects and creates a list of all properties which are
-     * not included in a seperate exclude list.
-     * @param cms the CmsObject
-     * @param resourceName the name of the resource the properties belong to
-     * @param storedResource the stored resource corresponding to the resourcename
-     * @param excludeList the list of properies to exclude in the test or null
-     * @return string of non matching properties
-     * @throws CmsException if something goes wrong
-     */
-    private static String compareProperties(
-        CmsObject cms,
-        String resourceName,
-        OpenCmsTestResourceStorageEntry storedResource,
-        List<CmsProperty> excludeList)
-    throws CmsException {
-
-        String noMatches = "";
-        List<CmsProperty> storedProperties = storedResource.getProperties();
-        List<CmsProperty> properties = cms.readPropertyObjects(resourceName, false);
-        List<CmsProperty> unmatchedProperties;
-        unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(storedProperties, properties, excludeList);
-        if (unmatchedProperties.size() > 0) {
-            noMatches += "[Properies missing " + unmatchedProperties.toString() + "]\n";
-        }
-        unmatchedProperties = OpenCmsTestResourceFilter.compareProperties(properties, storedProperties, excludeList);
-        if (unmatchedProperties.size() > 0) {
-            noMatches += "[Properies additional " + unmatchedProperties.toString() + "]\n";
-        }
-        return noMatches;
     }
 
     /**
@@ -2311,29 +2508,9 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertEquals(Document d1, Document d2) {
 
-        if ((d1 == null) && (d2 == null)) {
-            return;
-        }
-
-        if (((d1 == null) && (d2 != null)) || ((d1 != null) && (d2 == null))) {
-            fail("Documents not equal (not both null)");
-        }
-
-        if ((d1 != null) && (d2 != null)) {
-            InternalNodeComparator comparator = new InternalNodeComparator();
-            if (comparator.compare((Node)d1, (Node)d2) != 0) {
-                fail(
-                    "Comparison of documents failed: "
-                        + "name = "
-                        + d1.getName()
-                        + ", "
-                        + "path = "
-                        + comparator.m_node1.getUniquePath()
-                        + "\nNode 1:"
-                        + comparator.m_node1.asXML()
-                        + "\nNode 2:"
-                        + comparator.m_node2.asXML());
-            }
+        String errorMsg = compareXmlDocuments(d1, d2);
+        if (errorMsg != null) {
+            fail(errorMsg);
         }
     }
 
@@ -3660,16 +3837,6 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Should return the additional connection name.<p>
-     *
-     * @return the name of the additional connection
-     */
-    public String getConnectionName() {
-
-        return "additional";
-    }
-
-    /**
      * Returns the name of the database product.<p>
      *
      * @return returns either oracle or mysql
@@ -4153,35 +4320,6 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Creates a user compare fail message.<p>
-     *
-     * @param cms the current OpenCms user context
-     * @param message the message to show
-     * @param user1 the id of the first (expected) user
-     * @param user2 the id of the second (found) user
-     * @return a user compare fail message
-     *
-     * @throws CmsException if one of the users can't be read
-     */
-    private String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
-    throws CmsException {
-
-        StringBuffer result = new StringBuffer();
-        result.append("[");
-        result.append(message);
-        result.append(" (");
-        result.append(cms.readUser(user1).getName());
-        result.append(") ");
-        result.append(user1);
-        result.append(" != (");
-        result.append(cms.readUser(user2).getName());
-        result.append(") ");
-        result.append(user1);
-        result.append("]");
-        return result.toString();
-    }
-
-    /**
      * Creates a map of all parent resources of a OpenCms resource.<p>
      * The resource UUID is used as key, the full resource path is used as the value.
      *
@@ -4206,98 +4344,6 @@ public class OpenCmsTestCase extends TestCase {
             parents.put(curRes.getResourceId(), curRes.getRootPath());
         }
         return parents;
-    }
-
-    /**
-     * Initializes the OpenCms/database configuration
-     * by reading the appropriate values from opencms.properties.<p>
-     */
-    private void initConfiguration() {
-
-        if (m_configuration == null) {
-            initTestDataPath();
-            m_configuration = OpenCmsTestProperties.getInstance().getConfiguration();
-            m_dbProduct = OpenCmsTestProperties.getInstance().getDbProduct();
-            int index = 0;
-            boolean cont;
-            do {
-                cont = false;
-                if (m_configuration.containsKey(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index)) {
-                    addTestDataPath(m_configuration.get(OpenCmsTestProperties.PROP_TEST_DATA_PATH + "." + index));
-                    cont = true;
-                    index++;
-                }
-            } while (cont);
-            String propertyFile = "";
-            try {
-                propertyFile = getTestDataPath("WEB-INF/config." + m_dbProduct + "/opencms.properties");
-                m_configuration = new CmsParameterConfiguration(propertyFile);
-            } catch (Exception e) {
-                fail("Error while reading configuration from '" + propertyFile + "'\n" + e.toString());
-                return;
-            }
-
-            String key = "setup";
-            m_setupConnection = new ConnectionData();
-            m_setupConnection.m_dbName = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_setupConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "jdbcUrl");
-            m_setupConnection.m_userName = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "user");
-            m_setupConnection.m_userPassword = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "password");
-            m_setupConnection.m_jdbcDriver = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
-            m_setupConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
-            m_setupConnection.m_jdbcUrlParams = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
-
-            key = "default";
-            m_defaultConnection = new ConnectionData();
-            m_defaultConnection.m_dbName = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
-            m_defaultConnection.m_userName = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
-            m_defaultConnection.m_userPassword = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
-            m_defaultConnection.m_jdbcDriver = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
-            m_defaultConnection.m_jdbcUrl = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
-            m_defaultConnection.m_jdbcUrlParams = m_configuration.get(
-                CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
-
-            key = getConnectionName();
-            if (m_configuration.get(CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
-                m_additionalConnection = new ConnectionData();
-                m_additionalConnection.m_dbName = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + "dbName");
-                m_additionalConnection.m_userName = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_USERNAME);
-                m_additionalConnection.m_userPassword = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_PASSWORD);
-                m_additionalConnection.m_jdbcDriver = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_DRIVER);
-                m_additionalConnection.m_jdbcUrl = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL);
-                m_additionalConnection.m_jdbcUrlParams = m_configuration.get(
-                    CmsDbPoolV11.KEY_DATABASE_POOL + "." + key + "." + CmsDbPoolV11.KEY_JDBC_URL_PARAMS);
-            }
-
-            m_defaultTablespace = m_configuration.get("db.oracle.defaultTablespace");
-            m_indexTablespace = m_configuration.get("db.oracle.indexTablespace");
-            m_tempTablespace = m_configuration.get("db.oracle.temporaryTablespace");
-
-            System.out.println(
-                "----- Starting tests on database "
-                    + m_dbProduct
-                    + " ("
-                    + m_setupConnection.m_jdbcUrl
-                    + ") "
-                    + "-----");
-        }
     }
 
 }

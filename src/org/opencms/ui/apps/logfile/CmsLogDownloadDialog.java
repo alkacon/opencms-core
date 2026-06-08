@@ -176,7 +176,7 @@ public class CmsLogDownloadDialog extends CmsBasicDialog {
     /**total size of log files in MB.*/
     private double m_totalSize;
 
-    /** The download provider to be used for this dialog. */ 
+    /** The download provider to be used for this dialog. */
     private I_CmsLogDownloadProvider m_logProvider;
 
     /**

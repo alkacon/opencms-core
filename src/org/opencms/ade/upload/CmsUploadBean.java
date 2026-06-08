@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,11 +77,12 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileUploadByteCountLimitException;
+import org.apache.commons.fileupload2.core.FileUploadSizeException;
+import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
@@ -129,7 +131,7 @@ public class CmsUploadBean extends CmsJspBean {
     private boolean m_called;
 
     /** A list of the file items to upload. */
-    private List<FileItem> m_multiPartFileItems;
+    private List<DiskFileItem> m_multiPartFileItems;
 
     /** The map of parameters read from the current request. */
     private Map<String, String[]> m_parameterMap;
@@ -300,11 +302,17 @@ public class CmsUploadBean extends CmsJspBean {
         List<String> filesToUnzip = getFilesToUnzip();
 
         // iterate over the list of files to upload and create each single resource
-        for (FileItem fileItem : m_multiPartFileItems) {
+        for (DiskFileItem fileItem : m_multiPartFileItems) {
             if ((fileItem != null) && (!fileItem.isFormField())) {
                 // read the content of the file
-                byte[] content = fileItem.get();
-                fileItem.delete();
+                byte[] content = null;
+                try {
+                    content = fileItem.get();
+                    fileItem.delete();
+                } catch (IOException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    continue;
+                }
 
                 // determine the new resource name
                 String fileName = m_parameterMap.get(
@@ -724,7 +732,7 @@ public class CmsUploadBean extends CmsJspBean {
     private void parseRequest(CmsUploadListener listener) throws Exception {
 
         // check if the request is a multipart request
-        if (!ServletFileUpload.isMultipartContent(getRequest())) {
+        if (!JavaxServletFileUpload.isMultipartContent(getRequest())) {
             // no multipart request: Abort the upload
             throw new CmsUploadException(m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_NO_MULTIPART_0));
         }
@@ -749,60 +757,61 @@ public class CmsUploadBean extends CmsJspBean {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.<p>
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request has no file items, then <code>null</code> is returned.<p>
      *
      * @param listener the upload listener
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request has no file items
      *
      * @throws Exception if anything goes wrong
      */
-    private List<FileItem> readMultipartFileItems(CmsUploadListener listener) throws Exception {
+    private List<DiskFileItem> readMultipartFileItems(CmsUploadListener listener) throws Exception {
 
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        // maximum size that will be stored in memory
-        factory.setSizeThreshold(4096);
+        DiskFileItemFactory.Builder builder = DiskFileItemFactory.builder();
+
         // the location for saving data that is larger than the threshold
         File temp = new File(OpenCms.getSystemInfo().getPackagesRfsPath());
         if (temp.exists() || temp.mkdirs()) {
             // make sure the folder exists
-            factory.setRepository(temp);
+            builder.setPath(temp.getAbsolutePath());
         }
+        DiskFileItemFactory factory = builder.get();
 
         // create a file upload servlet
-        ServletFileUpload fu = new ServletFileUpload(factory);
+        JavaxServletDiskFileUpload fu = new JavaxServletDiskFileUpload(factory);
         // set the listener
         fu.setProgressListener(listener);
         // set encoding to correctly handle special chars (e.g. in filenames)
-        fu.setHeaderEncoding(getRequest().getCharacterEncoding());
+        Charset.forName(getRequest().getCharacterEncoding());
+        fu.setHeaderCharset(Charset.forName(getRequest().getCharacterEncoding()));
         // set the maximum size for a single file (value is in bytes)
         long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject());
         if (maxFileSizeBytes > 0) {
-            fu.setFileSizeMax(maxFileSizeBytes);
+            fu.setMaxFileSize(maxFileSizeBytes);
         }
 
         // try to parse the request
         try {
             return CmsCollectionsGenericWrapper.list(fu.parseRequest(getRequest()));
-        } catch (SizeLimitExceededException e) {
-            // request size is larger than maximum allowed request size, throw an error
-            Integer actualSize = Integer.valueOf((int)(e.getActualSize() / 1024));
-            Integer maxSize = Integer.valueOf((int)(e.getPermittedSize() / 1024));
-            throw new CmsUploadException(
-                m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_REQUEST_SIZE_LIMIT_2, actualSize, maxSize),
-                e);
-        } catch (FileSizeLimitExceededException e) {
+        } catch (FileUploadByteCountLimitException e) {
             // file size is larger than maximum allowed file size, throw an error
             Integer actualSize = Integer.valueOf((int)(e.getActualSize() / 1024));
-            Integer maxSize = Integer.valueOf((int)(e.getPermittedSize() / 1024));
+            Integer maxSize = Integer.valueOf((int)(e.getPermitted() / 1024));
             throw new CmsUploadException(
                 m_bundle.key(
                     org.opencms.ade.upload.Messages.ERR_UPLOAD_FILE_SIZE_LIMIT_3,
                     actualSize,
                     e.getFileName(),
                     maxSize),
+                e);
+        } catch (FileUploadSizeException e) {
+            // request size is larger than maximum allowed request size, throw an error
+            Integer actualSize = Integer.valueOf((int)(e.getActualSize() / 1024));
+            Integer maxSize = Integer.valueOf((int)(e.getPermitted() / 1024));
+            throw new CmsUploadException(
+                m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_REQUEST_SIZE_LIMIT_2, actualSize, maxSize),
                 e);
         }
     }

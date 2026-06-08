@@ -141,6 +141,7 @@ public class CmsLocationPickerWidgetValue {
      * Enumeration class for defining the map types.<p>
      */
     public static enum MapType {
+
         /** Hybrid map type. */
         hybrid,
 
@@ -421,8 +422,8 @@ public class CmsLocationPickerWidgetValue {
      * The method is added for convenient usage of the class in JSPs.
      * In a formatter JSP you can use
      * <pre><code>
-     * <jsp:useBean id="map" class="org.opencms.widgets.CmsLocationPickerWidgetValue" />
-     * <jsp:setProperty name="map" property="wrappedValue" value="${content.value.Map}" />
+     * &lt;jsp:useBean id="map" class="org.opencms.widgets.CmsLocationPickerWidgetValue" /&gt;
+     * &lt;jsp:setProperty name="map" property="wrappedValue" value="${content.value.Map}" /&gt;
      * </code></pre>
      * instead of setting the value directly via the constructor.
      * @param value The string value that should be wrapped as CmsLocationPickerWidgetValue.

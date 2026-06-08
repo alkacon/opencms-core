@@ -50,6 +50,7 @@ public class CmsPrincipalSelectConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsPrincipalSelectConnector() {
+
         m_rpc = getRpcProxy(I_CmsPrincipalSelectRpc.class);
     }
 

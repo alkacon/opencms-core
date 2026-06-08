@@ -87,6 +87,9 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMultiSelectGroupWidget.class);
 
+    /** Configuration option to show full group names including OU.*/
+    protected static final String CONFIGURATION_FULLNAMES = "fullnames";
+
     /** Indicates if used html code is a multi selection list or a list of checkboxes. */
     private boolean m_asCheckBoxes;
 
@@ -104,9 +107,6 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
 
     /** If true, show full group names (with OU) in the widget, and simple names otherwise. */
     private boolean m_useFullNames;
-
-    /** Configuration option to show full group names including OU.*/
-    protected static final String CONFIGURATION_FULLNAMES = "fullnames";
 
     /**
      * Creates a new group select widget.<p>

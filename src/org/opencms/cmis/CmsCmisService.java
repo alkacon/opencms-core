@@ -173,13 +173,8 @@ public class CmsCmisService extends AbstractCmisService {
         Acl removeAces,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).createFolder(
-            makeContext(),
-            properties,
-            folderId,
-            policies,
-            addAces,
-            removeAces);
+        return getRepository(
+            repositoryId).createFolder(makeContext(), properties, folderId, policies, addAces, removeAces);
     }
 
     /**
@@ -195,13 +190,8 @@ public class CmsCmisService extends AbstractCmisService {
         Acl removeAces,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).createPolicy(
-            makeContext(),
-            properties,
-            folderId,
-            policies,
-            addAces,
-            removeAces);
+        return getRepository(
+            repositoryId).createPolicy(makeContext(), properties, folderId, policies, addAces, removeAces);
     }
 
     /**
@@ -662,11 +652,8 @@ public class CmsCmisService extends AbstractCmisService {
         Boolean includePropertyDefinitions,
         ExtensionsData extension) {
 
-        return getRepository(repositoryId).getTypeDescendants(
-            makeContext(),
-            typeId,
-            depth,
-            includePropertyDefinitions.booleanValue());
+        return getRepository(
+            repositoryId).getTypeDescendants(makeContext(), typeId, depth, includePropertyDefinitions.booleanValue());
     }
 
     /**

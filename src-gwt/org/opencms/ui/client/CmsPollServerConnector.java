@@ -95,6 +95,7 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsPollServerConnector() {
+
         m_rpc = getRpcProxy(I_CmsPollServerRpc.class);
     }
 

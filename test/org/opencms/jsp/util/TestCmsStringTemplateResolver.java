@@ -30,8 +30,7 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -47,14 +46,18 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the string template resolver.<p>
  */
-public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsStringTemplateResolver extends OpenCmsTestRunner {
 
     /** Schema id 3. */
     private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
@@ -63,51 +66,13 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsStringTemplateResolver(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsStringTemplateResolver.class.getName());
-
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderContentValue"));
-        suite.addTest(new TestCmsStringTemplateResolver("testContentAccessNestedSchema"));
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderObjectFuntions"));
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderDate"));
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderLink"));
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderSettings"));
-        suite.addTest(new TestCmsStringTemplateResolver("testRenderStructure"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -115,6 +80,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testContentAccessNestedSchema() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -198,6 +165,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testRenderContentValue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -250,6 +219,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testRenderDate() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -300,6 +271,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(5)
     public void testRenderLink() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -323,6 +296,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testRenderObjectFuntions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -410,6 +385,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(6)
     public void testRenderSettings() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -465,6 +442,8 @@ public class TestCmsStringTemplateResolver extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(7)
     public void testRenderStructure() throws Exception {
 
         CmsObject cms = getCmsObject();

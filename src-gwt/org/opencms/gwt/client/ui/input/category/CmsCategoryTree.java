@@ -48,7 +48,6 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -60,7 +59,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -86,7 +87,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Builds the category tree.<p>
- * */
+ */
 public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasValueChangeHandlers<List<String>> {
 
     /** Sorting parameters. */
@@ -228,7 +229,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
          * If its check box was selected the click will deselect this box otherwise it will select it.
          *
          * @param event The event that is triggered
-         * */
+         */
         public void onClick(ClickEvent event) {
 
             if (isEnabled()) {
@@ -250,14 +251,17 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** Map of categories. */
     protected Map<String, CmsTreeItem> m_categories;
 
+    /** Map from category paths to all their specific instance paths. */
+    protected Map<String, Set<CmsTreeItem>> m_identicalCategories;
+
+    /** Map from category paths to all their specific instance paths. */
+    protected Map<CmsTreeItem, Set<CmsTreeItem>> m_childItems;
+
     /** All category tree items, including duplicates with the same category path. */
     protected List<CmsTreeItem> m_categoriesAsList = new ArrayList<>();
 
     /** List of categories selected from the server. */
     protected List<CmsCategoryTreeEntry> m_categoryBeans;
-
-    /** Map from category paths to the paths of their children. */
-    protected Map<String, List<String>> m_childrens;
 
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
@@ -320,6 +324,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** Set of used categories (either reported as used from the server, or used locally in this widget instance). */
     private Set<String> m_used = new HashSet<>();
 
+    /** Flag, indicating if the categories are shown by repository. */
+    private boolean m_showByRepository = false;
+
     /**
      * Default Constructor.<p>
      */
@@ -337,7 +344,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
      * @param categories the categories
-     **/
+     */
     public CmsCategoryTree(
         Collection<String> selectedCategories,
         int height,
@@ -355,7 +362,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param isSingleValue Sets the modes of this widget
      * @param categories the categories
      * @param showCollapsed if true, the category tree will be collapsed when opened.
-     **/
+     */
     public CmsCategoryTree(
         Collection<String> selectedCategories,
         int height,
@@ -375,11 +382,18 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         m_scrollList = createScrollList();
         m_list.setHeight(height + "px");
         m_categoryBeans = categories;
+        // This is more a hack, but we are sure that the first category
+        // we get must be a repository iff we show by repository and
+        // only in this case, the path can be empty or just "/".
+        if ((categories != null) && (categories.size() > 0)) {
+            m_showByRepository = categories.get(0).getPath().length() <= 1;
+        }
         processCategories(m_categoryBeans);
         m_list.add(m_scrollList);
         m_showCollapsed = showCollapsed;
-        m_childrens = new HashMap<>();
+        m_childItems = new HashMap<>();
         m_categories = new HashMap<>();
+        m_identicalCategories = new HashMap<>();
         updateContentTree(false);
         normalizeSelectedCategories();
         init();
@@ -401,21 +415,15 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             for (CmsCategoryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
-                m_childrens.get(parent.getId()).add(treeItem.getId());
-                m_childrens.put(treeItem.getId(), new ArrayList<>(child.getChildren().size()));
-                if ((selectedCategories != null)
-                    && CmsCategoryField.isParentCategoryOfSelected(child.getPath(), selectedCategories)) {
-                    openWithParents(parent);
-
-                }
-                if (m_isSingleSelection) {
-                    if (treeItem.getCheckBox().isChecked()) {
-                        parent.getCheckBox().setChecked(false);
-                    }
-                }
+                m_childItems.get(parent).add(treeItem);
+                m_childItems.put(treeItem, new HashSet<>(child.getChildren().size()));
                 parent.addChild(treeItem);
                 addChildren(treeItem, child.getChildren(), selectedCategories);
             }
+        }
+        if (hasSelectedChildren(parent)) {
+            parent.getCheckBox().setChecked(true);
+            openWithParents(parent);
         }
     }
 
@@ -471,8 +479,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     public List<String> getAllSelected() {
 
-        List<String> result = new ArrayList<String>();
-        for (String cat : m_selectedCategories) {
+        List<String> result = new ArrayList<>();
+        List<String> realSelected = getRealSelected();
+        for (String cat : realSelected) {
             result.add(m_categories.get(cat).getId());
         }
         return result;
@@ -485,8 +494,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     public List<String> getAllSelectedSitePath() {
 
-        List<String> result = new ArrayList<String>();
-        for (String cat : m_selectedCategories) {
+        List<String> result = new ArrayList<>();
+        List<String> realSelected = getRealSelected();
+        for (String cat : realSelected) {
             result.add(((CmsDataValue)m_categories.get(cat).getMainWidget()).getParameter(2));
         }
         return result;
@@ -496,7 +506,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * Returns the scrollpanel of this widget.<p>
      *
      * @return CmsScrollPanel the scrollpanel of this widget
-     * */
+     */
     public CmsScrollPanel getScrollPanel() {
 
         return m_list;
@@ -509,7 +519,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     public List<String> getSelected() {
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         result.add(
             m_singleResult.isEmpty()
             ? ""
@@ -588,23 +598,38 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     public void updateContentTree(boolean removeUnused) {
 
+        // We need to get the real selected categories
+        // the value of m_selectedCategories can contain more categories
+        // and it's unsure if its category paths or site paths.
+        // Therefor the pre-processing.
+        final Set<String> selectedCatPaths = m_selectedCategories == null
+        ? null
+        : m_selectedCategories.stream().map((c) -> {
+            String result = CmsCategoryField.removeCategoryPrefix(c);
+            return result.startsWith("/") ? result.substring(1) : result;
+        }).collect(Collectors.toSet());
+        Set<String> selectedLeafCatPaths = null == selectedCatPaths
+        ? null
+        : selectedCatPaths.stream().filter(
+            (cat) -> selectedCatPaths.stream().noneMatch(
+                (c) -> (c.length() > cat.length()) && c.startsWith(cat))).collect(Collectors.toSet());
         m_scrollList.clearList();
-        m_childrens.clear();
+        m_childItems.clear();
         m_categories.clear();
         m_categoriesAsList.clear();
+        m_identicalCategories.clear();
         if ((m_categoryBeans != null) && !m_categoryBeans.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : m_categoryBeans) {
                 // set the category tree item and add to list
-                CmsTreeItem treeItem = buildTreeItem(category, m_selectedCategories);
-                m_childrens.put(treeItem.getId(), new ArrayList<>(category.getChildren().size()));
+                CmsTreeItem treeItem = buildTreeItem(category, selectedLeafCatPaths);
+                m_childItems.put(treeItem, new HashSet<>(category.getChildren().size()));
 
-                // We set the 'open' state of the item*before* processing the children, so that even if a top-level item
+                // We set the 'open' state of the item *before* processing the children, so that even if a top-level item
                 // is set to 'closed' here, it can still be opened when encountering a descendant whose category
                 // is among the selected categories.
                 treeItem.setOpen(!m_showCollapsed);
-                addChildren(treeItem, category.getChildren(), m_selectedCategories);
-
+                addChildren(treeItem, category.getChildren(), selectedLeafCatPaths);
                 if (!category.getPath().isEmpty() || (treeItem.getChildCount() > 0)) {
                     m_scrollList.add(treeItem);
                 }
@@ -839,6 +864,8 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         boolean ascending = true;
         m_quickSearch.setVisible(true);
         m_searchButton.setVisible(true);
+        // clean up possibly unnecessarily selected categories
+        m_selectedCategories = getAllSelected();
         switch (sort) {
             case tree:
                 m_quickSearch.setFormValueAsString("");
@@ -900,15 +927,24 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             if (m_isSingleSelection) {
                 m_singleResult = item.getId();
             }
-            CmsTreeItem currentItem = item;
-            do {
-                currentItem.getCheckBox().setChecked(true);
-                String id = currentItem.getId();
-                if (!m_selectedCategories.contains(id)) {
-                    m_selectedCategories.add(id);
-                }
-                currentItem = currentItem.getParentItem();
-            } while (currentItem != null);
+            // If there are selected sub-categories, the item should either be already selected
+            // or unselectable.
+            if (hasSelectedSubCategories(item.getId())) {
+                item.getCheckBox().setChecked(false);
+            } else {
+                CmsTreeItem currentItem = item;
+                do {
+                    Set<CmsTreeItem> identicalItems = m_identicalCategories.get(currentItem.getId());
+                    for (CmsTreeItem it : identicalItems) {
+                        it.getCheckBox().setChecked((currentItem == item) || hasSelectedChildren(it));
+                    }
+                    String id = currentItem.getId();
+                    if (!m_selectedCategories.contains(id)) {
+                        m_selectedCategories.add(id);
+                    }
+                    currentItem = currentItem.getParentItem();
+                } while (currentItem != null);
+            }
         } else {
             if (m_isSingleSelection) {
                 m_singleResult = "";
@@ -916,7 +952,10 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             deselectChildren(item);
             CmsTreeItem currentItem = item;
             do {
-                currentItem.getCheckBox().setChecked(false);
+                Set<CmsTreeItem> identicalItems = m_identicalCategories.get(currentItem.getId());
+                for (CmsTreeItem it : identicalItems) {
+                    it.getCheckBox().setChecked(hasSelectedChildren(it));
+                }
                 String id = currentItem.getId();
                 if (m_selectedCategories.contains(id)) {
                     m_selectedCategories.remove(id);
@@ -925,6 +964,16 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             } while ((currentItem != null) && !hasSelectedChildren(currentItem));
         }
         fireValueChange();
+    }
+
+    private void addToIdenticalCategories(String cat, CmsTreeItem item) {
+
+        Set<CmsTreeItem> cats = m_identicalCategories.get(cat);
+        if (cats == null) {
+            cats = new HashSet<>();
+            m_identicalCategories.put(cat, cats);
+        }
+        cats.add(item);
     }
 
     /**
@@ -949,12 +998,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
         // create the check box for this item
         CmsCheckBox checkBox = new CmsCheckBox();
-        // if it has to be selected, select it
-        boolean isPartofPath = false;
-        isPartofPath = CmsCategoryField.isParentCategoryOfSelected(category.getPath(), selectedCategories);
-        if (isPartofPath) {
-            checkBox.setChecked(true);
-        }
         if (!isEnabled()) {
             checkBox.disable(m_disabledReason);
         }
@@ -971,26 +1014,55 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         // set the right style for the small view
         treeItem.setSmallView(true);
         treeItem.setId(category.getPath());
+        // if it has to be selected, select it
+        if (selectedCategories.contains(treeItem.getId())) {
+            treeItem.getCheckBox().setChecked(true);
+        }
         // add it to the list of all categories
-        m_categories.put(treeItem.getId(), treeItem);
+        if (!m_categories.containsKey(treeItem.getId())) {
+            m_categories.put(treeItem.getId(), treeItem);
+        }
         m_categoriesAsList.add(treeItem);
+        addToIdenticalCategories(treeItem.getId(), treeItem);
         return treeItem;
     }
 
     /**
      * Deselects all child items of the provided item.
-     * @param item the item for which all childs should be deselected.d
+     * @param item the item for which all childs should be deselected.
      */
     private void deselectChildren(CmsTreeItem item) {
 
-        for (String childId : m_childrens.get(item.getId())) {
-            CmsTreeItem child = m_categories.get(childId);
+        for (CmsTreeItem child : m_childItems.get(item)) {
             deselectChildren(child);
+            String childId = child.getId();
             child.getCheckBox().setChecked(false);
             if (m_selectedCategories.contains(childId)) {
                 m_selectedCategories.remove(childId);
             }
         }
+    }
+
+    /**
+     * Filters out categories that are possibly parents of other selected categories.
+     * @return the selected leaf categories.
+     */
+    private List<String> getRealSelected() {
+
+        Map<String, String> selected = new LinkedHashMap<>(m_selectedCategories.size());
+        Set<String> alreadyPresent = new HashSet<>(m_selectedCategories.size());
+        List<String> result = new ArrayList<>(m_selectedCategories.size());
+        m_selectedCategories.forEach((cat) -> selected.put(cat, CmsCategoryField.removeCategoryPrefix(cat)));
+        Collection<String> vals = selected.values();
+        for (Entry<String, String> e : selected.entrySet()) {
+            String val = e.getValue();
+            if (!(alreadyPresent.contains(val) || val.isEmpty())
+                && vals.stream().noneMatch(v -> ((val.length() < v.length()) && v.startsWith(val)))) {
+                alreadyPresent.add(val);
+                result.add(e.getKey());
+            }
+        }
+        return result;
     }
 
     /**
@@ -1000,13 +1072,21 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     private boolean hasSelectedChildren(CmsTreeItem item) {
 
-        for (String childId : m_childrens.get(item.getId())) {
-            CmsTreeItem child = m_categories.get(childId);
+        for (CmsTreeItem child : m_childItems.get(item)) {
             if (child.getCheckBox().isChecked() || hasSelectedChildren(child)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Checks, if there are selected sub categories
+     * @return a flag, indicating iff sub categories are selected.
+     */
+    private boolean hasSelectedSubCategories(String catPath) {
+
+        return m_selectedCategories.stream().anyMatch((c) -> c.startsWith(catPath) && (c.length() > catPath.length()));
     }
 
     /**
@@ -1021,6 +1101,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             }
         }
         m_selectedCategories = normalizedCategories;
+        m_selectedCategories = getAllSelected();
 
     }
 
@@ -1109,14 +1190,13 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     private boolean showInUsedView(String category) {
 
-        if (CmsCategoryField.isParentCategoryOfSelected(category, m_selectedCategories)) {
+        if (CmsCategoryField.isParentCategoryOfSelected(m_showByRepository, category, m_selectedCategories)) {
             return true;
         }
         if ("".equals(category)) {
             return m_used.size() > 0;
-        } else {
-            return m_used.stream().anyMatch(used -> CmsStringUtil.isPrefixPath(category, used));
         }
+        return m_used.stream().anyMatch(used -> CmsStringUtil.isPrefixPath(category, used));
     }
 
     /**

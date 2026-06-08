@@ -37,9 +37,12 @@ public class CmsSiteSelectorOption implements IsSerializable {
     /** Enum for indicating the site type. */
     public enum Type {
         /** Current subsite. */
-        currentSubsite, /** Root site. */
-        root, /** Shared folder. */
-        shared, /** Normally configured site. */
+        currentSubsite,
+        /** Root site. */
+        root,
+        /** Shared folder. */
+        shared,
+        /** Normally configured site. */
         site;
     }
 

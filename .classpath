@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="bin/main" path="src">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
-			<attribute name="gradle_used_by_scope" value="main,test,gwt,modules,setup,testGwt"/>
+			<attribute name="gradle_used_by_scope" value="main,test,gwt,modules,setup,testGwt,tools"/>
 			<attribute name="test" value="false"/>
 		</attributes>
 	</classpathentry>
@@ -38,6 +38,12 @@
 			<attribute name="gradle_scope" value="testGwt"/>
 			<attribute name="gradle_used_by_scope" value="testGwt"/>
 			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin/tools" path="tools/storage/src">
+		<attributes>
+			<attribute name="gradle_scope" value="tools"/>
+			<attribute name="gradle_used_by_scope" value="test,tools"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21/"/>

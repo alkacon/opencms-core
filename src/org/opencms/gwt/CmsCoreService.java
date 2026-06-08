@@ -859,7 +859,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.lang.String, boolean)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getCategories(java.lang.String, boolean, java.lang.String, boolean, java.util.Set)
      */
     public List<CmsCategoryTreeEntry> getCategories(
         String fromPath,
@@ -1590,7 +1590,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @return the resource categories
      *
      * @throws CmsRpcException if something goes wrong
-    
+     *
      *
      * @return
      * @throws CmsRpcException

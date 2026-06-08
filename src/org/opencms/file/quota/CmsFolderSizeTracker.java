@@ -97,7 +97,7 @@ public class CmsFolderSizeTracker {
      * Creates a new instance.
      *
      * @param cms the CMS context
-     * @param true if we want to track folder sizes in the Online project instead of the Offline project
+     * @param online if we want to track folder sizes in the Online project instead of the Offline project
      */
     public CmsFolderSizeTracker(CmsObject cms, boolean online) {
 

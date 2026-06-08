@@ -154,7 +154,8 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         CmsResource res = getResource(cms, resourcename, CmsResourceFilter.DEFAULT);
         if (res != null) {
@@ -167,9 +168,10 @@ public class CmsResourceWrapperPropertyFile extends A_CmsResourceWrapper {
             // check "existance" of resource
             if (existsResource(res)) {
 
-                throw new CmsVfsResourceAlreadyExistsException(org.opencms.db.generic.Messages.get().container(
-                    org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                    resourcename));
+                throw new CmsVfsResourceAlreadyExistsException(
+                    org.opencms.db.generic.Messages.get().container(
+                        org.opencms.db.generic.Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                        resourcename));
             }
 
             // mark file as created in tmp file table

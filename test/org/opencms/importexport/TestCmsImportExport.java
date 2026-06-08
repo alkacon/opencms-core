@@ -56,10 +56,9 @@ import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
@@ -77,75 +76,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Comment for <code>TestCmsImportExport</code>.<p>
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class TestCmsImportExport extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsImportExport extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsImportExport(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsImportExport.class.getName());
-
-        suite.addTest(new TestCmsImportExport("testImportValidation"));
-        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
-        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
-        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
-        suite.addTest(new TestCmsImportExport("testImportWrongSite"));
-        suite.addTest(new TestCmsImportExport("testSetup"));
-        suite.addTest(new TestCmsImportExport("testImportExportFolder"));
-        suite.addTest(new TestCmsImportExport("testImportExportId"));
-        suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksHtml"));
-        suite.addTest(new TestCmsImportExport("testImportExportBrokenLinksXml"));
-        suite.addTest(new TestCmsImportExport("testImportResourceTranslator"));
-        suite.addTest(new TestCmsImportExport("testImportResourceTranslatorMultipleSite"));
-        suite.addTest(new TestCmsImportExport("testImportRecreatedFile"));
-        suite.addTest(new TestCmsImportExport("testImportSibling"));
-        suite.addTest(new TestCmsImportExport("testImportRecreatedSibling"));
-        suite.addTest(new TestCmsImportExport("testImportMovedResource"));
-        suite.addTest(new TestCmsImportExport("testImportChangedContent"));
-        suite.addTest(new TestCmsImportExport("testImportRelations"));
-        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
-        suite.addTest(new TestCmsImportExport("testExportType"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -161,6 +113,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         return file;
     }
 
+    @Test
+    @Order(20)
     public void testExportType() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -215,6 +169,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(17)
     public void testImportChangedContent() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -314,6 +270,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(19)
     public void testImportContentIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -434,6 +392,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testImportExportBrokenLinksHtml() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -551,6 +511,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testImportExportBrokenLinksXml() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -565,9 +527,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
         // create files
-        CmsResource res1 = cms.createResource(filename1, OpenCmsTestCase.ARTICLE_TYPEID);
+        CmsResource res1 = cms.createResource(filename1, ARTICLE_TYPEID);
 
-        CmsResource res2 = cms.createResource(filename2, OpenCmsTestCase.ARTICLE_TYPEID);
+        CmsResource res2 = cms.createResource(filename2, ARTICLE_TYPEID);
         CmsFile file2 = cms.readFile(res2);
         String content2 = new String(file2.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);
@@ -638,7 +600,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()),
                 new CmsImportParameters(zipExportFilename, "/", true));
 
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(OpenCmsTestCase.ARTICLE_TYPEID);
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(ARTICLE_TYPEID);
             I_CmsLinkParseable validatable = (I_CmsLinkParseable)type;
 
             // check the links
@@ -674,6 +636,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testImportExportFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -736,6 +700,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testImportExportId() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -821,6 +787,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testImportMovedFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -932,6 +900,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(16)
     public void testImportMovedResource() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1026,6 +996,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testImportPermissionIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1113,6 +1085,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testImportRecreatedFile() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1220,6 +1194,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testImportRecreatedSibling() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1327,6 +1303,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(18)
     public void testImportRelations() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1426,6 +1404,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testImportResourceTranslator() throws Exception {
 
         echo("Testing resource translator for import");
@@ -1585,6 +1565,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testImportResourceTranslatorMultipleSite() throws Exception {
 
         echo("Testing resource translator with multiple sites");
@@ -1745,6 +1727,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testImportSibling() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1845,6 +1829,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testImportSiblingIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1954,6 +1940,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testImportValidation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2023,6 +2011,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testImportWrongSite() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2093,8 +2083,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
                     // dont add slash after the file name
                     path += "/";
                 }
-                assertTrue("Path " + path + " does not exist as expected", cms.existsResource(path)); // the old file
-                assertFalse("Path " + newSite + path + " should not exist", cms.existsResource(newSite + path)); // the new file
+                assertTrue(cms.existsResource(path), "Path " + path + " does not exist as expected"); // the old file
+                assertFalse(cms.existsResource(newSite + path), "Path " + newSite + path + " should not exist"); // the new file
             }
         } finally {
             try {
@@ -2115,6 +2105,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testSetup() throws Exception {
 
         CmsObject cms = getCmsObject();

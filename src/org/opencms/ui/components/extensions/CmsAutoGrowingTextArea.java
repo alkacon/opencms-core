@@ -44,9 +44,10 @@ public class CmsAutoGrowingTextArea extends AbstractExtension {
      * Constructor.<p>
      *
      * @param textArea the text area to extend
-     * @param maxRows the maximal number of rows (<1 for unlimited)
+     * @param maxRows the maximal number of rows (&lt;1 for unlimited)
      */
     public CmsAutoGrowingTextArea(TextArea textArea, int maxRows) {
+
         super.extend(textArea);
         getState().setMaxRows(maxRows);
         getState().setMinRows(textArea.getRows());
@@ -56,7 +57,7 @@ public class CmsAutoGrowingTextArea extends AbstractExtension {
      * Adds the text area auto grow extension to the given component.
      *
      * @param textArea the text area to extend
-     * @param maxRows the maximal number of rows (<1 for unlimited)
+     * @param maxRows the maximal number of rows (&lt;1 for unlimited)
      */
     @SuppressWarnings("unused")
     public static void addTo(TextArea textArea, int maxRows) {

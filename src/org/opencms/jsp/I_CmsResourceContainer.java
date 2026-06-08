@@ -82,9 +82,12 @@ public interface I_CmsResourceContainer {
      *
      * @return <code>true</code> if more resources are to be iterated
      *
+     * @deprecated use {@link #hasMoreResources()}
+     *
      * @throws JspException in case something goes wrong
      */
-    boolean hasMoreResources() throws JspException;
+    @Deprecated
+    boolean hasMoreContent() throws JspException;
 
     /**
      * Resource iteration method to be used by JSP scriptlet code.<p>
@@ -93,12 +96,9 @@ public interface I_CmsResourceContainer {
      *
      * @return <code>true</code> if more resources are to be iterated
      *
-     * @deprecated use {@link #hasMoreResources()}
-     *
      * @throws JspException in case something goes wrong
      */
-    @Deprecated
-    boolean hasMoreContent() throws JspException;
+    boolean hasMoreResources() throws JspException;
 
     /**
      * Returns <code>true</code> if this container is used as a resource preloader.<p>

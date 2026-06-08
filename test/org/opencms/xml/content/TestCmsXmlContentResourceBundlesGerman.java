@@ -30,66 +30,30 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Test cases for resource bundles in schemas with a different configured default locale.<p>
  */
-public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
+public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * Overrides the OpenCms test setup.
      */
-    public TestCmsXmlContentResourceBundlesGerman(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentResourceBundlesGerman.class.getName());
-        suite.addTest(new TestCmsXmlContentResourceBundlesGerman("testReadBundleMessages"));
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(
-                    "simpletest",
-                    "/",
-                    getTestDataPath("WEB-INF/config." + getDbProduct() + "/"),
-                    getTestDataPath("WEB-INF/config.de/"),
-                    TestCmsXmlContentResourceBundlesGerman.class.getName(),
-                    true);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -97,6 +61,7 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testReadBundleMessages() throws Exception {
 
         CmsObject cms = getCmsObject();

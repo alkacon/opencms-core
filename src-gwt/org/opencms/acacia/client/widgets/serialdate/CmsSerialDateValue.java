@@ -56,6 +56,7 @@ public class CmsSerialDateValue extends A_CmsSerialDateValue implements I_CmsObs
 
     /** Default constructor, setting the default state of the the serial date widget. */
     public CmsSerialDateValue() {
+
         setDefaultValue();
     }
 

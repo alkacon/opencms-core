@@ -38,11 +38,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteMatcher;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,10 +58,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
+import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -76,6 +77,9 @@ public final class CmsRequestUtil {
 
     /** Request attribute that contains the original error code. */
     public static final String ATTRIBUTE_ERRORCODE = "org.opencms.util.CmsErrorCode";
+
+    /** Flag to enable / disable backlink checks. */
+    public static boolean backlinkCheckEnabled = true;
 
     /** HTTP Accept Header for the cms:device-tag. */
     public static final String HEADER_ACCEPT = "Accept";
@@ -158,9 +162,6 @@ public final class CmsRequestUtil {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
 
-    /** Flag to enable / disable backlink checks. */
-    public static boolean backlinkCheckEnabled = true;
-
     /**
      * Default constructor (empty), private because this class has only
      * static methods.<p>
@@ -174,7 +175,7 @@ public final class CmsRequestUtil {
      * Appends a request parameter to the given URL.<p>
      *
      * This method takes care about the adding the parameter as an additional
-     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * parameter (appending <code>&amp;param=value</code>) or as the first parameter
      * (appending <code>?param=value</code>).<p>
      *
      * @param url the URL where to append the parameter to
@@ -211,7 +212,7 @@ public final class CmsRequestUtil {
      * simple <code>String</code> values.<p>
      *
      * This method takes care about the adding the parameter as an additional
-     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * parameter (appending <code>&amp;param=value</code>) or as the first parameter
      * (appending <code>?param=value</code>).<p>
      *
      * @param url the URL where to append the parameter to
@@ -436,7 +437,7 @@ public final class CmsRequestUtil {
 
     /**
      * Returns all parameters of the given request
-     * as a request parameter URL String, that is in the form <code>key1=value1&key2=value2</code> etc.
+     * as a request parameter URL String, that is in the form <code>key1=value1&amp;key2=value2</code> etc.
      *
      * The result will be encoded using the <code>{@link CmsEncoder#encode(String)}</code> function.<p>
      *
@@ -791,15 +792,15 @@ public final class CmsRequestUtil {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
      *
      * @param request the HTTP servlet request to parse
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
-    public static List<FileItem> readMultipartFileItems(HttpServletRequest request) {
+    public static List<DiskFileItem> readMultipartFileItems(HttpServletRequest request) {
 
         return readMultipartFileItems(request, OpenCms.getSystemInfo().getPackagesRfsPath());
     }
@@ -807,31 +808,29 @@ public final class CmsRequestUtil {
     /**
      * Parses a request of the form <code>multipart/form-data</code>.
      *
-     * The result list will contain items of type <code>{@link FileItem}</code>.
+     * The result list will contain items of type <code>{@link DiskFileItem}</code>.
      * If the request is not of type <code>multipart/form-data</code>, then <code>null</code> is returned.<p>
      *
      * @param request the HTTP servlet request to parse
      * @param tempFolderPath the real file system path to the temp file folder
      *
-     * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
+     * @return the list of <code>{@link DiskFileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
-    public static List<FileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {
+    public static List<DiskFileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {
 
-        if (!ServletFileUpload.isMultipartContent(request)) {
+        if (!JavaxServletFileUpload.isMultipartContent(request)) {
             return null;
         }
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        // maximum size that will be stored in memory
-        factory.setSizeThreshold(4096);
-        // the location for saving data that is larger than getSizeThreshold()
-        factory.setRepository(new File(tempFolderPath));
-        ServletFileUpload fu = new ServletFileUpload(factory);
+        DiskFileItemFactory.Builder builder = DiskFileItemFactory.builder();
+        builder.setPath(tempFolderPath);
+        DiskFileItemFactory factory = builder.get();
+        JavaxServletDiskFileUpload fu = new JavaxServletDiskFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
-        fu.setHeaderEncoding(request.getCharacterEncoding());
-        List<FileItem> result = new ArrayList<FileItem>();
+        fu.setHeaderCharset(Charset.forName(request.getCharacterEncoding()));
+        List<DiskFileItem> result = new ArrayList<DiskFileItem>();
         try {
-            List<FileItem> items = CmsCollectionsGenericWrapper.list(fu.parseRequest(request));
+            List<DiskFileItem> items = CmsCollectionsGenericWrapper.list(fu.parseRequest(request));
             if (items != null) {
                 result = items;
             }
@@ -854,21 +853,26 @@ public final class CmsRequestUtil {
      */
     public static Map<String, String[]> readParameterMapFromMultiPart(
         String encoding,
-        List<FileItem> multiPartFileItems) {
+        List<DiskFileItem> multiPartFileItems) {
 
         Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-        Iterator<FileItem> i = multiPartFileItems.iterator();
+        Iterator<DiskFileItem> i = multiPartFileItems.iterator();
         while (i.hasNext()) {
-            FileItem item = i.next();
+            DiskFileItem item = i.next();
             String name = item.getFieldName();
             String value = null;
             if ((name != null) && (item.getName() == null)) {
-                // only put to map if current item is no file and not null
                 try {
-                    value = item.getString(encoding);
-                } catch (UnsupportedEncodingException e) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
-                    value = item.getString();
+                    // only put to map if current item is no file and not null
+                    try {
+                        value = item.getString(Charset.forName(encoding));
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
+                        value = item.getString();
+                    }
+                } catch (IOException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    continue;
                 }
                 if (parameterMap.containsKey(name)) {
 

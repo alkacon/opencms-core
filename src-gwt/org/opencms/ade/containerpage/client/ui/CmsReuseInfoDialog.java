@@ -82,7 +82,6 @@ public class CmsReuseInfoDialog extends CmsPopup {
     @UiField
     protected Label m_label;
 
-
     /** The list item container for the element usages. */
     @UiField
     protected CmsList<CmsListItem> m_listPanel;
@@ -94,7 +93,6 @@ public class CmsReuseInfoDialog extends CmsPopup {
     /** The cancel button. */
     @UiField
     protected CmsPushButton m_cancelButton;
-
 
     /** The callback for the dialog. */
     private Consumer<Boolean> m_callback;
@@ -130,7 +128,10 @@ public class CmsReuseInfoDialog extends CmsPopup {
         for (CmsResourceListInfo bean : reuseInfo.getUsageInfos()) {
             CmsListItemWidget liw = new CmsListItemWidget(bean);
             CmsListItem li = new CmsListItem(liw);
-            CmsContextMenuButton button = new CmsContextMenuButton(bean.getStructureId(), menuHandler, AdeContext.resourceinfo);
+            CmsContextMenuButton button = new CmsContextMenuButton(
+                bean.getStructureId(),
+                menuHandler,
+                AdeContext.resourceinfo);
             liw.addButton(button);
             m_listPanel.add(li);
         }

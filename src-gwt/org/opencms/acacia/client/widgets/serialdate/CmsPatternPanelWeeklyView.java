@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * The weekly pattern panel.<p>
- * */
+ */
 public class CmsPatternPanelWeeklyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
@@ -136,7 +136,7 @@ public class CmsPatternPanelWeeklyView extends Composite implements I_CmsSerialD
     /**
      * Returns all selected days.<p>
      * @return all selected days
-     * */
+     */
     protected SortedSet<WeekDay> getWeekDays() {
 
         SortedSet<WeekDay> result = new TreeSet<>();
@@ -172,7 +172,7 @@ public class CmsPatternPanelWeeklyView extends Composite implements I_CmsSerialD
 
     /**
      * Creates the day selection view.<p>
-     * */
+     */
     private void createDayPanel() {
 
         CmsCheckBox box = new CmsCheckBox(Messages.get().key(Messages.GUI_SERIALDATE_DAY_MONDAY_0));
@@ -216,7 +216,7 @@ public class CmsPatternPanelWeeklyView extends Composite implements I_CmsSerialD
     /**
      * Selects all days.<p>
      * @param weekDays List of selected days
-     * */
+     */
     private void setWeekDays(SortedSet<WeekDay> weekDays) {
 
         List<CmsCheckBox> checked = new ArrayList<CmsCheckBox>();

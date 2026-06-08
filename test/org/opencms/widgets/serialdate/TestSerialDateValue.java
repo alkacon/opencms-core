@@ -32,22 +32,27 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.PatternType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Tests for the serial date wrapper, targeting on transformations from/to Strings. */
-public class TestSerialDateValue extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSerialDateValue extends OpenCmsTestRunner {
 
     /**
      * Test for the "current till end" flag.
      */
     @Test
+    @Order(8)
     public void testCurrentTillEnd() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}, \"currenttillend\":false}";
@@ -75,6 +80,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the daily pattern, whole day and defined on a daily base, as well as with exceptions and occurrences specified.
      */
     @Test
+    @Order(4)
     public void testDailyEndTimesWithExceptions() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"wholeday\":true, \"pattern\":{\"type\":\"DAILY\", \"interval\":\"5\"}, \"exceptions\":[\"1491289200000\",\"1491462000000\"], \"occurrences\":\"3\"}";
@@ -105,6 +111,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the daily pattern, not whole day and defintion on for workdays with a series end date specified.
      */
     @Test
+    @Order(7)
     public void testDailyWorkingDayEndDate() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"DAILY\", \"everyworkingday\":true}, \"enddate\":\"1492207200000\"}";
@@ -129,6 +136,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the yearly pattern, specified by week of month and weekday.
      */
     @Test
+    @Order(3)
     public void testDateOnlyInitialization() {
 
         String patternDefinition = "1491202800000";
@@ -151,6 +159,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the individual pattern.
      */
     @Test
+    @Order(6)
     public void testIndividual() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"INDIVIDUAL\", \"dates\":[\"1501489020000\",\"1501748220000\"]}}";
@@ -175,6 +184,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test with missing to date.
      */
     @Test
+    @Order(10)
     public void testMissingToDate() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"pattern\":{\"type\":\"NONE\"}}";
@@ -195,6 +205,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the monthly pattern, specified by day of month.
      */
     @Test
+    @Order(13)
     public void testMonthlyDay() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"2\", \"day\":\"15\"}, \"occurrences\":\"3\"}";
@@ -221,6 +232,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the monthly pattern, specified by day of month.
      */
     @Test
+    @Order(2)
     public void testMonthlyWeeks() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"MONTHLY\", \"interval\":\"5\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\",\"LAST\"]}, \"occurrences\":\"3\"}";
@@ -250,6 +262,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the single event.
      */
     @Test
+    @Order(5)
     public void testNone() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"NONE\"}}";
@@ -269,6 +282,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test if the parent pattern series id is read correctly.
      */
     @Test
+    @Order(1)
     public void testParentSeriesId() {
 
         String parentId = "6d642ad9-5c78-11e5-96ab-0242ac11002b";
@@ -296,6 +310,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the weekly pattern.
      */
     @Test
+    @Order(12)
     public void testWeekly() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"WEEKLY\", \"interval\":\"5\", \"weekdays\":[\"TUESDAY\",\"THURSDAY\"]}, \"occurrences\":\"3\"}";
@@ -324,6 +339,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the yearly pattern, specified by day of month.
      */
     @Test
+    @Order(9)
     public void testYearlyDay() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"day\":\"31\", \"month\":\"JULY\"}, \"occurrences\":\"3\"}";
@@ -351,6 +367,7 @@ public class TestSerialDateValue extends OpenCmsTestCase {
      * Test for the yearly pattern, specified by week of month and weekday.
      */
     @Test
+    @Order(11)
     public void testYearlyWeeks() {
 
         String patternDefinition = "{\"from\":\"1491202800000\", \"to\":\"1491231600000\", \"pattern\":{\"type\":\"YEARLY\", \"weekdays\":[\"WEDNESDAY\"], \"weeks\":[\"SECOND\"], \"month\":\"JULY\"}, \"occurrences\":\"3\"}";

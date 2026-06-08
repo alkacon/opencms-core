@@ -189,10 +189,10 @@ public class CmsLocationController {
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isMainApiLoaded()/*-{
-		var result = $wnd.google !== undefined
-				&& $wnd.google.maps !== undefined
-				&& $wnd.google.maps.Map !== undefined;
-		return result;
+        var result = $wnd.google !== undefined
+                && $wnd.google.maps !== undefined
+                && $wnd.google.maps.Map !== undefined;
+        return result;
     }-*/;
 
     /**
@@ -201,10 +201,10 @@ public class CmsLocationController {
      * @return <code>true</code>  if the google maps API is already loaded to the window context
      */
     private static native boolean isPlacesApiLoaded()/*-{
-		var result = $wnd.google !== undefined
-				&& $wnd.google.maps !== undefined
-				&& $wnd.google.maps.places !== undefined;
-		return result;
+        var result = $wnd.google !== undefined
+                && $wnd.google.maps !== undefined
+                && $wnd.google.maps.places !== undefined;
+        return result;
     }-*/;
 
     /**
@@ -230,7 +230,7 @@ public class CmsLocationController {
     /** Sets the location value as string.
      *
      * @param value the string representation of the location value (JSON)
-     **/
+     */
     public void setStringValue(String value) {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
@@ -257,8 +257,8 @@ public class CmsLocationController {
      * @return the position object
      */
     protected native JavaScriptObject getCurrentPosition()/*-{
-		var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
-		return new $wnd.google.maps.LatLng(val.lat, val.lng);
+        var val = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
+        return new $wnd.google.maps.LatLng(val.lat, val.lng);
 
     }-*/;
 
@@ -268,25 +268,25 @@ public class CmsLocationController {
      * @param address the new address
      */
     protected native void onAddressChange(String address) /*-{
-		var self = this;
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
-				.geocode(
-						{
-							'address' : address
-						},
-						function(results, status) {
-							// check to see if we have at least one valid address
-							if (!results
-									|| (status != $wnd.google.maps.GeocoderStatus.OK)
-									|| !results[0].formatted_address) {
-								alert("Address not found");
-								return;
-							}
-							var lat = results[0].geometry.location.lat();
-							var lng = results[0].geometry.location.lng();
-							self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,true,false);
-						});
+        var self = this;
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
+                .geocode(
+                        {
+                            'address' : address
+                        },
+                        function(results, status) {
+                            // check to see if we have at least one valid address
+                            if (!results
+                                    || (status != $wnd.google.maps.GeocoderStatus.OK)
+                                    || !results[0].formatted_address) {
+                                alert("Address not found");
+                                return;
+                            }
+                            var lat = results[0].geometry.location.lat();
+                            var lng = results[0].geometry.location.lng();
+                            self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,true,false);
+                        });
     }-*/;
 
     /**
@@ -379,12 +379,12 @@ public class CmsLocationController {
      * Ensures the preview map has the right size and is centered.<p>
      */
     protected native void onPreviewResize()/*-{
-		var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap;
-		if (map != null) {
-			$wnd.google.maps.event.trigger(map, 'resize');
-			var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-			map.setCenter(pos);
-		}
+        var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_previewMap;
+        if (map != null) {
+            $wnd.google.maps.event.trigger(map, 'resize');
+            var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+            map.setCenter(pos);
+        }
     }-*/;
 
     /**
@@ -393,9 +393,9 @@ public class CmsLocationController {
      * @param type the map type
      */
     protected native void onTypeChange(String type)/*-{
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.type = type;
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map
-				.setMapTypeId(type);
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.type = type;
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map
+                .setMapTypeId(type);
     }-*/;
 
     /**
@@ -414,15 +414,15 @@ public class CmsLocationController {
      * @param zoom the zoom
      */
     protected native void onZoomChange(String zoom) /*-{
-		var z = parseInt(zoom);
-		if (!isNaN(z)) {
-			this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.zoom = z;
-			var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
-			map.setZoom(z);
-			var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-			map.panTo(pos);
-			map.setCenter(pos);
-		}
+        var z = parseInt(zoom);
+        if (!isNaN(z)) {
+            this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.zoom = z;
+            var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
+            map.setZoom(z);
+            var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+            map.panTo(pos);
+            map.setCenter(pos);
+        }
     }-*/;
 
     /**
@@ -444,32 +444,32 @@ public class CmsLocationController {
      * Displays the map for the current location.<p>
      */
     native void initMap() /*-{
-		try {
-			if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
-				var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
-				var type = (value.type == null || value.type == "") ? "roadmap"
-						: value.type;
-				var zoom = parseInt(value.zoom);
-				if (isNaN(zoom)) {
-					zoom = 8;
-				}
+        try {
+            if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map == null) {
+                var value = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue;
+                var type = (value.type == null || value.type == "") ? "roadmap"
+                        : value.type;
+                var zoom = parseInt(value.zoom);
+                if (isNaN(zoom)) {
+                    zoom = 8;
+                }
 
-				var mapOptions = {
-					zoom : zoom,
-					mapTypeId : type,
-					center : new $wnd.google.maps.LatLng(-34.397, 150.644),
-					streetViewControl : false
-				};
-				var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
-				var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
-				this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
-						canvas, mapOptions);
-				this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
-			}
-		} catch (e) {
-			$wnd.console.log(e.message);
-		}
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateMarkerPosition()();
+                var mapOptions = {
+                    zoom : zoom,
+                    mapTypeId : type,
+                    center : new $wnd.google.maps.LatLng(-34.397, 150.644),
+                    streetViewControl : false
+                };
+                var popupContent = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_popupContent;
+                var canvas = popupContent.@org.opencms.gwt.client.ui.input.location.CmsLocationPopupContent::getMapCanvas()();
+                this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map = new $wnd.google.maps.Map(
+                        canvas, mapOptions);
+                this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder = new $wnd.google.maps.Geocoder();
+            }
+        } catch (e) {
+            $wnd.console.log(e.message);
+        }
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateMarkerPosition()();
     }-*/;
 
     /**
@@ -546,25 +546,25 @@ public class CmsLocationController {
      * Will close the picker popup afterwards.<p>
      */
     private native void ensureFormattedAddress()/*-{
-		var self = this;
-		var address = self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address;
-		if (address != null && address.trim().length > 0) {
-			self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
-					.geocode(
-							{
-								'address' : address
-							},
-							function(results, status) {
-								// check to see if we have at least one valid address
-								if (results
-										&& (status == $wnd.google.maps.GeocoderStatus.OK)
-										&& results[0].formatted_address) {
-									self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = results[0].formatted_address;
-								}
-								self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::fireChangeAndClose()();
-							});
-		}
-		self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::fireChangeAndClose()();
+        var self = this;
+        var address = self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address;
+        if (address != null && address.trim().length > 0) {
+            self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
+                    .geocode(
+                            {
+                                'address' : address
+                            },
+                            function(results, status) {
+                                // check to see if we have at least one valid address
+                                if (results
+                                        && (status == $wnd.google.maps.GeocoderStatus.OK)
+                                        && results[0].formatted_address) {
+                                    self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = results[0].formatted_address;
+                                }
+                                self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::fireChangeAndClose()();
+                            });
+        }
+        self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::fireChangeAndClose()();
     }-*/;
 
     /**
@@ -582,7 +582,7 @@ public class CmsLocationController {
      * @return the Google API key
      */
     private native String getAPIKey()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKey;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKey;
     }-*/;
 
     /**
@@ -591,7 +591,7 @@ public class CmsLocationController {
      * @return the Google API key message
      */
     private native String getAPIKeyMessage()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKeyMessage;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKeyMessage;
     }-*/;
 
     /**
@@ -614,8 +614,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the address field is configured
      */
     private native boolean hasAddress()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('address') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('address') != -1;
     }-*/;
 
     /**
@@ -624,8 +624,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the Google API key is configured
      */
     private native boolean hasAPIKey()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config != null
-				&& this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKey != null;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config != null
+                && this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.apiKey != null;
     }-*/;
 
     /**
@@ -634,8 +634,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the lat. lng. fields are configured
      */
     private native boolean hasLatLng()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('coords') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('coords') != -1;
     }-*/;
 
     /**
@@ -644,8 +644,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the map field is configured
      */
     private native boolean hasMap()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('map') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('map') != -1;
     }-*/;
 
     /**
@@ -654,8 +654,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the mode field is configured
      */
     private native boolean hasMode()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('mode') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('mode') != -1;
     }-*/;
 
     /**
@@ -664,8 +664,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the size fields are configured
      */
     private native boolean hasSize()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('size') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('size') != -1;
     }-*/;
 
     /**
@@ -674,8 +674,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the type field is configured
      */
     private native boolean hasType()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('type') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('type') != -1;
     }-*/;
 
     /**
@@ -684,8 +684,8 @@ public class CmsLocationController {
      * @return <code>true</code> if the zoom field is configured
      */
     private native boolean hasZoom()/*-{
-		return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
-				.indexOf('zoom') != -1;
+        return this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config.edit
+                .indexOf('zoom') != -1;
     }-*/;
 
     /**
@@ -731,29 +731,29 @@ public class CmsLocationController {
      * Loads the google maps API and initializes the map afterwards.<p>
      */
     private native void loadApi()/*-{
-		$wnd.cmsLocationPickerApiReady = function() {
-			@org.opencms.gwt.client.ui.input.location.CmsLocationController::apiReady()();
-		}
-		var uri = @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_URI;
-		uri += '?'
-				+ @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_MAIN_PARAM
-				+ '&'
-				+ @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_PLACES_PARAM;
-		if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::hasAPIKey()()) {
-			uri += '&key='
-					+ this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKey()();
-			if ($wnd.console) {
-				$wnd.console
-						.log(this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKeyMessage()());
-			}
-		} else if ($wnd.console) {
-			$wnd.console.log("No Google API key available");
-		}
-		uri += '&callback=cmsLocationPickerApiReady';
+        $wnd.cmsLocationPickerApiReady = function() {
+            @org.opencms.gwt.client.ui.input.location.CmsLocationController::apiReady()();
+        }
+        var uri = @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_URI;
+        uri += '?'
+                + @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_MAIN_PARAM
+                + '&'
+                + @org.opencms.gwt.client.ui.input.location.CmsLocationController::MAPS_PLACES_PARAM;
+        if (this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::hasAPIKey()()) {
+            uri += '&key='
+                    + this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKey()();
+            if ($wnd.console) {
+                $wnd.console
+                        .log(this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getAPIKeyMessage()());
+            }
+        } else if ($wnd.console) {
+            $wnd.console.log("No Google API key available");
+        }
+        uri += '&callback=cmsLocationPickerApiReady';
 
-		var script = $wnd.document.createElement('script');
-		script.src = uri;
-		$wnd.document.body.appendChild(script);
+        var script = $wnd.document.createElement('script');
+        script.src = uri;
+        $wnd.document.body.appendChild(script);
     }-*/;
 
     /**
@@ -780,8 +780,8 @@ public class CmsLocationController {
      * @param configuration the configuration
      */
     private native void parseConfig(String configuration)/*-{
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON
-				.parse(configuration);
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_config = JSON
+                .parse(configuration);
     }-*/;
 
     /**
@@ -823,28 +823,28 @@ public class CmsLocationController {
      * Updates the address according to the current position data.<p>
      */
     private native void updateAddress()/*-{
-		var self = this;
-		var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-		// try to evaluate the address from the current position
-		this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
-				.geocode(
-						{
-							'latLng' : pos
-						},
-						function(results, status) {
-							var address = "";
-							// check that everything is ok
-							if (status == $wnd.google.maps.GeocoderStatus.OK
-									&& results[0]
-									&& results[0].formatted_address) {
-								// set the new address
-								address = results[0].formatted_address;
-							}
-							if (address != self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address) {
-								self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
-								self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateForm()();
-							}
-						});
+        var self = this;
+        var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+        // try to evaluate the address from the current position
+        this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_geocoder
+                .geocode(
+                        {
+                            'latLng' : pos
+                        },
+                        function(results, status) {
+                            var address = "";
+                            // check that everything is ok
+                            if (status == $wnd.google.maps.GeocoderStatus.OK
+                                    && results[0]
+                                    && results[0].formatted_address) {
+                                // set the new address
+                                address = results[0].formatted_address;
+                            }
+                            if (address != self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address) {
+                                self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_editValue.address = address;
+                                self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::updateForm()();
+                            }
+                        });
     }-*/;
 
     /**
@@ -859,36 +859,36 @@ public class CmsLocationController {
      * Updates the marker position according to the current location value.<p>
      */
     private native void updateMarkerPosition()/*-{
-		var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
-		var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
-		var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker;
-		if (marker == null) {
-			try {
-				var marker = new $wnd.google.maps.Marker({
-					position : pos,
-					map : map,
-					draggable : true
-				});
-				this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker = marker;
-				var self = this;
-				// handle marker dnd
-				$wnd.google.maps.event
-						.addListener(
-								marker,
-								"dragend",
-								function() {
-									var lat = marker.getPosition().lat();
-									var lng = marker.getPosition().lng();
-									self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,false,true);
-								});
-			} catch (e) {
-				$wnd.alert(e.message);
-			}
-		} else {
-			marker.setPosition(pos);
-		}
-		map.panTo(pos);
-		map.setCenter(pos);
+        var map = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_map;
+        var pos = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::getCurrentPosition()();
+        var marker = this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker;
+        if (marker == null) {
+            try {
+                var marker = new $wnd.google.maps.Marker({
+                    position : pos,
+                    map : map,
+                    draggable : true
+                });
+                this.@org.opencms.gwt.client.ui.input.location.CmsLocationController::m_marker = marker;
+                var self = this;
+                // handle marker dnd
+                $wnd.google.maps.event
+                        .addListener(
+                                marker,
+                                "dragend",
+                                function() {
+                                    var lat = marker.getPosition().lat();
+                                    var lng = marker.getPosition().lng();
+                                    self.@org.opencms.gwt.client.ui.input.location.CmsLocationController::setPosition(FFZZ)(lat,lng,false,true);
+                                });
+            } catch (e) {
+                $wnd.alert(e.message);
+            }
+        } else {
+            marker.setPosition(pos);
+        }
+        map.panTo(pos);
+        map.setCenter(pos);
     }-*/;
 
 }

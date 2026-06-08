@@ -36,15 +36,15 @@ import org.opencms.util.CmsUUID;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Dialog used to display error stack traces in the workplace.<p>
@@ -93,6 +93,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
      * @param window the dialog window if available
      */
     public CmsErrorDialog(String message, Throwable t, Runnable onClose, final Window window) {
+
         m_onClose = onClose;
         m_window = window;
         CmsVaadinUtils.readAndLocalizeDesign(

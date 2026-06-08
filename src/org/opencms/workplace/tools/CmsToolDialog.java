@@ -264,7 +264,7 @@ public class CmsToolDialog extends CmsWorkplace {
      *
      * @param segment the HTML segment (START / END)
      * @param headline the headline String for the block
-    
+     *
      * @return block area start / end segment
      *
      * @see CmsDialog#dialogBlock(int, String, boolean)

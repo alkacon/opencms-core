@@ -954,10 +954,10 @@ public final class CmsMessageBundleEditorTypes {
 
         /**
          * Set the should handle changes flag.
-         * 
+         *
          * When doing programmatic changes that are not triggered by the
          * editing person, handling changes should be disabled.
-         * 
+         *
          * @param shouldHandle set to true, iff changes should be handled.
          */
         public void setShouldHandleChanges(boolean shouldHandle) {

@@ -74,7 +74,7 @@ public final class CmsAutoSetupProperties {
 
     /** The property key <code>db.create.user</code> for specifying the name of the database user that is used during the setup connection.
      *  NOTE: The user must have administration permissions. The user data is deleted, when the setup is finished.
-     * */
+     */
     public static final String PROP_DB_CREATE_USER = "db.create.user";
 
     /** The property key <code>db.default.tablespace</code> necessary dependent on the chosen DBMS. */
@@ -89,8 +89,8 @@ public final class CmsAutoSetupProperties {
     public static final String PROP_DB_INDEX_TABLESPACE = "db.index.tablespace";
 
     /** The property key <code>db.jdbc.driver</code> for specifying the fully qualified name of the Java class implementing the JDBC driver to use for the connection.<P>
-     * Hint: The names can be found in the <code>database.properties</code> file in the webapp' folders <code>setup/database/<db.product>/</code>.
-     * */
+     * Hint: The names can be found in the <code>database.properties</code> file in the webapp' folders <code>setup/database/&lt;db.product&gt;/</code>.
+     */
     public static final String PROP_DB_JDBC_DRIVER = "db.jdbc.driver";
 
     /** The property key <code>db.name</code> for specifying the name of the database used by OpenCms, e.g. choose "opencms". */
@@ -118,7 +118,7 @@ public final class CmsAutoSetupProperties {
     /** The property key <code>db.worker.user</code> for providing the name of the database user that is used for the connection when running OpenCms after the setup.
      *  CAUTION: For security reasons, the user should not have administration permissions.
      *  The user data is stored in the <code>opencms.properties</code> file after the setup.
-    . */
+    */
     public static final String PROP_DB_WORKER_USER = "db.worker.user";
 
     /** The property key <code>server.ethernet.address</code>. Specify a valid MAC-Address. It is used internally by OpenCms. (If not given, the address is generated automatically.) */

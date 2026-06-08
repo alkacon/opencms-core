@@ -27,24 +27,32 @@
 
 package org.opencms.widgets;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Test cases for the parsing of select widget options.<p>
  *
  */
-public class TestSelectWidgetOption extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSelectWidgetOption extends OpenCmsTestRunner {
 
     /**
      * Tests parsing of select widget options.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testOptionParser() throws Exception {
 
         List<CmsSelectWidgetOption> res = CmsSelectWidgetOption.parseOptions(null);
@@ -239,6 +247,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
     /**
      * Tests if options are split correctly.
      */
+    @Test
+    @Order(2)
     public void testOptionSplitter() {
 
         String testString = "a|b|c";
@@ -258,6 +268,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
     /**
      * Incomplete test for the creation of the options string from a list of options, just checking if escapings are added as necessary.
      */
+    @Test
+    @Order(3)
     public void testOptionStringCreation() {
 
         String expected = "value='a\\|b'|value='c\\|'|value='\\|d'";

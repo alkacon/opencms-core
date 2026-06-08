@@ -161,10 +161,11 @@ public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
             if (widgetDialog.useNewStyle()) {
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
-                result.append(getJsHelpMouseHandler(
-                    widgetDialog,
-                    locKey,
-                    CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
+                result.append(
+                    getJsHelpMouseHandler(
+                        widgetDialog,
+                        locKey,
+                        CmsEncoder.escape(locValue, cms.getRequestContext().getEncoding())));
             }
             result.append("></td>");
             return result.toString();

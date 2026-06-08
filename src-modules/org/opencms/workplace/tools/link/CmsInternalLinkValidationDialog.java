@@ -175,14 +175,15 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
-        addWidget(new CmsWidgetDialogParameter(
-            this,
-            "resources",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, null),
-            1,
-            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                this,
+                "resources",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, null),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
     }
 
     /**

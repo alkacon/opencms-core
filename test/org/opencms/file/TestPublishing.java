@@ -44,9 +44,8 @@ import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -56,81 +55,27 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms publishing.<p>
  */
-public class TestPublishing extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPublishing extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestPublishing(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPublishing.class.getName());
-
-        suite.addTest(new TestPublishing("testPublishQueueIssue1"));
-        suite.addTest(new TestPublishing("testPublishQueueIssue2"));
-        suite.addTest(new TestPublishing("testPublishQueueIssue3"));
-        suite.addTest(new TestPublishing("testPublishResourceGalore"));
-        suite.addTest(new TestPublishing("testPublishResourceWithRelatedGalore"));
-        suite.addTest(new TestPublishing("testPublishProjectGalore"));
-        suite.addTest(new TestPublishing("testPublishStructureProperty"));
-        suite.addTest(new TestPublishing("testPublishResourceProperty"));
-        suite.addTest(new TestPublishing("testPublishSiblings"));
-        suite.addTest(new TestPublishing("testPublishCopySibling"));
-        suite.addTest(new TestPublishing("testPublishNewFiles"));
-        suite.addTest(new TestPublishing("testPublishNewFilesInNewFolder"));
-        suite.addTest(new TestPublishing("testPublishChangedFiles"));
-        suite.addTest(new TestPublishing("testPublishLockedFiles"));
-        suite.addTest(new TestPublishing("testPublishFolderWithLockedFiles"));
-        suite.addTest(new TestPublishing("testPublishDeletedFiles"));
-        suite.addTest(new TestPublishing("testPublishProjectLastmodified"));
-        suite.addTest(new TestPublishing("testPublishProjectLastmodifiedFolder"));
-        suite.addTest(new TestPublishing("testPublishTemporaryProject"));
-        suite.addTest(new TestPublishing("testPublishMovedFiles"));
-        suite.addTest(new TestPublishing("testPublishRelatedFiles"));
-        suite.addTest(new TestPublishing("testPublishRelatedFilesInFolder"));
-        suite.addTest(new TestPublishing("testPublishRelatedFilesInNewFolder"));
-        suite.addTest(new TestPublishing("testPublishContentDate"));
-        suite.addTest(new TestPublishing("testPublishDeletedSiblings"));
-        suite.addTest(new TestPublishing("testPublishDeletedSiblings2"));
-        suite.addTest(new TestPublishing("testPublishReplacedFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -138,6 +83,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testPublishChangedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -259,6 +206,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(24)
     public void testPublishContentDate() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -456,6 +405,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testPublishCopySibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -479,9 +430,9 @@ public class TestPublishing extends OpenCmsTestCase {
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         assertEquals(
-            "File is unchanged and online date last modified is not the same as offline",
             newTime,
-            cms.readResource(destination).getDateLastModified());
+            cms.readResource(destination).getDateLastModified(),
+            "File is unchanged and online date last modified is not the same as offline");
         assertState(cms, destination, CmsResource.STATE_UNCHANGED);
     }
 
@@ -490,6 +441,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(16)
     public void testPublishDeletedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -609,6 +562,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(25)
     public void testPublishDeletedSiblings() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -715,6 +670,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(26)
     @SuppressWarnings("deprecation")
     public void testPublishDeletedSiblings2() throws Throwable {
 
@@ -791,6 +748,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testPublishFolderWithLockedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -835,6 +794,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testPublishLockedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -906,6 +867,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(20)
     public void testPublishMovedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -986,6 +949,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testPublishNewFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1107,6 +1072,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     @SuppressWarnings("deprecation")
     public void testPublishNewFilesInNewFolder() throws Throwable {
 
@@ -1213,6 +1180,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testPublishProjectGalore() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1234,7 +1203,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(13 + 51, pubJob.getSize()); // folders + files
         for (int i = 1; i < 10; i++) {
             pubJob = (CmsPublishJobFinished)pubHistory.get(i);
-            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+            assertEquals(0, pubJob.getSize(), "pubJob: " + i);
         }
     }
 
@@ -1243,6 +1212,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(17)
     @SuppressWarnings("deprecation")
     public void testPublishProjectLastmodified() throws Throwable {
 
@@ -1334,6 +1305,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(18)
     public void testPublishProjectLastmodifiedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1371,6 +1344,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testPublishQueueIssue1() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1440,6 +1415,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testPublishQueueIssue2() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1510,6 +1487,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testPublishQueueIssue3() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1580,6 +1559,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(21)
     public void testPublishRelatedFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1654,6 +1635,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(22)
     public void testPublishRelatedFilesInFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1700,6 +1683,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(23)
     @SuppressWarnings("deprecation")
     public void testPublishRelatedFilesInNewFolder() throws Throwable {
 
@@ -1772,6 +1757,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(27)
     @SuppressWarnings("deprecation")
     public void testPublishReplacedFile() throws Throwable {
 
@@ -1814,6 +1801,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testPublishResourceGalore() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1836,7 +1825,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(1, pubJob.getSize());
         for (int i = 1; i < 10; i++) {
             pubJob = (CmsPublishJobFinished)pubHistory.get(i);
-            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+            assertEquals(0, pubJob.getSize(), "pubJob: " + i);
         }
     }
 
@@ -1850,6 +1839,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testPublishResourceProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1894,6 +1885,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testPublishResourceWithRelatedGalore() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1935,7 +1928,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(pubList.size(), pubJob.getSize());
         for (int i = 1; i < 10; i++) {
             pubJob = (CmsPublishJobFinished)pubHistory.get(i);
-            assertEquals("pubJob: " + i, 0, pubJob.getSize());
+            assertEquals(0, pubJob.getSize(), "pubJob: " + i);
         }
     }
 
@@ -1949,6 +1942,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testPublishSiblings() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -2012,6 +2007,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testPublishStructureProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -2056,6 +2053,8 @@ public class TestPublishing extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(19)
     @SuppressWarnings("deprecation")
     public void testPublishTemporaryProject() throws Throwable {
 

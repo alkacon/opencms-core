@@ -170,11 +170,11 @@ public class CmsImageFormatsForm extends Composite implements ValueChangeHandler
      * @return the int-value
      */
     private static native int parseInt(String value) /*-{
-		var ret = parseInt(value);
-		if (isNaN(ret)) {
-			return -1;
-		}
-		return ret;
+        var ret = parseInt(value);
+        if (isNaN(ret)) {
+            return -1;
+        }
+        return ret;
     }-*/;
 
     /**

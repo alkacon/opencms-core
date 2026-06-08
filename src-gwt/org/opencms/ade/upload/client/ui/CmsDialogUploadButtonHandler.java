@@ -34,7 +34,6 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 
 import java.util.List;

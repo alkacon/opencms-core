@@ -60,6 +60,7 @@ public class CmsPublishListVerifier {
          * @param reason the reason why publishing is not allowed
          */
         public ForbiddenFolderEntry(String rootPath, String reason) {
+
             m_rootPath = rootPath;
             m_reason = reason;
         }
@@ -92,6 +93,7 @@ public class CmsPublishListVerifier {
      * Creates a new instance.<p>
      */
     public CmsPublishListVerifier() {
+
         // do nothing
     }
 

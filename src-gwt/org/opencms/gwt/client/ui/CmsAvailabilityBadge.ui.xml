@@ -5,7 +5,7 @@
 	
 	<ui:style gss="true">
 	
-		@external oc-hide-availability-badge, oc-option-bar;
+		@external oc-hide-availability-badge, oc-option-bar, oc-availability-icon;
 		.availabilityBadge  {
 			color: white;
 			font-weight: bold;
@@ -14,9 +14,36 @@
 			right: 22px;
 			pointer-events: none;
 		}
+		
+		
+	.oc-availability-icon:after { 
+		font-family: opencms-font;
+	    display: inline-block;
+    	vertical-align: inherit;
+    	font-style: normal;
+    	font-size: 11px;
+    	font-weight: normal;
+    	font-variant: normal;
+    	text-transform: none;
+    	line-height: inherit;
+    	-webkit-font-smoothing: antialiased;
+    	-moz-osx-font-smoothing: grayscale;
+    	position: absolute;
+    	left: 5px;
+    }
+    
+    .release .oc-availability-icon:after {
+    	content: "\e627";
+    	
+    }
+    
+    .expire .oc-availability-icon:after {
 
+    	content: "\e629";	 	 
+    }
+    
 		.availabilityBadge > * {
-    		padding-left: 5px;
+    		padding-left: 18px;
     		padding-right: 5px;
     		white-space: nowrap;
     		font-size: 12px;
@@ -47,8 +74,8 @@
 
 	</ui:style>
 	<g:FlowPanel ui:field="m_content" addStyleNames="{style.availabilityBadge}">
-		<g:Label ui:field="m_releaseLabel" addStyleNames="{style.release}" />
-		<g:Label ui:field="m_expireLabel" addStyleNames="{style.expire}" />
+		<g:HTML ui:field="m_releaseLabel" addStyleNames="{style.release}" />
+		<g:HTML ui:field="m_expireLabel" addStyleNames="{style.expire}" />
 	</g:FlowPanel>
 	
 </ui:UiBinder> 

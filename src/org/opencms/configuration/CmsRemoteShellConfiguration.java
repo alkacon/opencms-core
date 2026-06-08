@@ -45,6 +45,7 @@ public class CmsRemoteShellConfiguration {
      * @param port the port to use for creating the RMI registry used by the remote shell.
      */
     public CmsRemoteShellConfiguration(boolean enabled, int port) {
+
         m_enabled = enabled;
         m_port = port;
 

@@ -75,6 +75,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
 
     /**Table properties.<p>*/
     public enum TableProperty {
+
         /**Desription column. */
         Description(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_DESCRIPTION_0), String.class, ""),
         /**Icon column.*/

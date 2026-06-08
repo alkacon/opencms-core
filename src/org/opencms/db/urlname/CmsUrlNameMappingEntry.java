@@ -40,7 +40,7 @@ public class CmsUrlNameMappingEntry {
 
     /**
      * Class for comparing URL name mapping entries by date.<p>
-     **/
+     */
     public static class DateComparator implements Comparator<CmsUrlNameMappingEntry> {
 
         /**

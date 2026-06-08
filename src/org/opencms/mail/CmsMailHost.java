@@ -65,7 +65,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
      * Creates a new mail host.<p>
      *
      * @param hostname the name of the mail host
-     * @param port the port, if < 0 then 25 is used
+     * @param port the port, if &lt; 0 then 25 is used
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
      * @param security the security setting
@@ -88,7 +88,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
      * Creates a new mail host.<p>
      *
      * @param hostname the name of the mail host
-     * @param port the port, if < 0 then 25 is used
+     * @param port the port, if &lt; 0 then 25 is used
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
      * @param security the security setting

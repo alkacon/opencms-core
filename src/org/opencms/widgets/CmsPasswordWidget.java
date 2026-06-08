@@ -77,19 +77,19 @@ public class CmsPasswordWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
-     */
-    public DisplayType getDefaultDisplayType() {
-
-        return DisplayType.singleline;
-    }
-
-    /**
      * @see org.opencms.widgets.I_CmsADEWidget#getCssResourceLinks(org.opencms.file.CmsObject)
      */
     public List<String> getCssResourceLinks(CmsObject cms) {
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsADEWidget#getDefaultDisplayType()
+     */
+    public DisplayType getDefaultDisplayType() {
+
+        return DisplayType.singleline;
     }
 
     /**

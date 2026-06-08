@@ -196,8 +196,12 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
-            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(
-                OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(
+                LIST_COLUMN_ADMIN,
+                Boolean.valueOf(
+                    OpenCms.getRoleManager().hasRole(
+                        getCms(),
+                        CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
             item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }

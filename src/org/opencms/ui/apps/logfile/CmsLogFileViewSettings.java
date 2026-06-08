@@ -39,9 +39,9 @@ import javax.servlet.http.HttpSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.Window;
 
 /**
  * Class for the log file view settings dialog.<p>
@@ -69,6 +69,7 @@ public class CmsLogFileViewSettings extends CmsBasicDialog {
      * @param window where the dialog is shown in
      */
     public CmsLogFileViewSettings(final Window window) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_size.setValue(

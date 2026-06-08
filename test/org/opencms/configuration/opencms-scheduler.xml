@@ -5,7 +5,7 @@
 	<scheduler>
 		<job>
 				<name>Test job name</name>
-				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<class>org.opencms.scheduler.CmsTestScheduledJob</class>
 				<reuseinstance>false</reuseinstance>
 				<active>true</active>
 				<cronexpression><![CDATA[0/2 * * * * ?]]></cronexpression>
@@ -25,7 +25,7 @@
 			</job>		
 			<job>
 				<name>Another job name</name>
-				<class>org.opencms.scheduler.TestScheduledJob</class>
+				<class>org.opencms.scheduler.CmsTestScheduledJob</class>
 				<reuseinstance>true</reuseinstance>
 				<active>false</active>
 				<cronexpression><![CDATA[0/10 * * * * ?]]></cronexpression>

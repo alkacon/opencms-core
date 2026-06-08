@@ -444,6 +444,13 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             documenttypeElement.addElement(N_NAME).addText(currSearchDocType.getName());
             // add <class> element
             documenttypeElement.addElement(N_CLASS).addText(currSearchDocType.getClassName());
+            // add <param> elements
+            for (Entry<String, String> entry : currSearchDocType.getConfiguration().entrySet()) {
+                // add <param name=""> element(s)
+                documenttypeElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(
+                    I_CmsXmlConfiguration.A_NAME,
+                    entry.getKey()).addText(entry.getValue());
+            }
             // add <mimetypes> element
             Element mimetypesElement = documenttypeElement.addElement(N_MIMETYPES);
             // get the list of mimetypes to trigger the document factory class

@@ -366,7 +366,6 @@ public class CmsSitemapTreeController {
     class EntryInfo implements I_CmsSimpleContextMenuEntry<MenuContext> {
 
         /**
-
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
          */
         public void executeAction(MenuContext context) {

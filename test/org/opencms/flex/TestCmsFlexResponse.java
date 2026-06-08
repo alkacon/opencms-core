@@ -29,8 +29,7 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsRequestUtil;
 
 import java.lang.reflect.InvocationHandler;
@@ -43,8 +42,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.extensions.TestSetup;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for the {@link CmsFlexResponse}.<p>
@@ -55,7 +57,7 @@ import junit.framework.TestSuite;
  *
  * @since 6.0.1
  */
-public class TestCmsFlexResponse extends OpenCmsTestCase {
+public class TestCmsFlexResponse extends OpenCmsTestRunner {
 
     /**
      * An InvocationHandler which simply records the arguments for each method that was called.<p>
@@ -196,6 +198,17 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     /** Method for setContentType(String) from the HttpServletResponse class. */
     static Method SET_CONTENT_TYPE;
 
+    /**
+     * Static initializer for this test case.<p>
+     */
+    static {
+        try {
+            SET_CONTENT_TYPE = HttpServletResponse.class.getMethod("setContentType", new Class[] {String.class});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("HttpServletResponse linkage error", e);
+        }
+    }
+
     /** Flex controller to be used by the tests. */
     private CmsFlexController m_controller;
 
@@ -210,59 +223,6 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
     /** Servlet response to use with the tests. */
     private HttpServletResponse m_response;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsFlexResponse(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Static initializer for this test case.<p>
-     */
-    static {
-        try {
-            SET_CONTENT_TYPE = HttpServletResponse.class.getMethod("setContentType", new Class[] {String.class});
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("HttpServletResponse linkage error", e);
-        }
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static TestSetup suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsFlexResponse.class.getName());
-
-        suite.addTest(new TestCmsFlexResponse("testContentTypeRules"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
 
     /**
      * Convenience method to create a mock {@link HttpServletRequest} backed by the given invocation handler.<p>
@@ -297,53 +257,13 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /**
-     * Test semantics for Content-Type header on
-     * {@link CmsFlexResponse#setContentType(String)} and {@link CmsFlexResponse#setHeader(String, String)}.<p>
-     *
-     * @throws Exception if the test fails
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public void testContentTypeRules() throws Exception {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        // test that non-top elements won't try to set the content type.
-        CmsFlexResponse f_res = new CmsFlexResponse(m_response, m_controller, false, false);
-        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "application/borked");
-        assertTrue("non-top request does not set content type header", m_resMock.m_invocations.isEmpty());
-
-        f_res.setContentType("application/stillborked");
-        assertTrue("non-top request does not set content type header", m_resMock.m_invocations.isEmpty());
-
-        // test that top elements only set content type once
-        // first, try with a call to setContentType()
-        f_res = new CmsFlexResponse(m_response, m_controller, false, true);
-        f_res.setContentType("text/foo");
-
-        assertEquals("one method has been invoked on the actual response", 1, m_resMock.m_invocations.size());
-        List setCalls = m_resMock.getCalls(SET_CONTENT_TYPE);
-        assertEquals("top element has called setContentType() on the actual servlet response", 1, setCalls.size());
-        assertEquals("correct content type value passed", "text/foo", ((Object[])setCalls.get(0))[0]);
-
-        // subsequent attempts to set the content type on the same response should have no affect
-        f_res.setContentType("text/bar");
-        assertEquals("top element did NOT call content type method again", 1, setCalls.size());
-
-        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/baz");
-        assertEquals("still no more calls to setContentType() method", 1, setCalls.size());
-        assertEquals("no other methods called on request", 1, m_resMock.m_invocations.size());
-
-        // now, try with a call to setHeader on a new top response
-        f_res = new CmsFlexResponse(m_response, m_controller, false, true);
-        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/qux");
-        assertEquals("setContentType() was called from setHeader", 2, setCalls.size());
-        assertEquals("correct content type value passed", "text/qux", ((Object[])setCalls.get(1))[0]);
-
-        // subsequent attempts to set the content type on the same response should have no affect
-        f_res.setContentType("text/quux");
-        assertEquals("no further calls to setContentType", 2, setCalls.size());
-        assertEquals("no other methods called", 1, m_resMock.m_invocations.size());
-
-        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/arg");
-        assertEquals("no further calls to setContentType", 2, setCalls.size());
-        assertEquals("no other methods called", 1, m_resMock.m_invocations.size());
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -352,12 +272,11 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
      *
      * @throws Exception if the setup fails
      *
-     * @see junit.framework.TestCase#setUp()
+     * @throws Exception if the setup fails
      */
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
 
-        super.setUp();
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().getCurrentUser().getName())) {
             fail("'Guest' user could not be properly initialized!");
@@ -371,7 +290,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         m_controller = new CmsFlexController(
             cms,
             null,
-            CmsFlexDummyLoader.getFlexCache(),
+            CmsTestFlexDummyLoader.getFlexCache(),
             m_request,
             m_response,
             false,
@@ -380,16 +299,66 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /**
-     * @see junit.framework.TestCase#tearDown()
+     * Clears the per-test mock state.<p>
      */
-    @Override
-    protected void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() {
 
-        super.tearDown();
         m_reqMock = null;
         m_resMock = null;
         m_request = null;
         m_response = null;
         m_controller = null;
+    }
+
+    /**
+     * Test semantics for Content-Type header on
+     * {@link CmsFlexResponse#setContentType(String)} and {@link CmsFlexResponse#setHeader(String, String)}.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testContentTypeRules() throws Exception {
+
+        // test that non-top elements won't try to set the content type.
+        CmsFlexResponse f_res = new CmsFlexResponse(m_response, m_controller, false, false);
+        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "application/borked");
+        assertTrue(m_resMock.m_invocations.isEmpty(), "non-top request does not set content type header");
+
+        f_res.setContentType("application/stillborked");
+        assertTrue(m_resMock.m_invocations.isEmpty(), "non-top request does not set content type header");
+
+        // test that top elements only set content type once
+        // first, try with a call to setContentType()
+        f_res = new CmsFlexResponse(m_response, m_controller, false, true);
+        f_res.setContentType("text/foo");
+
+        assertEquals(1, m_resMock.m_invocations.size(), "one method has been invoked on the actual response");
+        List setCalls = m_resMock.getCalls(SET_CONTENT_TYPE);
+        assertEquals(1, setCalls.size(), "top element has called setContentType() on the actual servlet response");
+        assertEquals("text/foo", ((Object[])setCalls.get(0))[0], "correct content type value passed");
+
+        // subsequent attempts to set the content type on the same response should have no affect
+        f_res.setContentType("text/bar");
+        assertEquals(1, setCalls.size(), "top element did NOT call content type method again");
+
+        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/baz");
+        assertEquals(1, setCalls.size(), "still no more calls to setContentType() method");
+        assertEquals(1, m_resMock.m_invocations.size(), "no other methods called on request");
+
+        // now, try with a call to setHeader on a new top response
+        f_res = new CmsFlexResponse(m_response, m_controller, false, true);
+        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/qux");
+        assertEquals(2, setCalls.size(), "setContentType() was called from setHeader");
+        assertEquals("text/qux", ((Object[])setCalls.get(1))[0], "correct content type value passed");
+
+        // subsequent attempts to set the content type on the same response should have no affect
+        f_res.setContentType("text/quux");
+        assertEquals(2, setCalls.size(), "no further calls to setContentType");
+        assertEquals(1, m_resMock.m_invocations.size(), "no other methods called");
+
+        f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/arg");
+        assertEquals(2, setCalls.size(), "no further calls to setContentType");
+        assertEquals(1, m_resMock.m_invocations.size(), "no other methods called");
     }
 }

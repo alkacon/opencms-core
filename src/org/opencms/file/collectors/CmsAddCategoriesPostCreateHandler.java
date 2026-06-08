@@ -43,7 +43,8 @@ import java.util.List;
  * To configure it for adding the categories with category paths "cat1/subcat1/", "cat1/subcat2/" and "cat2/"
  * add the attribute
  *  <code>postCreateHandler="org.opencms.file.collectors.CmsAddCategoriesPostCreateHandler|cat1/subcat1/,cat1/subcat2/,cat2/"</code>
- * to the tag that provides the create option (i.e., <cms:contentload>, <cms:edit> or <cms:display>.<p>
+ * to the tag that provides the create option (i.e., <code>&lt;cms:contentload&gt;</code>,
+ * <code>&lt;cms:edit&gt;</code> or <code>&lt;cms:display&gt;</code>).<p>
  *
  * Instead of providing category paths, one can also use site or root paths of the folders representing the categories.
  * If a category path starts with "/" it is assumed to be site or root path. Otherwise it is treated as category path, i.e.,

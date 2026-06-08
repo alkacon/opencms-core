@@ -32,7 +32,7 @@ import org.opencms.file.CmsObject;
 import java.lang.reflect.Method;
 
 /**
- * Allows to run a specific method of an {@link org.opencms.test.OpenCmsTestCase} case concurrently.<p>
+ * Allows to run a specific method of an {@link org.opencms.test.OpenCmsTestRunner} concurrently.<p>
  *
  * @since 6.5.0
  */
@@ -72,7 +72,7 @@ public class OpenCmsThreadedTestCaseSuite {
      * @param method the method to execute on the test case
      * @param parameters the parameter values for the method
      */
-    public OpenCmsThreadedTestCaseSuite(int count, OpenCmsTestCase testCase, String method, Object[] parameters) {
+    public OpenCmsThreadedTestCaseSuite(int count, OpenCmsTestRunner testCase, String method, Object[] parameters) {
 
         m_count = count;
         m_runtime = -1;
@@ -102,7 +102,7 @@ public class OpenCmsThreadedTestCaseSuite {
      * Returns a list of {@link OpenCmsThreadedTestCase} instances that will be executed concurrently by this suite.<p>
      *
      * @param count the number of concurrent executions
-     * @param testCase the base test case instance to execute a method from
+         * @param testCase the base test case instance to execute a method from
      * @param method the method name from the test case to execute
      * @param parameters the parameters of the test case
      *
@@ -112,9 +112,10 @@ public class OpenCmsThreadedTestCaseSuite {
      */
     private static OpenCmsThreadedTestCase[] initThreads(
         int count,
-        OpenCmsTestCase testCase,
+        OpenCmsTestRunner testCase,
         Method method,
-        Object[] parameters) throws Exception {
+        Object[] parameters)
+    throws Exception {
 
         OpenCmsThreadedTestCase[] result = new OpenCmsThreadedTestCase[count];
         for (int i = 0; i < count; i++) {

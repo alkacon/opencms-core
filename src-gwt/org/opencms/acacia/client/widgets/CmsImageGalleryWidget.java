@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * The VFS image gallery widget.<p>
- **/
+ */
 public class CmsImageGalleryWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers {
 
     /** Value of the activation. */

@@ -30,8 +30,7 @@ package org.opencms.ade.contenteditor;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -42,60 +41,30 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.dom4j.Element;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
  */
-public class TestCmsContentService extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsContentService extends OpenCmsTestRunner {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsContentService(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsContentService.class.getName());
-
-        suite.addTest(new TestCmsContentService("testReadTypes"));
-        suite.addTest(new TestCmsContentService("testReadEntity"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -103,6 +72,8 @@ public class TestCmsContentService extends OpenCmsTestCase {
      *
      * @throws Exception if something fails
      */
+    @Test
+    @Order(2)
     public void testReadEntity() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -131,7 +102,7 @@ public class TestCmsContentService extends OpenCmsTestCase {
             Element element = xmlcontent.getLocaleNode(locale);
             result = service.readEntity(xmlcontent, element, locale, "myEntity", "", baseTypeName, visitor, true, null);
         }
-        assertNotNull("Result should not be null", result);
+        assertNotNull(result, "Result should not be null");
         // TODO: check out the result some more to ensure success
     }
 
@@ -140,6 +111,8 @@ public class TestCmsContentService extends OpenCmsTestCase {
      *
      * @throws Exception if something fails
      */
+    @Test
+    @Order(1)
     public void testReadTypes() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -155,8 +128,8 @@ public class TestCmsContentService extends OpenCmsTestCase {
         baseTypeName = CmsContentService.getTypeUri(definition);
         Map<String, CmsType> registeredTypes = service.readTypes(definition, new Locale("en"));
 
-        assertFalse("Registered types should not be empty", registeredTypes.isEmpty());
-        assertTrue("Registered types should contain type: " + baseTypeName, registeredTypes.containsKey(baseTypeName));
-        assertEquals("Should contain 5 types, the base type and 4 simple types", 5, registeredTypes.size());
+        assertFalse(registeredTypes.isEmpty(), "Registered types should not be empty");
+        assertTrue(registeredTypes.containsKey(baseTypeName), "Registered types should contain type: " + baseTypeName);
+        assertEquals(5, registeredTypes.size(), "Should contain 5 types, the base type and 4 simple types");
     }
 }

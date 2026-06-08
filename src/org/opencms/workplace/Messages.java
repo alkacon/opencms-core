@@ -498,6 +498,14 @@ public final class Messages extends A_CmsMessageBundle {
     private static final String STATE_PREFIX = "GUI_EXPLORER_STATE";
 
     /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
      * Returns an instance of this localized message accessor.<p>
      *
      * @return an instance of this localized message accessor
@@ -519,14 +527,6 @@ public final class Messages extends A_CmsMessageBundle {
         sb.append(STATE_POSTFIX);
         return sb.toString();
 
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

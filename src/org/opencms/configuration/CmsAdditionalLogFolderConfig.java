@@ -42,7 +42,7 @@ public class CmsAdditionalLogFolderConfig implements I_CmsConfigurationParameter
 
     /**
      * The config helper instance.
-     **/
+     */
     public static CmsElementWithSubElementsParamConfigHelper ADD_LOG_FOLDER_HELPER = new CmsElementWithSubElementsParamConfigHelper(
         "*/" + CmsWorkplaceConfiguration.N_WORKPLACE,
         N_ADDITIONAL_LOG_FOLDERS,
@@ -84,6 +84,7 @@ public class CmsAdditionalLogFolderConfig implements I_CmsConfigurationParameter
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
+
         // do nothing
     }
 

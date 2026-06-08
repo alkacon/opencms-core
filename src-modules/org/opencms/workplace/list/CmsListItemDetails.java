@@ -66,17 +66,6 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListColumnDefinition#setWp(org.opencms.workplace.list.A_CmsListDialog)
-     */
-    @Override
-    public void setWp(A_CmsListDialog wp) {
-
-        super.setWp(wp);
-        m_hideAction.setWp(wp);
-        m_showAction.setWp(wp);
-    }
-
-    /**
      * Returns the current active action.<p>
      *
      * @return the current active action
@@ -176,5 +165,16 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     public void setShowActionName(CmsMessageContainer showActionName) {
 
         m_showAction.setName(showActionName);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.CmsListColumnDefinition#setWp(org.opencms.workplace.list.A_CmsListDialog)
+     */
+    @Override
+    public void setWp(A_CmsListDialog wp) {
+
+        super.setWp(wp);
+        m_hideAction.setWp(wp);
+        m_showAction.setWp(wp);
     }
 }

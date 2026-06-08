@@ -77,7 +77,7 @@ public class CmsJlanUsers implements UsersInterface {
      * @throws InvalidKeyException
      *
      * @return the password hash
-     **/
+     */
     public static byte[] hashPassword(String password) throws InvalidKeyException, NoSuchAlgorithmException {
 
         PasswordEncryptor encryptor = new PasswordEncryptor();

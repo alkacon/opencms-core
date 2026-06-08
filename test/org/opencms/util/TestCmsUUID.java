@@ -27,7 +27,7 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +40,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.safehaus.uuid.UUID;
 
 /**
@@ -47,19 +52,16 @@ import org.safehaus.uuid.UUID;
  *
  * @since 6.0.0
  */
-public class TestCmsUUID extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsUUID extends OpenCmsTestRunner {
 
     /** Map to store serialized objects with a name. */
     private Map m_serializedMap = new HashMap();
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsUUID(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration() {
 
-        super(arg0);
+        initConfiguration();
     }
 
     /**
@@ -67,6 +69,8 @@ public class TestCmsUUID extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testUUID() throws Exception {
 
         CmsUUID.init(CmsUUID.getDummyEthernetAddress());
@@ -87,26 +91,12 @@ public class TestCmsUUID extends OpenCmsTestCase {
     }
 
     /**
-     * Tests serialization of the CmsUUID.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testUUIDSerialization() throws Exception {
-
-        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
-        CmsUUID id1 = new CmsUUID();
-        serializeObject("id1", id1);
-        CmsUUID d_id1 = (CmsUUID)deSerializeObject("id1");
-        assertEquals(id1, d_id1);
-
-        // serializeObjectToFile("org/opencms/util/uuid_v535.bmp", id1);
-    }
-
-    /**
      * Tests de-serialization of CmsUUIDs from various OpenCms versions.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testUUIDDeSerialization() throws Exception {
 
         CmsUUID uuid_v702 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v702.bmp");
@@ -138,6 +128,8 @@ public class TestCmsUUID extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testUUIDEquals() throws Exception {
 
         CmsUUID.init(CmsUUID.getDummyEthernetAddress());
@@ -196,6 +188,8 @@ public class TestCmsUUID extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(5)
     public void testUUIDisValid() throws Exception {
 
         assertTrue(CmsUUID.isValidUUID((new CmsUUID()).toString()));
@@ -205,6 +199,24 @@ public class TestCmsUUID extends OpenCmsTestCase {
         assertFalse(CmsUUID.isValidUUID(null));
         assertFalse(CmsUUID.isValidUUID(""));
         assertFalse(CmsUUID.isValidUUID("kaputt"));
+    }
+
+    /**
+     * Tests serialization of the CmsUUID.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Order(4)
+    public void testUUIDSerialization() throws Exception {
+
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
+        CmsUUID id1 = new CmsUUID();
+        serializeObject("id1", id1);
+        CmsUUID d_id1 = (CmsUUID)deSerializeObject("id1");
+        assertEquals(id1, d_id1);
+
+        // serializeObjectToFile("org/opencms/util/uuid_v535.bmp", id1);
     }
 
     /**

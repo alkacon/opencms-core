@@ -23,11 +23,11 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+			<handler class="org.opencms.xml.content.CmsTestXmlContentHandler" />
 			<layouts>
 				<layout element="Title" widget="org.opencms.widgets.CmsCheckboxWidget" configuration="Configuration for Title" />
 				<layout element="Test" widget="HtmlWidget" configuration="Configuration for Test" />				
-				<layout element="Toast" widget="org.opencms.xml.content.TestCustomInputWidgetImpl" configuration="Configuration for Toast" />				
+				<layout element="Toast" widget="org.opencms.xml.content.CmsTestCustomInputWidgetImpl" configuration="Configuration for Toast" />				
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

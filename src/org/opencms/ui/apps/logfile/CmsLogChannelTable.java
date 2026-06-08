@@ -68,7 +68,7 @@ public class CmsLogChannelTable extends Table {
 
     /**
      * Table column generator for Level-buttons.<p>
-     * */
+     */
     class LevelIcon implements Table.ColumnGenerator {
 
         /**vaadin serial id. */

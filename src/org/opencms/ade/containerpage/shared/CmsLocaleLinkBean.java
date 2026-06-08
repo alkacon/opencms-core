@@ -44,6 +44,7 @@ public class CmsLocaleLinkBean implements IsSerializable {
      * Default constructor for serialization.<p>
      */
     protected CmsLocaleLinkBean() {
+
         // do nothing
     }
 
@@ -54,6 +55,7 @@ public class CmsLocaleLinkBean implements IsSerializable {
      * @param link the link
      */
     protected CmsLocaleLinkBean(String error, String link) {
+
         m_error = error;
         m_link = link;
     }

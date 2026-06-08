@@ -29,8 +29,8 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;

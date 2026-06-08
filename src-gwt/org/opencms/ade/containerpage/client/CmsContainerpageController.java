@@ -282,7 +282,7 @@ public final class CmsContainerpageController {
 
         /**
          * Called after all other onReload calls for the current operation.
-         * */
+         */
         void finish();
 
         /**
@@ -549,7 +549,7 @@ public final class CmsContainerpageController {
         private Set<String> m_clientIds;
 
         /**
-        "         * Constructor.<p>
+         * Constructor.<p>
          *
          * @param clientIds the client id's
          * @param callback the call-back
@@ -3153,7 +3153,7 @@ public final class CmsContainerpageController {
      *
      * @param elementWidget the element to replace
      * @param elementId the id of the replacing content
-     * @param callback  the callback to execute after the element is replaced
+     * @param handler the handler to execute after the element is replaced
      */
     public void replaceElement(
         final CmsContainerPageElementPanel elementWidget,

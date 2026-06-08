@@ -45,6 +45,7 @@ public class CmsDialogFormHandler implements I_CmsFormHandler {
      * Creates a new instance.<p>
      */
     public CmsDialogFormHandler() {
+
         // empty default constructor
     }
 

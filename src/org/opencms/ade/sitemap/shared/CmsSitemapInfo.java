@@ -52,13 +52,6 @@ public class CmsSitemapInfo implements IsSerializable {
     private String m_title;
 
     /**
-     * Constructor for serialization only.<p>
-     */
-    protected CmsSitemapInfo() {
-
-    }
-
-    /**
      * Constructor.<p>
      *
      * @param currentProject the current project
@@ -74,6 +67,13 @@ public class CmsSitemapInfo implements IsSerializable {
         m_siteLocale = siteLocale;
         m_siteHost = siteHost;
         m_title = title;
+    }
+
+    /**
+     * Constructor for serialization only.<p>
+     */
+    protected CmsSitemapInfo() {
+
     }
 
     /**
@@ -97,16 +97,6 @@ public class CmsSitemapInfo implements IsSerializable {
     }
 
     /**
-     * Returns the site default locale.<p>
-     *
-     * @return the site default locale
-     */
-    public String getSiteLocale() {
-
-        return m_siteLocale;
-    }
-
-    /**
      * Returns the host of the current site.<p>
      *
      * @return the host of the current site
@@ -114,6 +104,16 @@ public class CmsSitemapInfo implements IsSerializable {
     public String getSiteHost() {
 
         return m_siteHost;
+    }
+
+    /**
+     * Returns the site default locale.<p>
+     *
+     * @return the site default locale
+     */
+    public String getSiteLocale() {
+
+        return m_siteLocale;
     }
 
     /**
