@@ -1190,7 +1190,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      */
     private boolean showInUsedView(String category) {
 
-        if (CmsCategoryField.isParentCategoryOfSelected(m_showByRepository, category, m_selectedCategories)) {
+        if (CmsCategoryField.isParentCategoryOfSelected(m_showByRepository, category, m_selectedCategories, true)) {
             return true;
         }
         if ("".equals(category)) {

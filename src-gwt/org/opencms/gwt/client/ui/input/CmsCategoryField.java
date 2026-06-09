@@ -209,17 +209,19 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
      * @param isByRepository flag, indicating if the categories are shown by repository.
      * @param category a category path
      * @param selection a set containing either category paths or category site paths
+     * @param includeSelected flag, indicating if selected categories should be included
      * @return true if the category is a parent category of any element of the given selection
      */
     public static boolean isParentCategoryOfSelected(
         boolean isByRepository,
         String category,
-        Collection<String> selection) {
+        Collection<String> selection,
+        boolean includeSelected) {
 
         category = normalizePath(isByRepository ? category : removeCategoryPrefix(category));
         for (String selected : selection) {
             selected = normalizePath(isByRepository ? selected : removeCategoryPrefix(selected));
-            if (selected.startsWith(category)) {
+            if ((includeSelected || (selected.length() > category.length())) && selected.startsWith(category)) {
                 return true;
             }
         }
@@ -289,8 +291,14 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 boolean hasSelectedChildren = isParentCategoryOfSelected(
                     m_isByRepository,
                     category.getSitePath(),
-                    selectedCategories);
-                if (!(category.getPath().length() <= 1) || hasSelectedChildren) {
+                    selectedCategories,
+                    false);
+                boolean hasSelectedChildrenOrSelected = isParentCategoryOfSelected(
+                    m_isByRepository,
+                    category.getSitePath(),
+                    selectedCategories,
+                    true);
+                if (!(category.getPath().length() <= 1) || hasSelectedChildrenOrSelected) {
                     if (m_selectParent || !hasSelectedChildren) {
                         treeItem = buildTreeItem(category, selectedCategories, false);
                         if (treeItem.isOpen()) {
@@ -513,12 +521,20 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem;
                 boolean isPartofPath = false;
-                isPartofPath = isParentCategoryOfSelected(m_isByRepository, child.getSitePath(), selectedCategories);
+                isPartofPath = isParentCategoryOfSelected(
+                    m_isByRepository,
+                    child.getSitePath(),
+                    selectedCategories,
+                    true);
                 if (isPartofPath) {
                     m_singleSidePath = child.getSitePath();
                     m_valuesSet++;
                     if (m_selectParent
-                        || !isParentCategoryOfSelected(m_isByRepository, child.getSitePath(), selectedCategories)) {
+                        || !isParentCategoryOfSelected(
+                            m_isByRepository,
+                            child.getSitePath(),
+                            selectedCategories,
+                            false)) {
                         m_allSidePath.add(child.getSitePath());
                         treeItem = buildTreeItem(child, selectedCategories, false);
                     } else {
@@ -562,7 +578,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
         boolean isPartofPath = false;
-        isPartofPath = isParentCategoryOfSelected(m_isByRepository, category.getSitePath(), selectedCategories);
+        isPartofPath = isParentCategoryOfSelected(m_isByRepository, category.getSitePath(), selectedCategories, true);
         if (isPartofPath) {
             m_categories.add(treeItem);
             treeItem.setOpen(true);
