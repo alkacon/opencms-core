@@ -1404,7 +1404,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             for (CmsCategory category : previousCategories) {
                 if (categories.contains(category.getPath())) {
                     categories.remove(category.getPath());
-                } else {
+                } else if (categories.stream().noneMatch(c -> c.startsWith(category.getPath()))) {
                     catService.removeResourceFromCategory(cms, sitePath, category);
                 }
             }
