@@ -166,7 +166,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.put(CONFIGURATION_COLLAPSED, null);
         }
         // append 'showWithCategory' flag, if necessary
-        if (OpenCms.getWorkplaceManager().isDisplayCategorySelectionCollapsed()) {
+        if (OpenCms.getWorkplaceManager().isDisplayCategoriesByRepository()) {
             result.put(CONFIGURATION_SHOW_WITH_REPOSITORY, null);
         }
         if (m_parentSelection) {
