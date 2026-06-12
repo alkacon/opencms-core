@@ -67,8 +67,8 @@
                     <resource key="label.LlmsFilePage.Summary.help">Die automatisch generierte Zusammenfassung der Seite.</resource>
                     <resource key="label.LlmsFilePage.Hide">Seite verstecken</resource>
                     <resource key="label.LlmsFilePage.Hide.help">Wenn angekreuzt, wird die Seite nicht in der llms.txt Ausgabe angezeigt.</resource>
-                    <resource key="label.LlmsFilePage.OverrideSummary">EigeneZusammenfassung</resource>
-                    <resource key="label.LlmsFilePage.URL.help">Dieser optionale individuelle Text überschreibt die automatisch generierte Zusammenfassung, falls vorhanden.</resource>
+                    <resource key="label.LlmsFilePage.OverrideSummary">Eigene Zusammenfassung</resource>
+                    <resource key="label.LlmsFilePage.OverrideSummary.help">Dieser optionale individuelle Text überschreibt die automatisch generierte Zusammenfassung, falls vorhanden.</resource>
                 </bundle>
                 </xmlbundle>
             </resourcebundles>
