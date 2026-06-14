@@ -1770,6 +1770,12 @@ def coreTestConfig = {
         .orElse(providers.environmentVariable('OPENCMS_TEST_VERBOSE'))
         .orElse('false')
         .get()
+    // disables the snapshot setup optimization (OpenCmsTestSnapRunner) so the traditional full
+    // import runs instead; pass -PnoSnapshot=true or -Dopencms.test.snapshot.disabled=true
+    systemProperties['opencms.test.snapshot.disabled'] = providers.gradleProperty('noSnapshot')
+        .orElse(providers.systemProperty('opencms.test.snapshot.disabled'))
+        .orElse('false')
+        .get()
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
 }

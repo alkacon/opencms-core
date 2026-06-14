@@ -48,7 +48,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
- *
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestChacc extends OpenCmsTestRunner {

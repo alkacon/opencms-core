@@ -16,10 +16,6 @@
 #
 /bin
 /test-bin
-/test/data/resources
-/test/data/WEB-INF/imagecache
-/test/data/WEB-INF/index
-/test/data/WEB-INF/config
 /gwt-unitCache
 /xbuild.properties
 /hostedmode-war

@@ -145,22 +145,22 @@ public class OpenCmsTestRunner extends Assertions {
     protected static class ConnectionData {
 
         /** The name of the database. */
-        private String m_dbName;
+        String m_dbName;
 
         /** The database driver. */
-        private String m_jdbcDriver;
+        String m_jdbcDriver;
 
         /** The database url. */
-        private String m_jdbcUrl;
+        String m_jdbcUrl;
 
         /** Additional database parameters. */
-        private String m_jdbcUrlParams;
+        String m_jdbcUrlParams;
 
         /** The name of the user. */
-        private String m_userName;
+        String m_userName;
 
         /** The password of the user. */
-        private String m_userPassword;
+        String m_userPassword;
     }
 
     /**
@@ -219,6 +219,12 @@ public class OpenCmsTestRunner extends Assertions {
     /** Special character constant. */
     public static final String C_UUML_UPPER = "\u00dc";
 
+    /** Key for tests on the HSQLDB database. */
+    public static final String DB_HSQLDB = "hsqldb";
+
+    /** Name of the core base module, which is imported specially (zipped from the source tree). */
+    public static final String MODULE_OPENCMS_BASE = "org.opencms.base";
+
     /** Key for tests on MySql database. */
     public static final String DB_MYSQL = "mysql";
 
@@ -227,6 +233,27 @@ public class OpenCmsTestRunner extends Assertions {
 
     /** Property / environment name for selecting an alternative test configuration folder. */
     public static final String PROP_TEST_CONFIG_FOLDER = "test.config.folder";
+
+    /** DB product used for the tests. */
+    String m_dbProduct = DB_MYSQL;
+
+    /** The user connection data. */
+    ConnectionData m_defaultConnection;
+
+    /** The internal storages. */
+    HashMap<String, OpenCmsTestResourceStorage> m_resourceStorages;
+
+    /** The setup connection data. */
+    ConnectionData m_setupConnection;
+
+    /** The path to the default setup data files. */
+    String m_setupDataPath;
+
+    /** The list of paths to the additional test data files. */
+    List<String> m_testDataPath;
+
+    /** The initialized OpenCms shell instance. */
+    CmsShell m_shell;
 
     /** Additional connection data. */
     private ConnectionData m_additionalConnection;
@@ -240,12 +267,6 @@ public class OpenCmsTestRunner extends Assertions {
     /** The file date of the configuration files. */
     private long[] m_dateConfigFiles;
 
-    /** DB product used for the tests. */
-    private String m_dbProduct = DB_MYSQL;
-
-    /** The user connection data. */
-    private ConnectionData m_defaultConnection;
-
     /** Name of the default tablespace (oracle only). */
     private String m_defaultTablespace;
 
@@ -258,23 +279,8 @@ public class OpenCmsTestRunner extends Assertions {
     /** The current test method name. */
     private String m_currentTestName;
 
-    /** The internal storages. */
-    private HashMap<String, OpenCmsTestResourceStorage> m_resourceStorages;
-
-    /** The setup connection data. */
-    private ConnectionData m_setupConnection;
-
-    /** The path to the default setup data files. */
-    private String m_setupDataPath;
-
-    /** The list of paths to the additional test data files. */
-    private List<String> m_testDataPath;
-
     /** Name of the temporary tablespace (oracle only). */
     private String m_tempTablespace;
-
-    /** The initialized OpenCms shell instance. */
-    private CmsShell m_shell;
 
     /**
      * Default JUnit constructor.<p>
@@ -3270,6 +3276,36 @@ public class OpenCmsTestRunner extends Assertions {
     }
 
     /**
+     * Imports the given modules in order into the provided context.<p>
+     *
+     * The core module {@link #MODULE_OPENCMS_BASE} is special: its content is not part of the
+     * VFS import but lives in the source tree, so it is zipped on the fly, registered, and the
+     * ADE configuration cache is settled before continuing (otherwise modules relying on its
+     * formatter configuration deadlock on import). All other modules are imported from the
+     * package path via {@link #importModule(CmsObject, String)}.<p>
+     *
+     * @param cms the context to import into
+     * @param modules the module names to import, in order
+     *
+     * @throws Exception if a module import fails
+     */
+    protected void importModules(CmsObject cms, List<String> modules) throws Exception {
+
+        for (String module : modules) {
+            if (MODULE_OPENCMS_BASE.equals(module)) {
+                File baseZip = createBaseModuleZip();
+                OpenCms.getModuleManager().replaceModule(
+                    cms,
+                    baseZip.getAbsolutePath(),
+                    new CmsShellReport(cms.getRequestContext().getLocale()));
+                OpenCms.getADEManager().waitForCacheUpdate(false);
+            } else {
+                importModule(cms, module);
+            }
+        }
+    }
+
+    /**
      * Imports a resource into the Cms.<p>
      *
      * @param cms an initialized CmsObject
@@ -3881,6 +3917,25 @@ public class OpenCmsTestRunner extends Assertions {
     }
 
     /**
+     * Sets up a complete OpenCms instance importing the given fixture folder and modules.<p>
+     *
+     * @param testInfo the JUnit test info object
+     * @param importFolder the folder to import in the "real" FS, or <code>null</code> for none
+     * @param targetFolder the target folder of the import in the VFS, or <code>null</code> for none
+     * @param modules the modules to import in order after setup, or <code>null</code> for none
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project
+     */
+    protected CmsObject setupOpenCms(
+        TestInfo testInfo,
+        String importFolder,
+        String targetFolder,
+        List<String> modules) {
+
+        return setupOpenCms(testInfo, importFolder, targetFolder, null, null, null, null, true, modules);
+    }
+
+    /**
      * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
      * @param testInfo the JUnit test info object
@@ -3952,6 +4007,43 @@ public class OpenCmsTestRunner extends Assertions {
     }
 
     /**
+     * Sets up a complete OpenCms instance with the given configuration but without importing
+     * any modules.<p>
+     *
+     * @param testInfo the JUnit test info object
+     * @param importFolder the folder to import in the "real" FS
+     * @param targetFolder the target folder of the import in the VFS
+     * @param configFolder the folder to copy the standard configuration files from
+     * @param specialConfigFolder the folder that contains the special configuration files for this setup
+     * @param servletMapping the servlet mapping used by the OpenCms shell
+     * @param defaultWebAppName the default webapp name assumed by the OpenCms shell
+     * @param publish publish only if set
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project
+     */
+    protected CmsObject setupOpenCms(
+        TestInfo testInfo,
+        String importFolder,
+        String targetFolder,
+        String configFolder,
+        String specialConfigFolder,
+        String servletMapping,
+        String defaultWebAppName,
+        boolean publish) {
+
+        return setupOpenCms(
+            testInfo,
+            importFolder,
+            targetFolder,
+            configFolder,
+            specialConfigFolder,
+            servletMapping,
+            defaultWebAppName,
+            publish,
+            (List<String>)null);
+    }
+
+    /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
      * @param testInfo the JUnit test info object
@@ -3962,6 +4054,7 @@ public class OpenCmsTestRunner extends Assertions {
      * @param servletMapping The servlet mapping used by the OpenCms shell. Default: "/opencms/*".
      * @param defaultWebAppName The default webapp name assumed by the OpenCms shell. Default: "ROOT".
      * @param publish publish only if set
+     * @param modules the modules to import in order after setup, or <code>null</code> for none
      *
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
      */
@@ -3973,7 +4066,8 @@ public class OpenCmsTestRunner extends Assertions {
         String specialConfigFolder,
         String servletMapping,
         String defaultWebAppName,
-        boolean publish) {
+        boolean publish,
+        List<String> modules) {
 
         if ((importFolder == null) || (targetFolder == null)) {
             // target folder needs an import folder and vice versa
@@ -3997,14 +4091,7 @@ public class OpenCmsTestRunner extends Assertions {
         initConfiguration();
 
         // set default values, if parameters are null
-        if (configFolder == null) {
-            String testConfigFolder = System.getProperty(PROP_TEST_CONFIG_FOLDER);
-            if (testConfigFolder == null) {
-                testConfigFolder = m_configuration.get(PROP_TEST_CONFIG_FOLDER);
-            }
-            configFolder = getTestDataPath(
-                "WEB-INF/" + (testConfigFolder == null ? "config." + m_dbProduct : testConfigFolder) + "/");
-        }
+        configFolder = resolveConfigFolder(configFolder);
         specialConfigFolder = specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null;
 
         // intialize a new resource storage
@@ -4116,6 +4203,14 @@ public class OpenCmsTestRunner extends Assertions {
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
+            // import any requested modules (org.opencms.base is handled specially); the snapshot
+            // runner bakes these into the template once and restores them with every snapshot
+            if (modules != null) {
+                cms.getRequestContext().setSiteRoot("/");
+                importModules(cms, modules);
+                cms.getRequestContext().setSiteRoot("/sites/default/");
+            }
+
             // output a message
             printInfoBox(
                 new String[] {
@@ -4132,6 +4227,28 @@ public class OpenCmsTestRunner extends Assertions {
         OpenCmsTestLogAppender.setBreakOnError(true);
         // return the initialized cms context Object
         return cms;
+    }
+
+    /**
+     * Resolves the effective standard configuration folder: returns the given folder unchanged
+     * if not null, otherwise the default folder for the current db product (or the folder named
+     * by the {@link #PROP_TEST_CONFIG_FOLDER} property if set).<p>
+     *
+     * @param configFolder the configuration folder, or <code>null</code> for the default
+     *
+     * @return the resolved configuration folder path
+     */
+    String resolveConfigFolder(String configFolder) {
+
+        if (configFolder != null) {
+            return configFolder;
+        }
+        String testConfigFolder = System.getProperty(PROP_TEST_CONFIG_FOLDER);
+        if (testConfigFolder == null) {
+            testConfigFolder = m_configuration.get(PROP_TEST_CONFIG_FOLDER);
+        }
+        return getTestDataPath(
+            "WEB-INF/" + (testConfigFolder == null ? "config." + m_dbProduct : testConfigFolder) + "/");
     }
 
     /**

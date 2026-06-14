@@ -561,6 +561,10 @@
                     <widget-alias>SelectorWidget</widget-alias>
                     <widget-alias>select</widget-alias>
                 </widget>
+                <widget class="org.opencms.widgets.CmsFilterSelectWidget">
+                    <widget-alias>FilterSelectorWidget</widget-alias>
+                    <widget-alias>filterselect</widget-alias>
+                </widget>
                 <widget class="org.opencms.widgets.CmsTextareaWidget">
                     <widget-alias>TextareaWidget</widget-alias>
                     <widget-alias>textarea</widget-alias>
@@ -609,6 +613,14 @@
                     <widget-alias>SerialDateWidget</widget-alias>
                     <widget-alias>serialdate</widget-alias>
                 </widget>
+                <widget class="org.opencms.widgets.CmsCodeWidget">
+                    <widget-alias>CodeWidget</widget-alias>
+                    <widget-alias>code</widget-alias>
+                    <widget-alias>sourcecode</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsAccessRestrictionWidget">
+                    <widget-alias>accessrestriction</widget-alias>
+                </widget>
             </widgets>
             <schematypes>
                 <schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -625,6 +637,7 @@
                 <schematype class="org.opencms.xml.types.CmsXmlCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlDynamicCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlSerialDateValue" defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlAccessRestrictionValue" defaultwidget="org.opencms.widgets.CmsAccessRestrictionWidget" />
             </schematypes>
         </xmlcontent>
     </vfs>
