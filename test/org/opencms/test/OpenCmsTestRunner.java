@@ -3976,6 +3976,28 @@ public class OpenCmsTestRunner extends Assertions {
     }
 
     /**
+     * Sets up a complete OpenCms instance importing the given fixture folder and modules, with the
+     * configuration overlaid by the given special configuration folder.<p>
+     *
+     * @param testInfo the JUnit test info object
+     * @param importFolder the folder to import in the "real" FS, or <code>null</code> for none
+     * @param targetFolder the target folder of the import in the VFS, or <code>null</code> for none
+     * @param specialConfigFolder the folder with special configuration files overlaid on the base configuration
+     * @param modules the modules to import in order after setup, or <code>null</code> for none
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project
+     */
+    protected CmsObject setupOpenCms(
+        TestInfo testInfo,
+        String importFolder,
+        String targetFolder,
+        String specialConfigFolder,
+        List<String> modules) {
+
+        return setupOpenCms(testInfo, importFolder, targetFolder, null, specialConfigFolder, null, null, true, modules);
+    }
+
+    /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
      * @param testInfo the JUnit test info object

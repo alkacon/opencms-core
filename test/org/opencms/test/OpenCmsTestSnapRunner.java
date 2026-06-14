@@ -51,6 +51,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.TestInfo;
 
 /**
@@ -92,6 +93,9 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
     /** Lazily built snapshot template databases for this JVM run, keyed by fixture. */
     private static final Map<String, File> m_snapshotTemplates = new HashMap<String, File>();
 
+    /** Flag indicating that the current OpenCms instance was restored from a snapshot. */
+    private boolean m_snapshotInstanceOpen;
+
     /**
      * Default JUnit constructor.<p>
      */
@@ -130,6 +134,27 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
     private static String snapshotDbBase(File dir) {
 
         return new File(dir, "db").getAbsolutePath();
+    }
+
+    /**
+     * Shuts down the snapshot OpenCms instance after each test method.<p>
+     */
+    @AfterEach
+    public void closeSnapshotOpenCms() {
+
+        if (!m_snapshotInstanceOpen) {
+            return;
+        }
+        if (m_shell != null) {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            try {
+                m_shell.exit();
+            } catch (Throwable t) {
+                // ignore
+            }
+            m_shell = null;
+        }
+        m_snapshotInstanceOpen = false;
     }
 
     /**
@@ -462,7 +487,6 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
      */
     private CmsObject restoreOpenCmsFromSnapshot(TestInfo testInfo, File templateDir, String configFolder) {
 
-        printTestClassStartBox(testInfo, null, null);
         initConfiguration();
 
         boolean verbose = Boolean.getBoolean("opencms.test.verbose");
@@ -484,7 +508,9 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
                 // ignore
             }
             m_shell = null;
+            m_snapshotInstanceOpen = false;
         }
+
         File workDir = getSnapshotWorkDir();
         String dbBase = snapshotDbBase(workDir);
         shutdownDatabaseQuietly(dbBase);
@@ -522,6 +548,7 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
                 out,
                 System.err,
                 false);
+            m_snapshotInstanceOpen = true;
 
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.loginUser("Admin", "admin");
@@ -540,7 +567,7 @@ public class OpenCmsTestSnapRunner extends OpenCmsTestRunner {
             Configurator.setLevel("org.opencms.workplace.CmsWorkplaceManager", Level.WARN);
         }
         OpenCmsTestLogAppender.setBreakOnError(true);
-        printInfoBox(new String[] {"Snapshot restore finished for OpenCms test class:", getTestClassName(testInfo)});
+        printInfoBox(new String[] {"Restored OpenCms snapshot: " + templateDir});
         return cms;
     }
 

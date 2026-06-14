@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-sites.dtd">
+
+<opencms>
+    <sites>
+        <workplace-server sslmode="no">http://localhost:8088</workplace-server>
+        <default-uri>/sites/default/</default-uri>
+        <shared-folder>/shared/</shared-folder>
+        <oldStyleSecureServer>true</oldStyleSecureServer>
+        <site server="http://default-site.localhost:8088" uri="/sites/default/" title="Default site" position="100.0" webserver="true" sslmode="no" subsiteSelection="false">
+            <parameters>
+                <param name="locale.main">en</param>
+                <param name="locale.secondary">de</param>
+            </parameters>
+        </site>
+        <site server="http://site-a.localhost:8088"       uri="/sites/site-a/"  title="Site A"       position="110.0" webserver="true" sslmode="no" subsiteSelection="false">
+            <parameters>
+                <param name="locale.main">de</param>
+                <param name="locale.secondary">en</param>
+            </parameters>
+        </site>
+        <site server="http://site-b.localhost:8088"       uri="/sites/site-b/"  title="Site B"       position="120.0" webserver="true" sslmode="no" subsiteSelection="false"/>
+    </sites>
+</opencms>
