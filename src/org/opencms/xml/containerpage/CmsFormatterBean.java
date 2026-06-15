@@ -470,6 +470,22 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
     }
 
     /**
+     * Finds the shared setting configuration file that defines the given setting for this formatter in
+     * the context of the given sitemap configuration, for read-only configuration origin discovery.<p>
+     *
+     * @param config the sitemap configuration providing the setting overrides
+     * @param settingName the property name of the setting
+     *
+     * @return the defining file (with its scope), or <code>null</code> if no shared setting file defines it
+     */
+    public CmsSettingConfiguration.CmsSettingDefiningFile findSettingDefinitionFile(
+        CmsADEConfigData config,
+        String settingName) {
+
+        return m_settingConfig.findDefiningFile(config.getSharedSettingOverrides(), settingName);
+    }
+
+    /**
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAliasKeys()
      */
     public Set<String> getAliasKeys() {

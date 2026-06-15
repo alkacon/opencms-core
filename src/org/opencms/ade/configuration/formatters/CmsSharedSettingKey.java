@@ -99,4 +99,15 @@ public class CmsSharedSettingKey {
 
     }
 
+    /**
+     * Gets the formatter key this setting definition is scoped to, or <code>null</code> for a global
+     * (non formatter-specific) definition. Package visible, used for configuration origin discovery.<p>
+     *
+     * @return the formatter key, or <code>null</code>
+     */
+    String getFormatterKey() {
+
+        return m_formatterKey;
+    }
+
 }

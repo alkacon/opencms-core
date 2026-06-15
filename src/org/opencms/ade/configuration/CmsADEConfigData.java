@@ -860,6 +860,19 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the internal configuration data for all nodes of the inheritance sequence, in inheritance
+     * order, for read-only configuration origin discovery (the reference and override edges of each
+     * node are available via {@link CmsADEConfigDataInternal#getMasterConfigs()} and
+     * {@link CmsADEConfigDataInternal#getSharedSettingOverride()}).<p>
+     *
+     * @return the internal configuration data of each node in the inheritance sequence
+     */
+    public List<CmsADEConfigDataInternal> getConfigNodes() {
+
+        return m_configSequence.getConfigNodes();
+    }
+
+    /**
      * Gets an (immutable) list of paths of configuration files in inheritance order.
      *
      * @return the list of configuration files

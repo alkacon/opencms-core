@@ -86,6 +86,21 @@ public class CmsADEConfigurationSequence {
     }
 
     /**
+     * Gets the internal configuration data for all nodes in this sequence, in inheritance order, for
+     * read-only configuration origin discovery.<p>
+     *
+     * @return the internal configuration data of each node in the sequence
+     */
+    public List<CmsADEConfigDataInternal> getConfigNodes() {
+
+        List<CmsADEConfigDataInternal> result = new ArrayList<>();
+        for (int i = 0; i <= m_configIndex; i++) {
+            result.add(m_configDatas.get(i).getConfig());
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
      * Gets the list of configuration file paths in inheritance order, not including the module configuration.
      *
      * @return the list of configuration file paths
