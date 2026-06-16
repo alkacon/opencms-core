@@ -192,13 +192,16 @@ public class CmsSettingConfiguration {
      */
     public CmsSettingDefiningFile findDefiningFile(List<CmsUUID> overrideIds, String settingName) {
 
+        // shared settings are keyed by include name, so resolve the requested setting name back to the
+        // include name the formatter actually references before searching the files
+        String includeName = resolveIncludeName(overrideIds, settingName);
         // sitemap overrides win over the formatter's own shared settings; within each group the last
         // entry is the most specific, so search from the most specific downwards
-        CmsSettingDefiningFile fromOverride = findInFiles(overrideIds, settingName, true);
+        CmsSettingDefiningFile fromOverride = findInFiles(overrideIds, includeName, true);
         if (fromOverride != null) {
             return fromOverride;
         }
-        return findInFiles(m_sharedSettingsIdsFromFormatter, settingName, false);
+        return findInFiles(m_sharedSettingsIdsFromFormatter, includeName, false);
     }
 
     /**
@@ -248,39 +251,29 @@ public class CmsSettingConfiguration {
     }
 
     /**
-     * Searches a list of shared setting files (in ascending specificity) for a definition of the given
-     * setting (matched by its property name), most specific file first, preferring a formatter-specific
-     * entry over the global one within the same file.<p>
+     * Searches a list of shared setting files (in ascending specificity) for a definition with the
+     * given include name, most specific file first, preferring a formatter-specific entry over the
+     * global one.<p>
      *
      * @param ids the shared setting file ids in ascending specificity
-     * @param settingName the property name of the setting to look for
+     * @param includeName the include name of the setting to look for
      * @param fromOverride whether the files are sitemap setting overrides
      *
      * @return the defining file, or <code>null</code>
      */
-    private CmsSettingDefiningFile findInFiles(List<CmsUUID> ids, String settingName, boolean fromOverride) {
+    private CmsSettingDefiningFile findInFiles(List<CmsUUID> ids, String includeName, boolean fromOverride) {
 
         for (int i = ids.size() - 1; i >= 0; i--) {
             Map<CmsSharedSettingKey, CmsXmlContentProperty> map = m_sharedSettingConfigsById.get(ids.get(i));
             if (map == null) {
                 continue;
             }
-            // the shared setting maps are keyed by include name, but a setting is requested by its
-            // property name, so match on the definition's property name
-            boolean globalMatch = false;
-            for (Map.Entry<CmsSharedSettingKey, CmsXmlContentProperty> entry : map.entrySet()) {
-                if (!settingName.equals(entry.getValue().getName())) {
-                    continue;
-                }
-                String entryFormatterKey = entry.getKey().getFormatterKey();
-                if ((m_formatterKey != null) && m_formatterKey.equals(entryFormatterKey)) {
-                    return new CmsSettingDefiningFile(ids.get(i), true, fromOverride);
-                }
-                if (entryFormatterKey == null) {
-                    globalMatch = true;
-                }
+            // the shared setting maps are keyed by (include name, formatter key); match the resolved
+            // include name and prefer a formatter-specific entry over the global one
+            if ((m_formatterKey != null) && map.containsKey(new CmsSharedSettingKey(includeName, m_formatterKey))) {
+                return new CmsSettingDefiningFile(ids.get(i), true, fromOverride);
             }
-            if (globalMatch) {
+            if (map.containsKey(new CmsSharedSettingKey(includeName, null))) {
                 return new CmsSettingDefiningFile(ids.get(i), false, fromOverride);
             }
         }
@@ -316,6 +309,71 @@ public class CmsSettingConfiguration {
     }
 
     /**
+     * Merges a setting listed in the formatter with its matching shared and override definitions, pulling
+     * each field value from the first of [override, formatter, shared] where it is defined.
+     *
+     * @param settingDef the setting definition listed in the formatter
+     * @param includeName the effective include name of the setting definition
+     * @param sharedSettingDefinitions the shared setting definitions referenced from the formatter
+     * @param overrideSettingDefinitions the sitemap override setting definitions active in the current context
+     *
+     * @return the merged setting definition
+     */
+    private CmsXmlContentProperty mergeListedSetting(
+        CmsXmlContentProperty settingDef,
+        String includeName,
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingDefinitions,
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> overrideSettingDefinitions) {
+
+        CmsXmlContentProperty defaultSetting = getSharedSetting(sharedSettingDefinitions, includeName);
+        CmsXmlContentProperty overrideSetting = getSharedSetting(overrideSettingDefinitions, includeName);
+        CmsXmlContentProperty mergedSetting = settingDef;
+        if (defaultSetting != null) {
+            mergedSetting = mergedSetting.mergeDefaults(defaultSetting);
+        }
+        if (overrideSetting != null) {
+            mergedSetting = overrideSetting.mergeDefaults(mergedSetting);
+        }
+        return mergedSetting;
+    }
+
+    /**
+     * Resolves a setting's effective (property) name back to the include name that the formatter
+     * references it by, mirroring how {@link #resolveSettings} derives the effective settings. Read-only,
+     * used for configuration origin discovery.<p>
+     *
+     * @param overrideIds the sitemap setting override file ids active in the current context
+     * @param settingName the effective (property) name of the setting
+     *
+     * @return the include name the formatter references the setting by, or <code>settingName</code> if no
+     *         listed setting resolves to it
+     */
+    private String resolveIncludeName(List<CmsUUID> overrideIds, String settingName) {
+
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingDefinitions = combineSharedSettingDefinitionMaps(
+            m_sharedSettingsIdsFromFormatter);
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> overrideSettingDefinitions = combineSharedSettingDefinitionMaps(
+            overrideIds);
+        String result = settingName;
+        // later listed settings win, mirroring the last-wins put in resolveSettings
+        for (CmsXmlContentProperty settingDef : m_listedSettings) {
+            String includeName = settingDef.getIncludeName(settingDef.getName());
+            if (includeName == null) {
+                continue;
+            }
+            CmsXmlContentProperty mergedSetting = mergeListedSetting(
+                settingDef,
+                includeName,
+                sharedSettingDefinitions,
+                overrideSettingDefinitions);
+            if (settingName.equals(mergedSetting.getName())) {
+                result = includeName;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Computes the finished map of settings for the given combination of shared setting overrides.+
      *
      * @param overrideSharedSettingsIds the structure ids of shared setting overrides active in the current context, with the most specific override last
@@ -344,15 +402,11 @@ public class CmsSettingConfiguration {
                 continue;
             }
 
-            CmsXmlContentProperty defaultSetting = getSharedSetting(sharedSettingDefinitions, includeName);
-            CmsXmlContentProperty overrideSetting = getSharedSetting(overrideSettingDefinitions, includeName);
-            CmsXmlContentProperty mergedSetting = settingDef;
-            if (defaultSetting != null) {
-                mergedSetting = mergedSetting.mergeDefaults(defaultSetting);
-            }
-            if (overrideSetting != null) {
-                mergedSetting = overrideSetting.mergeDefaults(mergedSetting);
-            }
+            CmsXmlContentProperty mergedSetting = mergeListedSetting(
+                settingDef,
+                includeName,
+                sharedSettingDefinitions,
+                overrideSettingDefinitions);
             if (mergedSetting.getName() == null) {
                 continue;
             }
