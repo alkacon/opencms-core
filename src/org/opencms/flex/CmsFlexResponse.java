@@ -435,6 +435,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             header.append("; Secure");
         }
 
+        // HttpOnly
+        if (cookie.isHttpOnly()) {
+            header.append("; HttpOnly");
+        }
+
         addHeader("Set-Cookie", header.toString());
     }
 
