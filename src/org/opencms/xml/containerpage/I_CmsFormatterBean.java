@@ -75,6 +75,16 @@ public interface I_CmsFormatterBean {
     Set<String> getContainerTypes();
 
     /**
+     * Returns the content extraction policy, or <code>null</code> if not configured.<p>
+     *
+     * @return the content extraction policy
+     */
+    default String getContentExtractionPolicy() {
+
+        return null;
+    }
+
+    /**
      * Gets the CSS head includes.<p>
      *
      * @return the CSS head includes

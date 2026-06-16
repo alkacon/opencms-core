@@ -30,6 +30,7 @@
             <xsd:element name="Rank" type="OpenCmsString"/>
             <xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
             <xsd:element name="Display" type="OpenCmsString" minOccurs="0"/>
+            <xsd:element name="ContentExtractionPolicy" type="OpenCmsString" minOccurs="0"/>
             <xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
             <xsd:element name="SearchContent" type="OpenCmsBoolean" />
             <xsd:element name="StrictContainers" type="OpenCmsBoolean" />
@@ -65,6 +66,7 @@
             <layouts>
                 <layout element="Type" widget="org.opencms.widgets.CmsTypeFilterWidget"  />
                 <layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
+                <layout element="ContentExtractionPolicy" widget="SelectorWidget" configuration="*:Default|search-only:Search only|summary-only:Summary only" />
             </layouts>
             <relations>
                 <relation element="IncludeSettings" invalidate="false" />

@@ -133,7 +133,8 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             false, // nestedFormatterSettings
             Collections.<CmsMetaMapping> emptyList(),
             Collections.emptyMap(),
-            false);
+            false,
+            null); // contentExtractionPolicy
         m_realJspRootPath = jspRootPath;
         m_functionFormatterId = functionFormatterId;
         if (parameters != null) {

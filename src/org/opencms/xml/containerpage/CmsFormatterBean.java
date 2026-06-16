@@ -61,6 +61,58 @@ import com.google.common.collect.ImmutableList;
  */
 public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
 
+    /**
+     * The valid values of the content extraction policy ({@link CmsFormatterBean#getContentExtractionPolicy()}).<p>
+     */
+    public enum ContentExtractionPolicy {
+
+        /** Index the content for search, but keep it out of content extraction (e.g. the page outline). */
+        SEARCH_ONLY("search-only"),
+
+        /** Use the content for summaries only. */
+        SUMMARY_ONLY("summary-only");
+
+        /** The configured string value. */
+        private final String m_value;
+
+        /**
+         * Creates a policy constant with its configured string value.<p>
+         *
+         * @param value the configured string value
+         */
+        ContentExtractionPolicy(String value) {
+
+            m_value = value;
+        }
+
+        /**
+         * Returns the policy for a configured string value, or <code>null</code> if none matches.<p>
+         *
+         * @param value the configured string value
+         *
+         * @return the matching policy, or <code>null</code>
+         */
+        public static ContentExtractionPolicy forValue(String value) {
+
+            for (ContentExtractionPolicy policy : values()) {
+                if (policy.m_value.equals(value)) {
+                    return policy;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Returns the configured string value.<p>
+         *
+         * @return the configured string value
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+    }
+
     /** Default rank for formatters from formatter configuration files. */
     public static final int DEFAULT_CONFIGURATION_RANK = 1000;
 
@@ -81,6 +133,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
 
     /** The formatter container type. */
     protected Set<String> m_containerTypes;
+
+    /** The content extraction policy, or null if not configured. */
+    protected String m_contentExtractionPolicy;
 
     /** CSS Head includes. */
     protected Set<String> m_cssHeadIncludes = new LinkedHashSet<String>();
@@ -212,6 +267,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
      * @param metaMappings the meta mappings
      * @param attributes the formatter attributes
      * @param useMetaMappingsForNormalElements if true, meta mappings will be evaluated for normal container elements, not just detail elements
+     * @param contentExtractionPolicy the content extraction policy, or null if not configured
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -244,7 +300,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
         boolean nestedFormatterSettings,
         List<CmsMetaMapping> metaMappings,
         Map<String, String> attributes,
-        boolean useMetaMappingsForNormalElements) {
+        boolean useMetaMappingsForNormalElements,
+        String contentExtractionPolicy) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -287,6 +344,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
         m_useMetaMappingsForNormalElements = useMetaMappingsForNormalElements;
         m_isAllowsSettingsInEditor = isAllowsSettingsInEditor;
         m_attributes = attributes != null ? attributes : Collections.emptyMap();
+        m_contentExtractionPolicy = contentExtractionPolicy;
     }
 
     /**
@@ -342,8 +400,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
             false,
             null,
             null,
-            false);
-
+            false,
+            null);
     }
 
     /**
@@ -441,7 +499,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
             false,
             null,
             Collections.emptyMap(),
-            false);
+            false,
+            null);
         m_matchAll = true;
     }
 
@@ -518,6 +577,18 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
         return m_containerTypes == null
         ? Collections.<String> emptySet()
         : Collections.unmodifiableSet(m_containerTypes);
+    }
+
+    /**
+     * Returns the raw content extraction policy string, or <code>null</code> if not configured; the
+     * valid values are catalogued by {@link ContentExtractionPolicy}.<p>
+     *
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getContentExtractionPolicy()
+     */
+    @Override
+    public String getContentExtractionPolicy() {
+
+        return m_contentExtractionPolicy;
     }
 
     /**

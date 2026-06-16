@@ -152,7 +152,8 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             false,
             metaMappings,
             Collections.emptyMap(),
-            useMetaMappingsForNormalElements);
+            useMetaMappingsForNormalElements,
+            null);
         m_macroInput = macroInput;
         m_placeholderMacroInput = placeholderMacroInput;
         m_referencedFormatters = Collections.unmodifiableMap(referencedFormatters);

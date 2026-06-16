@@ -175,6 +175,43 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that the optional content extraction policy is read from the formatter configuration.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testContentExtractionPolicy() throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        try {
+            cms.createResource(
+                "/system/formatter-policy.fc",
+                getTypeId("formatter_config"),
+                createFormatterConfigXml("with-policy", "extract-main").getBytes(StandardCharsets.UTF_8),
+                new ArrayList<CmsProperty>());
+            cms.createResource(
+                "/system/formatter-nopolicy.fc",
+                getTypeId("formatter_config"),
+                createFormatterConfigXml("without-policy", null).getBytes(StandardCharsets.UTF_8),
+                new ArrayList<CmsProperty>());
+            OpenCms.getADEManager().waitForFormatterCache(false);
+            Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
+                false).getFormatters().values();
+
+            assertEquals(
+                "extract-main",
+                findFormatterByName(formatters, "with-policy").getContentExtractionPolicy(),
+                "the configured content extraction policy should be parsed");
+            assertNull(
+                findFormatterByName(formatters, "without-policy").getContentExtractionPolicy(),
+                "the content extraction policy should be null when not configured");
+        } finally {
+            delete("/system/formatter-policy.fc");
+            delete("/system/formatter-nopolicy.fc");
+        }
+    }
+
+    /**
      * Tests default formatter selection.<p>
      *
      * @throws Exception
@@ -1036,10 +1073,52 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
             false,
             null,
             Collections.emptyMap(),
-            false);
+            false,
+            null);
 
         return result;
 
+    }
+
+    /**
+     * Creates the XML content for a formatter, optionally including a content extraction policy.<p>
+     *
+     * @param name the formatter nice name
+     * @param contentExtractionPolicy the content extraction policy, or null to omit the element
+     * @return the formatter XML
+     * @throws Exception if something goes wrong
+     */
+    private String createFormatterConfigXml(String name, String contentExtractionPolicy) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource formatter = cms.readResource("/system/f1.jsp");
+        String policyElement = contentExtractionPolicy == null
+        ? ""
+        : "    <ContentExtractionPolicy><![CDATA[" + contentExtractionPolicy + "]]></ContentExtractionPolicy>\n";
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "\n"
+            + "<NewFormatters xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd\">\n"
+            + "  <NewFormatter language=\"en\">\n"
+            + "    <NiceName>"
+            + name
+            + "</NiceName>\n"
+            + "    <Type><![CDATA[plain]]></Type>\n"
+            + "    <Jsp>\n"
+            + link(formatter)
+            + "    </Jsp>\n"
+            + "    <Rank>1000</Rank>\n"
+            + "    <Match>\n"
+            + "      <Types>\n"
+            + "        <ContainerType><![CDATA[foo]]></ContainerType>\n"
+            + "      </Types>\n"
+            + "    </Match>\n"
+            + "    <Preview>true</Preview>\n"
+            + "    <SearchContent>true</SearchContent>\n"
+            + "    <AutoEnabled>true</AutoEnabled>\n"
+            + policyElement
+            + "    <Detail>true</Detail>\n"
+            + "  </NewFormatter>\n"
+            + "</NewFormatters>\n";
     }
 
     /**
@@ -1160,7 +1239,8 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
             false,
             null,
             Collections.emptyMap(),
-            false);
+            false,
+            null);
 
         return result;
 
@@ -1232,7 +1312,8 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
             false,
             null,
             Collections.emptyMap(),
-            false);
+            false,
+            null);
 
         return result;
     }
@@ -1299,8 +1380,26 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
             false,
             null,
             Collections.emptyMap(),
-            false);
+            false,
+            null);
         return result;
+    }
+
+    /**
+     * Finds a cached formatter by its nice name.<p>
+     *
+     * @param formatters the formatters to search
+     * @param name the nice name to look for
+     * @return the matching formatter, or null if none was found
+     */
+    private I_CmsFormatterBean findFormatterByName(Collection<I_CmsFormatterBean> formatters, String name) {
+
+        for (I_CmsFormatterBean formatter : formatters) {
+            if (name.equals(formatter.getNiceName(Locale.ENGLISH))) {
+                return formatter;
+            }
+        }
+        return null;
     }
 
     /**

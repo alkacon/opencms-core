@@ -125,6 +125,9 @@ public class CmsFormatterBeanParser {
     public static final String N_CONTAINER_TYPE = "ContainerType";
 
     /** Content value node name. */
+    public static final String N_CONTENT_EXTRACTION_POLICY = "ContentExtractionPolicy";
+
+    /** Content value node name. */
     public static final String N_CSS_INLINE = "CssInline";
 
     /** Content value node name. */
@@ -432,6 +435,8 @@ public class CmsFormatterBeanParser {
         String isStrictContainersStr = getString(root, N_STRICT_CONTAINERS, "false");
         boolean isStrictContainers = Boolean.parseBoolean(isStrictContainersStr);
 
+        String contentExtractionPolicy = getString(root, N_CONTENT_EXTRACTION_POLICY, null);
+
         String description = getString(root, N_DESCRIPTION, null);
 
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
@@ -624,7 +629,8 @@ public class CmsFormatterBeanParser {
                     nestedFormatters,
                     mappings,
                     attributes,
-                    useMetaMappingsForNormalElements);
+                    useMetaMappingsForNormalElements,
+                    contentExtractionPolicy);
             }
         }
 
