@@ -16,6 +16,7 @@
     <xsd:complexType name="OpenCmsLlmsFile">
         <xsd:sequence>
             <xsd:element name="Date" type="OpenCmsDateTime" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="SkipStructure" type="OpenCmsBoolean" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Page" type="OpenCmsLlmsFilePage" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="Result" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         </xsd:sequence>
@@ -29,6 +30,8 @@
                 <bundle locale="en">
                     <resource key="label.LlmsFile.Date">Date</resource>
                     <resource key="label.LlmsFile.Date.help">The last update date of the summary file.</resource>
+                    <resource key="label.LlmsFile.SkipStructure">Skip structure creation</resource>
+                    <resource key="label.LlmsFile.SkipStructure.help">If checked, the final step to structure all pages with AI is skipped. The llms.txt file will just contain the page summaries and optional individual texts.</resource>
                     <resource key="label.LlmsFile.Page">Page</resource>
                     <resource key="label.LlmsFile.Page.help">Summary information of one page.</resource>
                     <resource key="label.LlmsFile.Result">Result</resource>
@@ -43,14 +46,18 @@
                     <resource key="label.LlmsFilePage.Title.help">The page title.</resource>
                     <resource key="label.LlmsFilePage.Summary">Summary</resource>
                     <resource key="label.LlmsFilePage.Summary.help">The automatically generated summary of the page.</resource>
+                    <resource key="label.LlmsFilePage.Prefix">Prefix</resource>
+                    <resource key="label.LlmsFilePage.Prefix.help">Optional individual prefix text added above the summary for the page. Is only added if the structure creation is skipped.</resource>
                     <resource key="label.LlmsFilePage.Hide">Hide page</resource>
                     <resource key="label.LlmsFilePage.Hide.help">If checked, the page is not included in the llms.txt output.</resource>
                     <resource key="label.LlmsFilePage.OverrideSummary">Override summary</resource>
-                    <resource key="label.LlmsFilePage.URL.help">This optional individual text overrides the automatically generated summary if present.</resource>
+                    <resource key="label.LlmsFilePage.OverrideSummary.help">This optional individual text overrides the automatically generated summary if present.</resource>
                 </bundle>
                 <bundle locale="de">
                     <resource key="label.LlmsFile.Date">Datum</resource>
                     <resource key="label.LlmsFile.Date.help">Das Datum der letzten Aktualisierung der Zusammenfassungsdatei.</resource>
+                    <resource key="label.LlmsFile.SkipStructure">Erstellung der Struktur überspringen</resource>
+                    <resource key="label.LlmsFile.SkipStructure.help">Wenn diese Option aktiviert ist, wird der letzte Schritt zur Strukturierung aller Seiten durch KI übersprungen. Die Datei „llms.txt“ enthält dann nur die Seitenzusammenfassungen und gegebenenfalls individuelle Texte.</resource>
                     <resource key="label.LlmsFile.Page">Seite</resource>
                     <resource key="label.LlmsFile.Page.help">Zusammenfassungsinformationen einer Seite.</resource>
                     <resource key="label.LlmsFile.Result">Ergebnis</resource>
@@ -65,6 +72,8 @@
                     <resource key="label.LlmsFilePage.Title.help">Der Seitentitel.</resource>
                     <resource key="label.LlmsFilePage.Summary">Zusammenfassung</resource>
                     <resource key="label.LlmsFilePage.Summary.help">Die automatisch generierte Zusammenfassung der Seite.</resource>
+                    <resource key="label.LlmsFilePage.Prefix">Präfix</resource>
+                    <resource key="label.LlmsFilePage.Prefix.help">Optionaler individueller Text, der über der Zusammenfassung der Seite eingefügt wird. Wird nur hinzugefügt, wenn die Erstellung der Struktur übersprungen wird.</resource>
                     <resource key="label.LlmsFilePage.Hide">Seite verstecken</resource>
                     <resource key="label.LlmsFilePage.Hide.help">Wenn angekreuzt, wird die Seite nicht in der llms.txt Ausgabe angezeigt.</resource>
                     <resource key="label.LlmsFilePage.OverrideSummary">Eigene Zusammenfassung</resource>

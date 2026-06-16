@@ -302,10 +302,12 @@ public class CmsLlmsGenerator {
                     llmsBean.getPagesMap().remove(resId);
                     LOG.debug("Updated URL " + url.getUrl() + " of page list.");
                 } else {
-                    // unchanged page, check override
+                    // unchanged page, check override and prefix
                     if (updateOverridesOrHideFlag
-                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())) {
-                        // in case an override has been updated, we need to refresh the result
+                        && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())
+                            || (llmsBean.isSkipStructure()
+                                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getPrefix())))) {
+                        // in case an override or prefix has been updated, we need to refresh the result
                         changed = true;
                     }
                     llmsBean.getPagesMap().remove(resId);
@@ -404,6 +406,9 @@ public class CmsLlmsGenerator {
         for (CmsLlmsPage page : llmsBean.getPages()) {
 
             if (!page.isHide()) {
+                if (llmsBean.isSkipStructure() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getPrefix())) {
+                    pagesList.append(page.getPrefix()).append("\n");
+                }
                 pagesList.append("- [").append(page.getTitle()).append("]");
                 pagesList.append("(").append(page.getUrl()).append(")");
 
@@ -416,19 +421,24 @@ public class CmsLlmsGenerator {
             }
         }
 
-        try {
-            ChatRequest q = ChatRequest.builder().messages(
-                SystemMessage.from(SYSTEM_PROMPT_GROUP(Locale.ENGLISH)),
-                UserMessage.from(getUserQueryGroup(pagesList.toString()))).maxOutputTokens(8192).build();
-            LOG.debug("Sending group query to chatbot.");
-            result = getChatModel().chat(q).aiMessage().text();
-        } catch (Exception e) {
-            LOG.error("Failed to get group answer for document query", e);
-        } finally {
-            LOG.debug("Answer is: " + result);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-                LOG.debug("No answer, use ungrouped list of pages as fallback.");
-                result = pagesList.toString();
+        if (llmsBean.isSkipStructure()) {
+            LOG.debug("Structuring is skipped, just generate page entries.");
+            result = pagesList.toString();
+        } else {
+            try {
+                ChatRequest q = ChatRequest.builder().messages(
+                    SystemMessage.from(SYSTEM_PROMPT_GROUP(Locale.ENGLISH)),
+                    UserMessage.from(getUserQueryGroup(pagesList.toString()))).maxOutputTokens(8192).build();
+                LOG.debug("Sending group query to chatbot.");
+                result = getChatModel().chat(q).aiMessage().text();
+            } catch (Exception e) {
+                LOG.error("Failed to get group answer for document query", e);
+            } finally {
+                LOG.debug("Answer is: " + result);
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+                    LOG.debug("No answer, use ungrouped list of pages as fallback.");
+                    result = pagesList.toString();
+                }
             }
         }
 

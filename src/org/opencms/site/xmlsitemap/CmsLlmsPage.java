@@ -46,6 +46,9 @@ public class CmsLlmsPage {
     /** The XML content node name for the hide flag. */
     protected static final String NODE_HIDE = "Hide";
 
+    /** The XML content node name for the prefix. */
+    protected static final String NODE_PREFIX = "Prefix";
+
     /** The XML content node name for the title. */
     protected static final String NODE_TITLE = "Title";
 
@@ -66,6 +69,9 @@ public class CmsLlmsPage {
 
     /** The hide flag of the page item. */
     private boolean m_hide;
+
+    /** The optional prefix text of the page item. */
+    private String m_prefix;
 
     /** The title of the page item. */
     private String m_title;
@@ -91,6 +97,7 @@ public class CmsLlmsPage {
      * @param date the last modification date of the page item
      * @param title the title of the page item
      * @param summary the summary text of the page item
+     * @param prefix the optional prefix text of the page item
      * @param hide the hide flag of the page item
      * @param overrideSummary the optional override summary text of the page item
      */
@@ -100,6 +107,7 @@ public class CmsLlmsPage {
         long date,
         String title,
         String summary,
+        String prefix,
         boolean hide,
         String overrideSummary) {
 
@@ -108,6 +116,7 @@ public class CmsLlmsPage {
         m_date = date;
         m_title = title;
         m_summary = summary;
+        m_prefix = prefix;
         m_hide = hide;
         m_overrideSummary = overrideSummary;
     }
@@ -140,6 +149,16 @@ public class CmsLlmsPage {
     public String getOverrideSummary() {
 
         return m_overrideSummary;
+    }
+
+    /**
+     * Returns the optional prefix text of the page item.<p>
+     *
+     * @return the optional prefix text of the page item
+     */
+    public String getPrefix() {
+
+        return m_prefix;
     }
 
     /**
@@ -220,6 +239,16 @@ public class CmsLlmsPage {
     public void setOverrideSummary(String overrideSummary) {
 
         m_overrideSummary = overrideSummary;
+    }
+
+    /**
+     * Sets the optional prefix text of the page item.<p>
+     *
+     * @param overrideSummary the optional prefix text of the page item
+     */
+    public void setPrefix(String prefix) {
+
+        m_prefix = prefix;
     }
 
     /**

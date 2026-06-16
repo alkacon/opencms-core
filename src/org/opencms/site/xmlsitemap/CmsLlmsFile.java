@@ -57,6 +57,9 @@ public class CmsLlmsFile {
     /** The XML content node name for the result. */
     protected static final String NODE_RESULT = "Result";
 
+    /** The XML content node name for the skip structure. */
+    protected static final String NODE_SKIPSTRUCTURE = "SkipStructure";
+
     /** The locale to use for reading the generated XML content. */
     protected static final Locale LOCALE = Locale.ENGLISH;
 
@@ -74,6 +77,9 @@ public class CmsLlmsFile {
 
     /** The generated result text. */
     private String m_result;
+
+    /** The flag to skip structure creation. */
+    private boolean m_skipStructure;
 
     /**
      * Empty constructor.<p>
@@ -93,6 +99,7 @@ public class CmsLlmsFile {
 
         CmsLlmsFile result = new CmsLlmsFile();
         result.setDate(Long.parseLong(content.getStringValue(cms, NODE_DATE, LOCALE)));
+        result.setSkipStructure(Boolean.parseBoolean(content.getStringValue(cms, NODE_SKIPSTRUCTURE, LOCALE)));
         List<CmsLlmsPage> pages = new ArrayList<CmsLlmsPage>();
         for (I_CmsXmlContentValue page : content.getValues(NODE_PAGE, LOCALE)) {
             String pathPrefix = page.getPath() + "/";
@@ -101,10 +108,11 @@ public class CmsLlmsFile {
             long date = Long.parseLong(content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_DATE, LOCALE));
             String title = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_TITLE, LOCALE);
             String summary = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_SUMMARY, LOCALE);
+            String prefix = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_PREFIX, LOCALE);
             boolean hide = Boolean.parseBoolean(
                 content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_HIDE, LOCALE));
             String overrideSummary = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE);
-            pages.add(new CmsLlmsPage(url, id, date, title, summary, hide, overrideSummary));
+            pages.add(new CmsLlmsPage(url, id, date, title, summary, prefix, hide, overrideSummary));
         }
         result.setPages(pages);
         result.setResult(content.getStringValue(cms, NODE_RESULT, LOCALE));
@@ -185,6 +193,12 @@ public class CmsLlmsFile {
             content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_SUMMARY, LOCALE).setStringValue(
                 cms,
                 page.getSummary());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getPrefix())) {
+                content.addValue(cms, pageXmlPathPrefix + CmsLlmsPage.NODE_PREFIX, LOCALE, 0);
+                content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_PREFIX, LOCALE).setStringValue(
+                    cms,
+                    page.getPrefix());
+            }
             content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_HIDE, LOCALE).setStringValue(
                 cms,
                 Boolean.toString(page.isHide()));
@@ -203,7 +217,20 @@ public class CmsLlmsFile {
         // set time stamp
         content.getValue(NODE_DATE, LOCALE).setStringValue(cms, String.valueOf(getDate()));
 
+        // set skip structure flag
+        content.getValue(NODE_SKIPSTRUCTURE, LOCALE).setStringValue(cms, Boolean.toString(isSkipStructure()));
+
         return content;
+    }
+
+    /**
+     * Returns the flag to skip structure creation.<p>
+     *
+     * @return the flag to skip structure creation
+     */
+    public boolean isSkipStructure() {
+
+        return m_skipStructure;
     }
 
     /**
@@ -235,6 +262,16 @@ public class CmsLlmsFile {
     public void setResult(String result) {
 
         m_result = result;
+    }
+
+    /**
+     * Sets the flag to skip structure creation.<p>
+     *
+     * @param skipStructure the flag to skip structure creation
+     */
+    public void setSkipStructure(boolean skipStructure) {
+
+        m_skipStructure = skipStructure;
     }
 
     /**
