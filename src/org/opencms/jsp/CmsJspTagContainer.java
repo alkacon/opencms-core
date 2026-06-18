@@ -1482,6 +1482,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             }
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
             printElementWrapperTagStart(cms, element, standardContext.getPage(), true);
+            OpenCms.getElementMarker().addStartMarker(pageContext, element, null);
             for (CmsContainerElementBean subelement : subElements) {
 
                 try {
@@ -1527,6 +1528,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     // execute the formatter JSP for the given element URI
                     // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
                     printElementWrapperTagStart(cms, subelement, standardContext.getPage(), false);
+                    OpenCms.getElementMarker().addStartMarker(pageContext, subelement, subElementFormatterConfig);
                     standardContext.setElement(subelement);
                     try {
                         String formatterSitePath;
@@ -1574,6 +1576,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         }
                         printElementErrorTag(subelement.getSitePath(), subElementFormatterConfig.getJspRootPath(), e);
                     }
+                    OpenCms.getElementMarker().addEndMarker(pageContext, subelement);
                     printElementWrapperTagEnd(false);
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
@@ -1581,6 +1584,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     }
                 }
             }
+            OpenCms.getElementMarker().addEndMarker(pageContext, element);
             printElementWrapperTagEnd(true);
             return true;
         } else {
@@ -1635,6 +1639,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 }
 
                 printElementWrapperTagStart(cms, element, standardContext.getPage(), false);
+                OpenCms.getElementMarker().addStartMarker(pageContext, element, formatterConfig);
                 standardContext.setElement(element);
                 try {
                     if (!showInContext) {
@@ -1680,6 +1685,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     }
                     printElementErrorTag(element.getSitePath(), formatter, e);
                 }
+                OpenCms.getElementMarker().addEndMarker(pageContext, element);
                 printElementWrapperTagEnd(false);
             }
             return result;

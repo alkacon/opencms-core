@@ -54,7 +54,7 @@ import org.json.JSONObject;
  * <code>html</code> field from the returned JSON and converts it with
  * <code>{@link CmsHtml2MarkdownConverter}</code>.<p>
  *
- * @since 21.0.0
+ * @since 22.0.0
  */
 public final class CmsHtml2MarkdownCli {
 

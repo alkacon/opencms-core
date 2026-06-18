@@ -42,6 +42,7 @@ import org.opencms.file.quota.CmsFolderSizeTracker;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
+import org.opencms.jsp.I_CmsElementMarker;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
@@ -273,6 +274,16 @@ public final class OpenCms {
     public static CmsDefaultUsers getDefaultUsers() {
 
         return OpenCmsCore.getInstance().getDefaultUsers();
+    }
+
+    /**
+     * Returns the configured element marker handler (a no-op default when none is configured).
+     *
+     * @return the element marker handler (never <code>null</code>)
+     */
+    public static I_CmsElementMarker getElementMarker() {
+
+        return OpenCmsCore.getInstance().getElementMarker();
     }
 
     /**

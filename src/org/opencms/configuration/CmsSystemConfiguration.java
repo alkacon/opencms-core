@@ -38,6 +38,8 @@ import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.CmsDefaultElementMarker;
+import org.opencms.jsp.I_CmsElementMarker;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.mail.CmsMailHost;
@@ -300,6 +302,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the detail page handler. */
     public static final String N_DETAIL_PAGE_HANDLER = "detail-page-handler";
+
+    /** The node name for the edit marker handler. */
+    public static final String N_EDIT_MARKER_HANDLER = "edit-marker-handler";
 
     /** The node name for the device selector node. */
     public static final String N_DEVICESELECTOR = "device-selector";
@@ -673,6 +678,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The detail page handler. */
     private I_CmsDetailPageHandler m_detailPageHandler = new CmsDefaultDetailPageHandler();
+
+    /** The element marker handler (no-op default until configured). */
+    private I_CmsElementMarker m_elementMarker = new CmsDefaultElementMarker();
 
     /** The configured OpenCms event manager. */
     private CmsEventManager m_eventManager;
@@ -1433,6 +1441,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate(detailPageHandlerPath, CmsDefaultDetailPageHandler.class.getName(), A_CLASS);
         digester.addSetNext(detailPageHandlerPath, "setDetailPageHandler");
 
+        String editMarkerHandlerPath = "*/" + N_SYSTEM + "/" + N_EDIT_MARKER_HANDLER;
+        digester.addObjectCreate(editMarkerHandlerPath, CmsDefaultElementMarker.class.getName(), A_CLASS);
+        digester.addSetNext(editMarkerHandlerPath, "setElementMarker");
+
         String userdataPath = "*/" + N_SYSTEM + "/" + CmsUserDataRequestManager.N_USERDATA;
         CmsUserDataRequestManager.addDigesterRules(digester, userdataPath);
         digester.addSetNext(userdataPath, "setUserDataRequestManager");
@@ -1905,6 +1917,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
         }
 
+        if ((m_elementMarker != null) && !(m_elementMarker instanceof CmsDefaultElementMarker)) {
+            systemElement.addElement(N_EDIT_MARKER_HANDLER).addAttribute(A_CLASS, m_elementMarker.getClass().getName());
+        }
+
         if (m_detailPageHandler != null) {
             Element handlerElement = systemElement.addElement(N_DETAIL_PAGE_HANDLER).addAttribute(
                 A_CLASS,
@@ -2097,6 +2113,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public String getDtdFilename() {
 
         return CONFIGURATION_DTD_NAME;
+    }
+
+    /**
+     * Gets the configured element marker handler (a no-op default when none is configured).
+     *
+     * @return the element marker handler
+     */
+    public I_CmsElementMarker getElementMarker() {
+
+        return m_elementMarker;
     }
 
     /**
@@ -2679,6 +2705,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         m_detailPageHandler = handler;
 
+    }
+
+    /**
+     * Sets the element marker handler (called from the digester when <code>edit-marker-handler</code> is configured).
+     *
+     * @param marker the element marker handler
+     */
+    public void setElementMarker(I_CmsElementMarker marker) {
+
+        m_elementMarker = marker;
     }
 
     /**

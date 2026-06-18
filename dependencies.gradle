@@ -189,7 +189,7 @@ dependencies {
     distribution('org.htmlunit:neko-htmlunit:4.6.0') { transitive = false }
     distribution('com.github.kwart.jsign:jsign-jpedal:4.92.13') { transitive = false }
     distribution('org.javassist:javassist:3.30.2-GA') { transitive = false }
-    distribution('org.jsoup:jsoup:1.15.3') { transitive = false }
+    distribution('org.jsoup:jsoup:1.21.2') { transitive = false }
     distribution('org.jvnet.mimepull:mimepull:1.9.13') { transitive = false }
     distribution('org.locationtech.spatial4j:spatial4j:0.8') { transitive = false }
     distribution('org.ow2.asm:asm:9.3') { transitive = false }

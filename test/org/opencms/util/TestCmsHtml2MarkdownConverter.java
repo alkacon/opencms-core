@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtml2MarkdownConverter}</code>.<p>
  *
- * @since 21.0.0
+ * @since 22.0.0
  */
 public class TestCmsHtml2MarkdownConverter extends OpenCmsTestRunner {
 
@@ -46,6 +46,21 @@ public class TestCmsHtml2MarkdownConverter extends OpenCmsTestRunner {
 
         assertEquals("", CmsHtml2MarkdownConverter.html2markdown(null));
         assertEquals("", CmsHtml2MarkdownConverter.html2markdown("   "));
+    }
+
+    /**
+     * Tests that a link wrapping block level content (such as a whole card) keeps the wrapped heading
+     * and paragraph as blocks instead of flattening them to inline text. The link is dropped, the
+     * heading stays a heading.<p>
+     */
+    @Test
+    public void testBlockLevelLink() {
+
+        String html = "<a href=\"/download\"><div class=\"heading\"><h3>Download OpenCms 21</h3></div>"
+            + "<div class=\"body\"><p>Download the latest version.</p></div></a>";
+        assertEquals(
+            "### Download OpenCms 21\n\nDownload the latest version.",
+            CmsHtml2MarkdownConverter.html2markdown(html, true, true));
     }
 
     /**
@@ -70,6 +85,8 @@ public class TestCmsHtml2MarkdownConverter extends OpenCmsTestRunner {
             "```java\nint x = 1;\n```",
             CmsHtml2MarkdownConverter.html2markdown("<pre><code class=\"language-java\">int x = 1;</code></pre>"));
         assertEquals("Use `x = 1` now", CmsHtml2MarkdownConverter.html2markdown("<p>Use <code>x = 1</code> now</p>"));
+        // blank lines inside a code block are preserved (the per-block strip only touches the fences)
+        assertEquals("```\na\n\nb\n```", CmsHtml2MarkdownConverter.html2markdown("<pre><code>a\n\nb</code></pre>"));
     }
 
     /**
@@ -127,12 +144,56 @@ public class TestCmsHtml2MarkdownConverter extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that adjacent CSS-spaced elements flattened inline (for example a list teaser tile) are
+     * separated by a space, including nested block boundaries and empty elements, while a space that
+     * is already present is not doubled.<p>
+     */
+    @Test
+    public void testInlineBoundarySpacing() {
+
+        // adjacent elements with no whitespace between them are separated
+        assertEquals(
+            "- a b",
+            CmsHtml2MarkdownConverter.html2markdown("<ul><li><span>a</span><span>b</span></li></ul>"));
+        // a nested block boundary also yields a space
+        assertEquals(
+            "- some other text",
+            CmsHtml2MarkdownConverter.html2markdown("<ul><li><div>some<div>other</div>text</div></li></ul>"));
+        // an empty element becomes a single space
+        assertEquals(
+            "- some text",
+            CmsHtml2MarkdownConverter.html2markdown("<ul><li><div>some<span class=\"x\"></span>text</div></li></ul>"));
+        // a space already present in the source is not doubled
+        assertEquals(
+            "- a b",
+            CmsHtml2MarkdownConverter.html2markdown("<ul><li><span>a</span> <span>b</span></li></ul>"));
+        // attaching punctuation in its own element keeps no leading space (e.g. a colon in an sr-only span)
+        assertEquals(
+            "- Release notes: OpenCms 21",
+            CmsHtml2MarkdownConverter.html2markdown(
+                "<ul><li><span>Release notes<span class=\"sr-only\">:</span></span><span>OpenCms 21</span></li></ul>"));
+    }
+
+    /**
      * Tests a plain inline fragment without any block level wrapper.<p>
      */
     @Test
     public void testInlineFragment() {
 
         assertEquals("Hello **x**", CmsHtml2MarkdownConverter.html2markdown("Hello <b>x</b>"));
+    }
+
+    /**
+     * Tests that inline markup (bold, italic, inline code, links) is not force separated, so it keeps
+     * the whitespace from the source.<p>
+     */
+    @Test
+    public void testInlineMarkupNotForceSeparated() {
+
+        assertEquals("go**now**", CmsHtml2MarkdownConverter.html2markdown("<p>go<strong>now</strong></p>"));
+        assertEquals(
+            "See the docs now",
+            CmsHtml2MarkdownConverter.html2markdown("<p>See <a href=\"/x\">the docs</a> now</p>", false, true));
     }
 
     /**
@@ -216,6 +277,28 @@ public class TestCmsHtml2MarkdownConverter extends OpenCmsTestRunner {
         String html = "<p>See <a href=\"/x\" title=\"T\">the docs</a> now</p>";
         assertEquals("See [the docs](/x \"T\") now", CmsHtml2MarkdownConverter.html2markdown(html));
         assertEquals("See the docs now", CmsHtml2MarkdownConverter.html2markdown(html, false, true));
+    }
+
+    /**
+     * Tests that script and style elements are dropped entirely rather than rendered as text, for
+     * example ld+json structured data carrying an image copyright notice.<p>
+     */
+    @Test
+    public void testScriptAndStyleDropped() {
+
+        String html = "<p>Visible</p>"
+            + "<script type=\"application/ld+json\">{\"copyrightNotice\":\"(c) Someone\"}</script>"
+            + "<style>.x{color:red}</style>";
+        assertEquals("Visible", CmsHtml2MarkdownConverter.html2markdown(html));
+    }
+
+    /**
+     * Tests that blocks are separated by a single blank line, with no extra blank lines.<p>
+     */
+    @Test
+    public void testSingleBlankLineBetweenBlocks() {
+
+        assertEquals("A\n\nB\n\nC", CmsHtml2MarkdownConverter.html2markdown("<div><p>A</p><p>B</p><p>C</p></div>"));
     }
 
     /**

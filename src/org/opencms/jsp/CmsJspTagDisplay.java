@@ -213,6 +213,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             (HttpServletRequest)(context.getRequest()),
                             cms).setCacheContainerElement(element.editorHash(), element);
                     }
+                    OpenCms.getElementMarker().addStartMarker(context, element, formatter);
                     try {
                         CmsJspTagInclude.includeTagAction(
                             context,
@@ -232,6 +233,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             LOG.error(e.getLocalizedMessage(), e);
                         }
                     }
+                    OpenCms.getElementMarker().addEndMarker(context, element);
                     if (openedEditable) {
                         CmsJspTagEdit.insertDirectEditEnd(context);
                     }

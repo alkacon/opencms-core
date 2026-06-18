@@ -79,6 +79,8 @@ import org.opencms.i18n.CmsSingleTreeLocaleHandler;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.json.JSONObject;
+import org.opencms.jsp.CmsDefaultElementMarker;
+import org.opencms.jsp.I_CmsElementMarker;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -400,6 +402,9 @@ public final class OpenCmsCore {
     /** The configured secret store. */
     private I_CmsSecretStore m_secretStore;
 
+    /** The configured element marker handler (no-op default until configured). */
+    private I_CmsElementMarker m_elementMarker = new CmsDefaultElementMarker();
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -665,6 +670,16 @@ public final class OpenCmsCore {
     protected CmsDefaultUsers getDefaultUsers() {
 
         return m_defaultUsers;
+    }
+
+    /**
+     * Gets the configured element marker handler (a no-op default when none is configured).
+     *
+     * @return the element marker handler (never <code>null</code>)
+     */
+    protected I_CmsElementMarker getElementMarker() {
+
+        return m_elementMarker;
     }
 
     /**
@@ -1744,6 +1759,8 @@ public final class OpenCmsCore {
         m_credentialsResolver = systemConfiguration.getCredentialsResolver();
 
         m_secretStore = systemConfiguration.getSecretStore();
+
+        m_elementMarker = systemConfiguration.getElementMarker();
 
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(

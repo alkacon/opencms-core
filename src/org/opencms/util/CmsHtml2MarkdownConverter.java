@@ -54,7 +54,7 @@ import org.jsoup.nodes.TextNode;
  * trip escaping (for example of a leading "#", "-" or "&gt;" at the start of a line) is out of scope.
  * GFM tables, task lists and strikethrough are not supported.<p>
  *
- * @since 21.0.0
+ * @since 22.0.0
  */
 public class CmsHtml2MarkdownConverter {
 
@@ -89,6 +89,9 @@ public class CmsHtml2MarkdownConverter {
         Character.valueOf('_'),
         Character.valueOf('['),
         Character.valueOf(']'));
+
+    /** Punctuation that attaches to the preceding word, so no separating space is inserted before it. */
+    private static final String ATTACHING_PUNCTUATION = ".,:;!?)]}";
 
     /** Maps typographic symbols and punctuation to their plain ASCII replacement (keyed by code point). */
     private static final Map<Character, String> SYMBOL_FOLD = createSymbolFold();
@@ -222,6 +225,18 @@ public class CmsHtml2MarkdownConverter {
     }
 
     /**
+     * Returns whether the given buffer ends with a whitespace character.<p>
+     *
+     * @param buffer the buffer to check
+     *
+     * @return <code>true</code> if the buffer ends with whitespace
+     */
+    private static boolean endsWithWhitespace(StringBuilder buffer) {
+
+        return (buffer.length() > 0) && Character.isWhitespace(buffer.charAt(buffer.length() - 1));
+    }
+
+    /**
      * Backslash escapes a minimal set of Markdown special characters in the given text.<p>
      *
      * @param text the text to escape
@@ -286,15 +301,32 @@ public class CmsHtml2MarkdownConverter {
     }
 
     /**
-     * Returns whether the given node is a block level element.<p>
+     * Returns whether the given node must be rendered as a separate Markdown block.<p>
+     *
+     * A node is a block when its tag is a block level tag, or when it is an otherwise inline element
+     * (for example a link wrapping a whole card) that contains block level content; in the latter
+     * case it is unwrapped and rendered as blocks, so the wrapped headings and paragraphs keep their
+     * structure instead of being flattened to inline text.<p>
      *
      * @param node the node to check
      *
-     * @return <code>true</code> if the node is a block level element
+     * @return <code>true</code> if the node must be rendered as a block
      */
     private static boolean isBlock(Node node) {
 
-        return (node instanceof Element) && BLOCK_TAGS.contains(((Element)node).tagName());
+        if (!(node instanceof Element)) {
+            return false;
+        }
+        Element element = (Element)node;
+        if (BLOCK_TAGS.contains(element.tagName())) {
+            return true;
+        }
+        for (Node child : element.childNodes()) {
+            if (isBlock(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -307,6 +339,38 @@ public class CmsHtml2MarkdownConverter {
     private static boolean isList(Element element) {
 
         return "ul".equals(element.tagName()) || "ol".equals(element.tagName());
+    }
+
+    /**
+     * Returns whether the given node is a structural or empty element whose boundary with adjacent
+     * content should be separated by a space. Text nodes and inline markup elements (bold, italic,
+     * inline code, links, line breaks, images and dropped script / style) are not separating, so they
+     * keep the whitespace as it is in the source.<p>
+     *
+     * @param node the node to check
+     *
+     * @return <code>true</code> if the node's boundary should get a separating space
+     */
+    private static boolean isSeparating(Node node) {
+
+        if (!(node instanceof Element)) {
+            return false;
+        }
+        switch (((Element)node).tagName()) {
+            case "a":
+            case "b":
+            case "br":
+            case "code":
+            case "em":
+            case "i":
+            case "img":
+            case "script":
+            case "strong":
+            case "style":
+                return false;
+            default:
+                return true;
+        }
     }
 
     /**
@@ -376,6 +440,31 @@ public class CmsHtml2MarkdownConverter {
     }
 
     /**
+     * Returns whether the given text starts with a punctuation character that attaches to the
+     * preceding word (see {@link #ATTACHING_PUNCTUATION}), so no separating space should precede it.<p>
+     *
+     * @param text the text to check
+     *
+     * @return <code>true</code> if the text starts with attaching punctuation
+     */
+    private static boolean startsWithPunctuation(String text) {
+
+        return !text.isEmpty() && (ATTACHING_PUNCTUATION.indexOf(text.charAt(0)) >= 0);
+    }
+
+    /**
+     * Returns whether the given text starts with a whitespace character.<p>
+     *
+     * @param text the text to check
+     *
+     * @return <code>true</code> if the text starts with whitespace
+     */
+    private static boolean startsWithWhitespace(String text) {
+
+        return !text.isEmpty() && Character.isWhitespace(text.charAt(0));
+    }
+
+    /**
      * Wraps the given inline content with a Markdown marker, keeping leading and trailing
      * whitespace outside the marker so the markup renders correctly.<p>
      *
@@ -409,8 +498,44 @@ public class CmsHtml2MarkdownConverter {
             return "";
         }
         Document doc = Jsoup.parseBodyFragment(html);
-        List<String> blocks = renderBlocks(doc.body());
-        return String.join("\n\n", blocks).trim();
+        StringBuilder result = new StringBuilder();
+        for (String block : renderBlocks(doc.body())) {
+            // strip each block and drop blank ones, so a stray empty or trailing-newline block can
+            // never produce more than a single blank line between blocks (code block content, which
+            // starts and ends with a fence, is unaffected by the strip)
+            String trimmed = block.strip();
+            if (!trimmed.isEmpty()) {
+                if (result.length() > 0) {
+                    result.append("\n\n");
+                }
+                result.append(trimmed);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Appends the inline rendering of a child node to the buffer, inserting a single separating space
+     * at the boundary between two structural or empty elements when none is present, so content that
+     * relies on CSS for spacing (for example list teaser tiles) does not run together. Inline markup
+     * (bold, italic, inline code, links, line breaks, images) keeps the source whitespace and is never
+     * force separated.<p>
+     *
+     * @param result the inline buffer
+     * @param previous the previously appended child node, or <code>null</code>
+     * @param child the child node to append
+     */
+    private void appendInline(StringBuilder result, Node previous, Node child) {
+
+        String part = renderInline(child);
+        if ((result.length() > 0)
+            && (isSeparating(previous) || isSeparating(child))
+            && !endsWithWhitespace(result)
+            && !startsWithWhitespace(part)
+            && !startsWithPunctuation(part)) {
+            result.append(' ');
+        }
+        result.append(part);
     }
 
     /**
@@ -479,12 +604,15 @@ public class CmsHtml2MarkdownConverter {
 
         List<String> blocks = new ArrayList<String>();
         StringBuilder inline = new StringBuilder();
+        Node previous = null;
         for (Node node : element.childNodes()) {
             if (isBlock(node)) {
                 flushInline(inline, blocks);
                 blocks.addAll(renderBlock((Element)node));
+                previous = null;
             } else {
-                inline.append(renderInline(node));
+                appendInline(inline, previous, node);
+                previous = node;
             }
         }
         flushInline(inline, blocks);
@@ -544,6 +672,11 @@ public class CmsHtml2MarkdownConverter {
                 return renderImage(element);
             case "br":
                 return "\n";
+            case "script":
+            case "style":
+                // non-content markup (for example ld+json structured data carrying an image
+                // copyright notice); drop the element and its text content entirely
+                return "";
             default:
                 // span and any other inline wrapper: render the children only
                 return renderInlineChildren(element);
@@ -560,8 +693,10 @@ public class CmsHtml2MarkdownConverter {
     private String renderInlineChildren(Element element) {
 
         StringBuilder result = new StringBuilder();
+        Node previous = null;
         for (Node node : element.childNodes()) {
-            result.append(renderInline(node));
+            appendInline(result, previous, node);
+            previous = node;
         }
         return result.toString();
     }
@@ -612,11 +747,13 @@ public class CmsHtml2MarkdownConverter {
             String marker = ordered ? (counter++) + ". " : "- ";
             StringBuilder inline = new StringBuilder();
             List<Element> nested = new ArrayList<Element>();
+            Node previous = null;
             for (Node node : item.childNodes()) {
                 if ((node instanceof Element) && isList((Element)node)) {
                     nested.add((Element)node);
                 } else {
-                    inline.append(renderInline(node));
+                    appendInline(inline, previous, node);
+                    previous = node;
                 }
             }
             String text = inline.toString().replace('\n', ' ').trim();

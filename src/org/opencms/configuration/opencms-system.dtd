@@ -46,6 +46,7 @@
 	credentials-resolver?,
 	secret-store?,
 	publish-list-remove-mode?,
+	edit-marker-handler?,
 	detail-page-handler?,
 	restrict-detail-contents?,
 	shell-server?,
@@ -645,10 +646,16 @@
 <!ATTLIST letsencrypt trigger (siteConfig|webserverThread) #IMPLIED>
 
 <!--
-# The detail page handler class with parameters. 
--->  
+# The detail page handler class with parameters.
+-->
 <!ELEMENT detail-page-handler (param*) >
 <!ATTLIST detail-page-handler class CDATA #REQUIRED >
+
+<!--
+# Optional element marker handler class with parameters; emits per-element markers during rendering.
+-->
+<!ELEMENT edit-marker-handler (param*) >
+<!ATTLIST edit-marker-handler class CDATA #IMPLIED >
 
 
 <!ELEMENT userdata (userdata-domain*) >
