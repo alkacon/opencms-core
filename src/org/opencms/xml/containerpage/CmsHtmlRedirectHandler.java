@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -150,34 +149,36 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
                 cms,
                 content.getFile().getRootPath());
             String keyword = getNewWindowKeyword(config);
-            if (keyword != null) {
-                I_CmsXmlContentValue newWindowVal = content.getValue(NEW_WINDOW_FIELD, CmsLocaleManager.MASTER_LOCALE);
-                if (newWindowVal == null) {
-                    newWindowVal = content.addValue(cms, NEW_WINDOW_FIELD, CmsLocaleManager.MASTER_LOCALE, 0);
-                }
-
-                // prepareForUse is called every time the content is unmarshalled, even during saving,
-                // so we can't blindly update the field from the NavInfo property every time (or the changes made by the user would
-                // be overwritten).
-                // We use the condition where the field value is empty as a signal that this is a 'first' unmarshal operation where
-                // the data to unmarshal came straight from the database. We can do that because we always clear out the field value
-                // before saving.
-
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(newWindowVal.getStringValue(cms))) {
-                    boolean newWindow = false;
-                    try {
-                        CmsProperty navInfoProp = cms.readPropertyObject(
-                            content.getFile(),
-                            CmsPropertyDefinition.PROPERTY_NAVINFO,
-                            false);
-                        String navInfo = navInfoProp.getValue();
-                        if (navInfo != null) {
-                            newWindow = CmsStringUtil.hasKeyword(navInfo, keyword);
-                        }
-                    } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
+            for (Locale locale : content.getLocales()) {
+                if (keyword != null) {
+                    I_CmsXmlContentValue newWindowVal = content.getValue(NEW_WINDOW_FIELD, locale);
+                    if (newWindowVal == null) {
+                        newWindowVal = content.addValue(cms, NEW_WINDOW_FIELD, locale, 0);
                     }
-                    newWindowVal.setStringValue(cms, "" + newWindow);
+
+                    // prepareForUse is called every time the content is unmarshalled, even during saving,
+                    // so we can't blindly update the field from the NavInfo property every time (or the changes made by the user would
+                    // be overwritten).
+                    // We use the condition where the field value is empty as a signal that this is a 'first' unmarshal operation where
+                    // the data to unmarshal came straight from the database. We can do that because we always clear out the field value
+                    // before saving.
+
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(newWindowVal.getStringValue(cms))) {
+                        boolean newWindow = false;
+                        try {
+                            CmsProperty navInfoProp = cms.readPropertyObject(
+                                content.getFile(),
+                                CmsPropertyDefinition.PROPERTY_NAVINFO,
+                                false);
+                            String navInfo = navInfoProp.getValue();
+                            if (navInfo != null) {
+                                newWindow = CmsStringUtil.hasKeyword(navInfo, keyword);
+                            }
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        newWindowVal.setStringValue(cms, "" + newWindow);
+                    }
                 }
             }
         }
@@ -230,12 +231,14 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
             String keyword = getNewWindowKeyword(config);
             if (keyword != null) {
                 boolean newWindow = false;
-                I_CmsXmlContentValue newWindowVal = content.getValue(NEW_WINDOW_FIELD, CmsLocaleManager.MASTER_LOCALE);
-                if (newWindowVal == null) {
-                    newWindowVal = content.addValue(cms, NEW_WINDOW_FIELD, CmsLocaleManager.MASTER_LOCALE, 0);
+                for (Locale locale : content.getLocales()) {
+                    I_CmsXmlContentValue newWindowVal = content.getValue(NEW_WINDOW_FIELD, locale);
+                    if (newWindowVal == null) {
+                        newWindowVal = content.addValue(cms, NEW_WINDOW_FIELD, locale, 0);
+                    }
+                    newWindow |= Boolean.parseBoolean(newWindowVal.getStringValue(cms));
+                    newWindowVal.setStringValue(cms, "");
                 }
-                newWindow = Boolean.parseBoolean(newWindowVal.getStringValue(cms));
-                newWindowVal.setStringValue(cms, "");
 
                 CmsProperty navInfoProp = cms.readPropertyObject(
                     content.getFile(),

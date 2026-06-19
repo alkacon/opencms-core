@@ -38,6 +38,12 @@
             <relations>
                 <relation element="Link" type="weak" invalidate="false" />
             </relations>
+            <FieldSettings>
+                <Setting>
+                    <PropertyName>NewWindow</PropertyName>
+                    <Synchronization>true</Synchronization>
+                </Setting>
+            </FieldSettings>
         </xsd:appinfo>
     </xsd:annotation>
 
