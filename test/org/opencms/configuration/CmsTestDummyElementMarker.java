@@ -25,26 +25,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp;
+package org.opencms.configuration;
 
-import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.jsp.I_CmsElementMarker;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import javax.servlet.jsp.PageContext;
 
 /**
- * Default {@link I_CmsElementMarker} that emits nothing.<p>
- *
- * Used when no <code>edit-marker-handler</code> is configured, so the container and display tags can
- * always call the configured marker without a null check.<p>
- *
- * @since 22.0.0
+ * Just a dummy implementation of the I_CmsElementMarker interface that keeps its parameters.
  */
-public class CmsDefaultElementMarker implements I_CmsElementMarker {
+public class CmsTestDummyElementMarker implements I_CmsElementMarker {
 
-    /** The configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
     /**
@@ -60,7 +53,7 @@ public class CmsDefaultElementMarker implements I_CmsElementMarker {
      */
     public void addEndMarker(PageContext context, CmsContainerElementBean element) {
 
-        // no-op default
+        // just a dummy implementation
     }
 
     /**
@@ -68,7 +61,7 @@ public class CmsDefaultElementMarker implements I_CmsElementMarker {
      */
     public void addStartMarker(PageContext context, CmsContainerElementBean element, I_CmsFormatterBean formatter) {
 
-        // no-op default
+        // just a dummy implementation
     }
 
     /**
@@ -84,6 +77,6 @@ public class CmsDefaultElementMarker implements I_CmsElementMarker {
      */
     public void initConfiguration() throws CmsConfigurationException {
 
-        // no-op default
+        // no-op
     }
 }

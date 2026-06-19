@@ -1918,7 +1918,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
 
         if ((m_elementMarker != null) && !(m_elementMarker instanceof CmsDefaultElementMarker)) {
-            systemElement.addElement(N_EDIT_MARKER_HANDLER).addAttribute(A_CLASS, m_elementMarker.getClass().getName());
+            Element markerElement = systemElement.addElement(N_EDIT_MARKER_HANDLER).addAttribute(
+                A_CLASS,
+                m_elementMarker.getClass().getName());
+            CmsParameterConfiguration config = m_elementMarker.getConfiguration();
+            if (config != null) {
+                for (String key : config.keySet()) {
+                    markerElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                }
+            }
         }
 
         if (m_detailPageHandler != null) {

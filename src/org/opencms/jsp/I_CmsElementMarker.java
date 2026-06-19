@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
@@ -43,9 +44,12 @@ import javax.servlet.jsp.PageContext;
  * emitted and normal rendering is unaffected. The configured instance is created once at startup and
  * reached through {@link org.opencms.main.OpenCms#getElementMarker()}.<p>
  *
+ * Implementations are parameter handlers, so they can be configured with nested
+ * <code>&lt;param&gt;</code> elements that are read from and written back to the configuration.<p>
+ *
  * @since 22.0.0
  */
-public interface I_CmsElementMarker {
+public interface I_CmsElementMarker extends I_CmsConfigurationParameterHandler {
 
     /**
      * Adds the end marker for an element to the page output.<p>

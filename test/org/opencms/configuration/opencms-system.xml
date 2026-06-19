@@ -164,7 +164,12 @@
         	<param name="key1">value1</param>
         	<param name="key2">value2</param>
         </secret-store>
-        
+
+        <edit-marker-handler class="org.opencms.configuration.CmsTestDummyElementMarker">
+            <param name="testKey1">testValue1</param>
+            <param name="testKey2">testValue2</param>
+        </edit-marker-handler>
+
         <detail-page-handler class="org.opencms.ade.detailpage.CmsDefaultDetailPageHandler">
             <param name="testKey1">testValue1</param>
             <param name="testKey2">testValue2</param>
