@@ -2,7 +2,7 @@ dependencies {
     usedApis('javax.servlet.jsp:javax.servlet.jsp-api:2.3.1') { transitive = false }
     usedApis('javax.servlet:javax.servlet-api:4.0.0') { transitive = false }
     distribution('javax.annotation:javax.annotation-api:1.3.2') { transitive = false }
-    distribution('org.gwtproject:gwt-servlet:2.13.0') { transitive = false }
+    distribution('org.gwtproject:gwt-servlet:2.13.1') { transitive = false }
     distribution('org.apache.commons:commons-fileupload2-javax:2.0.0-M5') { transitive = false }
     distribution('javax.servlet.jsp.jstl:jstl-api:1.2') { transitive = false }
     distribution('org.glassfish.web:javax.servlet.jsp.jstl:1.2.5-b03') { transitive = false }

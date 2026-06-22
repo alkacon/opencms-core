@@ -8,7 +8,7 @@ dependencies {
     gwtCompile('javax.servlet:javax.servlet-api:4.0.0') { transitive =  false }
     gwtCompile('javax.annotation:javax.annotation-api:1.3.2') { transitive = false }
     
-    distribution('org.gwtproject:gwt-servlet-jakarta:2.13.0') { transitive = false }
+    distribution('org.gwtproject:gwt-servlet-jakarta:2.13.1') { transitive = false }
     
     distribution('org.apache.commons:commons-fileupload2-jakarta-servlet5:2.0.0-M5') { transitive = false }
     distribution('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2') { transitive = false }

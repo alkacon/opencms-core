@@ -15,10 +15,10 @@ dependencies {
     gwtCompile('ant:ant:1.6.5') { transitive = false }
     gwtCompile('colt:colt:1.2.0') { transitive = false }
     gwtCompile('com.google.code.gson:gson:2.10.1') { transitive = false }
-    gwtCompile('org.gwtproject:gwt-dev:2.13.0') {
+    gwtCompile('org.gwtproject:gwt-dev:2.13.1') {
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    gwtCompile('org.gwtproject:gwt-user:2.13.0')
+    gwtCompile('org.gwtproject:gwt-user:2.13.1')
     gwtCompile('com.google.jsinterop:jsinterop-annotations:2.0.2') { transitive = false }
     gwtCompile('com.google.jsinterop:jsinterop-annotations:1.0.2') {
         transitive = false
