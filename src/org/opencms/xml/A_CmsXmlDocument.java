@@ -46,9 +46,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -79,7 +80,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     protected Map<String, Set<Locale>> m_elementLocales;
 
     /** Maps locales to available element names. */
-    protected Map<Locale, Set<String>> m_elementNames;
+    protected Map<Locale, LinkedHashSet<String>> m_elementNames;
 
     /** The encoding to use for this XML document. */
     protected String m_encoding;
@@ -91,7 +92,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     protected Set<Locale> m_locales;
 
     /** Reference for named elements in the document. */
-    private Map<String, I_CmsXmlContentValue> m_bookmarks;
+    private LinkedHashMap<String, I_CmsXmlContentValue> m_bookmarks;
 
     /** Cache for temporary data associated with the content. */
     private Map<String, Object> m_tempDataCache = new ConcurrentHashMap<>();
@@ -102,7 +103,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     protected A_CmsXmlDocument() {
 
-        m_bookmarks = new HashMap<String, I_CmsXmlContentValue>();
+        m_bookmarks = new LinkedHashMap<String, I_CmsXmlContentValue>();
         m_locales = new HashSet<Locale>();
     }
 
@@ -793,9 +794,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             }
         }
         // update mapping of locales to element names
-        Set<String> sn = m_elementNames.get(locale);
+        LinkedHashSet<String> sn = m_elementNames.get(locale);
         if (sn == null) {
-            sn = new HashSet<String>();
+            sn = new LinkedHashSet<String>();
             m_elementNames.put(locale, sn);
         }
         sn.add(path);

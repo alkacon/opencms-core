@@ -83,12 +83,15 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPriorityLock;
+import org.opencms.util.CmsSecretUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -850,6 +853,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.</code>). */
     public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.core.";
+
+    /** Secret key for the Solr basic auth information in form 'user:password' when read from the secret store. */
+    protected static final String SECRET_KEY_SOLR_BASIC_AUTH_CREDENTIALS = "solr.basic.auth";
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
@@ -3794,10 +3800,35 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     private SolrClient getSolrClient(String serverUrl) {
 
-        SolrClient client = new Builder().withBaseSolrUrl(serverUrl).withConnectionTimeout(
+        URI uri = URI.create(serverUrl);
+        String basicAuthCredentials = uri.getUserInfo();
+        if (basicAuthCredentials == null) {
+            basicAuthCredentials = CmsSecretUtil.getSecret(SECRET_KEY_SOLR_BASIC_AUTH_CREDENTIALS);
+        }
+        try {
+            URI cleanUri = new URI(
+                uri.getScheme(),
+                null,
+                uri.getHost(),
+                uri.getPort(),
+                uri.getPath(),
+                uri.getQuery(),
+                uri.getFragment());
+            serverUrl = cleanUri.toString();
+        } catch (URISyntaxException e) {
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(
+                    "Failed to clean the provided external solr server url. Defaulting to the raw URL.",
+                    e);
+            }
+        }
+        Builder clientBuilder = new Builder().withBaseSolrUrl(serverUrl).withConnectionTimeout(
             15,
-            TimeUnit.SECONDS).withRequestTimeout(120, TimeUnit.SECONDS).useHttp1_1(true).build();
-        return client;
+            TimeUnit.SECONDS).withRequestTimeout(120, TimeUnit.SECONDS).useHttp1_1(
+                true).withOptionalBasicAuthCredentials(basicAuthCredentials);
+
+        return clientBuilder.build();
+
     }
 
     /**

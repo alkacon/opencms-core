@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ExtractionTestElementData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/test.contentextraction.containerpage/schemas/extraction-test-element.xsd">
+  <ExtractionTestElement language="en">
+    <Title><![CDATA[ASIDE]]></Title>
+  </ExtractionTestElement>
+</ExtractionTestElementData>
