@@ -115,15 +115,14 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
      * @param seoFileRes the sitemap XML file
      * @param config the parsed configuration
      *
-     * @return the sitemap generator, or null if the given configuration is not an XML sitemap or llms.txt configuration
+     * @return the sitemap generator, or null if the given configuration is not an XML sitemap configuration
      *
      * @throws CmsException if something goes wrong
      */
     public static CmsXmlSitemapGenerator prepareSitemapGenerator(CmsResource seoFileRes, CmsXmlSeoConfiguration config)
     throws CmsException {
 
-        if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)
-            || config.getMode().equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
+        if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)) {
             String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(
                 CmsResource.getParentFolder(seoFileRes.getRootPath()));
             CmsXmlSitemapGenerator xmlSitemapGenerator = createSitemapGenerator(
@@ -138,8 +137,6 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
                 inexcludeSet.addExclude(exclude);
             }
             xmlSitemapGenerator.setServerUrl(config.getServerUrl());
-            xmlSitemapGenerator.setMode(config.getMode());
-            xmlSitemapGenerator.setPrefix(config.getRobotsTxtText());
             return xmlSitemapGenerator;
         }
         return null;
@@ -160,8 +157,6 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
         String mode = m_configuration.getMode();
         if (mode.equals(CmsXmlSeoConfiguration.MODE_ROBOTS_TXT)) {
             showRobotsTxt();
-        } else if (mode.equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
-            getResponse().getWriter().print(getLlmsTxt(seoFile));
         } else {
             boolean updateCache = Boolean.parseBoolean(getRequest().getParameter("updateCache"));
             String value = "";
@@ -190,21 +185,6 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
             getResponse().getWriter().print(value);
         }
 
-    }
-
-    /**
-     * Renders the llms.txt data automatically.<p>
-     *
-     * @throws Exception if something goes wrong
-     */
-    private String getLlmsTxt(CmsResource seoFile) throws Exception {
-
-        String result = "";
-
-        CmsLlmsGenerator llmsGenerator = new CmsLlmsGenerator(m_configuration, seoFile, getCmsObject());
-        result = llmsGenerator.getLlmsText();
-
-        return result;
     }
 
     /**

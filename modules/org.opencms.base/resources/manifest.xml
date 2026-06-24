@@ -318,24 +318,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					</property>
 				</properties>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="llms_file" id="312">
-                <properties>
-                    <property>
-                        <name>locale-available</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                    <property>
-                        <name>locale</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                    <property>
-                        <name>search.exclude</name>
-                        <value><![CDATA[all]]></value>
-                    </property>
-                </properties>
-                <param name="schema">/system/modules/org.opencms.ade.config/schemas/llms_file.xsd</param>
-            </type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="sitemap_master_config" id="313">
+				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="sitemap_master_config" id="313">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -626,10 +609,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="llms_file" key="fileicon.llms_file" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
-                <newresource creatable="false" order="998" autosetnavigation="false" autosettitle="false" info="desc.llms_file"/>
-            </explorertype>
-			<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_reuse" bigiconstyle="oc-icon-24-modelgroup_reuse" reference="xmlcontent">
+				<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_reuse" bigiconstyle="oc-icon-24-modelgroup_reuse" reference="xmlcontent">
 				<newresource creatable="true" order="50" autosetnavigation="false" autosettitle="false" info="desc.modelgroup"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
