@@ -87,6 +87,34 @@ public class TestCmsXmlContent extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that {@link CmsXmlContent#getNames(Locale)} returns element paths in
+     * the order they appear in the XML document.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Test
+    @Order(5)
+    public void testGetNamesReturnsDocumentOrder() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        String content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-1.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
+        CmsXmlEntityResolver.cacheSystemId(
+            SCHEMA_SYSTEM_ID_1,
+            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        // document order in xmlcontent-1.xml is: String, DateTime, Html, Locale
+        List<String> expected = Arrays.asList("String[1]", "DateTime[1]", "Html[1]", "Locale[1]");
+        assertEquals(expected, xmlcontent.getNames(Locale.ENGLISH));
+    }
+
+    /**
      * Tests moving elements up and down in the XML content.<p>
      *
      * @throws Exception in case the test fails
@@ -228,33 +256,5 @@ public class TestCmsXmlContent extends OpenCmsTestRunner {
             LOG.info("Expected exception detected.");
             LOG.debug("", e);
         }
-    }
-
-    /**
-     * Tests that {@link CmsXmlContent#getNames(Locale)} returns element paths in
-     * the order they appear in the XML document.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    @Test
-    @Order(5)
-    public void testGetNamesReturnsDocumentOrder() throws Exception {
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
-
-        String content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-1.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
-        CmsXmlEntityResolver.cacheSystemId(
-            SCHEMA_SYSTEM_ID_1,
-            definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
-
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-
-        // document order in xmlcontent-1.xml is: String, DateTime, Html, Locale
-        List<String> expected = Arrays.asList("String[1]", "DateTime[1]", "Html[1]", "Locale[1]");
-        assertEquals(expected, xmlcontent.getNames(Locale.ENGLISH));
     }
 }
