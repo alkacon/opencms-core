@@ -804,8 +804,15 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'Alkacon OpenCms',
         'Implementation-Version': archiveVersion,
-        'Build-Time': new java.util.Date().format("yyyy-MM-dd HH:mm:ss"),
         'OpenCms-Localization': 'en'
+    }
+    // Set Build-Time at execution time, not configuration time, so the timestamp
+    // is not part of the task input snapshot. Gradle snapshots inputs before the
+    // task actions run, so an up-to-date jar keeps its previous Build-Time and is
+    // not rebuilt on every invocation; the stamp only changes when the jar is
+    // actually (re)built because sources or resources changed.
+    doFirst {
+        manifest.attributes('Build-Time': new java.util.Date().format("yyyy-MM-dd HH:mm:ss"))
     }
     archiveBaseName = 'opencms-core'
     archiveFileName = 'opencms.jar'
