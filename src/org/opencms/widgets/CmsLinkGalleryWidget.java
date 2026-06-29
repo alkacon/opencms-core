@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,50 +27,47 @@
 
 package org.opencms.widgets;
 
-import org.opencms.util.CmsStringUtil;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 
 /**
- * Provides a widget that allows access to the available OpenCms external link galleries, for use on a widget dialog.<p>
- *
- * @since 6.0.0
+ * ADE link gallery widget implementations.<p>
  */
-public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
+public class CmsLinkGalleryWidget extends A_CmsAdeGalleryWidget {
+
+    /** The gallery name. */
+    private static final String GALLERY_NAME = "link";
 
     /**
-     * Creates a new external link gallery widget.<p>
+     * Constructor.<p>
      */
     public CmsLinkGalleryWidget() {
 
-        // empty constructor is required for class registration
         this("");
     }
 
     /**
-     * Creates a new external link gallery widget with the given configuration.<p>
+     * Creates a new gallery widget with the given configuration.<p>
      *
      * @param configuration the configuration to use
      */
-    public CmsLinkGalleryWidget(String configuration) {
+    protected CmsLinkGalleryWidget(String configuration) {
 
         super(configuration);
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsGalleryWidget#getNameLower()
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryName()
      */
     @Override
-    public String getNameLower() {
+    public String getGalleryName() {
 
-        return "link";
-    }
-
-    /**
-     * @see org.opencms.widgets.A_CmsGalleryWidget#getNameUpper()
-     */
-    @Override
-    public String getNameUpper() {
-
-        return "Link";
+        return GALLERY_NAME;
     }
 
     /**
@@ -79,7 +76,8 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
     @Override
     public String getWidgetName() {
 
-        return CmsLinkGalleryWidget.class.getName();
+        return CmsGwtConstants.WIDGET_LINKGALLERY;
+
     }
 
     /**
@@ -91,11 +89,36 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getAdditionalGalleryInfo(org.opencms.file.CmsObject, java.lang.String, org.opencms.i18n.CmsMessages, org.opencms.widgets.I_CmsWidgetParameter)
      */
     @Override
-    public boolean showPreview(String value) {
+    protected JSONObject getAdditionalGalleryInfo(
+        CmsObject cms,
+        String resource,
+        CmsMessages messages,
+        I_CmsWidgetParameter param)
+    throws JSONException {
 
-        return CmsStringUtil.isNotEmpty(value) && value.startsWith("/");
+        JSONObject result = new JSONObject();
+        result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");
+        return result;
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryStoragePrefix()
+     */
+    @Override
+    protected String getGalleryStoragePrefix() {
+
+        return "link";
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsAdeGalleryWidget#getGalleryTypes()
+     */
+    @Override
+    protected String getGalleryTypes() {
+
+        return CmsResourceTypePointer.getStaticTypeName();
     }
 }
