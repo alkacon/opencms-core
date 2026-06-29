@@ -317,7 +317,7 @@ public final class CmsGwtConstants {
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
-    /** Client-side name for the ADE link gallery widget. */ 
+    /** Client-side name for the ADE link gallery widget. */
     public static final String WIDGET_LINKGALLERY = "ade.linkgallery";
 
     public static final String AUGMENTATION_TRANSLATION = "translation";
