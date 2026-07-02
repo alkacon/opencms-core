@@ -34,6 +34,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.storage.I_CmsStorageDelivery;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
@@ -74,6 +75,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -1900,6 +1903,20 @@ public final class CmsObject {
     }
 
     /**
+     * Returns a delivery-capable storage backend by its stable storage identifier.<p>
+     *
+     * @param storage the stable storage identifier
+     *
+     * @return the delivery-capable storage backend, or <code>null</code> if not supported
+     *
+     * @throws CmsException if the delivery backend can not be resolved
+     */
+    public I_CmsStorageDelivery getStoredContentDelivery(String storage) throws CmsException {
+
+        return m_securityManager.getStoredContentDelivery(m_context, storage);
+    }
+
+    /**
      * Returns all folder resources contained in a folder.<p>
      *
      * The result is filtered according to the rules of
@@ -2722,6 +2739,60 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, filter);
         return readFile(resource);
+    }
+
+    /**
+     * Reads the content of a file resource and passes it to an input stream handler.<p>
+     *
+     * @param resource the resource to read
+     * @param handler the stream handler
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     */
+    public void readFileContentFrom(CmsResource resource, I_CmsFileContentStreamHandler handler) throws CmsException {
+
+        if (resource instanceof CmsFile) {
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                try (ByteArrayInputStream in = new ByteArrayInputStream(file.getContents())) {
+                    handler.read(in);
+                    return;
+                } catch (Exception e) {
+                    throw new CmsVfsException(
+                        Messages.get().container(Messages.ERR_READ_FILE_1, getRequestContext().getSitePath(resource)),
+                        e);
+                }
+            }
+        }
+
+        m_securityManager.readFileContentFrom(m_context, resource, handler);
+    }
+
+    /**
+     * Reads the content of a file resource and writes it to an output stream.<p>
+     *
+     * @param resource the resource to read
+     * @param out the output stream to write to
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     */
+    public void readFileContentTo(CmsResource resource, OutputStream out) throws CmsException {
+
+        if (resource instanceof CmsFile) {
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                try {
+                    out.write(file.getContents());
+                    return;
+                } catch (Exception e) {
+                    throw new CmsVfsException(
+                        Messages.get().container(Messages.ERR_READ_FILE_1, getRequestContext().getSitePath(resource)),
+                        e);
+                }
+            }
+        }
+
+        m_securityManager.readFileContentTo(m_context, resource, out);
     }
 
     /**
@@ -3666,6 +3737,20 @@ public final class CmsObject {
     public List<String> readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
 
         return m_securityManager.readStaticExportResources(m_context, parameterResources, timestamp);
+    }
+
+    /**
+     * Reads information about where the content of a file resource is stored without loading the content bytes.<p>
+     *
+     * @param resource the resource to read
+     *
+     * @return the stored content info
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     */
+    public CmsStoredContentInfo readStoredContentInfo(CmsResource resource) throws CmsException {
+
+        return m_securityManager.readStoredContentInfo(m_context, resource);
     }
 
     /**

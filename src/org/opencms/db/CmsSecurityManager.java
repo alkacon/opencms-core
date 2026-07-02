@@ -34,6 +34,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.generic.CmsPublishHistoryCleanupFilter;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.storage.I_CmsStorageDelivery;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
 import org.opencms.file.CmsDataAccessException;
@@ -47,11 +48,13 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsStoredContentInfo;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -99,6 +102,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -2976,6 +2980,27 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns a delivery-capable storage backend by its stable storage identifier.<p>
+     *
+     * @param context the current request context
+     * @param storage the stable storage identifier
+     *
+     * @return the delivery-capable storage backend, or <code>null</code> if not supported
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsStorageDelivery getStoredContentDelivery(CmsRequestContext context, String storage)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.getStoredContentDelivery(dbc, storage);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Returns all users of the given organizational unit.<p>
      *
      * @param context the current request context
@@ -4536,21 +4561,58 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readFile(dbc, resource);
         } catch (Exception e) {
-            if (resource instanceof I_CmsHistoryResource) {
-                dbc.report(
-                    null,
-                    Messages.get().container(
-                        Messages.ERR_READ_FILE_HISTORY_2,
-                        context.getSitePath(resource),
-                        Integer.valueOf(resource.getVersion())),
-                    e);
-            } else {
-                dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
-            }
+            reportReadFileException(dbc, context, resource, e);
         } finally {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Reads a file resource content from the VFS and passes it to an input stream handler.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource to be read
+     * @param handler the stream handler
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void readFileContentFrom(
+        CmsRequestContext context,
+        CmsResource resource,
+        I_CmsFileContentStreamHandler handler)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.readFileContentFrom(dbc, resource, handler);
+        } catch (Exception e) {
+            reportReadFileException(dbc, context, resource, e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Reads a file resource content from the VFS and writes it to an output stream.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource to be read
+     * @param out the output stream to write to
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void readFileContentTo(CmsRequestContext context, CmsResource resource, OutputStream out)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            m_driverManager.readFileContentTo(dbc, resource, out);
+        } catch (Exception e) {
+            reportReadFileException(dbc, context, resource, e);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -5618,6 +5680,30 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Reads information about where the file content is stored without loading the content bytes.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource to read
+     *
+     * @return the stored content info
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsStoredContentInfo readStoredContentInfo(CmsRequestContext context, CmsResource resource)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readStoredContentInfo(dbc, resource);
+        } catch (Exception e) {
+            reportReadFileException(dbc, context, resource, e);
+        } finally {
+            dbc.clear();
+        }
+        return null;
     }
 
     /**
@@ -8097,6 +8183,30 @@ public final class CmsSecurityManager {
         }
         dbc.setProjectId(projectId);
         return dbc;
+    }
+
+    /**
+     * Reports an exception which occurred while reading file content.<p>
+     *
+     * @param dbc the database context
+     * @param context the request context
+     * @param resource the resource being read
+     * @param e the exception to report
+     */
+    private void reportReadFileException(CmsDbContext dbc, CmsRequestContext context, CmsResource resource, Exception e)
+    throws CmsException {
+
+        if (resource instanceof I_CmsHistoryResource) {
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_READ_FILE_HISTORY_2,
+                    context.getSitePath(resource),
+                    Integer.valueOf(resource.getVersion())),
+                e);
+        } else {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
+        }
     }
 
 }

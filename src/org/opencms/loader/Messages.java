@@ -53,6 +53,27 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1 = "ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_DB_1 = "ERR_IMAGE_CACHE_CONFIG_DB_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_DB_2 = "ERR_IMAGE_CACHE_CONFIG_DB_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_FS_3 = "ERR_IMAGE_CACHE_CONFIG_FS_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_S3_3 = "ERR_IMAGE_CACHE_CONFIG_S3_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_2 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_TYPE_1 = "ERR_IMAGE_CACHE_CONFIG_TYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_INIT_1 = "ERR_IMAGE_CACHE_INIT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
 
     /** Message constant for key in the resource bundle. */
@@ -90,6 +111,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVICE_UNSUPPORTED_1 = "ERR_SERVICE_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_STORED_CONTENT_DELIVERY_2 = "ERR_STORED_CONTENT_DELIVERY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TEMPLATE_PROTERTY_UNSUPPORTED_1 = "ERR_TEMPLATE_PROTERTY_UNSUPPORTED_1";

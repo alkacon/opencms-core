@@ -48,7 +48,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -68,6 +70,65 @@ import org.apache.commons.logging.Log;
  * @since 6.2.0
  */
 public class CmsImageScaler {
+
+    /**
+     * Result of a scaling operation.<p>
+     */
+    private static class CmsImageScalingResult {
+
+        /** The image type used for encoding. */
+        private String m_imageType;
+
+        /** Indicates if the image was changed by the scaler. */
+        private boolean m_processed;
+
+        /** The resulting image. */
+        private BufferedImage m_resultImage;
+
+        /**
+         * Creates a new scaling result.<p>
+         *
+         * @param resultImage the resulting image
+         * @param imageType the image type
+         * @param processed indicates if the image was changed
+         */
+        CmsImageScalingResult(BufferedImage resultImage, String imageType, boolean processed) {
+
+            m_resultImage = resultImage;
+            m_imageType = imageType;
+            m_processed = processed;
+        }
+
+        /**
+         * Returns the image type.<p>
+         *
+         * @return the image type
+         */
+        String getImageType() {
+
+            return m_imageType;
+        }
+
+        /**
+         * Returns the resulting image.<p>
+         *
+         * @return the resulting image
+         */
+        BufferedImage getResultImage() {
+
+            return m_resultImage;
+        }
+
+        /**
+         * Returns if the image was changed.<p>
+         *
+         * @return <code>true</code> if the image was changed
+         */
+        boolean isProcessed() {
+
+            return m_processed;
+        }
+    }
 
     /** The name of the transparent color (for the background image). */
     public static final String COLOR_TRANSPARENT = "transparent";
@@ -1210,225 +1271,9 @@ public class CmsImageScaler {
      */
     public byte[] scaleImage(byte[] content, BufferedImage image, String rootPath) {
 
-        try {
-            acquireSemaphore();
-            try {
-                byte[] result = content;
-                // flag for processed image
-                boolean imageProcessed = false;
-                // initialize image crop area
-                initCropArea();
-
-                RenderSettings renderSettings;
-                if ((m_renderMode == 0) && (m_quality == 0)) {
-                    // use default render mode and quality
-                    renderSettings = new RenderSettings(Simapi.RENDER_QUALITY);
-                } else {
-                    // use special render mode and/or quality
-                    renderSettings = new RenderSettings(m_renderMode);
-                    if (m_quality != 0) {
-                        renderSettings.setCompressionQuality(m_quality / 100f);
-                    }
-                }
-                // set max blur size
-                renderSettings.setMaximumBlurSize(m_maxBlurSize);
-                // new create the scaler
-                Simapi scaler = new Simapi(renderSettings);
-                // calculate a valid image type supported by the imaging library (e.g. "JPEG", "GIF")
-                String imageType = Simapi.getImageType(rootPath);
-                if (imageType == null) {
-                    // no type given, maybe the name got mixed up
-                    String mimeType = OpenCms.getResourceManager().getMimeType(rootPath, null, null);
-                    // check if this is another known MIME type, if so DONT use it (images should not be named *.pdf)
-                    if (mimeType == null) {
-                        // no MIME type found, use JPEG format to write images to the cache
-                        imageType = Simapi.TYPE_JPEG;
-                    }
-                }
-                if (imageType == null) {
-                    // unknown type, unable to scale the image
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(
-                            Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()));
-                    }
-                    return result;
-                }
-                try {
-                    if (image == null) {
-                        image = Simapi.read(content);
-                    }
-
-                    if (isCropping()) {
-                        // check if the crop width / height are not larger then the source image
-                        if ((getType() == 0)
-                            && ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth()))) {
-                            // crop height / width is outside of image - return image unchanged
-                            return result;
-                        }
-                    }
-
-                    Color color = getColor();
-
-                    if (!m_filters.isEmpty()) {
-                        Iterator<String> i = m_filters.iterator();
-                        while (i.hasNext()) {
-                            String filter = i.next();
-                            if (FILTER_GRAYSCALE.equals(filter)) {
-                                // add a gray scale filter
-                                GrayscaleFilter grayscaleFilter = new GrayscaleFilter();
-                                renderSettings.addImageFilter(grayscaleFilter);
-                            } else if (FILTER_SHADOW.equals(filter)) {
-                                // add a drop shadow filter
-                                ShadowFilter shadowFilter = new ShadowFilter();
-                                shadowFilter.setXOffset(5);
-                                shadowFilter.setYOffset(5);
-                                shadowFilter.setOpacity(192);
-                                shadowFilter.setBackgroundColor(color.getRGB());
-                                color = Simapi.COLOR_TRANSPARENT;
-                                renderSettings.setTransparentReplaceColor(Simapi.COLOR_TRANSPARENT);
-                                renderSettings.addImageFilter(shadowFilter);
-                            }
-                        }
-                    }
-
-                    if (isCropping()) {
-                        if ((getType() == 8) && (m_focalPoint != null)) {
-                            image = scaler.cropToSize(
-                                image,
-                                m_cropX,
-                                m_cropY,
-                                m_cropWidth,
-                                m_cropHeight,
-                                m_cropWidth,
-                                m_cropHeight,
-                                color);
-                            // Find the biggest scaling factor which, when applied to a rectangle of dimensions m_width x m_height,
-                            // would allow the resulting rectangle to still fit inside a rectangle of dimensions m_cropWidth x m_cropHeight
-                            // (we have to take the minimum because a rectangle that fits on the x axis might still be out of bounds on the y axis, and
-                            // vice versa).
-                            double scaling = Math.min((1.0 * m_cropWidth) / m_width, (1.0 * m_cropHeight) / m_height);
-                            int relW = (int)(scaling * m_width);
-                            int relH = (int)(scaling * m_height);
-                            // the focal point's coordinates are in the uncropped image's coordinate system, so we have to subtract cx/cy
-                            int relX = (int)(m_focalPoint.getX() - m_cropX);
-                            int relY = (int)(m_focalPoint.getY() - m_cropY);
-                            image = scaler.cropPointToSize(image, relX, relY, false, relW, relH);
-                            if ((m_width != relW) || (m_height != relH)) {
-                                image = scaler.scale(image, m_width, m_height);
-                            }
-                        } else if ((getType() == 6) || (getType() == 7)) {
-                            // image crop operation around point
-                            image = scaler.cropPointToSize(
-                                image,
-                                m_cropX,
-                                m_cropY,
-                                getType() == 6,
-                                m_cropWidth,
-                                m_cropHeight);
-                        } else {
-                            // image crop operation
-                            image = scaler.cropToSize(
-                                image,
-                                m_cropX,
-                                m_cropY,
-                                m_cropWidth,
-                                m_cropHeight,
-                                getWidth(),
-                                getHeight(),
-                                color);
-                        }
-
-                        imageProcessed = true;
-                    } else {
-                        // only rescale the image, if the width and height are different to the target size
-                        int imageWidth = image.getWidth();
-                        int imageHeight = image.getHeight();
-
-                        // image rescale operation
-                        switch (getType()) {
-                            // select the "right" method of scaling according to the "t" parameter
-                            case 1:
-                                // thumbnail generation mode (like 0 but no image enlargement)
-                                image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
-                                imageProcessed = true;
-                                break;
-                            case 2:
-                                // scale to exact target size, crop what does not fit
-                                if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
-                                    image = scaler.resize(image, getWidth(), getHeight(), getPosition());
-                                    imageProcessed = true;
-                                }
-                                break;
-                            case 3:
-                                // scale and keep image proportions, target size variable
-                                if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
-                                    image = scaler.resize(image, getWidth(), getHeight(), true);
-                                    imageProcessed = true;
-                                }
-                                break;
-                            case 4:
-                                // don't keep image proportions, use exact target size
-                                if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
-                                    image = scaler.resize(image, getWidth(), getHeight(), false);
-                                    imageProcessed = true;
-                                }
-                                break;
-                            case 5:
-                                // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
-                                // image proportions have already been calculated so should not be a problem, use
-                                // 'false' to make sure image size exactly matches height and width attributes of generated tag
-                                if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
-                                    image = scaler.resize(image, getWidth(), getHeight(), false);
-                                    imageProcessed = true;
-                                }
-                                break;
-                            case 9:
-                                // scale and keep image proportions, target size variable, no image enlargement
-                                if ((imageWidth > getWidth()) && (imageHeight > getHeight())) {
-                                    image = scaler.resize(image, getWidth(), getHeight(), true);
-                                    imageProcessed = true;
-                                }
-                                break;
-                            default:
-                                // scale to exact target size with background padding
-                                image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
-                                imageProcessed = true;
-                        }
-
-                    }
-
-                    if (!m_filters.isEmpty()) {
-                        Rectangle targetSize = scaler.applyFilterDimensions(getWidth(), getHeight());
-                        image = scaler.resize(
-                            image,
-                            (int)targetSize.getWidth(),
-                            (int)targetSize.getHeight(),
-                            Simapi.COLOR_TRANSPARENT,
-                            Simapi.POS_CENTER);
-                        image = scaler.applyFilters(image);
-                        imageProcessed = true;
-                    }
-
-                    // get the byte result for the scaled image if some changes have been made.
-                    // otherwiese use the original image
-                    if (imageProcessed) {
-                        result = scaler.getBytes(image, imageType);
-                    }
-                } catch (Exception e) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(
-                            Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()),
-                            e);
-                    }
-                }
-                return result;
-            } finally {
-                releaseSemaphore();
-            }
-        } catch (InterruptedException e) {
-            LOG.warn("Waiting on image scaling semaphore was interrupted", e);
-            return content;
-        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream(content.length);
+        scaleImageTo(content, image, rootPath, out);
+        return out.toByteArray();
     }
 
     /**
@@ -1454,6 +1299,41 @@ public class CmsImageScaler {
     public byte[] scaleImage(CmsFile file) {
 
         return scaleImage(file.getContents(), file.getRootPath());
+    }
+
+    /**
+     * Writes a scaled version of the given image byte content according this image scalers parameters to an output
+     * stream.<p>
+     *
+     * @param content the image byte content to scale
+     * @param image if this is set, this image will be used as base for the scaling rather than a new image read from the content byte array
+     * @param rootPath the root path of the image file in the VFS
+     * @param out the output stream to write the scaled image to
+     */
+    public void scaleImageTo(byte[] content, BufferedImage image, String rootPath, OutputStream out) {
+
+        try {
+            acquireSemaphore();
+            try {
+                CmsImageScalingResult result = processImage(content, image, rootPath);
+                if ((result == null) || !result.isProcessed()) {
+                    out.write(content);
+                } else {
+                    createSimapi(createRenderSettings()).write(result.getResultImage(), out, result.getImageType());
+                }
+            } finally {
+                releaseSemaphore();
+            }
+        } catch (InterruptedException e) {
+            LOG.warn("Waiting on image scaling semaphore was interrupted", e);
+            try {
+                out.write(content);
+            } catch (IOException ioException) {
+                LOG.warn("Writing original image after interrupted scaling failed", ioException);
+            }
+        } catch (IOException e) {
+            LOG.warn("Writing scaled image failed", e);
+        }
     }
 
     /**
@@ -1781,6 +1661,41 @@ public class CmsImageScaler {
         return result;
     }
 
+    /**
+     * Creates render settings for the current scaler parameters.<p>
+     *
+     * @return the render settings
+     */
+    private RenderSettings createRenderSettings() {
+
+        RenderSettings renderSettings;
+        if ((m_renderMode == 0) && (m_quality == 0)) {
+            // use default render mode and quality
+            renderSettings = new RenderSettings(Simapi.RENDER_QUALITY);
+        } else {
+            // use special render mode and/or quality
+            renderSettings = new RenderSettings(m_renderMode);
+            if (m_quality != 0) {
+                renderSettings.setCompressionQuality(m_quality / 100f);
+            }
+        }
+        // set max blur size
+        renderSettings.setMaximumBlurSize(m_maxBlurSize);
+        return renderSettings;
+    }
+
+    /**
+     * Creates a Simapi instance for the given render settings.<p>
+     *
+     * @param renderSettings the render settings
+     *
+     * @return the Simapi instance
+     */
+    private Simapi createSimapi(RenderSettings renderSettings) {
+
+        return new Simapi(renderSettings);
+    }
+
     private Dimension getDimensionsWithSimapi(byte[] content) throws Exception {
 
         BufferedImage image = Simapi.read(content);
@@ -1861,5 +1776,210 @@ public class CmsImageScaler {
         m_type = source.m_type;
         m_width = source.m_width;
 
+    }
+
+    /**
+     * Processes an image and returns the scaled image result.<p>
+     *
+     * @param content the source image bytes, only used if no image is provided
+     * @param image the image to scale
+     * @param rootPath the root path of the image file in the VFS
+     *
+     * @return the scaling result, or <code>null</code> if the image can not be scaled
+     */
+    private CmsImageScalingResult processImage(byte[] content, BufferedImage image, String rootPath) {
+
+        // flag for processed image
+        boolean imageProcessed = false;
+        // initialize image crop area
+        initCropArea();
+
+        RenderSettings renderSettings = createRenderSettings();
+        Simapi scaler = createSimapi(renderSettings);
+        // calculate a valid image type supported by the imaging library (e.g. "JPEG", "GIF")
+        String imageType = Simapi.getImageType(rootPath);
+        if (imageType == null) {
+            // no type given, maybe the name got mixed up
+            String mimeType = OpenCms.getResourceManager() != null
+            ? OpenCms.getResourceManager().getMimeType(rootPath, null, null)
+            : null;
+            // check if this is another known MIME type, if so DONT use it (images should not be named *.pdf)
+            if (mimeType == null) {
+                // no MIME type found, use JPEG format to write images to the cache
+                imageType = Simapi.TYPE_JPEG;
+            }
+        }
+        if (imageType == null) {
+            // unknown type, unable to scale the image
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()));
+            }
+            return null;
+        }
+        try {
+            if (image == null) {
+                image = Simapi.read(content);
+            }
+            if (image == null) {
+                return null;
+            }
+
+            if (isCropping()) {
+                // check if the crop width / height are not larger then the source image
+                if ((getType() == 0) && ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth()))) {
+                    // crop height / width is outside of image - return image unchanged
+                    return new CmsImageScalingResult(image, imageType, false);
+                }
+            }
+
+            Color color = getColor();
+
+            if (!m_filters.isEmpty()) {
+                Iterator<String> i = m_filters.iterator();
+                while (i.hasNext()) {
+                    String filter = i.next();
+                    if (FILTER_GRAYSCALE.equals(filter)) {
+                        // add a gray scale filter
+                        GrayscaleFilter grayscaleFilter = new GrayscaleFilter();
+                        renderSettings.addImageFilter(grayscaleFilter);
+                    } else if (FILTER_SHADOW.equals(filter)) {
+                        // add a drop shadow filter
+                        ShadowFilter shadowFilter = new ShadowFilter();
+                        shadowFilter.setXOffset(5);
+                        shadowFilter.setYOffset(5);
+                        shadowFilter.setOpacity(192);
+                        shadowFilter.setBackgroundColor(color.getRGB());
+                        color = Simapi.COLOR_TRANSPARENT;
+                        renderSettings.setTransparentReplaceColor(Simapi.COLOR_TRANSPARENT);
+                        renderSettings.addImageFilter(shadowFilter);
+                    }
+                }
+            }
+
+            if (isCropping()) {
+                if ((getType() == 8) && (m_focalPoint != null)) {
+                    image = scaler.cropToSize(
+                        image,
+                        m_cropX,
+                        m_cropY,
+                        m_cropWidth,
+                        m_cropHeight,
+                        m_cropWidth,
+                        m_cropHeight,
+                        color);
+                    // Find the biggest scaling factor which, when applied to a rectangle of dimensions m_width x m_height,
+                    // would allow the resulting rectangle to still fit inside a rectangle of dimensions m_cropWidth x m_cropHeight
+                    // (we have to take the minimum because a rectangle that fits on the x axis might still be out of bounds on the y axis, and
+                    // vice versa).
+                    double scaling = Math.min((1.0 * m_cropWidth) / m_width, (1.0 * m_cropHeight) / m_height);
+                    int relW = (int)(scaling * m_width);
+                    int relH = (int)(scaling * m_height);
+                    // the focal point's coordinates are in the uncropped image's coordinate system, so we have to subtract cx/cy
+                    int relX = (int)(m_focalPoint.getX() - m_cropX);
+                    int relY = (int)(m_focalPoint.getY() - m_cropY);
+                    image = scaler.cropPointToSize(image, relX, relY, false, relW, relH);
+                    if ((m_width != relW) || (m_height != relH)) {
+                        image = scaler.scale(image, m_width, m_height);
+                    }
+                } else if ((getType() == 6) || (getType() == 7)) {
+                    // image crop operation around point
+                    image = scaler.cropPointToSize(image, m_cropX, m_cropY, getType() == 6, m_cropWidth, m_cropHeight);
+                } else {
+                    // image crop operation
+                    image = scaler.cropToSize(
+                        image,
+                        m_cropX,
+                        m_cropY,
+                        m_cropWidth,
+                        m_cropHeight,
+                        getWidth(),
+                        getHeight(),
+                        color);
+                }
+
+                imageProcessed = true;
+            } else {
+                // only rescale the image, if the width and height are different to the target size
+                int imageWidth = image.getWidth();
+                int imageHeight = image.getHeight();
+
+                // image rescale operation
+                switch (getType()) {
+                    // select the "right" method of scaling according to the "t" parameter
+                    case 1:
+                        // thumbnail generation mode (like 0 but no image enlargement)
+                        image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
+                        imageProcessed = true;
+                        break;
+                    case 2:
+                        // scale to exact target size, crop what does not fit
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), getPosition());
+                            imageProcessed = true;
+                        }
+                        break;
+                    case 3:
+                        // scale and keep image proportions, target size variable
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), true);
+                            imageProcessed = true;
+                        }
+                        break;
+                    case 4:
+                        // don't keep image proportions, use exact target size
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), false);
+                            imageProcessed = true;
+                        }
+                        break;
+                    case 5:
+                        // scale and keep image proportions, target size variable, include maxWidth / maxHeight option
+                        // image proportions have already been calculated so should not be a problem, use
+                        // 'false' to make sure image size exactly matches height and width attributes of generated tag
+                        if (((imageWidth != getWidth()) || (imageHeight != getHeight()))) {
+                            image = scaler.resize(image, getWidth(), getHeight(), false);
+                            imageProcessed = true;
+                        }
+                        break;
+                    case 9:
+                        // scale and keep image proportions, target size variable, no image enlargement
+                        if ((imageWidth > getWidth()) && (imageHeight > getHeight())) {
+                            image = scaler.resize(image, getWidth(), getHeight(), true);
+                            imageProcessed = true;
+                        }
+                        break;
+                    default:
+                        // scale to exact target size with background padding
+                        image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
+                        imageProcessed = true;
+                }
+
+            }
+
+            if (!m_filters.isEmpty()) {
+                Rectangle targetSize = scaler.applyFilterDimensions(getWidth(), getHeight());
+                image = scaler.resize(
+                    image,
+                    (int)targetSize.getWidth(),
+                    (int)targetSize.getHeight(),
+                    Simapi.COLOR_TRANSPARENT,
+                    Simapi.POS_CENTER);
+                image = scaler.applyFilters(image);
+                imageProcessed = true;
+            }
+
+            // get the byte result for the scaled image if some changes have been made.
+            // otherwiese use the original image
+            if (imageProcessed) {
+                return new CmsImageScalingResult(image, imageType, true);
+            }
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()),
+                    e);
+            }
+        }
+        return new CmsImageScalingResult(image, imageType, false);
     }
 }

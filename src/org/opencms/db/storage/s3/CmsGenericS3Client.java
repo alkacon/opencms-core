@@ -30,16 +30,20 @@ package org.opencms.db.storage.s3;
 import org.opencms.db.storage.CmsStorageBlobNotFoundException;
 import org.opencms.db.storage.CmsStorageException;
 import org.opencms.db.storage.Messages;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.I_CmsCredentialsResolver;
+import org.opencms.util.CmsFileUtil;
 
+import java.io.OutputStream;
 import java.net.URI;
 import java.time.Duration;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.retry.RetryPolicy;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -289,6 +293,25 @@ public class CmsGenericS3Client implements I_CmsS3Client {
     }
 
     @Override
+    public long getObjectLength(String key) throws Exception {
+
+        try {
+            HeadObjectRequest request = HeadObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).build();
+            return m_s3Client.headObject(request).contentLength();
+        } catch (NoSuchKeyException e) {
+            throw new CmsStorageBlobNotFoundException(key, e);
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw new CmsStorageBlobNotFoundException(key, e);
+            }
+            throw createStorageException("HEAD", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("HEAD", key, e);
+        }
+    }
+
+    @Override
     public void putObject(String key, byte[] content) throws Exception {
 
         try {
@@ -299,6 +322,30 @@ public class CmsGenericS3Client implements I_CmsS3Client {
             throw createStorageException("PUT", key, e);
         } catch (RuntimeException e) {
             throw createStorageException("PUT", key, e);
+        }
+    }
+
+    /**
+     * @see I_CmsS3Client#readObjectFrom(String, I_CmsFileContentStreamHandler)
+     */
+    @Override
+    public void readObjectFrom(String key, I_CmsFileContentStreamHandler handler) throws Exception {
+
+        try {
+            GetObjectRequest request = GetObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).build();
+            try (ResponseInputStream<GetObjectResponse> in = m_s3Client.getObject(request)) {
+                handler.read(in);
+            }
+        } catch (NoSuchKeyException e) {
+            throw createBlobNotFoundException("GET", key, e);
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw createBlobNotFoundException("GET", key, e);
+            }
+            throw createStorageException("GET", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("GET", key, e);
         }
     }
 
@@ -330,6 +377,55 @@ public class CmsGenericS3Client implements I_CmsS3Client {
             throw createStorageException("LIST", null, e);
         } catch (RuntimeException e) {
             throw createStorageException("LIST", null, e);
+        }
+    }
+
+    /**
+     * @see I_CmsS3Client#writeObjectRangeTo(String, long, long, OutputStream)
+     */
+    @Override
+    public void writeObjectRangeTo(String key, long start, long length, OutputStream out) throws Exception {
+
+        if ((start < 0) || (length < 1) || ((Long.MAX_VALUE - start) < length)) {
+            throw new IllegalArgumentException("Invalid byte range: start=" + start + ", length=" + length);
+        }
+        long end = start + length - 1;
+        try {
+            GetObjectRequest request = GetObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).range("bytes=" + start + "-" + end).build();
+            try (ResponseInputStream<GetObjectResponse> in = m_s3Client.getObject(request)) {
+                CmsFileUtil.copy(in, out);
+            }
+        } catch (NoSuchKeyException e) {
+            throw createBlobNotFoundException("GET", key, e);
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw createBlobNotFoundException("GET", key, e);
+            }
+            throw createStorageException("GET", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("GET", key, e);
+        }
+    }
+
+    @Override
+    public void writeObjectTo(String key, OutputStream out) throws Exception {
+
+        try {
+            GetObjectRequest request = GetObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).build();
+            try (ResponseInputStream<GetObjectResponse> in = m_s3Client.getObject(request)) {
+                CmsFileUtil.copy(in, out);
+            }
+        } catch (NoSuchKeyException e) {
+            throw createBlobNotFoundException("GET", key, e);
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw createBlobNotFoundException("GET", key, e);
+            }
+            throw createStorageException("GET", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("GET", key, e);
         }
     }
 

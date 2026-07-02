@@ -108,6 +108,37 @@
             </resourcestorender>
         </rendersettings>
     </staticexport>
+    <storedcontentdelivery enabled="false">
+        <enabledsuffixes>
+            <suffix key=".doc" />
+            <suffix key=".xls" />
+            <suffix key=".ppt" />
+            <suffix key=".docx" />
+            <suffix key=".xlsx" />
+            <suffix key=".pptx" />
+            <suffix key=".pdf" />
+            <suffix key=".zip" />
+            <suffix key=".rar" />
+            <suffix key=".odt" />
+            <suffix key=".odp" />
+            <suffix key=".mp3" />
+            <suffix key=".m4a" />
+            <suffix key=".aac" />
+            <suffix key=".oga" />
+            <suffix key=".ogg" />
+            <suffix key=".mp4" />
+            <suffix key=".ogv" />
+            <suffix key=".webm" />
+            <suffix key=".m4v" />
+            <suffix key=".wmv" />
+            <suffix key=".mpeg" />
+            <suffix key=".mpg" />
+            <suffix key=".mov" />
+            <suffix key=".qt" />
+            <suffix key=".avi" />
+        </enabledsuffixes>
+    </storedcontentdelivery>
+    <imagecache class="org.opencms.loader.CmsRfsImageCache" />
     <!-- Use the protected export feature to statically export resources while still ensuring resource permissions are not violated. This will work for static resources like images and binaries only. <protectedexport> <exportpath>protected</exportpath> <exportpoints> <exportpoint uri="/sites/default/documents/" destination="documents/"/> </exportpoints> </protectedexport> -->
     <usercsvexport>
         <separator>;</separator>
@@ -126,7 +157,7 @@
         </columns>
     </usercsvexport>
     <repositories>
-     <repository name="webdav_root" class="org.opencms.repository.CmsRepository">
+        <repository name="webdav_root" class="org.opencms.repository.CmsRepository">
             <params>
                 <param name="root">/</param>
                 <param name="addBOM">false</param>

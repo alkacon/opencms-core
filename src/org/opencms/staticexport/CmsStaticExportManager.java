@@ -40,8 +40,8 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.loader.I_CmsStaticExportStreamLoader;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -259,6 +259,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Indicates if the static export is enabled or disabled. */
     private boolean m_staticExportEnabled;
+
+    /** The image cache configuration. */
+    private CmsImageCacheConfiguration m_imageCacheConfiguration = new CmsImageCacheConfiguration();
+
+    /** The stored content delivery configuration. */
+    private CmsStoredContentDeliveryConfiguration m_storedContentDeliveryConfiguration = new CmsStoredContentDeliveryConfiguration();
+
+    /** Support for stored content delivery during static export. */
+    private CmsStoredContentDeliverySupport m_storedContentDeliverySupport = new CmsStoredContentDeliverySupport();
 
     /** The path to where the static export will be written. */
     private String m_staticExportPath;
@@ -625,6 +634,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // this flag signals if the export method is used for "on demand" or "after publish".
         // if no request and result stream are available, it was called during "export on publish"
         boolean exportOnDemand = ((req != null) && (res != null));
+        HttpServletRequest exportRequest = req;
+        if (exportOnDemand && (data.getParameters() != null)) {
+            exportRequest = new CmsStaticExportRequest(req, data);
+        }
         CmsStaticExportResponseWrapper wrapRes = null;
         if (res != null) {
             wrapRes = new CmsStaticExportResponseWrapper(res);
@@ -634,13 +647,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
 
-        CmsFile file = exportCms.readFile(OpenCms.initResource(exportCms, vfsName, req, wrapRes));
-        vfsName = exportCms.getSitePath(file);
+        CmsResource exportResource = OpenCms.initResource(exportCms, vfsName, exportRequest, wrapRes);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(exportResource);
+        CmsFile file = null;
+        if ((loader == null) || !(loader instanceof I_CmsStaticExportStreamLoader)) {
+            file = exportCms.readFile(exportResource);
+            exportResource = file;
+        }
+        vfsName = exportCms.getSitePath(exportResource);
 
         // check loader id for resource
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);
         if ((loader == null) || (!loader.isStaticExportEnabled())) {
-            Object[] arguments = new Object[] {vfsName, Integer.valueOf(file.getTypeId())};
+            Object[] arguments = new Object[] {vfsName, Integer.valueOf(exportResource.getTypeId())};
             throw new CmsStaticExportException(
                 Messages.get().container(Messages.ERR_EXPORT_NOT_SUPPORTED_2, arguments));
         }
@@ -649,7 +667,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // we only have to do this in case of the static export on demand
         if (exportOnDemand) {
             String mimetype = OpenCms.getResourceManager().getMimeType(
-                file.getName(),
+                exportResource.getName(),
                 exportCms.getRequestContext().getEncoding());
             if (wrapRes != null) {
                 wrapRes.setContentType(mimetype);
@@ -684,32 +702,65 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     ctxInfo.setLocale(locale);
                     locCms = OpenCms.initCmsObject(exportCms, ctxInfo);
                 }
-                // read the content in the matching locale
-                byte[] content = loader.export(locCms, new CmsFile(file), req, exportWithResponse ? wrapRes : null);
-                if (content != null) {
-                    if (loader.getClass() == CmsDumpLoader.class /* NOT instanceof, doesn't work for image loader */) {
-                        // disable writing to response for static resources after the first rule match to avoid duplicate response data
-                        // when compression is enabled in Tomcat.
-                        exportWithResponse = false;
-                    }
-                    // write to rfs
+                String locRfsName = rfsName;
+                // in case of the default locale, this would either be wrong or the identity substitution
+                if (!locale.equals(CmsLocaleManager.getDefaultLocale()) && locales.contains(locale)) {
+                    locRfsName = rule.getLocalizedRfsName(rfsName, "/");
+                }
+                if (loader instanceof I_CmsStaticExportStreamLoader) {
+                    writeStreamedResource(
+                        (I_CmsStaticExportStreamLoader)loader,
+                        locCms,
+                        exportResource,
+                        exportRequest,
+                        exportWithResponse ? wrapRes : null,
+                        rule.getExportPath(),
+                        locRfsName,
+                        resource);
+                    // disable writing to response for static resources after the first rule match
+                    // to avoid duplicate response data
+                    // when compression is enabled in Tomcat.
+                    exportWithResponse = false;
                     exported = true;
-                    String locRfsName = rfsName;
-                    // in case of the default locale, this would either be wrong or the identity substitution
-                    if (!locale.equals(CmsLocaleManager.getDefaultLocale()) && locales.contains(locale)) {
-                        locRfsName = rule.getLocalizedRfsName(rfsName, "/");
+                } else {
+                    // read the content in the matching locale
+                    byte[] content = loader.export(
+                        locCms,
+                        new CmsFile(file),
+                        exportRequest,
+                        exportWithResponse ? wrapRes : null);
+                    if (content != null) {
+                        // write to rfs
+                        exported = true;
+                        writeResource(req, rule.getExportPath(), locRfsName, resource, content);
                     }
-                    writeResource(req, rule.getExportPath(), locRfsName, resource, content);
                 }
             }
         }
         if (!matched) {
             // no rule matched
             String exportPath = getExportPath(siteRoot + vfsName);
-            byte[] content = loader.export(exportCms, new CmsFile(file), req, exportWithResponse ? wrapRes : null);
-            if (content != null) {
+            if (loader instanceof I_CmsStaticExportStreamLoader) {
+                writeStreamedResource(
+                    (I_CmsStaticExportStreamLoader)loader,
+                    exportCms,
+                    exportResource,
+                    exportRequest,
+                    exportWithResponse ? wrapRes : null,
+                    exportPath,
+                    rfsName,
+                    resource);
                 exported = true;
-                writeResource(req, exportPath, rfsName, resource, content);
+            } else {
+                byte[] content = loader.export(
+                    exportCms,
+                    new CmsFile(file),
+                    exportRequest,
+                    exportWithResponse ? wrapRes : null);
+                if (content != null) {
+                    exported = true;
+                    writeResource(req, exportPath, rfsName, resource, content);
+                }
             }
         }
 
@@ -1212,6 +1263,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the image cache configuration.<p>
+     *
+     * @return the image cache configuration
+     */
+    public CmsImageCacheConfiguration getImageCacheConfiguration() {
+
+        return m_imageCacheConfiguration;
+    }
+
+    /**
      * Returns the configured link substitution handler class.<p>
      *
      * If not set, a new <code>{@link CmsDefaultLinkSubstitutionHandler}</code> is created and returned.<p>
@@ -1509,6 +1570,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public List<CmsStaticExportRfsRule> getRfsRules() {
 
         return Collections.unmodifiableList(m_rfsRules);
+    }
+
+    /**
+     * Returns the stored content delivery configuration.<p>
+     *
+     * @return the stored content delivery configuration
+     */
+    public CmsStoredContentDeliveryConfiguration getStoredContentDeliveryConfiguration() {
+
+        return m_storedContentDeliveryConfiguration;
     }
 
     /**
@@ -2138,6 +2209,27 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Removes a local static export file for content delivered directly from storage.<p>
+     *
+     * @param exportFileName the export file name
+     *
+     * @throws CmsException if the file can not be deleted
+     */
+    public void removeStoredContentExportFile(String exportFileName) throws CmsException {
+
+        File exportFile = new File(exportFileName);
+        if (!exportFile.exists()) {
+            return;
+        }
+        if (!exportFile.delete()) {
+            throw new CmsStaticExportException(Messages.get().container(Messages.ERR_OUTPUT_STREAM_1, exportFileName));
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FILE_DELETED_1, exportFileName));
+        }
+    }
+
+    /**
      * Sets the accept-charset header value.<p>
      *
      * @param value accept-language header value
@@ -2275,6 +2367,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+     * Sets the image cache configuration.<p>
+     *
+     * @param configuration the image cache configuration
+     */
+    public void setImageCacheConfiguration(CmsImageCacheConfiguration configuration) {
+
+        if (configuration == null) {
+            m_imageCacheConfiguration = new CmsImageCacheConfiguration();
+        } else {
+            m_imageCacheConfiguration = configuration;
+        }
+    }
+
+    /**
      * Sets the static export handler class.<p>
      *
      * @param handlerClassName the static export handler class name
@@ -2337,6 +2443,20 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void setRfsPrefix(String rfsPrefix) {
 
         m_rfsPrefixConfigured = rfsPrefix;
+    }
+
+    /**
+     * Sets the stored content delivery configuration.<p>
+     *
+     * @param configuration the stored content delivery configuration
+     */
+    public void setStoredContentDeliveryConfiguration(CmsStoredContentDeliveryConfiguration configuration) {
+
+        if (configuration == null) {
+            m_storedContentDeliveryConfiguration = new CmsStoredContentDeliveryConfiguration();
+        } else {
+            m_storedContentDeliveryConfiguration = configuration;
+        }
     }
 
     /**
@@ -2934,7 +3054,45 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-      * Writes a resource to the given export path with the given rfs name and the given content.<p>
+     * Handles a streamed static export through the configured stored content delivery handler if possible.<p>
+     *
+     * @param loader the resource loader
+     * @param cms the CMS context
+     * @param exportResource the resource to export
+     * @param req the current request
+     * @param res the current response
+     * @param exportFileName the target export file name
+     *
+     * @return <code>true</code> if the export has been handled without writing the local export file
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected boolean tryHandleConfiguredStoredContentDeliveryExport(
+        I_CmsStaticExportStreamLoader loader,
+        CmsObject cms,
+        CmsResource exportResource,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String exportFileName)
+    throws CmsException {
+
+        CmsStoredContentDeliveryConfiguration configuration = getStoredContentDeliveryConfiguration();
+        if (!configuration.isEnabled()) {
+            return false;
+        }
+        return m_storedContentDeliverySupport.handle(
+            this,
+            configuration,
+            loader,
+            cms,
+            exportResource,
+            req,
+            res,
+            exportFileName);
+    }
+
+    /**
+     * Writes a resource to the given export path with the given rfs name and the given content.<p>
       *
       * @param req the current request
       * @param exportPath the path to export the resource
@@ -2965,36 +3123,61 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             exportStream.close();
 
             // log export success
-            if (LOG.isInfoEnabled()) {
-                LOG.info(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_STATIC_EXPORTED_2,
-                        resource.getRootPath(),
-                        exportFileName));
-            }
+            logStaticExport(resource, exportFileName);
 
         } catch (Throwable t) {
             throw new CmsStaticExportException(
                 Messages.get().container(Messages.ERR_OUTPUT_STREAM_1, exportFileName),
                 t);
         }
-        // update the file with the modification date from the server
-        if (req != null) {
-            Long dateLastModified = (Long)req.getAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT);
-            if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
-                exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_SET_LAST_MODIFIED_2,
-                            exportFile.getName(),
-                            Long.valueOf((dateLastModified.longValue() / 1000) * 1000)));
-                }
-            }
-        } else {
-            // otherwise take the last modification date form the OpenCms resource
-            exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
+        setExportFileLastModified(req, exportFile, resource);
+    }
+
+    /**
+     * Writes a resource to the given export path by streaming the loader output.<p>
+     *
+     * @param loader the resource loader
+     * @param cms the CMS context
+     * @param exportResource the resource to export
+     * @param req the current request
+     * @param res the current response
+     * @param exportPath the path to export the resource
+     * @param rfsName the rfs name
+     * @param logResource the resource used for logging
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected void writeStreamedResource(
+        I_CmsStaticExportStreamLoader loader,
+        CmsObject cms,
+        CmsResource exportResource,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String exportPath,
+        String rfsName,
+        CmsResource logResource)
+    throws CmsException {
+
+        String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
+        if (tryHandleConfiguredStoredContentDeliveryExport(loader, cms, exportResource, req, res, exportFileName)) {
+            return;
         }
+        createExportFolder(exportPath, rfsName);
+        File exportFile = new File(exportFileName);
+        try {
+            FileOutputStream exportStream = new FileOutputStream(exportFile);
+            try {
+                loader.exportTo(cms, exportResource, req, res, exportStream);
+            } finally {
+                exportStream.close();
+            }
+            logStaticExport(logResource, exportFileName);
+        } catch (Throwable t) {
+            throw new CmsStaticExportException(
+                Messages.get().container(Messages.ERR_OUTPUT_STREAM_1, exportFileName),
+                t);
+        }
+        setExportFileLastModified(req, exportFile, logResource);
     }
 
     /**
@@ -3050,6 +3233,47 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // should never happen, no resources will be added at all
             LOG.error(e.getLocalizedMessage(), e);
             return Collections.emptyMap();
+        }
+    }
+
+    /**
+     * Logs a successful static export.<p>
+     *
+     * @param resource the exported resource
+     * @param exportFileName the export file name
+     */
+    private void logStaticExport(CmsResource resource, String exportFileName) {
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, resource.getRootPath(), exportFileName));
+        }
+    }
+
+    /**
+     * Updates the exported file with the modification date from the request or resource.<p>
+     *
+     * @param req the current request
+     * @param exportFile the exported file
+     * @param resource the exported resource
+     */
+    private void setExportFileLastModified(HttpServletRequest req, File exportFile, CmsResource resource) {
+
+        if (req != null) {
+            Long dateLastModified = (Long)req.getAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT);
+            if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
+                long lastModified = (dateLastModified.longValue() / 1000) * 1000;
+                exportFile.setLastModified(lastModified);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_SET_LAST_MODIFIED_2,
+                            exportFile.getName(),
+                            Long.valueOf(lastModified)));
+                }
+            }
+        } else {
+            exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
         }
     }
 }

@@ -29,25 +29,35 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.configuration.CmsStoredContentInfoCacheConfiguration;
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.storage.CmsNoopStoredContentInfoCache;
 import org.opencms.db.storage.CmsStorageException;
 import org.opencms.db.storage.CmsStorageManager;
 import org.opencms.db.storage.CmsStorageManager.StorageResult;
+import org.opencms.db.storage.CmsStoredContentInfoCacheKey;
+import org.opencms.db.storage.I_CmsStorageDelivery;
+import org.opencms.db.storage.I_CmsStoredContentInfoCache;
+import org.opencms.db.storage.I_CmsStoredContentInfoCacheFactory;
 import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsStoredContentInfo;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,10 +67,32 @@ import java.util.List;
 
 public class CmsStorageVfsDriver extends CmsVfsDriver {
 
+    /**
+     * Performs one variant of reading content from a VFS content row.<p>
+     *
+     * @param <T> the handler result type
+     */
+    private interface I_CmsContentReadOperation<T> {
+
+        /**
+         * Reads content described by a content row.<p>
+         *
+         * @param localContent the local file content bytes
+         * @param storage the external storage identifier
+         * @param hash the external storage hash
+         * @return the handler result
+         * @throws CmsStorageException if external storage content can not be loaded
+         */
+        T read(byte[] localContent, String storage, String hash) throws CmsStorageException;
+    }
+
     /** The filename/path of the storage SQL query properties. */
     private static final String STORAGE_QUERY_PROPERTIES = "org/opencms/db/generic/storage.properties";
 
     protected CmsStorageManager m_storageManager;
+
+    /** The stored content info cache. */
+    protected I_CmsStoredContentInfoCache m_storedContentInfoCache = new CmsNoopStoredContentInfoCache();
 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsResource, byte[])
@@ -89,6 +121,7 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
             stmt.setString(3, storage);
             stmt.setString(4, hash);
             stmt.executeUpdate();
+            m_storedContentInfoCache.clear();
         } catch (SQLException e) {
             throw new CmsDbSqlException(
                 Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
@@ -267,6 +300,7 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
                 stmt.setInt(6, publishTag);
                 stmt.setInt(7, keepOnline ? 1 : 0);
                 stmt.executeUpdate();
+                m_storedContentInfoCache.clear();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
                 // delete the old storage entry if necessary
                 if (CmsStringUtil.isNotEmpty(oldOnlineHash)) {
@@ -354,6 +388,20 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#getStoredContentDelivery(org.opencms.db.CmsDbContext, java.lang.String)
+     */
+    @Override
+    public I_CmsStorageDelivery getStoredContentDelivery(CmsDbContext dbc, String storage)
+    throws CmsDataAccessException {
+
+        try {
+            return m_storageManager.getDeliveryStorage(storage);
+        } catch (CmsStorageException e) {
+            throw createStorageReadException(storage, null, e);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsDriver#init(org.opencms.db.CmsDbContext, org.opencms.configuration.CmsConfigurationManager, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(
@@ -367,6 +415,10 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
             CmsParameterConfiguration configuration = configurationManager.getConfiguration();
             CmsVfsConfiguration vfsConfiguration = (CmsVfsConfiguration)configurationManager.getConfiguration(
                 CmsVfsConfiguration.class);
+            CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(
+                CmsSystemConfiguration.class);
+            m_storedContentInfoCache = createStoredContentInfoCache(
+                systemConfiguration.getStoredContentInfoCacheConfiguration());
             m_storageManager = new CmsStorageManager(
                 m_sqlManager,
                 configuration,
@@ -402,47 +454,51 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
      */
     public byte[] readContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId) throws CmsDataAccessException {
 
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        byte[] byteRes = null;
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ONLINE_FILES_CONTENT");
-            } else {
-                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_FILES_CONTENT");
+        return readContentInternal(dbc, projectId, resourceId, new I_CmsContentReadOperation<byte[]>() {
+
+            public byte[] read(byte[] localContent, String storage, String hash) throws CmsStorageException {
+
+                return m_storageManager.loadContent(dbc, localContent, storage, hash);
             }
-            stmt.setString(1, resourceId.toString());
-            res = stmt.executeQuery();
-            if (res.next()) {
-                byte[] localContent = null;
-                String storage = res.getString("STORAGE");
-                String hash = res.getString("HASH");
-                localContent = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
-                try {
-                    byteRes = m_storageManager.loadContent(dbc, localContent, storage, hash);
-                } catch (CmsStorageException e) {
-                    throw createStorageReadException(storage, hash, e);
-                }
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsVfsResourceNotFoundException(
-                    Messages.get().container(
-                        Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
-                        resourceId,
-                        Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
+        });
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readContentFrom(CmsDbContext, CmsUUID, CmsUUID, I_CmsFileContentStreamHandler)
+     */
+    @Override
+    public void readContentFrom(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsUUID resourceId,
+        I_CmsFileContentStreamHandler handler)
+    throws CmsDataAccessException {
+
+        readContentInternal(dbc, projectId, resourceId, new I_CmsContentReadOperation<Void>() {
+
+            public Void read(byte[] localContent, String storage, String hash) throws CmsStorageException {
+
+                m_storageManager.loadContentFrom(dbc, localContent, storage, hash, handler);
+                return null;
             }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(
-                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
-                e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-        return byteRes;
+        });
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readContentTo(CmsDbContext, CmsUUID, CmsUUID, OutputStream)
+     */
+    @Override
+    public void readContentTo(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, OutputStream out)
+    throws CmsDataAccessException {
+
+        readContentInternal(dbc, projectId, resourceId, new I_CmsContentReadOperation<Void>() {
+
+            public Void read(byte[] localContent, String storage, String hash) throws CmsStorageException {
+
+                m_storageManager.loadContentTo(dbc, localContent, storage, hash, out);
+                return null;
+            }
+        });
     }
 
     /**
@@ -488,6 +544,54 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#readStoredContentInfo(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, org.opencms.file.CmsResource)
+     */
+    @Override
+    public CmsStoredContentInfo readStoredContentInfo(CmsDbContext dbc, CmsUUID projectId, CmsResource resource)
+    throws CmsDataAccessException {
+
+        CmsStoredContentInfoCacheKey cacheKey = new CmsStoredContentInfoCacheKey(projectId, resource);
+        CmsStoredContentInfo cachedInfo = m_storedContentInfoCache.get(cacheKey);
+        if (cachedInfo != null) {
+            return cachedInfo;
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ONLINE_STORED_CONTENT_INFO");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_STORED_CONTENT_INFO");
+            }
+            stmt.setString(1, resource.getResourceId().toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                String storage = res.getString("STORAGE");
+                String hash = res.getString("HASH");
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+                CmsStoredContentInfo info = new CmsStoredContentInfo(resource, storage, hash, resource.getLength());
+                m_storedContentInfoCache.put(cacheKey, info);
+                return info;
+            }
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
+                    resource.getResourceId(),
+                    Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#removeFile(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.file.CmsResource)
      */
     public void removeFile(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDataAccessException {
@@ -520,6 +624,7 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
 
             }
             super.removeFile(dbc, projectId, resource);
+            m_storedContentInfoCache.clear();
         } catch (SQLException e) {
             throw new CmsDbSqlException(
                 Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
@@ -566,6 +671,7 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
             stmt.setString(3, storageResult.getHash());
             stmt.setString(4, resource.getResourceId().toString());
             stmt.executeUpdate();
+            m_storedContentInfoCache.clear();
             // delete the old content blob if not used any more
             if (CmsStringUtil.isNotEmpty(oldHash)) {
                 m_storageManager.deleteContent(dbc, oldStorage, oldHash);
@@ -577,6 +683,29 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
+    }
+
+    /**
+     * Creates the stored content info cache.<p>
+     *
+     * @param configuration the cache configuration
+     * @return the cache
+     * @throws Exception if the configured factory can not be created
+     */
+    protected I_CmsStoredContentInfoCache createStoredContentInfoCache(
+        CmsStoredContentInfoCacheConfiguration configuration)
+    throws Exception {
+
+        if ((configuration == null) || !configuration.isEnabled()) {
+            return new CmsNoopStoredContentInfoCache();
+        }
+        Class<?> factoryClass = Class.forName(configuration.getFactoryClass());
+        if (!I_CmsStoredContentInfoCacheFactory.class.isAssignableFrom(factoryClass)) {
+            throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_VFS_DRIVER_0));
+        }
+        I_CmsStoredContentInfoCacheFactory factory = (I_CmsStoredContentInfoCacheFactory)factoryClass.getDeclaredConstructor().newInstance();
+        I_CmsStoredContentInfoCache cache = factory.create(configuration);
+        return cache != null ? cache : new CmsNoopStoredContentInfoCache();
     }
 
     /**
@@ -601,10 +730,66 @@ public class CmsStorageVfsDriver extends CmsVfsDriver {
     private CmsDataAccessException createStorageReadException(String storage, String hash, CmsStorageException cause) {
 
         return new CmsDataAccessException(
-            org.opencms.db.storage.Messages.get().container(
-                org.opencms.db.storage.Messages.ERR_STORAGE_BLOB_LOAD_FAILED_2,
-                storage,
-                hash),
+            Messages.get().container(Messages.ERR_STORAGE_CONTENT_READ_2, storage, hash),
             cause);
+    }
+
+    /**
+     * Reads a content row and delegates content loading to the given read operation.<p>
+     *
+     * @param dbc the database context
+     * @param projectId the project id
+     * @param resourceId the resource id
+     * @param readOperation the content read operation
+     * @return the read operation result
+     * @throws CmsDataAccessException if the content can not be read
+     */
+    private <T> T readContentInternal(
+        CmsDbContext dbc,
+        CmsUUID projectId,
+        CmsUUID resourceId,
+        I_CmsContentReadOperation<T> readOperation)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        T result = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_ONLINE_FILES_CONTENT");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_FILES_CONTENT");
+            }
+            stmt.setString(1, resourceId.toString());
+            res = stmt.executeQuery();
+            if (res.next()) {
+                byte[] localContent = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
+                String storage = res.getString("STORAGE");
+                String hash = res.getString("HASH");
+                try {
+                    result = readOperation.read(localContent, storage, hash);
+                } catch (CmsStorageException e) {
+                    throw createStorageReadException(storage, hash, e);
+                }
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            } else {
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(
+                        Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
+                        resourceId,
+                        Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return result;
     }
 }

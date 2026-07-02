@@ -31,6 +31,10 @@ import org.opencms.jsp.CmsJspTagImage;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -293,5 +297,50 @@ public class TestCmsImageScaler extends OpenCmsTestRunner {
         assertEquals(50, resultScaler.getWidth());
         assertEquals(25, resultScaler.getHeight());
         assertEquals(9, resultScaler.getType());
+    }
+
+    /**
+     * Tests that unsupported image types are written unchanged.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Order(5)
+    @Test
+    public void testScalingUnsupportedImageType() throws Exception {
+
+        byte[] content = ("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"85\">"
+            + "<rect width=\"100\" height=\"85\" fill=\"#cccccc\"/></svg>").getBytes(StandardCharsets.UTF_8);
+        CmsImageScaler scaler = new CmsImageScaler("w:100,h:85,t:9,q:80");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        scaler.scaleImageTo(content, null, "/test/logo.svg", out);
+
+        assertTrue(Arrays.equals(content, out.toByteArray()));
+    }
+
+    /**
+     * Tests the image scaler stream output.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Order(4)
+    @Test
+    public void testStreamScaling() throws Exception {
+
+        String img01 = "org/opencms/loader/img_01.jpg";
+        byte[] content = CmsFileUtil.readFile(img01);
+        CmsImageScaler scaler = new CmsImageScaler("w:640,h:480,t:1,q:80");
+
+        byte[] scaled = scaler.scaleImage(content, img01);
+        CmsImageScaler scaledImage = new CmsImageScaler(scaled, img01);
+        assertEquals(640, scaledImage.getWidth());
+        assertEquals(480, scaledImage.getHeight());
+
+        ByteArrayOutputStream byteContentOut = new ByteArrayOutputStream();
+        scaler.scaleImageTo(content, null, img01, byteContentOut);
+        CmsImageScaler byteContentImage = new CmsImageScaler(byteContentOut.toByteArray(), img01);
+        assertEquals(640, byteContentImage.getWidth());
+        assertEquals(480, byteContentImage.getHeight());
+
     }
 }

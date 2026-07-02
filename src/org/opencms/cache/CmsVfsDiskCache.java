@@ -33,6 +33,7 @@ import org.opencms.util.CmsStringUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implements a RFS file based disk cache, that handles parameter based versions of VFS files,
@@ -71,17 +72,70 @@ public class CmsVfsDiskCache {
      */
     public static File saveFile(String rfsName, byte[] content) throws IOException {
 
-        File f = new File(rfsName);
-        File p = f.getParentFile();
-        if (!p.exists()) {
-            // create parent folders
-            p.mkdirs();
-        }
+        File f = createFile(rfsName);
         // write file contents
         FileOutputStream fs = new FileOutputStream(f);
         fs.write(content);
         fs.close();
         return f;
+    }
+
+    /**
+     * Saves the given input stream content to a RFS file of the given name (full path).<p>
+     *
+     * If the required parent folders do not exists, they are also created.<p>
+     *
+     * @param rfsName the RFS name of the file to save the content in
+     * @param content the input stream to save
+     *
+     * @return a reference to the File that was saved
+     *
+     * @throws IOException in case of disk access errors
+     */
+    public static File saveFile(String rfsName, InputStream content) throws IOException {
+
+        File f = createFile(rfsName);
+        FileOutputStream fs = new FileOutputStream(f);
+        try {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = content.read(buffer)) >= 0) {
+                if (read > 0) {
+                    fs.write(buffer, 0, read);
+                }
+            }
+        } finally {
+            fs.close();
+        }
+        return f;
+    }
+
+    /**
+     * Creates a RFS file reference and its parent folders.<p>
+     *
+     * @param rfsName the RFS name of the file
+     *
+     * @return the file
+     */
+    static File createFile(String rfsName) {
+
+        File f = new File(rfsName);
+        ensureParentFolder(f);
+        return f;
+    }
+
+    /**
+     * Ensures that the parent folder of the given file exists.<p>
+     *
+     * @param file the file
+     */
+    private static void ensureParentFolder(File file) {
+
+        File p = file.getParentFile();
+        if (!p.exists()) {
+            // create parent folders
+            p.mkdirs();
+        }
     }
 
     /**
@@ -153,6 +207,23 @@ public class CmsVfsDiskCache {
      * @throws IOException in case of disk access errors
      */
     public void saveCacheFile(String rfsName, byte[] content, long dateLastModified) throws IOException {
+
+        dateLastModified = simplifyDateLastModified(dateLastModified);
+        File f = saveFile(rfsName, content);
+        // set last modification date
+        f.setLastModified(dateLastModified);
+    }
+
+    /**
+     * Saves the given input stream content in the disk cache.<p>
+     *
+     * @param rfsName the RFS name of the file to save the content in
+     * @param content the input stream to save
+     * @param dateLastModified the date of last modification to set for the save file
+     *
+     * @throws IOException in case of disk access errors
+     */
+    public void saveCacheFile(String rfsName, InputStream content, long dateLastModified) throws IOException {
 
         dateLastModified = simplifyDateLastModified(dateLastModified);
         File f = saveFile(rfsName, content);

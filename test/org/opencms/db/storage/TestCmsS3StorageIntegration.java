@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -264,6 +265,30 @@ public class TestCmsS3StorageIntegration {
             fail("Expected deleted content to be missing.");
         } catch (CmsStorageBlobNotFoundException e) {
             // expected
+        }
+    }
+
+    /**
+     * Tests that S3 range streaming works against a configured S3 backend.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStreamRangeAgainstConfiguredS3Backend() throws Exception {
+
+        CmsS3Storage storage = createStorage();
+        byte[] content = "0123456789abcdef".getBytes(StandardCharsets.UTF_8);
+        String hash = calculateSha512(content);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try {
+            storage.storeContent(null, hash, content);
+
+            storage.streamRangeTo(null, hash, 4, 6, out);
+
+            assertEquals("456789", out.toString("UTF-8"));
+        } finally {
+            storage.deleteContent(null, hash);
         }
     }
 

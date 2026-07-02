@@ -84,6 +84,9 @@ public final class CmsRequestUtil {
     /** HTTP Accept Header for the cms:device-tag. */
     public static final String HEADER_ACCEPT = "Accept";
 
+    /** HTTP Header "Accept-Ranges". */
+    public static final String HEADER_ACCEPT_RANGES = "Accept-Ranges";
+
     /** HTTP Accept-Charset Header for internal requests used during static export. */
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
 
@@ -99,14 +102,29 @@ public final class CmsRequestUtil {
     /** The "Content-Disposition" http header. */
     public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
 
+    /** The "Content-Length" http header. */
+    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+
+    /** The "Content-Range" http header. */
+    public static final String HEADER_CONTENT_RANGE = "Content-Range";
+
     /** The "Content-Type" http header. */
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
+
+    /** HTTP Header "ETag". */
+    public static final String HEADER_ETAG = "ETag";
 
     /** HTTP Header "Expires". */
     public static final String HEADER_EXPIRES = "Expires";
 
+    /** HTTP Header "If-Range". */
+    public static final String HEADER_IF_RANGE = "If-Range";
+
     /** HTTP Header "If-Modified-Since". */
     public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+
+    /** HTTP Header "If-None-Match". */
+    public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
 
     /** The Header that stores the session id (used by OpenCms upload applet). */
     public static final String HEADER_JSESSIONID = "JSESSIONID";
@@ -122,6 +140,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Pragma". */
     public static final String HEADER_PRAGMA = "Pragma";
+
+    /** HTTP Header "Range". */
+    public static final String HEADER_RANGE = "Range";
 
     /** HTTP Header "Server". */
     public static final String HEADER_SERVER = "Server";

@@ -32,7 +32,9 @@ import org.opencms.configuration.CmsStoragePolicyConfiguration;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.db.storage.CmsFsStorage;
+import org.opencms.db.storage.CmsStorageException;
 import org.opencms.db.storage.CmsStorageManager;
+import org.opencms.db.storage.I_CmsStorageDelivery;
 import org.opencms.db.storage.policy.CmsDefaultStoragePolicy;
 import org.opencms.db.storage.policy.CmsNoExternalStoragePolicy;
 import org.opencms.db.storage.policy.CmsStoragePolicyContext;
@@ -41,22 +43,39 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.loader.CmsDumpLoader;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.test.OpenCmsTestRunner;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -71,8 +90,460 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestStorageVfsDriver extends OpenCmsTestRunner {
 
+    /**
+     * SQL manager counting stored content info lookups.<p>
+     */
+    private static class CountingStoredContentInfoSqlManager extends org.opencms.db.generic.CmsSqlManager {
+
+        /** The number of stored content info lookups. */
+        private int m_storedContentInfoLookups;
+
+        /**
+         * Creates a new counting SQL manager from an existing SQL manager.<p>
+         *
+         * @param original the original SQL manager
+         * @throws Exception if the original fields can not be copied
+         */
+        CountingStoredContentInfoSqlManager(org.opencms.db.generic.CmsSqlManager original)
+        throws Exception {
+
+            copyField(original, this, "m_cachedQueries");
+            copyField(original, this, "m_driverType");
+            copyField(original, this, "m_poolUrl");
+            copyField(original, this, "m_queries");
+        }
+
+        /**
+         * Copies a field value.<p>
+         *
+         * @param source the source object
+         * @param target the target object
+         * @param fieldName the field name
+         * @throws Exception if the field can not be copied
+         */
+        private static void copyField(Object source, Object target, String fieldName) throws Exception {
+
+            Field field = findField(source.getClass(), fieldName);
+            field.set(target, field.get(source));
+        }
+
+        /**
+         * Finds a field in a class hierarchy.<p>
+         *
+         * @param type the type
+         * @param fieldName the field name
+         * @return the field
+         * @throws NoSuchFieldException if the field can not be found
+         */
+        private static Field findField(Class<?> type, String fieldName) throws NoSuchFieldException {
+
+            Class<?> currentType = type;
+            while (currentType != null) {
+                try {
+                    Field result = currentType.getDeclaredField(fieldName);
+                    result.setAccessible(true);
+                    return result;
+                } catch (NoSuchFieldException e) {
+                    currentType = currentType.getSuperclass();
+                }
+            }
+            throw new NoSuchFieldException(fieldName);
+        }
+
+        /**
+         * @see org.opencms.db.generic.CmsSqlManager#getPreparedStatement(java.sql.Connection, org.opencms.util.CmsUUID, java.lang.String)
+         */
+        @Override
+        public PreparedStatement getPreparedStatement(Connection con, CmsUUID projectId, String queryKey)
+        throws SQLException {
+
+            if ("C_ONLINE_STORED_CONTENT_INFO".equals(queryKey) || "C_OFFLINE_STORED_CONTENT_INFO".equals(queryKey)) {
+                m_storedContentInfoLookups++;
+            }
+            return super.getPreparedStatement(con, projectId, queryKey);
+        }
+
+        /**
+         * Returns the number of stored content info lookups.<p>
+         *
+         * @return the number of stored content info lookups
+         */
+        int getStoredContentInfoLookups() {
+
+            return m_storedContentInfoLookups;
+        }
+    }
+
+    /**
+     * Request recorder.<p>
+     */
+    private static class RequestRecorder implements InvocationHandler {
+
+        /** The headers. */
+        private Map<String, String> m_headers = new HashMap<String, String>();
+
+        /**
+         * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
+         */
+        public Object invoke(Object proxy, Method method, Object[] args) {
+
+            String methodName = method.getName();
+            if ("getHeader".equals(methodName)) {
+                return m_headers.get(args[0]);
+            } else if ("getDateHeader".equals(methodName)) {
+                return Long.valueOf(-1);
+            } else if ("getMethod".equals(methodName)) {
+                return "GET";
+            } else if ("getSession".equals(methodName)) {
+                return null;
+            }
+            return defaultValue(method.getReturnType());
+        }
+
+        /**
+         * Sets a header.<p>
+         *
+         * @param name the header name
+         * @param value the header value
+         */
+        void setHeader(String name, String value) {
+
+            m_headers.put(name, value);
+        }
+    }
+
+    /**
+     * Response recorder.<p>
+     */
+    private static class ResponseRecorder implements InvocationHandler {
+
+        /** The response body. */
+        private ByteArrayOutputStream m_body = new ByteArrayOutputStream();
+
+        /** The content length. */
+        private int m_contentLength = -1;
+
+        /** The content type. */
+        private String m_contentType;
+
+        /** The headers. */
+        private Map<String, String> m_headers = new HashMap<String, String>();
+
+        /** The status. */
+        private int m_status = -1;
+
+        /**
+         * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
+         */
+        public Object invoke(Object proxy, Method method, Object[] args) {
+
+            String methodName = method.getName();
+            if ("setStatus".equals(methodName)) {
+                m_status = ((Integer)args[0]).intValue();
+                return null;
+            } else if ("setContentLength".equals(methodName)) {
+                m_contentLength = ((Integer)args[0]).intValue();
+                return null;
+            } else if ("setContentType".equals(methodName)) {
+                m_contentType = (String)args[0];
+                return null;
+            } else if ("setHeader".equals(methodName)) {
+                m_headers.put((String)args[0], String.valueOf(args[1]));
+                return null;
+            } else if ("addHeader".equals(methodName)) {
+                m_headers.put((String)args[0], String.valueOf(args[1]));
+                return null;
+            } else if ("setDateHeader".equals(methodName)) {
+                m_headers.put((String)args[0], String.valueOf(args[1]));
+                return null;
+            } else if ("containsHeader".equals(methodName)) {
+                return Boolean.valueOf(m_headers.containsKey(args[0]));
+            } else if ("getOutputStream".equals(methodName)) {
+                return new ServletOutputStream() {
+
+                    @Override
+                    public boolean isReady() {
+
+                        return true;
+                    }
+
+                    @Override
+                    public void setWriteListener(WriteListener writeListener) {
+
+                        // nothing to do
+                    }
+
+                    @Override
+                    public void write(byte[] buffer, int offset, int length) {
+
+                        m_body.write(buffer, offset, length);
+                    }
+
+                    @Override
+                    public void write(int value) {
+
+                        m_body.write(value);
+                    }
+                };
+            }
+            return defaultValue(method.getReturnType());
+        }
+
+        /**
+         * Returns the response body.<p>
+         *
+         * @return the response body
+         */
+        byte[] getBody() {
+
+            return m_body.toByteArray();
+        }
+
+        /**
+         * Returns the content length.<p>
+         *
+         * @return the content length
+         */
+        int getContentLength() {
+
+            return m_contentLength;
+        }
+
+        /**
+         * Returns the content type.<p>
+         *
+         * @return the content type
+         */
+        String getContentType() {
+
+            return m_contentType;
+        }
+
+        /**
+         * Returns a header.<p>
+         *
+         * @param name the header name
+         *
+         * @return the header value
+         */
+        String getHeader(String name) {
+
+            return m_headers.get(name);
+        }
+
+        /**
+         * Returns the response status.<p>
+         *
+         * @return the response status
+         */
+        int getStatus() {
+
+            return m_status;
+        }
+    }
+
+    /**
+     * Test storage manager exposing a delivery-capable backend.<p>
+     */
+    private static class TestDeliveryStorageManager extends CmsStorageManager {
+
+        /** The stored content. */
+        private Map<String, byte[]> m_contents = new HashMap<String, byte[]>();
+
+        /** If content was loaded through the classic stream path. */
+        private boolean m_loadedContentTo;
+
+        /** If full delivery streaming was used. */
+        private boolean m_streamedFull;
+
+        /** If range delivery streaming was used. */
+        private boolean m_streamedRange;
+
+        /**
+         * Creates a new test storage manager.<p>
+         *
+         * @param sqlManager the SQL manager
+         */
+        TestDeliveryStorageManager(org.opencms.db.generic.CmsSqlManager sqlManager) {
+
+            super(sqlManager, createDeliveryStorageConfiguration(), createDeliveryStoragePolicyConfiguration());
+        }
+
+        /**
+         * Calculates a SHA-512 hash.<p>
+         *
+         * @param content the content
+         *
+         * @return the hash
+         *
+         * @throws Exception if hashing fails
+         */
+        private static String calculateSha512(byte[] content) throws Exception {
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] hash = digest.digest(content);
+            StringBuilder result = new StringBuilder(hash.length * 2);
+            for (int i = 0; i < hash.length; i++) {
+                int value = hash[i] & 0xff;
+                if (value < 16) {
+                    result.append('0');
+                }
+                result.append(Integer.toHexString(value));
+            }
+            return result.toString();
+        }
+
+        /**
+         * @see org.opencms.db.storage.CmsStorageManager#getDeliveryStorage(java.lang.String)
+         */
+        @Override
+        public I_CmsStorageDelivery getDeliveryStorage(String storage) throws CmsStorageException {
+
+            if (!"s3test".equals(storage)) {
+                return null;
+            }
+            return new I_CmsStorageDelivery() {
+
+                public void streamRangeTo(
+                    org.opencms.db.CmsDbContext dbc,
+                    String hash,
+                    long start,
+                    long length,
+                    OutputStream out)
+                throws Exception {
+
+                    m_streamedRange = true;
+                    byte[] content = m_contents.get(hash);
+                    out.write(content, (int)start, (int)length);
+                }
+
+                public void streamTo(org.opencms.db.CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+                    m_streamedFull = true;
+                    out.write(m_contents.get(hash));
+                }
+
+                public boolean supportsRangeDelivery() {
+
+                    return true;
+                }
+            };
+        }
+
+        /**
+         * @see org.opencms.db.storage.CmsStorageManager#loadContent(org.opencms.db.CmsDbContext, byte[], java.lang.String, java.lang.String)
+         */
+        @Override
+        public byte[] loadContent(org.opencms.db.CmsDbContext dbc, byte[] contents, String storage, String hash)
+        throws CmsStorageException {
+
+            return m_contents.get(hash);
+        }
+
+        /**
+         * @see org.opencms.db.storage.CmsStorageManager#loadContentFrom(org.opencms.db.CmsDbContext, byte[], java.lang.String, java.lang.String, org.opencms.file.I_CmsFileContentStreamHandler)
+         */
+        @Override
+        public void loadContentFrom(
+            org.opencms.db.CmsDbContext dbc,
+            byte[] contents,
+            String storage,
+            String hash,
+            I_CmsFileContentStreamHandler handler)
+        throws CmsStorageException {
+
+            try {
+                handler.read(new ByteArrayInputStream(m_contents.get(hash)));
+            } catch (Exception e) {
+                throw new CmsStorageException("Failed to read test content.", e);
+            }
+        }
+
+        /**
+         * @see org.opencms.db.storage.CmsStorageManager#loadContentTo(org.opencms.db.CmsDbContext, byte[], java.lang.String, java.lang.String, java.io.OutputStream)
+         */
+        @Override
+        public void loadContentTo(
+            org.opencms.db.CmsDbContext dbc,
+            byte[] contents,
+            String storage,
+            String hash,
+            OutputStream out)
+        throws CmsStorageException {
+
+            m_loadedContentTo = true;
+            try {
+                out.write(m_contents.get(hash));
+            } catch (Exception e) {
+                throw new CmsStorageException("Failed to write test content.", e);
+            }
+        }
+
+        /**
+         * @see org.opencms.db.storage.CmsStorageManager#prepareContent(org.opencms.db.CmsDbContext, org.opencms.db.storage.policy.CmsStoragePolicyContext)
+         */
+        @Override
+        public StorageResult prepareContent(org.opencms.db.CmsDbContext dbc, CmsStoragePolicyContext context)
+        throws CmsDataAccessException {
+
+            try {
+                byte[] content = context.getContent();
+                String hash = calculateSha512(content);
+                m_contents.put(hash, content);
+                return new StorageResult("s3test", hash);
+            } catch (Exception e) {
+                throw new CmsDataAccessException(
+                    org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_UNKNOWN_POOL_URL_1, "s3test"),
+                    e);
+            }
+        }
+    }
+
     /** Test content size. */
     private static final int LARGE_CONTENT_SIZE = 600 * 1024;
+
+    /**
+     * Creates the configuration for the delivery test storage manager.<p>
+     *
+     * @return the configuration
+     */
+    private static CmsParameterConfiguration createDeliveryStorageConfiguration() {
+
+        CmsParameterConfiguration configuration = new CmsParameterConfiguration();
+        configuration.add("storage.active", "db");
+        return configuration;
+    }
+
+    /**
+     * Creates the storage policy configuration for the delivery test storage manager.<p>
+     *
+     * @return the policy configuration
+     */
+    private static CmsStoragePolicyConfiguration createDeliveryStoragePolicyConfiguration() {
+
+        CmsStoragePolicyConfiguration configuration = new CmsStoragePolicyConfiguration();
+        configuration.setClassName(CmsNoExternalStoragePolicy.class.getName());
+        return configuration;
+    }
+
+    /**
+     * Creates a default value for a method return type.<p>
+     *
+     * @param type the return type
+     *
+     * @return the default value
+     */
+    private static Object defaultValue(Class<?> type) {
+
+        if (type == boolean.class) {
+            return Boolean.FALSE;
+        } else if (type == int.class) {
+            return Integer.valueOf(0);
+        } else if (type == long.class) {
+            return Long.valueOf(0);
+        }
+        return null;
+    }
 
     /**
      * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
@@ -236,6 +707,51 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that the dump loader delivers externally stored range requests through the storage delivery capability.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(13)
+    public void testDumpLoaderUsesStoredContentDeliveryForRangeRequest() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String path = "/storage-dump-delivery.bin";
+        byte[] content = "0123456789abcdef".getBytes("UTF-8");
+        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
+        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
+        TestDeliveryStorageManager deliveryStorageManager = null;
+
+        try {
+            org.opencms.db.generic.CmsSqlManager sqlManager = getStorageSqlManager(originalStorageManager);
+            deliveryStorageManager = new TestDeliveryStorageManager(sqlManager);
+            storageManagerField.set(getVfsDriver(), deliveryStorageManager);
+
+            CmsResource resource = cms.createResource(path, CmsResourceTypeBinary.getStaticTypeId(), content, null);
+            RequestRecorder request = new RequestRecorder();
+            request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+            ResponseRecorder response = new ResponseRecorder();
+            CmsDumpLoader loader = (CmsDumpLoader)OpenCms.getResourceManager().getLoader(resource);
+
+            loader.load(cms, resource, createRequest(request), createResponse(response));
+
+            assertEquals(HttpServletResponse.SC_PARTIAL_CONTENT, response.getStatus());
+            assertEquals(6, response.getContentLength());
+            assertEquals("bytes 4-9/16", response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+            assertEquals("application/octet-stream", response.getContentType());
+            assertTrue(Arrays.equals("456789".getBytes("UTF-8"), response.getBody()));
+            assertTrue(deliveryStorageManager.m_streamedRange);
+            assertFalse(deliveryStorageManager.m_streamedFull);
+            assertFalse(deliveryStorageManager.m_loadedContentTo);
+        } finally {
+            storageManagerField.set(getVfsDriver(), originalStorageManager);
+            if (deliveryStorageManager != null) {
+                deliveryStorageManager.close();
+            }
+        }
+    }
+
+    /**
      * Tests that binary content is stored in CMS_STORAGE and can be read offline and online.<p>
      *
      * @throws Exception if something goes wrong
@@ -291,6 +807,82 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
                 new CmsStoragePolicyContext(
                     createContent((byte)3),
                     createResource(CmsResourceTypePlain.getStaticTypeId()))));
+    }
+
+    /**
+     * Tests reading stored content info without loading the actual file content.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(3)
+    public void testReadStoredContentInfo() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        byte[] externalContent = createContent((byte)7);
+        CmsResource externalResource = cms.createResource(
+            "/storage-content-info.bin",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            externalContent,
+            null);
+        String hash = readContentHash("CMS_OFFLINE_CONTENTS", externalResource.getResourceId().toString());
+
+        CmsStoredContentInfo externalInfo = cms.readStoredContentInfo(externalResource);
+
+        assertEquals("db", externalInfo.getStorage());
+        assertEquals(hash, externalInfo.getHash());
+        assertEquals(externalResource.getLength(), externalInfo.getLength());
+        assertEquals(externalResource, externalInfo.getResource());
+        assertTrue(externalInfo.isExternallyStored());
+        assertTrue(externalInfo.isStoredIn("db"));
+
+        CmsResource localResource = cms.createResource(
+            "/storage-content-info.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            createSmallContent((byte)8),
+            null);
+
+        CmsStoredContentInfo localInfo = cms.readStoredContentInfo(localResource);
+
+        assertNull(localInfo.getStorage());
+        assertNull(localInfo.getHash());
+        assertEquals(localResource.getLength(), localInfo.getLength());
+        assertFalse(localInfo.isExternallyStored());
+    }
+
+    /**
+     * Tests that stored content info is cached for repeated reads of the same resource metadata.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(3)
+    public void testReadStoredContentInfoUsesCache() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsResource resource = cms.createResource(
+            "/storage-content-info-cache.bin",
+            CmsResourceTypeBinary.getStaticTypeId(),
+            createContent((byte)11),
+            null);
+        I_CmsVfsDriver vfsDriver = getVfsDriver();
+        Field sqlManagerField = getField(vfsDriver.getClass(), "m_sqlManager");
+        org.opencms.db.generic.CmsSqlManager originalSqlManager = (org.opencms.db.generic.CmsSqlManager)sqlManagerField.get(
+            vfsDriver);
+        CountingStoredContentInfoSqlManager countingSqlManager = new CountingStoredContentInfoSqlManager(
+            originalSqlManager);
+        try {
+            sqlManagerField.set(vfsDriver, countingSqlManager);
+
+            CmsStoredContentInfo firstInfo = cms.readStoredContentInfo(resource);
+            CmsStoredContentInfo secondInfo = cms.readStoredContentInfo(resource);
+
+            assertEquals(firstInfo.getStorage(), secondInfo.getStorage());
+            assertEquals(firstInfo.getHash(), secondInfo.getHash());
+            assertEquals(1, countingSqlManager.getStoredContentInfoLookups());
+        } finally {
+            sqlManagerField.set(vfsDriver, originalSqlManager);
+        }
     }
 
     /**
@@ -608,6 +1200,21 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
     }
 
     /**
+     * Creates a servlet request proxy.<p>
+     *
+     * @param recorder the request recorder
+     *
+     * @return the request proxy
+     */
+    private HttpServletRequest createRequest(RequestRecorder recorder) {
+
+        return (HttpServletRequest)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletRequest.class},
+            recorder);
+    }
+
+    /**
      * Creates a minimal test resource for policy tests.<p>
      *
      * @param typeId the resource type id
@@ -635,6 +1242,21 @@ public class TestStorageVfsDriver extends OpenCmsTestRunner {
             0,
             0,
             1);
+    }
+
+    /**
+     * Creates a servlet response proxy.<p>
+     *
+     * @param recorder the response recorder
+     *
+     * @return the response proxy
+     */
+    private HttpServletResponse createResponse(ResponseRecorder recorder) {
+
+        return (HttpServletResponse)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {HttpServletResponse.class},
+            recorder);
     }
 
     /**

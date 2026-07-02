@@ -27,6 +27,11 @@
 
 package org.opencms.db.storage.s3;
 
+import org.opencms.file.I_CmsFileContentStreamHandler;
+
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
+
 /**
  * Interface for S3 storage operations.<p>
  *
@@ -86,6 +91,18 @@ public interface I_CmsS3Client extends AutoCloseable {
     byte[] getObject(String key) throws Exception;
 
     /**
+     * Returns the length of an object's content.<p>
+     *
+     * @param key the identifier for the object
+     * @return the object content length
+     * @throws Exception if the object can not be accessed
+     */
+    default long getObjectLength(String key) throws Exception {
+
+        return getObject(key).length;
+    }
+
+    /**
      * Uploads an object to the specified bucket.<p>
      *
      * @param key the unique identifier (path) for the object
@@ -93,6 +110,20 @@ public interface I_CmsS3Client extends AutoCloseable {
      * @throws Exception if the upload fails
      */
     void putObject(String key, byte[] content) throws Exception;
+
+    /**
+     * Passes an object's content from the specified bucket to the given input stream handler.<p>
+     *
+     * @param key the identifier for the object
+     * @param handler the stream handler
+     * @throws Exception if the object cannot be retrieved or handled
+     */
+    default void readObjectFrom(String key, I_CmsFileContentStreamHandler handler) throws Exception {
+
+        try (ByteArrayInputStream in = new ByteArrayInputStream(getObject(key))) {
+            handler.read(in);
+        }
+    }
 
     /**
      * Validates that the configured bucket is accessible.<p>
@@ -113,5 +144,40 @@ public interface I_CmsS3Client extends AutoCloseable {
     default void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
 
         throw new UnsupportedOperationException("S3 object listing is not supported by this client.");
+    }
+
+    /**
+     * Writes an object byte range from the specified bucket to the given output stream.<p>
+     *
+     * @param key the identifier for the object
+     * @param start the first byte to write
+     * @param length the number of bytes to write
+     * @param out the output stream to write to
+     * @throws Exception if the object cannot be retrieved or written
+     */
+    default void writeObjectRangeTo(String key, long start, long length, OutputStream out) throws Exception {
+
+        if ((start < 0) || (length < 1) || ((Long.MAX_VALUE - start) < length)) {
+            throw new IllegalArgumentException("Invalid byte range: start=" + start + ", length=" + length);
+        }
+        byte[] content = getObject(key);
+        if (start >= content.length) {
+            return;
+        }
+        int offset = (int)start;
+        int rangeLength = (int)Math.min(length, content.length - start);
+        out.write(content, offset, rangeLength);
+    }
+
+    /**
+     * Writes an object's content from the specified bucket to the given output stream.<p>
+     *
+     * @param key the identifier for the object
+     * @param out the output stream to write to
+     * @throws Exception if the object cannot be retrieved or written
+     */
+    default void writeObjectTo(String key, OutputStream out) throws Exception {
+
+        out.write(getObject(key));
     }
 }

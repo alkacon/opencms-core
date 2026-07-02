@@ -28,6 +28,7 @@
 package org.opencms.db.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,8 +40,10 @@ import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.db.storage.s3.I_CmsS3Client;
 import org.opencms.security.I_CmsCredentialsResolver;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,6 +291,45 @@ public class TestCmsS3Storage {
     }
 
     /**
+     * Tests that S3 content can be loaded to an output stream.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testLoadContentToStream() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
+        String hash = createHash("abcdef", '1');
+        byte[] content = "streamed s3 content".getBytes("UTF-8");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        storage.storeContent(null, hash, content);
+
+        storage.loadContentTo(null, hash, out);
+
+        assertEquals("streamed s3 content", out.toString("UTF-8"));
+    }
+
+    /**
+     * Tests that S3 and FS storage expose the delivery capability.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testS3AndFsStorageSupportDeliveryCapability() throws Exception {
+
+        CmsS3Storage s3Storage = new CmsS3Storage("s3test", "bucket", true, new TestS3Client());
+        CmsFsStorage fsStorage = new CmsFsStorage("fstest", "/tmp/opencms-test-storage");
+        org.opencms.db.generic.CmsDbStorage dbStorage = new org.opencms.db.generic.CmsDbStorage(null);
+
+        assertTrue(s3Storage instanceof I_CmsStorageDelivery);
+        assertTrue(((I_CmsStorageDelivery)s3Storage).supportsRangeDelivery());
+        assertTrue(fsStorage instanceof I_CmsStorageDelivery);
+        assertTrue(((I_CmsStorageDelivery)fsStorage).supportsRangeDelivery());
+        assertFalse(dbStorage instanceof I_CmsStorageDelivery);
+    }
+
+    /**
      * Tests that S3 credentials are resolved through the OpenCms credentials resolver.<p>
      */
     @Test
@@ -308,6 +350,28 @@ public class TestCmsS3Storage {
         assertEquals("resolved-secret", resolved.getSecretKey());
         assertEquals("http://localhost:9000", resolved.getEndpoint());
         assertEquals("bucket", resolved.getBucketName());
+    }
+
+    /**
+     * Tests that S3 enumeration can ignore non-content prefixes.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testS3EnumerationIgnoresConfiguredPrefixes() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
+        String hash = createHash("abcdef", '1');
+        String imageCacheHashLikeName = createHash("123456", '2');
+        client.m_objects.put("ab/cd/ef/" + hash, new byte[] {1});
+        client.m_objects.put("imagecache/12/34/56/" + imageCacheHashLikeName, new byte[] {2});
+        List<String> hashes = new ArrayList<String>();
+
+        storage.visitContentHashes(null, Arrays.asList("imagecache/"), hashes::add);
+
+        assertEquals(1, hashes.size());
+        assertEquals(hash, hashes.get(0));
     }
 
     /**
@@ -360,6 +424,33 @@ public class TestCmsS3Storage {
         assertEquals(4567, storage.getApiCallTimeout());
         assertEquals(4, storage.getMaxRetries());
         assertEquals("eu-central-1", storage.getRegion());
+    }
+
+    /**
+     * Tests that the storage manager exposes delivery-capable backends without requiring casts.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStorageManagerReturnsDeliveryStorageForS3AndFs() throws Exception {
+
+        CmsParameterConfiguration configuration = new CmsParameterConfiguration();
+        configuration.add("storage.active", "s3test");
+        configuration.add("storage.backend.s3test.type", "s3");
+        configuration.add("storage.backend.s3test.endpoint", "http://localhost:9000");
+        configuration.add("storage.backend.s3test.bucket", "bucket");
+        configuration.add("storage.backend.s3test.accessKey", "access");
+        configuration.add("storage.backend.s3test.secretKey", "secret");
+        CmsParameterConfiguration fsConfiguration = new CmsParameterConfiguration();
+        fsConfiguration.add("storage.active", "fstest");
+        fsConfiguration.add("storage.backend.fstest.type", "fs");
+        fsConfiguration.add("storage.backend.fstest.path", "/tmp/opencms-test-storage");
+
+        CmsStorageManager storageManager = new CmsStorageManager(null, configuration);
+        CmsStorageManager fsStorageManager = new CmsStorageManager(null, fsConfiguration);
+
+        assertNotNull(storageManager.getDeliveryStorage("s3test"));
+        assertNotNull(fsStorageManager.getDeliveryStorage("fstest"));
     }
 
     /**
@@ -417,6 +508,65 @@ public class TestCmsS3Storage {
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage().indexOf("must not be null") >= 0);
         }
+    }
+
+    /**
+     * Tests that invalid S3 delivery ranges are rejected.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStreamRangeToRejectsInvalidRange() throws Exception {
+
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, new TestS3Client());
+        String hash = createHash("abcdef", '1');
+
+        try {
+            storage.streamRangeTo(null, hash, 0, 0, new ByteArrayOutputStream());
+            fail("Expected invalid range to fail.");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().indexOf("Invalid byte range") >= 0);
+        }
+    }
+
+    /**
+     * Tests that S3 content ranges can be streamed through the delivery capability.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStreamRangeToUsesS3ContentRange() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
+        String hash = createHash("abcdef", '1');
+        byte[] content = "0123456789abcdef".getBytes("UTF-8");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        storage.storeContent(null, hash, content);
+
+        storage.streamRangeTo(null, hash, 4, 6, out);
+
+        assertEquals("456789", out.toString("UTF-8"));
+    }
+
+    /**
+     * Tests that S3 content can be streamed through the delivery capability.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStreamToUsesS3Content() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
+        String hash = createHash("abcdef", '1');
+        byte[] content = "delivery stream content".getBytes("UTF-8");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        storage.storeContent(null, hash, content);
+
+        storage.streamTo(null, hash, out);
+
+        assertEquals("delivery stream content", out.toString("UTF-8"));
     }
 
     /**

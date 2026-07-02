@@ -32,7 +32,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -74,6 +76,18 @@ public class CmsVfsNameBasedDiskCache {
     }
 
     /**
+     * Creates the file for the requested disk cache entry and its parent folders.<p>
+     *
+     * @param rfsName the file RFS name to create
+     *
+     * @return the cache file
+     */
+    public File createCacheFile(String rfsName) {
+
+        return CmsVfsDiskCache.createFile(rfsName);
+    }
+
+    /**
      * Returns the content of the requested file in the disk cache, or <code>null</code> if the
      * file is not found in the cache, or is found but outdated.<p>
      *
@@ -96,6 +110,45 @@ public class CmsVfsNameBasedDiskCache {
         } catch (IOException e) {
             // unable to read content
             LOG.debug("Unable to read file " + rfsName, e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the file for the requested disk cache entry, or <code>null</code> if the file is not available.<p>
+     *
+     * @param rfsName the file RFS name to look up in the cache
+     *
+     * @return the cache file, or <code>null</code>
+     */
+    public File getCacheFile(String rfsName) {
+
+        File f = new File(rfsName);
+        if (f.exists()) {
+            long age = f.lastModified();
+            if ((System.currentTimeMillis() - age) > 3600000) {
+                // file has not been touched for 1 hour, touch the file with the current date
+                f.setLastModified(System.currentTimeMillis());
+            }
+            return f;
+        }
+        return null;
+    }
+
+    /**
+     * Returns an input stream for the requested disk cache entry, or <code>null</code> if the file is not available.<p>
+     *
+     * @param rfsName the file RFS name to look up in the cache
+     *
+     * @return the cache input stream, or <code>null</code>
+     *
+     * @throws IOException in case of disk access errors
+     */
+    public InputStream getCacheInputStream(String rfsName) throws IOException {
+
+        File cacheFile = getCacheFile(rfsName);
+        if (cacheFile != null) {
+            return new FileInputStream(cacheFile);
         }
         return null;
     }
@@ -182,6 +235,19 @@ public class CmsVfsNameBasedDiskCache {
      * @throws IOException in case of disk access errors
      */
     public void saveCacheFile(String rfsName, byte[] content) throws IOException {
+
+        CmsVfsDiskCache.saveFile(rfsName, content);
+    }
+
+    /**
+     * Saves the given input stream content in the disk cache.<p>
+     *
+     * @param rfsName the RFS name of the file to save the content in
+     * @param content the input stream to save
+     *
+     * @throws IOException in case of disk access errors
+     */
+    public void saveCacheFile(String rfsName, InputStream content) throws IOException {
 
         CmsVfsDiskCache.saveFile(rfsName, content);
     }

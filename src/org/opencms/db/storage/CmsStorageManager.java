@@ -39,9 +39,12 @@ import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.db.storage.policy.I_CmsStoragePolicy;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -248,6 +251,123 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
+     * Creates an S3 client configuration from a configured storage backend.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @param backendId the configured storage backend id, or <code>null</code> to use the active backend
+     * @param bucketOverride the bucket override, or <code>null</code> to use the backend bucket
+     * @return the S3 client configuration
+     */
+    public static CmsS3ClientConfiguration createS3ClientConfiguration(
+        CmsParameterConfiguration configuration,
+        String backendId,
+        String bucketOverride) {
+
+        String storageId = backendId;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(storageId)) {
+            storageId = getActiveStorageId(configuration);
+        }
+        String prefix = PARAM_STORAGE_BACKEND_PREFIX + storageId + ".";
+        String type = getStorageType(configuration, storageId);
+        if (!CmsS3Storage.STORAGE_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_UNSUPPORTED_TYPE_2, type, storageId));
+        }
+        String endpoint = requireConfigValue(configuration, prefix + PARAM_ENDPOINT, storageId);
+        String bucket = CmsStringUtil.isNotEmptyOrWhitespaceOnly(bucketOverride)
+        ? bucketOverride.trim()
+        : requireConfigValue(configuration, prefix + PARAM_BUCKET, storageId);
+        String accessKey = requireConfigValue(configuration, prefix + PARAM_ACCESS_KEY, storageId);
+        String secretKey = requireConfigValue(configuration, prefix + PARAM_SECRET_KEY, storageId);
+        boolean pathStyle = configuration.getBoolean(prefix + PARAM_PATH_STYLE, true);
+        int connectionTimeout = configuration.getInteger(
+            prefix + PARAM_CONNECTION_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
+        int socketTimeout = configuration.getInteger(
+            prefix + PARAM_SOCKET_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_SOCKET_TIMEOUT);
+        int apiCallAttemptTimeout = configuration.getInteger(
+            prefix + PARAM_API_CALL_ATTEMPT_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_API_CALL_ATTEMPT_TIMEOUT);
+        int apiCallTimeout = configuration.getInteger(
+            prefix + PARAM_API_CALL_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_API_CALL_TIMEOUT);
+        int maxRetries = configuration.getInteger(
+            prefix + PARAM_MAX_RETRIES,
+            CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES);
+        String region = configuration.getString(prefix + PARAM_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
+        return new CmsS3ClientConfiguration(
+            endpoint,
+            bucket,
+            accessKey,
+            secretKey,
+            pathStyle,
+            region,
+            connectionTimeout,
+            socketTimeout,
+            apiCallAttemptTimeout,
+            apiCallTimeout,
+            maxRetries);
+    }
+
+    /**
+     * Returns the active storage backend id from the runtime property configuration.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @return the active storage backend id
+     */
+    public static String getActiveStorageId(CmsParameterConfiguration configuration) {
+
+        return configuration.getString(PARAM_STORAGE_ACTIVE, I_CmsDbStorage.STORAGE_TYPE).trim();
+    }
+
+    /**
+     * Returns the active storage backend type from the runtime property configuration.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @return the active storage backend type
+     */
+    public static String getActiveStorageType(CmsParameterConfiguration configuration) {
+
+        return getStorageType(configuration, getActiveStorageId(configuration));
+    }
+
+    /**
+     * Returns the type for a configured storage backend.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @param storageId the storage backend id
+     * @return the storage backend type
+     */
+    private static String getStorageType(CmsParameterConfiguration configuration, String storageId) {
+
+        if (I_CmsDbStorage.STORAGE_TYPE.equals(storageId)) {
+            return I_CmsDbStorage.STORAGE_TYPE;
+        }
+        String prefix = PARAM_STORAGE_BACKEND_PREFIX + storageId + ".";
+        return configuration.getString(prefix + PARAM_TYPE, null);
+    }
+
+    /**
+     * Reads a required configuration value.
+     *
+     * @param configuration the runtime property configuration
+     * @param key the property key
+     * @param storageId the backend identifier
+     *
+     * @return the configured value
+     */
+    private static String requireConfigValue(CmsParameterConfiguration configuration, String key, String storageId) {
+
+        String value = configuration.getString(key, null);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            throw new IllegalArgumentException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_MISSING_CONFIG_2, key, storageId));
+        }
+        return value.trim();
+    }
+
+    /**
      * Closes all configured storage backends.<p>
      *
      * @throws Exception if closing one or more storage backends fails
@@ -321,6 +441,25 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
+     * Returns a delivery-capable storage backend by its stable storage identifier.<p>
+     *
+     * @param storage the stable storage identifier
+     * @return the delivery-capable storage backend, or <code>null</code> if the backend does not support delivery
+     * @throws CmsStorageException if no backend is configured for the storage identifier
+     */
+    public I_CmsStorageDelivery getDeliveryStorage(String storage) throws CmsStorageException {
+
+        if (!isActiveStorage(storage)) {
+            return null;
+        }
+        I_CmsStorage configuredStorage = getConfiguredStorageForRead(storage);
+        if (configuredStorage instanceof I_CmsStorageDelivery) {
+            return (I_CmsStorageDelivery)configuredStorage;
+        }
+        return null;
+    }
+
+    /**
      * Returns a configured storage backend by its stable storage identifier.<p>
      *
      * @param storage the stable storage identifier
@@ -329,6 +468,18 @@ public class CmsStorageManager implements AutoCloseable {
     public I_CmsStorage getStorage(String storage) {
 
         return m_storages.get(storage);
+    }
+
+    /**
+     * Returns if the given stable storage identifier belongs to the active storage backend.<p>
+     *
+     * @param storage the stable storage identifier
+     *
+     * @return <code>true</code> if the storage identifier belongs to the active backend
+     */
+    public boolean isActiveStorage(String storage) {
+
+        return (m_activeStorage != null) && m_activeStorage.getStorageIdentifier().equals(storage);
     }
 
     /**
@@ -347,12 +498,7 @@ public class CmsStorageManager implements AutoCloseable {
 
         if (CmsStringUtil.isNotEmpty(storage) && CmsStringUtil.isNotEmpty(hash)) {
             try {
-                I_CmsStorage configuredStorage = m_storages.get(storage);
-                if (configuredStorage == null) {
-                    String message = Messages.get().getBundle().key(Messages.ERR_STORAGE_UNCONFIGURED_1, storage);
-                    LOG.error(message);
-                    throw new CmsStorageException(message);
-                }
+                I_CmsStorage configuredStorage = getConfiguredStorageForRead(storage);
                 byte[] result = configuredStorage.loadContent(dbc, hash);
                 if (result == null) {
                     throw new CmsStorageBlobNotFoundException(
@@ -368,6 +514,87 @@ public class CmsStorageManager implements AutoCloseable {
             }
         } else {
             return contents;
+        }
+    }
+
+    /**
+     * Loads content either from the provided local bytes or from external storage and passes it to an input stream handler.<p>
+     *
+     * @param dbc the database context
+     * @param contents the local bytes (from FILE_CONTENT column)
+     * @param storage the stable storage identifier stored in the STORAGE column
+     * @param hash the SHA-512 content hash stored in the HASH column
+     * @param handler the stream handler
+     * @throws CmsStorageException if external storage content can not be loaded or handled
+     */
+    public void loadContentFrom(
+        CmsDbContext dbc,
+        byte[] contents,
+        String storage,
+        String hash,
+        I_CmsFileContentStreamHandler handler)
+    throws CmsStorageException {
+
+        if (CmsStringUtil.isNotEmpty(storage) && CmsStringUtil.isNotEmpty(hash)) {
+            try {
+                I_CmsStorage configuredStorage = getConfiguredStorageForRead(storage);
+                configuredStorage.loadContentFrom(dbc, hash, handler);
+            } catch (CmsStorageException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new CmsStorageException(
+                    Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_LOAD_FAILED_2, storage, hash),
+                    e);
+            }
+        } else {
+            try {
+                if (contents != null) {
+                    try (ByteArrayInputStream in = new ByteArrayInputStream(contents)) {
+                        handler.read(in);
+                    }
+                }
+            } catch (Exception e) {
+                throw new CmsStorageException(
+                    Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_LOAD_FAILED_2, storage, hash),
+                    e);
+            }
+        }
+    }
+
+    /**
+     * Loads content either from the provided local bytes or from external storage into an output stream.<p>
+     *
+     * @param dbc the database context
+     * @param contents the local bytes (from FILE_CONTENT column)
+     * @param storage the stable storage identifier stored in the STORAGE column
+     * @param hash the SHA-512 content hash stored in the HASH column
+     * @param out the output stream to write to
+     * @throws CmsStorageException if external storage content can not be loaded or written
+     */
+    public void loadContentTo(CmsDbContext dbc, byte[] contents, String storage, String hash, OutputStream out)
+    throws CmsStorageException {
+
+        if (CmsStringUtil.isNotEmpty(storage) && CmsStringUtil.isNotEmpty(hash)) {
+            try {
+                I_CmsStorage configuredStorage = getConfiguredStorageForRead(storage);
+                configuredStorage.loadContentTo(dbc, hash, out);
+            } catch (CmsStorageException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new CmsStorageException(
+                    Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_LOAD_FAILED_2, storage, hash),
+                    e);
+            }
+        } else {
+            try {
+                if (contents != null) {
+                    out.write(contents);
+                }
+            } catch (Exception e) {
+                throw new CmsStorageException(
+                    Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_LOAD_FAILED_2, storage, hash),
+                    e);
+            }
         }
     }
 
@@ -519,10 +746,10 @@ public class CmsStorageManager implements AutoCloseable {
                 Messages.get().getBundle().key(Messages.ERR_STORAGE_DB_RESERVED_ID_1, id));
         }
         if (CmsS3Storage.STORAGE_TYPE.equals(type)) {
-            String endpoint = requireConfig(configuration, prefix + PARAM_ENDPOINT, id);
-            String bucket = requireConfig(configuration, prefix + PARAM_BUCKET, id);
-            String accessKey = requireConfig(configuration, prefix + PARAM_ACCESS_KEY, id);
-            String secretKey = requireConfig(configuration, prefix + PARAM_SECRET_KEY, id);
+            String endpoint = requireConfigValue(configuration, prefix + PARAM_ENDPOINT, id);
+            String bucket = requireConfigValue(configuration, prefix + PARAM_BUCKET, id);
+            String accessKey = requireConfigValue(configuration, prefix + PARAM_ACCESS_KEY, id);
+            String secretKey = requireConfigValue(configuration, prefix + PARAM_SECRET_KEY, id);
             boolean pathStyle = configuration.getBoolean(prefix + PARAM_PATH_STYLE, true);
             int connectionTimeout = configuration.getInteger(
                 prefix + PARAM_CONNECTION_TIMEOUT,
@@ -556,7 +783,7 @@ public class CmsStorageManager implements AutoCloseable {
                     maxRetries));
         }
         if (CmsFsStorage.STORAGE_TYPE.equals(type)) {
-            String path = requireConfig(configuration, prefix + PARAM_PATH, id);
+            String path = requireConfigValue(configuration, prefix + PARAM_PATH, id);
             return new CmsFsStorage(id, path);
         }
         throw new IllegalArgumentException(
@@ -608,6 +835,24 @@ public class CmsStorageManager implements AutoCloseable {
                 Messages.get().getBundle().key(Messages.ERR_STORAGE_POLICY_CREATE_1, className),
                 e);
         }
+    }
+
+    /**
+     * Returns the configured storage backend for reading external content.<p>
+     *
+     * @param storage the storage identifier
+     * @return the configured storage backend
+     * @throws CmsStorageException if no backend is configured for the storage identifier
+     */
+    private I_CmsStorage getConfiguredStorageForRead(String storage) throws CmsStorageException {
+
+        I_CmsStorage configuredStorage = m_storages.get(storage);
+        if (configuredStorage == null) {
+            String message = Messages.get().getBundle().key(Messages.ERR_STORAGE_UNCONFIGURED_1, storage);
+            LOG.error(message);
+            throw new CmsStorageException(message);
+        }
+        return configuredStorage;
     }
 
     /**
@@ -748,7 +993,7 @@ public class CmsStorageManager implements AutoCloseable {
             return res.next();
         } catch (SQLException e) {
             throw new CmsDbSqlException(
-                org.opencms.db.generic.Messages.get().container(org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1),
+                Messages.get().container(Messages.ERR_STORAGE_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
                 e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
@@ -774,24 +1019,5 @@ public class CmsStorageManager implements AutoCloseable {
             }
         }
         return result;
-    }
-
-    /**
-     * Reads a required configuration value.
-     *
-     * @param configuration the runtime property configuration
-     * @param key the property key
-     * @param storageId the backend identifier
-     *
-     * @return the configured value
-     */
-    private String requireConfig(CmsParameterConfiguration configuration, String key, String storageId) {
-
-        String value = configuration.getString(key, null);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-            throw new IllegalArgumentException(
-                Messages.get().getBundle().key(Messages.ERR_STORAGE_MISSING_CONFIG_2, key, storageId));
-        }
-        return value.trim();
     }
 }

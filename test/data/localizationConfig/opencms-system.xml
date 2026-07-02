@@ -92,12 +92,18 @@
 			<size-resourcelists>256</size-resourcelists>
 			<size-properties>1024</size-properties>
 			<size-propertylists>1024</size-propertylists>
-			<size-accesscontrollists>1024</size-accesscontrollists>
+			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
-		</resultcache>
+		</resultcache>		
+		<storedcontentinfocache>
+			<storedcontentinfocache-factory>org.opencms.db.storage.CmsInMemoryStoredContentInfoCacheFactory</storedcontentinfocache-factory>
+			<storedcontentinfocache-enabled>true</storedcontentinfocache-enabled>
+			<storedcontentinfocache-size>10000</storedcontentinfocache-size>
+			<storedcontentinfocache-ttl>300</storedcontentinfocache-ttl>
+		</storedcontentinfocache>
 		<content-notification>
-			<notification-time>365</notification-time>
-			<notification-project>Offline</notification-project>
+            <notification-time>365</notification-time>
+            <notification-project>Offline</notification-project>
 		</content-notification>
 		<authorizationhandler
 			class="org.opencms.security.CmsDefaultAuthorizationHandler" />

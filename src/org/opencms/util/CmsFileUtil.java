@@ -50,6 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -187,6 +188,27 @@ public final class CmsFileUtil {
         if (result.length() > 0) {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(Messages.ERR_MISSING_RESOURCES_1, result.toString()));
+        }
+    }
+
+    /**
+     * Copies all data from an input stream to an output stream.<p>
+     *
+     * The streams are not closed by this method.<p>
+     *
+     * @param in the input stream
+     * @param out the output stream
+     *
+     * @throws IOException if copying fails
+     */
+    public static void copy(InputStream in, OutputStream out) throws IOException {
+
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) >= 0) {
+            if (read > 0) {
+                out.write(buffer, 0, read);
+            }
         }
     }
 

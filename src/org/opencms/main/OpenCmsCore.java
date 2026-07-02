@@ -1713,6 +1713,9 @@ public final class OpenCmsCore {
             CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
         m_staticExportManager = importExportConfiguration.getStaticExportManager();
+        m_staticExportManager.setStoredContentDeliveryConfiguration(
+            importExportConfiguration.getStoredContentDeliveryConfiguration());
+        m_staticExportManager.setImageCacheConfiguration(importExportConfiguration.getImageCacheConfiguration());
         m_repositoryManager = importExportConfiguration.getRepositoryManager();
 
         // get the search configuration

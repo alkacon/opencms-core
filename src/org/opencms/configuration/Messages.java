@@ -98,7 +98,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_IMPORT_CONFIG_INIT_0 = "INIT_IMPORT_CONFIG_INIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_IMAGECACHE_CONFIG_0 = "INIT_IMAGECACHE_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_MANAGER_0 = "INIT_IMPORT_MANAGER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_STOREDCONTENTDELIVERY_CONFIG_0 = "INIT_STOREDCONTENTDELIVERY_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_LOAD_CONFIG_XMLFILE_1 = "INIT_LOAD_CONFIG_XMLFILE_1";

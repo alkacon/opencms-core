@@ -28,8 +28,11 @@
 package org.opencms.db.storage;
 
 import org.opencms.db.CmsDbContext;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
@@ -48,7 +51,7 @@ import java.util.stream.Stream;
  * It uses a 3-level directory structure based on the content hash to avoid
  * having too many files in a single directory.<p>
  */
-public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage {
+public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage, I_CmsStorageDelivery {
 
     /** The type name of the storage implementation. */
     public static final String STORAGE_TYPE = "fs";
@@ -101,15 +104,27 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
     @Override
     public byte[] loadContent(CmsDbContext dbc, String hash) throws Exception {
 
-        Path file = getContentPath(hash);
-        if (!Files.exists(file, LinkOption.NOFOLLOW_LINKS)) {
-            throw new CmsStorageBlobNotFoundException(
-                Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_MISSING_2, getStorageIdentifier(), hash));
+        return Files.readAllBytes(getExistingRegularContentPath(hash));
+    }
+
+    /**
+     * @see I_CmsStorage#loadContentFrom(CmsDbContext, String, I_CmsFileContentStreamHandler)
+     */
+    @Override
+    public void loadContentFrom(CmsDbContext dbc, String hash, I_CmsFileContentStreamHandler handler) throws Exception {
+
+        try (InputStream in = Files.newInputStream(getExistingRegularContentPath(hash))) {
+            handler.read(in);
         }
-        if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) {
-            throw new IOException(Messages.get().getBundle().key(Messages.ERR_STORAGE_PATH_NOT_REGULAR_FILE_1, file));
-        }
-        return Files.readAllBytes(file);
+    }
+
+    /**
+     * @see I_CmsStorage#loadContentTo(CmsDbContext, String, OutputStream)
+     */
+    @Override
+    public void loadContentTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        Files.copy(getExistingRegularContentPath(hash), out);
     }
 
     /**
@@ -146,6 +161,46 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
             Files.deleteIfExists(tempFile);
             throw e;
         }
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#streamRangeTo(org.opencms.db.CmsDbContext, java.lang.String, long, long, java.io.OutputStream)
+     */
+    @Override
+    public void streamRangeTo(CmsDbContext dbc, String hash, long start, long length, OutputStream out)
+    throws Exception {
+
+        try (InputStream in = Files.newInputStream(getExistingRegularContentPath(hash))) {
+            skipFully(in, start);
+            byte[] buffer = new byte[8192];
+            long remaining = length;
+            while (remaining > 0) {
+                int read = in.read(buffer, 0, (int)Math.min(buffer.length, remaining));
+                if (read < 0) {
+                    return;
+                }
+                out.write(buffer, 0, read);
+                remaining -= read;
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#streamTo(org.opencms.db.CmsDbContext, java.lang.String, java.io.OutputStream)
+     */
+    @Override
+    public void streamTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        loadContentTo(dbc, hash, out);
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#supportsRangeDelivery()
+     */
+    @Override
+    public boolean supportsRangeDelivery() {
+
+        return true;
     }
 
     /**
@@ -235,6 +290,27 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
     }
 
     /**
+     * Returns the existing regular content file for the given hash.<p>
+     *
+     * @param hash the SHA-512 content hash
+     * @return the content file path
+     * @throws IOException if the content path is invalid
+     * @throws CmsStorageBlobNotFoundException if the content file does not exist
+     */
+    private Path getExistingRegularContentPath(String hash) throws IOException, CmsStorageBlobNotFoundException {
+
+        Path file = getContentPath(hash);
+        if (!Files.exists(file, LinkOption.NOFOLLOW_LINKS)) {
+            throw new CmsStorageBlobNotFoundException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_MISSING_2, getStorageIdentifier(), hash));
+        }
+        if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) {
+            throw new IOException(Messages.get().getBundle().key(Messages.ERR_STORAGE_PATH_NOT_REGULAR_FILE_1, file));
+        }
+        return file;
+    }
+
+    /**
      * Checks if the given string looks like a SHA-512 hash.<p>
      *
      * @param value the value
@@ -252,6 +328,28 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
             }
         }
         return true;
+    }
+
+    /**
+     * Skips exactly the requested number of bytes.<p>
+     *
+     * @param in the input stream
+     * @param bytes the number of bytes to skip
+     * @throws IOException if skipping fails
+     */
+    private void skipFully(InputStream in, long bytes) throws IOException {
+
+        long remaining = bytes;
+        while (remaining > 0) {
+            long skipped = in.skip(remaining);
+            if (skipped > 0) {
+                remaining -= skipped;
+            } else if (in.read() < 0) {
+                return;
+            } else {
+                remaining--;
+            }
+        }
     }
 
 }

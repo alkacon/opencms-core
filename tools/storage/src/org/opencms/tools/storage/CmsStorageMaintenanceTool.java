@@ -29,10 +29,12 @@ package org.opencms.tools.storage;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.storage.CmsS3Storage;
 import org.opencms.db.storage.CmsStorageManager;
 import org.opencms.db.storage.I_CmsDbStorage;
 import org.opencms.db.storage.I_CmsEnumerableStorage;
 import org.opencms.db.storage.I_CmsStorage;
+import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.util.CmsStringUtil;
 
 import java.nio.file.Path;
@@ -48,6 +50,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Command line entry point for OpenCms storage maintenance checks.<p>
@@ -94,6 +101,18 @@ public final class CmsStorageMaintenanceTool {
 
         /** The WEB-INF path. */
         private Path m_webInfPath;
+    }
+
+    /**
+     * S3 image cache prefix protection parsed from the import/export configuration.<p>
+     */
+    private static class ImageCachePrefixProtection {
+
+        /** The configured image cache bucket. */
+        private String m_s3Bucket;
+
+        /** The configured image cache prefix. */
+        private String m_s3Prefix;
     }
 
     /**
@@ -235,6 +254,84 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
+         * Returns the direct child element text.<p>
+         *
+         * @param parent the parent element
+         * @param name the child element name
+         * @return the element text
+         */
+        private String getElementText(Element parent, String name) {
+
+            NodeList elements = parent.getElementsByTagName(name);
+            if (elements.getLength() == 0) {
+                return null;
+            }
+            return elements.item(0).getTextContent();
+        }
+
+        /**
+         * Returns ignored S3 object key prefixes for one backend.<p>
+         *
+         * @param backend the backend
+         * @param properties the OpenCms properties
+         * @param protection the parsed image cache prefix protection
+         * @return the ignored object key prefixes
+         */
+        private List<String> getIgnoredObjectKeyPrefixes(
+            Backend backend,
+            CmsParameterConfiguration properties,
+            ImageCachePrefixProtection protection) {
+
+            if ((protection == null)
+                || CmsStringUtil.isEmptyOrWhitespaceOnly(protection.m_s3Bucket)
+                || CmsStringUtil.isEmptyOrWhitespaceOnly(protection.m_s3Prefix)
+                || !CmsS3Storage.STORAGE_TYPE.equals(backend.m_type)) {
+                return java.util.Collections.emptyList();
+            }
+            CmsS3ClientConfiguration backendConfiguration = CmsStorageManager.createS3ClientConfiguration(
+                properties,
+                backend.m_id,
+                null);
+            if (protection.m_s3Bucket.equals(backendConfiguration.getBucketName())) {
+                return java.util.Collections.singletonList(protection.m_s3Prefix);
+            }
+            return java.util.Collections.emptyList();
+        }
+
+        /**
+         * Returns the text for ignored object key prefixes.<p>
+         *
+         * @param ignoredPrefixes the ignored prefixes
+         * @return the text
+         */
+        private String getIgnoredPrefixesText(List<String> ignoredPrefixes) {
+
+            if ((ignoredPrefixes == null) || ignoredPrefixes.isEmpty()) {
+                return "";
+            }
+            return ", ignored prefixes=" + CmsStringUtil.collectionAsString(ignoredPrefixes, ", ");
+        }
+
+        /**
+         * Returns the configured parameter value.<p>
+         *
+         * @param parent the parent element
+         * @param name the parameter name
+         * @return the parameter value
+         */
+        private String getParamText(Element parent, String name) {
+
+            NodeList params = parent.getElementsByTagName("param");
+            for (int i = 0; i < params.getLength(); i++) {
+                Element param = (Element)params.item(i);
+                if (name.equals(param.getAttribute("name"))) {
+                    return param.getTextContent();
+                }
+            }
+            return null;
+        }
+
+        /**
          * Checks if the delete limit has been reached.<p>
          *
          * @param commandLine the command line
@@ -279,6 +376,30 @@ public final class CmsStorageMaintenanceTool {
                     return rows.next();
                 }
             }
+        }
+
+        /**
+         * Normalizes an S3 object key prefix.<p>
+         *
+         * @param prefix the raw prefix
+         * @return the normalized prefix, or <code>null</code>
+         */
+        private String normalizeS3Prefix(String prefix) {
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
+                return null;
+            }
+            String result = prefix.trim();
+            while (result.startsWith("/")) {
+                result = result.substring(1);
+            }
+            while (result.endsWith("/")) {
+                result = result.substring(0, result.length() - 1);
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+                return null;
+            }
+            return result + "/";
         }
 
         /**
@@ -346,6 +467,52 @@ public final class CmsStorageMaintenanceTool {
                 }
             }
             return result;
+        }
+
+        /**
+         * Parses the stored content delivery S3 image cache prefix protection.<p>
+         *
+         * @param webInfPath the WEB-INF path
+         * @return the image cache prefix protection, or <code>null</code>
+         */
+        private ImageCachePrefixProtection parseImageCachePrefixProtection(Path webInfPath) {
+
+            Path importExportConfiguration = webInfPath.resolve("config/opencms-importexport.xml");
+            if (!java.nio.file.Files.exists(importExportConfiguration)) {
+                return null;
+            }
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+                factory.setExpandEntityReferences(false);
+                org.w3c.dom.Document document = factory.newDocumentBuilder().parse(importExportConfiguration.toFile());
+                NodeList imageCaches = document.getElementsByTagName("imagecache");
+                if (imageCaches.getLength() == 0) {
+                    return null;
+                }
+                Element imageCache = (Element)imageCaches.item(0);
+                if (!"org.opencms.loader.CmsS3ImageCache".equals(imageCache.getAttribute("class"))) {
+                    return null;
+                }
+                String bucket = getParamText(imageCache, "bucket");
+                String prefix = normalizeS3Prefix(getParamText(imageCache, "prefix"));
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(bucket) || CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
+                    return null;
+                }
+                ImageCachePrefixProtection result = new ImageCachePrefixProtection();
+                result.m_s3Bucket = bucket.trim();
+                result.m_s3Prefix = prefix;
+                return result;
+            } catch (Exception e) {
+                System.out.println(
+                    "Image cache prefix protection: skipped, could not parse "
+                        + importExportConfiguration
+                        + ": "
+                        + e.getMessage());
+                return null;
+            }
         }
 
         /**
@@ -477,6 +644,8 @@ public final class CmsStorageMaintenanceTool {
                     () -> CmsStorageToolSupport.openConnection(database));
                 CmsStorageManager storageManager = new CmsStorageManager(toolSqlManager, properties);
                 Map<String, Backend> backends = getBackends(properties);
+                ImageCachePrefixProtection imageCachePrefixProtection = parseImageCachePrefixProtection(
+                    commandLine.m_webInfPath);
 
                 System.out.println("OpenCms storage maintenance tool");
                 System.out.println("Mode              : " + commandLine.m_mode);
@@ -484,6 +653,13 @@ public final class CmsStorageMaintenanceTool {
                 System.out.println("Properties        : " + commandLine.m_propertiesPath);
                 System.out.println("JDBC URL          : " + database.m_jdbcUrl);
                 System.out.println("Configured storage: " + CmsStringUtil.collectionAsString(backends.keySet(), ", "));
+                if (imageCachePrefixProtection != null) {
+                    System.out.println(
+                        "Image cache prefix : "
+                            + imageCachePrefixProtection.m_s3Bucket
+                            + "/"
+                            + imageCachePrefixProtection.m_s3Prefix);
+                }
                 System.out.println("Read-only         : " + !isDeleting(commandLine));
                 if (MODE_DELETE_ORPHANS.equals(commandLine.m_mode)) {
                     System.out.println("Delete limit      : " + getDeleteLimitText(commandLine.m_deleteLimit));
@@ -506,10 +682,24 @@ public final class CmsStorageMaintenanceTool {
                             }
                         }
                         if (MODE_ALL.equals(commandLine.m_mode) || MODE_SCAN_ORPHANS.equals(commandLine.m_mode)) {
-                            scanOrphans(connection, storageManager, backends, commandLine, false);
+                            scanOrphans(
+                                connection,
+                                storageManager,
+                                backends,
+                                properties,
+                                commandLine,
+                                false,
+                                imageCachePrefixProtection);
                         }
                         if (MODE_DELETE_ORPHANS.equals(commandLine.m_mode)) {
-                            scanOrphans(connection, storageManager, backends, commandLine, true);
+                            scanOrphans(
+                                connection,
+                                storageManager,
+                                backends,
+                                properties,
+                                commandLine,
+                                true,
+                                imageCachePrefixProtection);
                         }
                     } finally {
                         toolSqlManager.clearCurrentConnection();
@@ -588,6 +778,7 @@ public final class CmsStorageMaintenanceTool {
          * @param commandLine the command line
          * @param delete whether delete mode is active
          * @param sampleLimit the maximum number of details
+         * @param ignoredPrefixes ignored S3 object key prefixes
          *
          * @return the orphan stats
          *
@@ -599,14 +790,15 @@ public final class CmsStorageMaintenanceTool {
             Map<String, Reference> references,
             CommandLine commandLine,
             boolean delete,
-            int sampleLimit)
+            int sampleLimit,
+            List<String> ignoredPrefixes)
         throws Exception {
 
             String storageIdentifier = storage.getStorageIdentifier();
             OrphanStats stats = new OrphanStats();
             List<String> samples = new ArrayList<>();
             CmsDbContext dbc = new CmsDbContext();
-            storage.visitContentHashes(new CmsDbContext(), hash -> {
+            I_CmsEnumerableStorage.I_CmsContentHashVisitor visitor = hash -> {
                 stats.m_stored++;
                 if (!references.containsKey(referenceKey(storageIdentifier, hash))) {
                     stats.m_orphans++;
@@ -626,7 +818,12 @@ public final class CmsStorageMaintenanceTool {
                         }
                     }
                 }
-            });
+            };
+            if (storage instanceof CmsS3Storage) {
+                ((CmsS3Storage)storage).visitContentHashes(new CmsDbContext(), ignoredPrefixes, visitor);
+            } else {
+                storage.visitContentHashes(new CmsDbContext(), visitor);
+            }
             System.out.println(
                 "  "
                     + storageIdentifier
@@ -634,7 +831,8 @@ public final class CmsStorageMaintenanceTool {
                     + stats.m_stored
                     + ", orphaned blobs="
                     + stats.m_orphans
-                    + getDeleteStats(stats, delete, commandLine));
+                    + getDeleteStats(stats, delete, commandLine)
+                    + getIgnoredPrefixesText(ignoredPrefixes));
             for (String sample : samples) {
                 System.out.println("    " + sample);
             }
@@ -647,8 +845,10 @@ public final class CmsStorageMaintenanceTool {
          * @param connection the JDBC connection
          * @param storageManager the storage manager
          * @param backends the configured backends
+         * @param properties the OpenCms properties
          * @param commandLine the command line
          * @param delete whether delete mode is active
+         * @param imageCachePrefixProtection the image cache prefix protection
          *
          * @throws Exception if scanning fails
          */
@@ -656,8 +856,10 @@ public final class CmsStorageMaintenanceTool {
             Connection connection,
             CmsStorageManager storageManager,
             Map<String, Backend> backends,
+            CmsParameterConfiguration properties,
             CommandLine commandLine,
-            boolean delete)
+            boolean delete,
+            ImageCachePrefixProtection imageCachePrefixProtection)
         throws Exception {
 
             Map<String, Reference> references = readReferences(connection);
@@ -669,13 +871,18 @@ public final class CmsStorageMaintenanceTool {
                 } else {
                     I_CmsStorage storage = storageManager.getStorage(backend.m_id);
                     if (storage instanceof I_CmsEnumerableStorage) {
+                        List<String> ignoredPrefixes = getIgnoredObjectKeyPrefixes(
+                            backend,
+                            properties,
+                            imageCachePrefixProtection);
                         scanEnumerableStorageOrphans(
                             (I_CmsEnumerableStorage)storage,
                             connection,
                             references,
                             commandLine,
                             delete,
-                            commandLine.m_sampleLimit);
+                            commandLine.m_sampleLimit,
+                            ignoredPrefixes);
                     } else {
                         System.out.println(
                             "  "

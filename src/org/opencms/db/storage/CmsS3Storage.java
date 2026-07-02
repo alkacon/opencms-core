@@ -31,9 +31,12 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.storage.s3.CmsGenericS3Client;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.db.storage.s3.I_CmsS3Client;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -48,7 +51,7 @@ import java.util.UUID;
  * Content is addressed by its unique hash to support deduplication across
  * different resources.<p>
  */
-public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage {
+public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage, I_CmsStorageDelivery {
 
     /** The type name of the storage implementation. */
     public static final String STORAGE_TYPE = "s3";
@@ -270,6 +273,38 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
     }
 
     /**
+     * @see I_CmsStorage#loadContentFrom(CmsDbContext, String, I_CmsFileContentStreamHandler)
+     */
+    @Override
+    public void loadContentFrom(CmsDbContext dbc, String hash, I_CmsFileContentStreamHandler handler) throws Exception {
+
+        String s3Key = getHashedPath(hash);
+        try {
+            m_s3Client.readObjectFrom(s3Key, handler);
+        } catch (CmsStorageBlobNotFoundException e) {
+            throw new CmsStorageBlobNotFoundException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_MISSING_2, getStorageIdentifier(), hash),
+                e);
+        }
+    }
+
+    /**
+     * @see I_CmsStorage#loadContentTo(CmsDbContext, String, OutputStream)
+     */
+    @Override
+    public void loadContentTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        String s3Key = getHashedPath(hash);
+        try {
+            m_s3Client.writeObjectTo(s3Key, out);
+        } catch (CmsStorageBlobNotFoundException e) {
+            throw new CmsStorageBlobNotFoundException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_MISSING_2, getStorageIdentifier(), hash),
+                e);
+        }
+    }
+
+    /**
      * @see org.opencms.db.storage.I_CmsStorage#storeContent(org.opencms.db.CmsDbContext, java.lang.String, byte[])
      */
     @Override
@@ -282,6 +317,41 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
         if (!m_s3Client.exists(s3Key)) {
             m_s3Client.putObject(s3Key, content);
         }
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#streamRangeTo(org.opencms.db.CmsDbContext, java.lang.String, long, long, java.io.OutputStream)
+     */
+    @Override
+    public void streamRangeTo(CmsDbContext dbc, String hash, long start, long length, OutputStream out)
+    throws Exception {
+
+        String s3Key = getHashedPath(hash);
+        try {
+            m_s3Client.writeObjectRangeTo(s3Key, start, length, out);
+        } catch (CmsStorageBlobNotFoundException e) {
+            throw new CmsStorageBlobNotFoundException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_BLOB_MISSING_2, getStorageIdentifier(), hash),
+                e);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#streamTo(org.opencms.db.CmsDbContext, java.lang.String, java.io.OutputStream)
+     */
+    @Override
+    public void streamTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        loadContentTo(dbc, hash, out);
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorageDelivery#supportsRangeDelivery()
+     */
+    @Override
+    public boolean supportsRangeDelivery() {
+
+        return true;
     }
 
     /**
@@ -324,17 +394,37 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
     }
 
     /**
-     * @see org.opencms.db.storage.I_CmsEnumerableStorage#visitContentHashes(org.opencms.db.CmsDbContext, org.opencms.db.storage.I_CmsEnumerableStorage.I_CmsContentHashVisitor)
+     * Visits all content hashes stored by this backend, ignoring matching object key prefixes.<p>
+     *
+     * @param dbc the database context
+     * @param ignoredObjectKeyPrefixes object key prefixes to ignore
+     * @param visitor the content hash visitor
+     * @throws Exception if enumeration fails
      */
-    @Override
-    public void visitContentHashes(CmsDbContext dbc, I_CmsContentHashVisitor visitor) throws Exception {
+    public void visitContentHashes(
+        CmsDbContext dbc,
+        Collection<String> ignoredObjectKeyPrefixes,
+        I_CmsContentHashVisitor visitor)
+    throws Exception {
 
         m_s3Client.visitObjectKeys(key -> {
+            if (isIgnoredObjectKey(key, ignoredObjectKeyPrefixes)) {
+                return;
+            }
             String hash = getHashFromObjectKey(key);
             if (hash != null) {
                 visitor.visit(hash);
             }
         });
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsEnumerableStorage#visitContentHashes(org.opencms.db.CmsDbContext, org.opencms.db.storage.I_CmsEnumerableStorage.I_CmsContentHashVisitor)
+     */
+    @Override
+    public void visitContentHashes(CmsDbContext dbc, I_CmsContentHashVisitor visitor) throws Exception {
+
+        visitContentHashes(dbc, null, visitor);
     }
 
     /**
@@ -439,5 +529,25 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    /**
+     * Returns if an object key should be ignored during maintenance enumeration.<p>
+     *
+     * @param key the object key
+     * @param ignoredObjectKeyPrefixes the ignored prefixes
+     * @return <code>true</code> if the key should be ignored
+     */
+    private boolean isIgnoredObjectKey(String key, Collection<String> ignoredObjectKeyPrefixes) {
+
+        if ((key == null) || (ignoredObjectKeyPrefixes == null) || ignoredObjectKeyPrefixes.isEmpty()) {
+            return false;
+        }
+        for (String prefix : ignoredObjectKeyPrefixes) {
+            if ((prefix != null) && key.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

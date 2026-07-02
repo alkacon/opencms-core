@@ -99,6 +99,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_STORAGE_S3_READ_WRITE_1 = "ERR_STORAGE_S3_READ_WRITE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_STORAGE_SQL_1 = "ERR_STORAGE_SQL_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_STORAGE_UNCONFIGURED_1 = "ERR_STORAGE_UNCONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */

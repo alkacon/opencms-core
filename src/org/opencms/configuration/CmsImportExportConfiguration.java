@@ -38,9 +38,11 @@ import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.repository.I_CmsRepository;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.staticexport.CmsImageCacheConfiguration;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.staticexport.CmsStaticExportRfsRule;
+import org.opencms.staticexport.CmsStoredContentDeliveryConfiguration;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
@@ -310,6 +312,15 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     /**  The node name of the static export vfx-prefix node. */
     public static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
 
+    /** The node name of the stored content delivery configuration. */
+    public static final String N_STOREDCONTENTDELIVERY = "storedcontentdelivery";
+
+    /** The node name of the stored content delivery enabled suffixes list. */
+    public static final String N_STOREDCONTENTDELIVERY_ENABLEDSUFFIXES = "enabledsuffixes";
+
+    /** The node name of the image cache settings. */
+    public static final String N_IMAGECACHE = "imagecache";
+
     /** The temporary export point path node. */
     public static final String N_TEMP_EXPORTPONT_PATH = "temp-exportpoint-path";
 
@@ -330,6 +341,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured static export manager. */
     private CmsStaticExportManager m_staticExportManager;
+
+    /** The stored content delivery configuration. */
+    private CmsStoredContentDeliveryConfiguration m_storedContentDeliveryConfiguration = new CmsStoredContentDeliveryConfiguration();
+
+    /** The image cache configuration. */
+    private CmsImageCacheConfiguration m_imageCacheConfiguration = new CmsImageCacheConfiguration();
 
     /**
      * Adds an protected export point.<p>
@@ -622,6 +639,42 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             "addRfsRuleSystemRes",
             1);
         digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
+
+        // creation of the stored content delivery configuration
+        digester.addObjectCreate("*/" + N_STOREDCONTENTDELIVERY, CmsStoredContentDeliveryConfiguration.class);
+        digester.addSetNext("*/" + N_STOREDCONTENTDELIVERY, "setStoredContentDeliveryConfiguration");
+        digester.addCallMethod("*/" + N_STOREDCONTENTDELIVERY, "setEnabled", 1);
+        digester.addCallParam("*/" + N_STOREDCONTENTDELIVERY, 0, A_ENABLED);
+        // stored content delivery suffix rule
+        digester.addCallMethod(
+            "*/"
+                + N_STOREDCONTENTDELIVERY
+                + "/"
+                + N_STOREDCONTENTDELIVERY_ENABLEDSUFFIXES
+                + "/"
+                + N_STATICEXPORT_SUFFIX,
+            "addEnabledSuffix",
+            1);
+        digester.addCallParam(
+            "*/"
+                + N_STOREDCONTENTDELIVERY
+                + "/"
+                + N_STOREDCONTENTDELIVERY_ENABLEDSUFFIXES
+                + "/"
+                + N_STATICEXPORT_SUFFIX,
+            0,
+            A_KEY);
+        // creation of the image cache configuration
+        digester.addObjectCreate("*/" + N_IMAGECACHE, CmsImageCacheConfiguration.class);
+        digester.addSetNext("*/" + N_IMAGECACHE, "setImageCacheConfiguration");
+        digester.addCallMethod("*/" + N_IMAGECACHE, "setClassName", 1);
+        digester.addCallParam("*/" + N_IMAGECACHE, 0, A_CLASS);
+        digester.addCallMethod(
+            "*/" + N_IMAGECACHE + "/" + N_PARAMS + "/" + N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam("*/" + N_IMAGECACHE + "/" + N_PARAMS + "/" + N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + N_IMAGECACHE + "/" + N_PARAMS + "/" + N_PARAM, 1);
 
         // adds protected export rules
         digester.addCallMethod(
@@ -1082,6 +1135,38 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
         }
 
+        if (m_storedContentDeliveryConfiguration.isConfigured()) {
+            // <storedcontentdelivery> node
+            Element storedContentDeliveryElement = parent.addElement(N_STOREDCONTENTDELIVERY);
+            storedContentDeliveryElement.addAttribute(
+                A_ENABLED,
+                String.valueOf(m_storedContentDeliveryConfiguration.isEnabled()));
+
+            // <enabledsuffixes> node and its <suffix> sub nodes
+            if (m_storedContentDeliveryConfiguration.hasEnabledSuffixes()) {
+                Element enabledSuffixesElement = storedContentDeliveryElement.addElement(
+                    N_STOREDCONTENTDELIVERY_ENABLEDSUFFIXES);
+                Iterator<String> enabledSuffixes = m_storedContentDeliveryConfiguration.getEnabledSuffixes().iterator();
+                while (enabledSuffixes.hasNext()) {
+                    String suffix = enabledSuffixes.next();
+                    Element suffixElement = enabledSuffixesElement.addElement(N_STATICEXPORT_SUFFIX);
+                    suffixElement.addAttribute(A_KEY, suffix);
+                }
+            }
+
+        }
+
+        if (m_imageCacheConfiguration.isConfigured()) {
+            // <imagecache> node
+            Element imageCacheElement = parent.addElement(N_IMAGECACHE);
+            imageCacheElement.addAttribute(A_CLASS, m_imageCacheConfiguration.getClassName());
+            CmsParameterConfiguration config = m_imageCacheConfiguration.getConfiguration();
+            if ((config != null) && (config.size() > 0)) {
+                Element paramsElement = imageCacheElement.addElement(N_PARAMS);
+                config.appendToXml(paramsElement);
+            }
+        }
+
         if (m_staticExportManager.getProtectedExportPath() != null) {
             Element streamingEl = parent.addElement(N_PROTECTED_EXPORT);
             streamingEl.addElement(N_STATICEXPORT_EXPORTPATH).setText(m_staticExportManager.getProtectedExportPath());
@@ -1231,6 +1316,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the image cache configuration.<p>
+     *
+     * @return the image cache configuration
+     */
+    public CmsImageCacheConfiguration getImageCacheConfiguration() {
+
+        return m_imageCacheConfiguration;
+    }
+
+    /**
      * Returns the initialized import/export manager.<p>
      *
      * @return the initialized import/export manager
@@ -1261,6 +1356,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the stored content delivery configuration.<p>
+     *
+     * @return the stored content delivery configuration
+     */
+    public CmsStoredContentDeliveryConfiguration getStoredContentDeliveryConfiguration() {
+
+        return m_storedContentDeliveryConfiguration;
+    }
+
+    /**
      * Will be called when configuration of this object is finished.<p>
      */
     public void initializeFinished() {
@@ -1278,6 +1383,19 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     public void setExtendedHtmlImportManager(CmsExtendedHtmlImportDefault extendedHtmlImportManager) {
 
         m_importExportManager.setExtendedHtmlImportDefault(extendedHtmlImportManager);
+    }
+
+    /**
+     * Sets the image cache configuration.<p>
+     *
+     * @param configuration the image cache configuration
+     */
+    public void setImageCacheConfiguration(CmsImageCacheConfiguration configuration) {
+
+        m_imageCacheConfiguration = configuration;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMAGECACHE_CONFIG_0));
+        }
     }
 
     /**
@@ -1323,6 +1441,19 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         m_staticExportManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATEXP_MANAGER_0));
+        }
+    }
+
+    /**
+     * Sets the stored content delivery configuration.<p>
+     *
+     * @param configuration the stored content delivery configuration
+     */
+    public void setStoredContentDeliveryConfiguration(CmsStoredContentDeliveryConfiguration configuration) {
+
+        m_storedContentDeliveryConfiguration = configuration;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STOREDCONTENTDELIVERY_CONFIG_0));
         }
     }
 

@@ -34,6 +34,7 @@ import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestRunner;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -179,6 +180,9 @@ public class TestCmsDbStorage extends OpenCmsTestRunner {
 
             assertEquals(1, countStorageRows(hash));
             assertArrayEquals(content, storage.loadContent(dbc, hash));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            storage.loadContentTo(dbc, hash, out);
+            assertArrayEquals(content, out.toByteArray());
 
             storage.deleteContent(dbc, hash);
 

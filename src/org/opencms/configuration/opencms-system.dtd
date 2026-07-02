@@ -30,6 +30,7 @@
 	flexcache,
 	http-authentication,
 	resultcache,
+	storedcontentinfocache?,
 	content-notification?,
 	authorizationhandler?,
 	api-authorizations?,
@@ -449,6 +450,36 @@
 <!ELEMENT size-roles (#PCDATA)>
 
 <!--
+# Stored content info cache settings.
+# This cache avoids repeated database lookups for storage metadata during direct blob delivery.
+-->
+<!ELEMENT storedcontentinfocache (
+	storedcontentinfocache-factory,
+	storedcontentinfocache-enabled,
+	storedcontentinfocache-size,
+	storedcontentinfocache-ttl)>
+
+<!--
+# The factory class used to create the stored content info cache.
+-->
+<!ELEMENT storedcontentinfocache-factory (#PCDATA)>
+
+<!--
+# Enables or disables the stored content info cache.
+-->
+<!ELEMENT storedcontentinfocache-enabled (#PCDATA)>
+
+<!--
+# The maximum number of stored content info entries.
+-->
+<!ELEMENT storedcontentinfocache-size (#PCDATA)>
+
+<!--
+# The time to live for stored content info entries in seconds.
+-->
+<!ELEMENT storedcontentinfocache-ttl (#PCDATA)>
+
+<!--
 # Content notification settings.
 -->
 <!ELEMENT content-notification (notification-time?, notification-project)>
@@ -668,5 +699,3 @@
 
 <!ELEMENT secret-store (param*) >
 <!ATTLIST secret-store class CDATA #IMPLIED >
-
-

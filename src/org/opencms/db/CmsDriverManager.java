@@ -36,6 +36,7 @@ import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogEntryType;
 import org.opencms.db.log.CmsLogFilter;
+import org.opencms.db.storage.I_CmsStorageDelivery;
 import org.opencms.db.timing.CmsDefaultProfilingHandler;
 import org.opencms.db.timing.CmsProfilingInvocationHandler;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
@@ -54,11 +55,13 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsStoredContentInfo;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsUserSearchParameters;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.I_CmsFileContentStreamHandler;
 import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.CmsHistoryFolder;
@@ -132,6 +135,9 @@ import org.opencms.util.PrintfFormat;
 import org.opencms.workflow.CmsDefaultWorkflowManager;
 import org.opencms.workplace.threads.A_CmsProgressThread;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -5239,6 +5245,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns a delivery-capable storage backend by its stable storage identifier.<p>
+     *
+     * @param dbc the current database context
+     * @param storage the stable storage identifier
+     *
+     * @return the delivery-capable storage backend, or <code>null</code> if not supported
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public I_CmsStorageDelivery getStoredContentDelivery(CmsDbContext dbc, String storage) throws CmsException {
+
+        return getVfsDriver(dbc).getStoredContentDelivery(dbc, storage);
+    }
+
+    /**
      * Returns the subscription driver of this driver manager.<p>
      *
      * @return a subscription driver
@@ -7336,27 +7357,73 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsFile readFile(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        if (resource.isFolder()) {
-            throw new CmsVfsResourceNotFoundException(
-                Messages.get().container(
-                    Messages.ERR_ACCESS_FOLDER_AS_FILE_1,
-                    dbc.removeSiteRoot(resource.getRootPath())));
-        }
+        checkFileResource(dbc, resource);
 
         CmsUUID projectId = dbc.currentProject().getUuid();
         CmsFile file = null;
         if (resource instanceof I_CmsHistoryResource) {
             file = new CmsHistoryFile((I_CmsHistoryResource)resource);
-            file.setContents(
-                getHistoryDriver(dbc).readContent(
-                    dbc,
-                    resource.getResourceId(),
-                    ((I_CmsHistoryResource)resource).getPublishTag()));
+            file.setContents(readHistoryContent(dbc, resource));
         } else {
             file = new CmsFile(resource);
             file.setContents(getVfsDriver(dbc).readContent(dbc, projectId, resource.getResourceId()));
         }
         return file;
+    }
+
+    /**
+     * Reads a file resource content from the VFS and passes it to an input stream handler.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the base file resource
+     * @param handler the stream handler
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void readFileContentFrom(CmsDbContext dbc, CmsResource resource, I_CmsFileContentStreamHandler handler)
+    throws CmsException {
+
+        checkFileResource(dbc, resource);
+        CmsUUID projectId = dbc.currentProject().getUuid();
+        try {
+            if (resource instanceof I_CmsHistoryResource) {
+                try (ByteArrayInputStream in = new ByteArrayInputStream(readHistoryContent(dbc, resource))) {
+                    handler.read(in);
+                }
+            } else {
+                getVfsDriver(dbc).readContentFrom(dbc, projectId, resource.getResourceId(), handler);
+            }
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READ_FILE_1, resource.getRootPath()), e);
+        } catch (CmsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READ_FILE_1, resource.getRootPath()), e);
+        }
+    }
+
+    /**
+     * Reads a file resource content from the VFS and writes it to an output stream.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the base file resource
+     * @param out the output stream to write to
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void readFileContentTo(CmsDbContext dbc, CmsResource resource, OutputStream out) throws CmsException {
+
+        checkFileResource(dbc, resource);
+        CmsUUID projectId = dbc.currentProject().getUuid();
+        try {
+            if (resource instanceof I_CmsHistoryResource) {
+                out.write(readHistoryContent(dbc, resource));
+            } else {
+                getVfsDriver(dbc).readContentTo(dbc, projectId, resource.getResourceId(), out);
+            }
+        } catch (IOException e) {
+            throw new CmsDbIoException(Messages.get().container(Messages.ERR_READ_FILE_1, resource.getRootPath()), e);
+        }
     }
 
     /**
@@ -8486,6 +8553,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return getProjectDriver(dbc).readStaticExportResources(dbc, parameterResources, timestamp);
+    }
+
+    /**
+     * Reads information about where the file content is stored without loading the content bytes.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the base file resource
+     *
+     * @return the stored content info
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public CmsStoredContentInfo readStoredContentInfo(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        checkFileResource(dbc, resource);
+        if (resource instanceof I_CmsHistoryResource) {
+            return new CmsStoredContentInfo(resource, null, null, resource.getLength());
+        }
+        CmsUUID projectId = dbc.currentProject().getUuid();
+        return getVfsDriver(dbc).readStoredContentInfo(dbc, projectId, resource);
     }
 
     /**
@@ -11378,6 +11465,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Checks that the given resource can be read as a file.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the resource to check
+     * @throws CmsVfsResourceNotFoundException if the resource is a folder
+     */
+    private void checkFileResource(CmsDbContext dbc, CmsResource resource) throws CmsVfsResourceNotFoundException {
+
+        if (resource.isFolder()) {
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_ACCESS_FOLDER_AS_FILE_1,
+                    dbc.removeSiteRoot(resource.getRootPath())));
+        }
+    }
+
+    /**
      * Checks that no one of the resources to be published has a 'new' parent (that has not been published yet).<p>
      *
      * @param dbc the db context
@@ -12178,6 +12282,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_monitor.cacheProjectResources(cacheKey, result);
         return result;
+    }
+
+    /**
+     * Reads the content for a history resource.<p>
+     *
+     * @param dbc the current database context
+     * @param resource the history resource
+     * @return the history content
+     * @throws CmsDataAccessException if the content can not be read
+     */
+    private byte[] readHistoryContent(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
+
+        return getHistoryDriver(dbc).readContent(
+            dbc,
+            resource.getResourceId(),
+            ((I_CmsHistoryResource)resource).getPublishTag());
     }
 
     /**

@@ -41,6 +41,7 @@ import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.db.storage.policy.I_CmsStoragePolicy;
 import org.opencms.file.CmsDataAccessException;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -393,6 +394,32 @@ public class TestCmsFsStorage {
     }
 
     /**
+     * Tests that direct delivery is only exposed for the active storage backend, not legacy backends.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStorageManagerExposesDirectDeliveryOnlyForActiveStorage() throws Exception {
+
+        Path activeRepository = Files.createTempDirectory("opencms-fs-storage-active");
+        Path legacyRepository = Files.createTempDirectory("opencms-fs-storage-legacy");
+        try {
+            CmsStorageManager manager = new CmsStorageManager(
+                createSqlManager(false),
+                createTwoBackendConfiguration(activeRepository, legacyRepository),
+                createAlwaysExternalPolicyConfiguration());
+
+            assertTrue(manager.isActiveStorage("fs1"));
+            assertFalse(manager.isActiveStorage("fs2"));
+            assertTrue(manager.getDeliveryStorage("fs1") instanceof I_CmsStorageDelivery);
+            assertNull(manager.getDeliveryStorage("fs2"));
+        } finally {
+            deleteDirectory(activeRepository);
+            deleteDirectory(legacyRepository);
+        }
+    }
+
+    /**
      * Tests that a missing legacy blob fails explicitly instead of returning null content.<p>
      *
      * @throws Exception if something goes wrong
@@ -450,6 +477,35 @@ public class TestCmsFsStorage {
             }
         } finally {
             deleteDirectory(repository);
+        }
+    }
+
+    /**
+     * Tests that content can be streamed from a legacy backend without loading through the manager API.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStorageManagerLoadsLegacyContentToStream() throws Exception {
+
+        Path activeRepository = Files.createTempDirectory("opencms-fs-storage-active");
+        Path legacyRepository = Files.createTempDirectory("opencms-fs-storage-legacy");
+        try {
+            CmsStorageManager storageManager = new CmsStorageManager(
+                null,
+                createTwoBackendConfiguration(activeRepository, legacyRepository),
+                createAlwaysExternalPolicyConfiguration());
+            byte[] content = "legacy content streamed".getBytes(StandardCharsets.UTF_8);
+            String hash = calculateSha512(content);
+            new CmsFsStorage("fs2", legacyRepository.toString()).storeContent(null, hash, content);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            storageManager.loadContentTo(null, null, "fs2", hash, out);
+
+            assertTrue(Arrays.equals(content, out.toByteArray()));
+        } finally {
+            deleteDirectory(activeRepository);
+            deleteDirectory(legacyRepository);
         }
     }
 
@@ -944,6 +1000,34 @@ public class TestCmsFsStorage {
             } catch (CmsStorageBlobNotFoundException e) {
                 assertTrue(e.getMessage().indexOf(hash) >= 0);
             }
+        } finally {
+            deleteDirectory(repository);
+        }
+    }
+
+    /**
+     * Tests direct delivery streaming from the FS storage backend.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStreamDelivery() throws Exception {
+
+        Path repository = Files.createTempDirectory("opencms-fs-storage");
+        try {
+            CmsFsStorage storage = new CmsFsStorage("fs1", repository.toString());
+            byte[] content = "abcdefghijklmnopqrstuvwxyz".getBytes(StandardCharsets.UTF_8);
+            String hash = calculateSha512(content);
+            storage.storeContent(null, hash, content);
+
+            ByteArrayOutputStream full = new ByteArrayOutputStream();
+            storage.streamTo(null, hash, full);
+            assertTrue(Arrays.equals(content, full.toByteArray()));
+
+            ByteArrayOutputStream range = new ByteArrayOutputStream();
+            storage.streamRangeTo(null, hash, 5, 7, range);
+            assertEquals("fghijkl", range.toString("UTF-8"));
+            assertTrue(storage.supportsRangeDelivery());
         } finally {
             deleteDirectory(repository);
         }

@@ -28,6 +28,10 @@
 package org.opencms.db.storage;
 
 import org.opencms.db.CmsDbContext;
+import org.opencms.file.I_CmsFileContentStreamHandler;
+
+import java.io.ByteArrayInputStream;
+import java.io.OutputStream;
 
 /**
  * Defines a storage strategy for binary resource content.<p>
@@ -78,6 +82,47 @@ public interface I_CmsStorage extends AutoCloseable {
      * @throws Exception if the content cannot be retrieved
      */
     byte[] loadContent(CmsDbContext dbc, String hash) throws Exception;
+
+    /**
+     * Loads the actual binary content and passes it to the given input stream handler.<p>
+     *
+     * This default implementation keeps custom storage implementations source compatible by
+     * falling back to {@link #loadContent(CmsDbContext, String)}.<p>
+     *
+     * @param dbc the database context
+     * @param hash the SHA-512 content hash
+     * @param handler the stream handler
+     *
+     * @throws Exception if the content cannot be retrieved or handled
+     */
+    default void loadContentFrom(CmsDbContext dbc, String hash, I_CmsFileContentStreamHandler handler)
+    throws Exception {
+
+        byte[] content = loadContent(dbc, hash);
+        if (content == null) {
+            return;
+        }
+        try (ByteArrayInputStream in = new ByteArrayInputStream(content)) {
+            handler.read(in);
+        }
+    }
+
+    /**
+     * Loads the actual binary content into the given output stream.<p>
+     *
+     * This default implementation keeps custom storage implementations source compatible by
+     * falling back to {@link #loadContent(CmsDbContext, String)}.<p>
+     *
+     * @param dbc the database context
+     * @param hash the SHA-512 content hash
+     * @param out the output stream to write to
+     *
+     * @throws Exception if the content cannot be retrieved or written
+     */
+    default void loadContentTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        out.write(loadContent(dbc, hash));
+    }
 
     /**
      * Stores the given content.<p>

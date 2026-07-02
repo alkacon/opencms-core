@@ -30,8 +30,12 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.storage.I_CmsDbStorage;
+import org.opencms.file.I_CmsFileContentStreamHandler;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -125,6 +129,72 @@ public class CmsDbStorage implements I_CmsDbStorage {
     }
 
     /**
+     * @see org.opencms.db.storage.I_CmsStorage#loadContentFrom(CmsDbContext, String, I_CmsFileContentStreamHandler)
+     */
+    @Override
+    public void loadContentFrom(CmsDbContext dbc, String hash, I_CmsFileContentStreamHandler handler) throws Exception {
+
+        if (hash == null) {
+            return;
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STORAGE_FILE_CONTENT");
+            stmt.setString(1, hash);
+            res = stmt.executeQuery();
+            if (res.next()) {
+                try (InputStream in = res.getBinaryStream("FILE_CONTENT")) {
+                    if (in != null) {
+                        handler.read(in);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.storage.I_CmsStorage#loadContentTo(CmsDbContext, String, OutputStream)
+     */
+    @Override
+    public void loadContentTo(CmsDbContext dbc, String hash, OutputStream out) throws Exception {
+
+        if (hash == null) {
+            return;
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STORAGE_FILE_CONTENT");
+            stmt.setString(1, hash);
+            res = stmt.executeQuery();
+            if (res.next()) {
+                try (InputStream in = res.getBinaryStream("FILE_CONTENT")) {
+                    if (in != null) {
+                        CmsFileUtil.copy(in, out);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+    }
+
+    /**
      * @see org.opencms.db.storage.I_CmsStorage#storeContent(org.opencms.db.CmsDbContext, java.lang.String, byte[])
      */
     @Override
@@ -171,4 +241,5 @@ public class CmsDbStorage implements I_CmsDbStorage {
 
         // The database connection is already validated during OpenCms startup.
     }
+
 }

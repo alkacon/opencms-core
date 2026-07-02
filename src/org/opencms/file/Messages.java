@@ -95,6 +95,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PROPERTY_FROZEN_1 = "ERR_PROPERTY_FROZEN_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_FILE_1 = "ERR_READ_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1 = "ERR_REWRITE_LINKS_ROOT_NOT_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */

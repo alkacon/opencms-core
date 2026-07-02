@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, protectedexport?, usercsvexport?, repositories?, extendedhtmlimport?)>
+<!ELEMENT opencms (importexport, staticexport, storedcontentdelivery?, imagecache?, protectedexport?, usercsvexport?, repositories?, extendedhtmlimport?)>
 
 <!--
 # <importexport> configuration:
@@ -153,6 +153,33 @@
 	requestheaders?,
 	rendersettings)>
 <!ATTLIST staticexport enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# <storedcontentdelivery> configuration:
+#
+# Settings for delivery of externally stored VFS content. This does not replace the
+# static export configuration. It only controls whether resources which are already
+# exportable and whose content is stored externally may be delivered directly from
+# the active storage backend instead of being written to the classic /export folder.
+-->
+<!ELEMENT storedcontentdelivery (
+	enabledsuffixes?)>
+<!ATTLIST storedcontentdelivery enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# Settings for generated image cache entries. This controls where generated
+# image derivatives are stored, not whether public online derivatives are
+# delivered directly or copied to the classic /export folder.
+-->
+<!ELEMENT imagecache (params?)>
+<!ATTLIST imagecache class CDATA #REQUIRED>
+
+<!--
+# A list of suffixes for which direct stored content delivery is allowed. If this
+# list is omitted, all exportable externally stored resources may be delivered
+# directly.
+-->
+<!ELEMENT enabledsuffixes (suffix+)>
 
 <!--
 # The fully qualified class name of a concrete implementation of the 

@@ -492,6 +492,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** the result cache node. */
     public static final String N_RESULTCACHE = "resultcache";
 
+    /** The stored content info cache node. */
+    public static final String N_STOREDCONTENTINFOCACHE = "storedcontentinfocache";
+
+    /** The stored content info cache enabled node. */
+    public static final String N_STOREDCONTENTINFOCACHE_ENABLED = "storedcontentinfocache-enabled";
+
+    /** The stored content info cache factory node. */
+    public static final String N_STOREDCONTENTINFOCACHE_FACTORY = "storedcontentinfocache-factory";
+
+    /** The stored content info cache size node. */
+    public static final String N_STOREDCONTENTINFOCACHE_SIZE = "storedcontentinfocache-size";
+
+    /** The stored content info cache TTL node. */
+    public static final String N_STOREDCONTENTINFOCACHE_TTL = "storedcontentinfocache-ttl";
+
     /** Node name for the element reuse mode. */
     public static final String N_REUSE_ELEMENTS = "reuse-elements";
 
@@ -657,6 +672,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The settings of the memory monitor. */
     private CmsCacheSettings m_cacheSettings;
+
+    /** The stored content info cache configuration. */
+    private CmsStoredContentInfoCacheConfiguration m_storedContentInfoCacheConfiguration = new CmsStoredContentInfoCacheConfiguration();
 
     /** The configured OpenCms default users and groups. */
     private CmsDefaultUsers m_cmsDefaultUsers;
@@ -1232,6 +1250,23 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_RESULTCACHE, "setCacheSettings");
 
+        // stored content info cache rules
+        digester.addObjectCreate(
+            "*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE,
+            CmsStoredContentInfoCacheConfiguration.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE, "initialize", 4);
+        digester.addCallParam(
+            "*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE + "/" + N_STOREDCONTENTINFOCACHE_FACTORY,
+            0);
+        digester.addCallParam(
+            "*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE + "/" + N_STOREDCONTENTINFOCACHE_ENABLED,
+            1);
+        digester.addCallParam(
+            "*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE + "/" + N_STOREDCONTENTINFOCACHE_SIZE,
+            2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE + "/" + N_STOREDCONTENTINFOCACHE_TTL, 3);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_STOREDCONTENTINFOCACHE, "setStoredContentInfoCacheConfiguration");
+
         // set the notification time
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_TIME,
@@ -1758,6 +1793,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
+
+        // stored content info cache settings
+        Element storedContentInfoCacheElement = systemElement.addElement(N_STOREDCONTENTINFOCACHE);
+        storedContentInfoCacheElement.addElement(N_STOREDCONTENTINFOCACHE_FACTORY).setText(
+            m_storedContentInfoCacheConfiguration.getFactoryClass());
+        storedContentInfoCacheElement.addElement(N_STOREDCONTENTINFOCACHE_ENABLED).setText(
+            Boolean.toString(m_storedContentInfoCacheConfiguration.isEnabled()));
+        storedContentInfoCacheElement.addElement(N_STOREDCONTENTINFOCACHE_SIZE).setText(
+            Integer.toString(m_storedContentInfoCacheConfiguration.getSize()));
+        storedContentInfoCacheElement.addElement(N_STOREDCONTENTINFOCACHE_TTL).setText(
+            Long.toString(m_storedContentInfoCacheConfiguration.getTtl()));
 
         // content notification settings
         if ((m_notificationTime != null) || (m_notificationProject != null)) {
@@ -2412,6 +2458,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Returns the stored content info cache configuration.<p>
+     *
+     * @return the stored content info cache configuration
+     */
+    public CmsStoredContentInfoCacheConfiguration getStoredContentInfoCacheConfiguration() {
+
+        return m_storedContentInfoCacheConfiguration;
+    }
+
+    /**
      * Returns the configured subscription manager.<p>
      *
      * @return the configured subscription manager
@@ -3049,6 +3105,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         m_shellServerOptions = new CmsRemoteShellConfiguration(Boolean.parseBoolean(enabled), port);
 
+    }
+
+    /**
+     * Sets the stored content info cache configuration.<p>
+     *
+     * @param configuration the stored content info cache configuration
+     */
+    public void setStoredContentInfoCacheConfiguration(CmsStoredContentInfoCacheConfiguration configuration) {
+
+        m_storedContentInfoCacheConfiguration = configuration;
     }
 
     /**
