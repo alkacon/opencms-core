@@ -110,6 +110,15 @@ public final class NativeEditWidget extends JavaScriptObject {
         return new NativeEventHandler(connector);
     }
 
+    public native void setPlaceholder(String placeholder) /*-{
+        if (this.setPlaceholder) {
+            if (placeholder === null) {
+                placeholder = "";
+            }
+            this.setPlaceholder(placeholder);
+        }
+    }-*/;
+
     public native boolean shouldSetDefaultWhenDisabled() /*-{
         return this.shouldSetDefaultWhenDisabled
                 && this.shouldSetDefaultWhenDisabled();

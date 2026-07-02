@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.history.CmsPropertyComboBox;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,22 +59,13 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * which may be confusing to nontechnical users in some cases.
  */
 public class CmsSelectComboBox extends Composite
-implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsHasGhostValue {
+implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsHasGhostValue, I_CmsHasPlaceholder {
 
     /** Widget type identifier for the configuration. */
     public static final String WIDGET_TYPE = "selectcombo";
 
     /** Widget type identifier for the widget to use in the property dialog. */
     private static final String WIDGET_TYPE_PROP = "selectcombo_prop";
-
-    /** The panel containing the actual widgets. */
-    private FlowPanel m_panel = new FlowPanel();
-
-    /** The select box initially displayed by this widget. */
-    private CmsSelectBox m_selectBox;
-
-    /** The options for the widget. */
-    private Map<String, String> m_options;
 
     /** The combo box (initially null). */
     private CmsComboBox m_comboBox;
@@ -83,6 +75,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
 
     /** An error which has been set before. */
     private String m_error;
+
+    /** The options for the widget. */
+    private Map<String, String> m_options;
+
+    /** The panel containing the actual widgets. */
+    private FlowPanel m_panel = new FlowPanel();
+
+    /** The select box initially displayed by this widget. */
+    private CmsSelectBox m_selectBox;
 
     /**
      * Creates a new widget instance.<p>
@@ -302,6 +303,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
 
         m_selectBox.setGhostValue(value, isGhostMode);
         m_comboBox.setGhostValue(value, isGhostMode);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    public void setPlaceholder(String placeholder) {
+
+        m_comboBox.setPlaceholder(placeholder);
+
     }
 
     /**

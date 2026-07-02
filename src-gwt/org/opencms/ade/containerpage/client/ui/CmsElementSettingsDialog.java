@@ -62,6 +62,7 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -580,6 +581,11 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 this,
                 Collections.<String, String> emptyMap(),
                 false);
+            if (currentField.getWidget() instanceof I_CmsHasPlaceholder) {
+                if (!CmsStringUtil.isEmpty(propConfig.getPlaceholder())) {
+                    ((I_CmsHasPlaceholder)currentField.getWidget()).setPlaceholder(propConfig.getPlaceholder());
+                }
+            }
             formFields.put(propConfig.getName(), currentField);
 
         }

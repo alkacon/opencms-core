@@ -201,6 +201,10 @@
         background-repeat: repeat-x;
 }
 
+.oc-codemirror-editorwidget .CodeMirror-placeholder {
+	font-weight: lighter;
+}
+
 
 
 

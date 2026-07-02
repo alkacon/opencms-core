@@ -201,6 +201,14 @@ public interface I_CmsXmlContentHandler {
     public Set<String> getAgentTags(String remainingPath);
 
     /**
+     * Gets the configured placeholder for the given path.
+     *
+     * @param path the element path
+     * @return the placeholder (may contain macros)
+     */
+    public String getPlaceholder(String path);
+
+    /**
      * Writes an availability date back to the content, if a mapping is defined for it.
      *
      * @param cms the CMS context

@@ -78,6 +78,7 @@ public class CmsCodeMirrorScriptLoader {
                 load("/js/lang-en.js");
                 load("/dist/lib/codemirror.js");
                 load("/dist/addon/dialog/dialog.js");
+                load("/dist/addon/display/placeholder.js");
                 load("/dist/addon/search/searchcursor.js");
                 load("/dist/addon/search/search.js");
                 load("/dist/addon/search/jump-to-line.js");

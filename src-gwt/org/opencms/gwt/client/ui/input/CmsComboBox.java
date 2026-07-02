@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
@@ -53,6 +54,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
+
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
  * after the user clicks on the widget.<p>
@@ -60,7 +64,11 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  *
  */
-public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
+public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell>
+implements I_CmsHasInit, I_CmsHasGhostValue, I_CmsHasPlaceholder {
+
+    /** CSS style name for combo boxes. */
+    public static final String CSS_CLASS = I_CmsInputLayoutBundle.INSTANCE.inputCss().comboBox();
 
     /** The key for the text which should be displayed in the opener if no option is available. */
     public static final String NO_SELECTION_OPENER_TEXT = "%NO_SELECTION_OPENER_TEXT%";
@@ -70,9 +78,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
     /** The widget type identifier. */
     private static final String WIDGET_TYPE = "combo";
-
-    /** CSS style name for combo boxes. */
-    public static final String CSS_CLASS = I_CmsInputLayoutBundle.INSTANCE.inputCss().comboBox();
 
     /** The ghost value. */
     protected String m_ghostValue;
@@ -366,6 +371,19 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         for (Map.Entry<String, String> entry : items.entrySet()) {
             addOption(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        HTMLInputElement input = Js.cast(m_openerWidget.getElement());
+        input.placeholder = placeholder;
+
     }
 
     /**

@@ -34,6 +34,8 @@ import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.shared.CmsAttributeConfiguration;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,7 +128,13 @@ public class CmsWidgetService implements I_CmsWidgetService {
             if (config != null) {
                 I_CmsWidgetFactory factory = m_widgetFactories.get(config.getWidgetName());
                 if (factory != null) {
-                    return factory.createFormWidget(config.getWidgetConfig());
+                    I_CmsFormEditWidget result = factory.createFormWidget(config.getWidgetConfig());
+                    if (result instanceof I_CmsHasPlaceholder) {
+                        if (!CmsStringUtil.isEmpty(config.getPlaceholder())) {
+                            ((I_CmsHasPlaceholder)result).setPlaceholder(config.getPlaceholder());
+                        }
+                    }
+                    return result;
                 }
             }
         }

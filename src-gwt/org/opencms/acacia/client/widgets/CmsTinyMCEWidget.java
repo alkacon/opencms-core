@@ -30,6 +30,7 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.CmsEditorBase;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
@@ -50,13 +51,17 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * This class is used to start TinyMCE for editing the content of an element.<p>
  *
  * After constructing the instance, the actual editor is opened using the init() method, and destroyed with the close()
  * method. While the editor is opened, the edited contents can be accessed using the methods of the HasValue interface.
  */
-public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResizeHandlers, I_CmsHasDisplayDirection {
+public final class CmsTinyMCEWidget extends A_CmsEditWidget
+implements HasResizeHandlers, I_CmsHasDisplayDirection, I_CmsHasPlaceholder {
 
     /** Use as option to disallow any HTML or formatting the content. */
     public static final String NO_HTML_EDIT = "no_html_edit";
@@ -243,6 +248,17 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     public void setName(String name) {
 
         // no input field so nothing to do
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        JsPropertyMap<Object> config = Js.cast(m_options);
+        config.set("placeholder", placeholder);
 
     }
 

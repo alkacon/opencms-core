@@ -29,6 +29,7 @@ package org.opencms.ade.contenteditor.widgetregistry.client;
 
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsHasDisplayDirection;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -43,7 +44,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Wrapper for a native widget.<p>
  */
-public final class WidgetWrapper extends Widget implements I_CmsFormEditWidget, I_CmsHasDisplayDirection {
+public final class WidgetWrapper extends Widget
+implements I_CmsFormEditWidget, I_CmsHasDisplayDirection, I_CmsHasPlaceholder {
 
     /** The wrapped native widget. */
     private NativeEditWidget m_nativeWidget;
@@ -137,6 +139,15 @@ public final class WidgetWrapper extends Widget implements I_CmsFormEditWidget, 
 
         // no input field so nothing to do
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        m_nativeWidget.setPlaceholder(placeholder);
     }
 
     /**

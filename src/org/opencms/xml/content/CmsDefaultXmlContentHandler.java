@@ -253,6 +253,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         Params,
 
         /** Element name. */
+        Placeholder,
+
+        /** Element name. */
         Relation,
 
         /** Element name. */
@@ -778,9 +781,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
-    /** The configured agent tags for fields. */
-    private Map<String, Set<String>> m_agentTags = new HashMap<>();
-
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -874,6 +874,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Path to XSL transform in VFS to use for version transformation. */
     protected String m_versionTransformation;
 
+    /** The configured agent tags for fields. */
+    private Map<String, Set<String>> m_agentTags = new HashMap<>();
+
     /** Change handler configurations. */
     private List<CmsChangeHandlerConfig> m_changeHandlerConfigs = new ArrayList<>();
 
@@ -933,6 +936,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The parameters. */
     private CmsParameterConfiguration m_parameters = new CmsParameterConfiguration();
+
+    /** Map of placeholder strings, with the keys being paths relative from the schema to which this content handler belongs. */
+    private Map<String, String> m_placeholders = new HashMap<>();
 
     /** Option to disable reverse mapping for this content type. */
     private boolean m_reverseMappingEnabled = true;
@@ -1664,6 +1670,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsParameterConfiguration getParameters() {
 
         return m_parameters;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPlaceholder(java.lang.String)
+     */
+    public String getPlaceholder(String name) {
+
+        return m_placeholders.get(name);
     }
 
     /**
@@ -3346,6 +3360,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
             }
             m_agentTags.put(name, Collections.unmodifiableSet(agentTags));
+        }
+        String placeholder = elem.elementTextTrim(FieldSettingElems.Placeholder.name());
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(placeholder)) {
+            m_placeholders.put(name, placeholder);
         }
 
     }

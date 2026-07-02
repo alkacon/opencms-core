@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsExtendedValueChangeEvent;
 import org.opencms.util.CmsStringUtil;
@@ -73,6 +74,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
+
 /**
  * Basic text box class for forms.
  *
@@ -81,7 +85,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class CmsTextBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasFocusHandlers, HasBlurHandlers, HasValueChangeHandlers<String>,
-HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
+HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue, I_CmsHasPlaceholder {
 
     /**
      * Event handler for this text box.<p>
@@ -767,6 +771,20 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void setName(String name) {
 
         m_textbox.setName(name);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        HTMLInputElement input = Js.cast(m_textbox.getElement());
+        input.placeholder = placeholder;
+
     }
 
     /**

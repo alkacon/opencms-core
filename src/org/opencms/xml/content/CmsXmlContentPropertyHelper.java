@@ -731,17 +731,20 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         String propName = property.getName();
         CmsXmlContentProperty result = new CmsXmlContentProperty(
             propName,
+            property.getAliasName(),
             property.getType(),
+            property.getConfiguredVisibility(),
             resolver.resolveMacros(property.getWidget()),
             resolver.resolveMacros(property.getWidgetConfiguration()),
             property.getRuleRegex(),
             property.getRuleType(),
             property.getDefault(),
+            resolver.resolveMacros(property.getPlaceholder()),
             resolver.resolveMacros(property.getNiceName()),
             resolver.resolveMacros(property.getDescription()),
             resolver.resolveMacros(property.getError()),
-            property.isPreferFolder() ? "true" : "false");
-        result.m_visibility = property.m_visibility;
+            property.isPreferFolder() ? "true" : "false",
+            property.getTranslationStr());
         return result;
     }
 

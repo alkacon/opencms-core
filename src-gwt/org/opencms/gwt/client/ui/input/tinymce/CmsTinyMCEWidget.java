@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -61,6 +62,9 @@ import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * This class is used to start TinyMCE for editing the content of an element.<p>
  *
@@ -68,7 +72,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * method. While the editor is opened, the edited contents can be accessed using the methods of the HasValue interface.
  */
 public final class CmsTinyMCEWidget extends FlowPanel
-implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandlers<String> {
+implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsHasPlaceholder {
 
     /** Use as option to disallow any HTML or formatting the content. */
     public static final String NO_HTML_EDIT = "no_html_edit";
@@ -348,6 +352,20 @@ implements I_CmsFormWidget, HasResizeHandlers, I_CmsHasInit, HasValueChangeHandl
     public void setFormValueAsString(String value) {
 
         setValue(value, false);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        JsPropertyMap<Object> optionsMap = Js.cast(m_options);
+        optionsMap.set("placeholder", placeholder);
+
     }
 
     /**

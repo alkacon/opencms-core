@@ -263,6 +263,9 @@ public class CmsConfigurationReader {
     /** The folder path node name. */
     public static final String N_PATH = "Path";
 
+    /** Placeholder node name. */
+    public static final String N_PLACEHOLDER = "Placeholder";
+
     /** The Plugin node name. */
     public static final String N_PLUGIN = "Plugin";
 
@@ -420,6 +423,7 @@ public class CmsConfigurationReader {
         String ruleRegex = getString(cms, field.getSubValue(N_RULE_REGEX));
         String ruleType = getString(cms, field.getSubValue(N_RULE_TYPE));
         String default1 = getString(cms, field.getSubValue(N_DEFAULT));
+        String placeholder = getString(cms, field.getSubValue(N_PLACEHOLDER));
         String error = getString(cms, field.getSubValue(N_ERROR));
         String niceName = getString(cms, field.getSubValue(N_DISPLAY_NAME));
         String description = getString(cms, field.getSubValue(N_DESCRIPTION));
@@ -462,6 +466,7 @@ public class CmsConfigurationReader {
             ruleRegex,
             ruleType,
             default1,
+            placeholder,
             niceName,
             description,
             error,

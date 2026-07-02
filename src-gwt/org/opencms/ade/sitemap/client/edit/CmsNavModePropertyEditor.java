@@ -57,14 +57,14 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The 'split mode' to use for rendering fields. For some property fields, we may want to render two fields, one for the folder and one for the index.html, and this enum is used to tell the rendering function which we are currently rendering. */
     enum SplitMode {
+        /** The property is split, and we are rendering the field for the index.html. */
+        child,
+
         /** The property is not split. */
         none,
 
         /** The property is split, and we are rendering the field for the parent folder. */
-        parent,
-
-        /** The property is split, and we are rendering the field for the index.html. */
-        child;
+        parent;
     }
 
     /**

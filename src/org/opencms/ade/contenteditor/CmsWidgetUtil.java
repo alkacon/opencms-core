@@ -57,14 +57,16 @@ public final class CmsWidgetUtil {
      */
     public static class WidgetInfo {
 
+        /** The complex widget. */
+        private I_CmsComplexWidget m_complexWidget;
+
         /** The display type. */
         private DisplayType m_displayType;
 
+        private String m_placeholder;
+
         /** A widget instance. */
         private I_CmsWidget m_widget;
-
-        /** The complex widget. */
-        private I_CmsComplexWidget m_complexWidget;
 
         /**
          * Gets the complex widget.<p>
@@ -84,6 +86,11 @@ public final class CmsWidgetUtil {
         public DisplayType getDisplayType() {
 
             return m_displayType;
+        }
+
+        public String getPlaceholder() {
+
+            return m_placeholder;
         }
 
         /**
@@ -115,6 +122,11 @@ public final class CmsWidgetUtil {
         public void setDisplayType(DisplayType displayType) {
 
             m_displayType = displayType;
+        }
+
+        public void setPlaceholder(String placeholder) {
+
+            m_placeholder = placeholder;
         }
 
         /**
@@ -163,6 +175,7 @@ public final class CmsWidgetUtil {
         I_CmsXmlContentHandler contentHandler = schemaType.getContentDefinition().getContentHandler();
         final List<I_CmsWidget> widgets = new ArrayList<>();
         final List<String> widgetConfigs = new ArrayList<>();
+        final List<String> placeholders = new ArrayList<>();
         final List<DisplayType> configuredDisplayTypes = new ArrayList<>();
         final List<I_CmsComplexWidget> configuredComplexWidgets = new ArrayList<>();
         Locale locale = overrideLocale != null ? overrideLocale : OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -187,6 +200,7 @@ public final class CmsWidgetUtil {
             I_CmsWidget widgetForPath = handler.getWidget(cms, remainingPath);
             CollectionUtils.addIgnoreNull(widgets, widgetForPath);
             CollectionUtils.addIgnoreNull(widgetConfigs, handler.getConfiguration(remainingPath));
+            CollectionUtils.addIgnoreNull(placeholders, handler.getPlaceholder(remainingPath));
             CollectionUtils.addIgnoreNull(
                 configuredDisplayTypes,
                 handler.getConfiguredDisplayType(remainingPath, null));
@@ -218,6 +232,11 @@ public final class CmsWidgetUtil {
             String resolvedConfig = resolveWidgetConfigMacros(resolver, widgetConfig);
             widget.setConfiguration(resolvedConfig);
         }
+        String placeholder = "";
+        if (placeholders.size() > 0) {
+            placeholder = placeholders.get(0);
+            placeholder = resolver.resolveMacros(placeholder);
+        }
         // default complex widget and default c. widget config have lower priorities than those directly defined, so put them at the end of the list
         CollectionUtils.addIgnoreNull(configuredComplexWidgets, contentHandler.getDefaultComplexWidget());
         List<String> complexWidgetConfigs = new ArrayList<>(widgetConfigs);
@@ -234,6 +253,7 @@ public final class CmsWidgetUtil {
         result.setComplexWidget(complexWidget);
         result.setDisplayType(configuredType);
         result.setWidget(widget);
+        result.setPlaceholder(placeholder);
         return result;
     }
 

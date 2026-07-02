@@ -35,6 +35,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -70,6 +71,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 
 import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLTextAreaElement;
 import jsinterop.base.Js;
 
 /**
@@ -80,7 +82,7 @@ import jsinterop.base.Js;
  */
 public class CmsTextArea extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers,
-I_CmsHasResizeOnShow, I_CmsHasGhostValue {
+I_CmsHasResizeOnShow, I_CmsHasGhostValue, I_CmsHasPlaceholder {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -448,6 +450,19 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
     public void setName(String name) {
 
         m_textArea.setName(name);
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        HTMLTextAreaElement textareaElem = Js.cast(m_textArea.getElement());
+        textareaElem.placeholder = placeholder;
 
     }
 

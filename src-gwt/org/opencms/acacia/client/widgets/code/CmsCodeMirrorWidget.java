@@ -33,6 +33,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfiguration;
@@ -61,7 +62,8 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 /**
  * Client-side content editor widget for editing source code using the CodeMirror library.
  */
-public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget, HasResizeHandlers {
+public class CmsCodeMirrorWidget extends ComplexPanel
+implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasPlaceholder {
 
     /** Map from modes to labels. */
     private static LinkedHashMap<String, String> m_modes;
@@ -96,6 +98,8 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
     /** Boolean flag indicating whether syntax highlighting is currently turned on.*/
     private boolean m_highlighting = true;
 
+    private String m_id;
+
     /** The currently selected mode (may be different from the actual mode in the CodeMirror instance). */
     private String m_mode = "text/plain";
 
@@ -104,6 +108,8 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
 
     /** The initial content (we need to save this because CodeMirror is loaded asynchronously). */
     private String m_originalContent;
+
+    private String m_placeholder = "";
 
     /** The previous value. */
     private String m_previousValue;
@@ -119,8 +125,6 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
 
     /** The 'undo' button. */
     private CmsCodeMirrorToolbarButton m_undo;
-
-    private String m_id;
 
     /**
      * Creates a new display widget.<p>
@@ -274,6 +278,19 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        m_placeholder = placeholder;
+
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     public void setValue(String value) {
@@ -342,7 +359,8 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
                 CmsCodeMirrorWidget.this,
                 getElement(),
                 CmsJsUtil.parseJSON(m_config.getPhrasesJSON()),
-                height);
+                height,
+                m_placeholder);
             initializeUserControlledSettings();
             if (m_originalContent != null) {
                 nativeSetContent(m_originalContent);
@@ -541,7 +559,12 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
      * @param phrases the localization phrases
      * @param height the initial editor height, or -1 if no height should be set
      */
-    private native void initCodeMirror(CmsCodeMirrorWidget instance, Element elem, JavaScriptObject phrases, int height) /*-{
+    private native void initCodeMirror(
+        CmsCodeMirrorWidget instance,
+        Element elem,
+        JavaScriptObject phrases,
+        int height,
+        String placeholder) /*-{
         var config = {
             theme: "eclipse",
             mode: "text/plain",
@@ -550,7 +573,8 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
             fixedGutter: true,
             indentUnit: 4,
             indentWithTabs: true,
-            smartIndent: false
+            smartIndent: false,
+            placeholder: placeholder
         };
 
         config.phrases = phrases;

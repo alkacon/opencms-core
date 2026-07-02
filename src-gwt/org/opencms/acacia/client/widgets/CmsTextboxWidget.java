@@ -29,6 +29,7 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.CmsTypografUtil.Typograf;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtLog;
@@ -61,7 +62,7 @@ import jsinterop.base.JsPropertyMap;
  * Provides a display only widget, for use on a widget dialog.<p>
  *
  */
-public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
+public class CmsTextboxWidget extends Composite implements I_CmsEditWidget, I_CmsHasPlaceholder {
 
     /**
      * The UI binder interface.<p>
@@ -234,6 +235,20 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
         m_textbox.setName(name);
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        if (placeholder == null) {
+            placeholder = "";
+        }
+        // This relies on the TextBox element being *just* a text input field
+        HTMLInputElement input = Js.cast(m_textbox.getElement());
+        input.placeholder = placeholder;
     }
 
     /**

@@ -46,6 +46,7 @@ import org.opencms.main.OpenCmsSpellcheckHandler;
 import org.opencms.util.CmsJsonUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
@@ -176,9 +177,12 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                     // ignore, CSS could not be set
                 }
             }
+
+            String contentCss = CmsWorkplace.getStaticResourceUri("/editors/tinymce/opencms_content_default.css");
             if (cssConfigured) {
-                result.put("content_css", OpenCms.getLinkManager().substituteLink(cms, cssPath));
+                contentCss += "," + OpenCms.getLinkManager().substituteLink(cms, cssPath);
             }
+            result.put("content_css", contentCss);
 
             if (widgetOptions.showStylesFormat()) {
                 try {

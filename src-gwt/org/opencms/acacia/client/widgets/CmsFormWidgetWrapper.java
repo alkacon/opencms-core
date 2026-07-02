@@ -29,6 +29,7 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -45,7 +46,7 @@ import com.google.gwt.user.client.ui.Label;
  * Wraps an edit widget to supply a widget label.<p>
  */
 public class CmsFormWidgetWrapper extends Composite
-implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHasDisplayDirection {
+implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasPlaceholder, I_CmsHasResizeOnShow, I_CmsHasDisplayDirection {
 
     /** The edit widget. */
     private I_CmsEditWidget m_editWidget;
@@ -227,6 +228,17 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHa
         assert m_editWidget != null;
         m_editWidget.setName(name);
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        if (m_editWidget instanceof I_CmsHasPlaceholder) {
+            ((I_CmsHasPlaceholder)m_editWidget).setPlaceholder(placeholder);
+        }
     }
 
     /**

@@ -145,6 +145,9 @@ public class CmsXmlContentProperty implements Serializable {
     /** The nice name. */
     private String m_niceName;
 
+    /** The placeholder text. */
+    private String m_placeholder;
+
     /** The "prefer folder" option. */
     private String m_preferFolder;
 
@@ -209,6 +212,7 @@ public class CmsXmlContentProperty implements Serializable {
             ruleRegex,
             ruleType,
             default1,
+            null,
             niceName,
             description,
             error,
@@ -228,6 +232,7 @@ public class CmsXmlContentProperty implements Serializable {
      * @param ruleRegex the validation rule regex
      * @param ruleType the validation rule type
      * @param default1 the default value
+     * @param placeholder the placeholder text
      * @param niceName the nice-name
      * @param description  the description
      * @param error the error message
@@ -244,6 +249,7 @@ public class CmsXmlContentProperty implements Serializable {
         String ruleRegex,
         String ruleType,
         String default1,
+        String placeholder,
         String niceName,
         String description,
         String error,
@@ -265,6 +271,7 @@ public class CmsXmlContentProperty implements Serializable {
         m_description = description;
         m_error = error;
         m_preferFolder = preferFolder;
+        m_placeholder = placeholder;
         m_aliasName = CmsStringUtil.isEmptyOrWhitespaceOnly(aliasName) ? null : aliasName;
         m_translation = CmsStringUtil.isEmptyOrWhitespaceOnly(translation) ? null : translation;
     }
@@ -310,6 +317,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_ruleRegex,
             m_ruleType,
             m_default,
+            m_placeholder,
             m_niceName,
             m_description,
             m_error,
@@ -413,6 +421,16 @@ public class CmsXmlContentProperty implements Serializable {
     public String getNiceName() {
 
         return m_niceName;
+    }
+
+    /**
+     * Gets the placeholder text.
+     *
+     * @return the placeholder text
+     */
+    public String getPlaceholder() {
+
+        return m_placeholder;
     }
 
     /**
@@ -540,6 +558,7 @@ public class CmsXmlContentProperty implements Serializable {
             firstNotNull(m_ruleRegex, defaults.m_ruleRegex),
             firstNotNull(m_ruleType, defaults.m_ruleType),
             firstNotNull(m_default, defaults.m_default),
+            firstNotNull(m_placeholder, defaults.m_placeholder),
             firstNotNull(m_niceName, defaults.m_niceName),
             firstNotNull(m_description, defaults.m_description),
             firstNotNull(m_error, defaults.m_error),
@@ -565,6 +584,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_ruleRegex,
             m_ruleType,
             m_default,
+            m_placeholder,
             m_niceName,
             m_description,
             m_error,
@@ -591,6 +611,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_ruleRegex,
             m_ruleType,
             m_default,
+            m_placeholder,
             m_niceName,
             m_description,
             m_error,
@@ -634,6 +655,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_ruleRegex,
             m_ruleType,
             m_default,
+            m_placeholder,
             m_niceName,
             m_description,
             m_error,
@@ -660,6 +682,7 @@ public class CmsXmlContentProperty implements Serializable {
             m_ruleRegex,
             m_ruleType,
             m_default,
+            m_placeholder,
             niceName,
             m_description,
             m_error,
@@ -688,6 +711,7 @@ public class CmsXmlContentProperty implements Serializable {
             pattern,
             type,
             m_default,
+            m_placeholder,
             m_niceName,
             m_description,
             error,

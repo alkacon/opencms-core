@@ -31,6 +31,7 @@ import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.acacia.client.widgets.CmsTypografUtil.Typograf;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 
@@ -53,7 +54,11 @@ import jsinterop.base.JsPropertyMap;
  * Provides a display only widget, for use on a widget dialog.<p>
  *
  */
-public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
+public class CmsTextareaWidget extends Composite
+implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHasPlaceholder {
+
+    /** Configuration option to enable automatic typographic formatting using the Typograf library. */
+    public static final String CONF_AUTO_TYPOGRAPHY = "auto-typography";
 
     /** The monospace style key. */
     public static final String STYLE_MONSPACE = "monospace";
@@ -61,22 +66,19 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
     /** The proportional style key. */
     public static final String STYLE_PROPORTIONAL = "proportional";
 
-    /** Configuration option to enable automatic typographic formatting using the Typograf library. */
-    public static final String CONF_AUTO_TYPOGRAPHY = "auto-typography";
-
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
 
     /** The token to control activation. */
     private boolean m_active = true;
 
+    /** Flag to keep track of whether typographic formatting is currently happening. */
+    private boolean m_rewriting;
+
     /** The input test area.*/
     private CmsTextArea m_textarea = new CmsTextArea();
 
     private Typograf m_typograf;
-
-    /** Flag to keep track of whether typographic formatting is currently happening. */
-    private boolean m_rewriting;
 
     /**
      * Creates a new display widget.<p>
@@ -273,6 +275,15 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
         m_textarea.setName(name);
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        m_textarea.setPlaceholder(placeholder);
     }
 
     /**

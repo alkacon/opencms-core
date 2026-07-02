@@ -675,6 +675,7 @@ public class CmsContentTypeVisitor {
         String widgetName = null;
         String widgetConfig = null;
         CmsObject cms = getCmsObject();
+        String placeholder = "";
         String label = getLabel(schemaType, schemaType.getName());
         // set the default display type
         DisplayType configuredType = DisplayType.none;
@@ -693,6 +694,7 @@ public class CmsContentTypeVisitor {
                 path,
                 m_messages,
                 null);
+            placeholder = widgetInfo.getPlaceholder();
             I_CmsWidget widget = widgetInfo.getWidget();
             I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
             configuredType = widgetInfo.getDisplayType();
@@ -778,6 +780,7 @@ public class CmsContentTypeVisitor {
             widgetName,
             widgetConfig,
             readDefaultValue(schemaType, path),
+            placeholder,
             configuredType.name(),
             visible,
             localeSynchronized,

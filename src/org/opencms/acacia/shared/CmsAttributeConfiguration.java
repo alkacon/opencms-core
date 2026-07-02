@@ -40,6 +40,9 @@ public class CmsAttributeConfiguration implements IsSerializable {
     /** The widget display type. */
     private String m_displayType;
 
+    /** States if the attribute is loaded dynamically. */
+    private boolean m_dynamicallyLoaded;
+
     /** The attribute help information. */
     private String m_help;
 
@@ -49,8 +52,8 @@ public class CmsAttributeConfiguration implements IsSerializable {
     /** States if the attribute should be synchronized across all locales. */
     private boolean m_localeSynchronized;
 
-    /** States if the attribute is loaded dynamically. */
-    private boolean m_dynamicallyLoaded;
+    /** The placeholder text. */
+    private String m_placeholder;
 
     /** The visibility flag. */
     private boolean m_visible;
@@ -69,6 +72,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
      * @param widgetName the widget name
      * @param widgetConfig the widget configuration
      * @param defaultValue the attribute default value
+     * @param placeholder the placeholder text
      * @param displayType the display type
      * @param visible if the attribute should be visible in the editor
      * @param localSynchronized if the attribute should be synchronized across all locales
@@ -80,6 +84,7 @@ public class CmsAttributeConfiguration implements IsSerializable {
         String widgetName,
         String widgetConfig,
         String defaultValue,
+        String placeholder,
         String displayType,
         boolean visible,
         boolean localSynchronized,
@@ -90,10 +95,13 @@ public class CmsAttributeConfiguration implements IsSerializable {
         m_widgetName = widgetName;
         m_widgetConfig = widgetConfig;
         m_defaultValue = defaultValue;
+        m_placeholder = placeholder;
         m_displayType = displayType;
+
         m_visible = visible;
         m_localeSynchronized = localSynchronized;
         m_dynamicallyLoaded = dynamicallyLoaded;
+
     }
 
     /**
@@ -142,6 +150,16 @@ public class CmsAttributeConfiguration implements IsSerializable {
     public String getLabel() {
 
         return m_label;
+    }
+
+    /**
+     * Gets the placeholder text.
+     *
+     * @return the placeholder text
+     */
+    public String getPlaceholder() {
+
+        return m_placeholder;
     }
 
     /**
