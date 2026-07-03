@@ -29,6 +29,7 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsComboBox;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Map.Entry;
@@ -48,7 +49,8 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  */
-public class CmsComboWidget extends Composite implements I_CmsEditWidget, I_CmsHasDisplayDirection {
+public class CmsComboWidget extends Composite
+implements I_CmsEditWidget, I_CmsHasDisplayDirection, I_CmsHasPlaceholder {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -189,6 +191,15 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget, I_CmsH
 
         // no input field so nothing to do
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        m_comboBox.setPlaceholder(placeholder);
     }
 
     /**

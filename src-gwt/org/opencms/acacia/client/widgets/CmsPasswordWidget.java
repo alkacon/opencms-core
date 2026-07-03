@@ -28,7 +28,9 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
+import org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.text.ParseException;
 
@@ -42,11 +44,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
+
 /**
  * Provides a standard HTML form password widget, for use on a widget dialog.<p>
  *
  */
-public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
+public class CmsPasswordWidget extends Composite implements I_CmsEditWidget, I_CmsHasPlaceholder {
 
     /**The main panel of this widget. */
     SimplePanel m_mainPanel = new SimplePanel();
@@ -178,6 +183,21 @@ public class CmsPasswordWidget extends Composite implements I_CmsEditWidget {
     public void setName(String name) {
 
         // no input field so nothing to do
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsHasPlaceholder#setPlaceholder(java.lang.String)
+     */
+    @Override
+    public void setPlaceholder(String placeholder) {
+
+        try {
+            HTMLInputElement input = Js.cast(m_passwordTextBox);
+            input.placeholder = placeholder == null ? "" : placeholder;
+        } catch (Exception e) {
+            CmsGwtLog.log(e.getLocalizedMessage());
+        }
 
     }
 
