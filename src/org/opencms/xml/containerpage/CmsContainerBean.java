@@ -260,9 +260,16 @@ public class CmsContainerBean {
      */
     public String getSimpleName() {
 
-        return isNestedContainer()
-        ? getName().substring(getParentInstanceId().length() + 1) // +1 for "-"
-        : getName();
+        if (isNestedContainer()) {
+            String prefix = getParentInstanceId() + "-";
+            // the name of a nested container is normally prefixed with the parent instance id,
+            // but we have to check this explicitly since inconsistent data (e.g. on detail only
+            // container pages) may violate this assumption and lead to a StringIndexOutOfBoundsException
+            if (getName().startsWith(prefix)) {
+                return getName().substring(prefix.length());
+            }
+        }
+        return getName();
     }
 
     /**
