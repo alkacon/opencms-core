@@ -11,6 +11,7 @@
       <transform config="opencms-system.xml" xslt="removeOldSystemEntries.xslt" />
       <transform config="opencms-system.xml" xslt="addRequestHandler.xslt" />
       <transform config="opencms-system.xml" xslt="addUserdata.xslt" />
+      <transform config="opencms-system.xml" xslt="removeSolrHandler.xslt" />
       <transform config="opencms-search.xml" xslt="updateSearch.xslt"/>
       <transform config="opencms-search.xml" xslt="adjustDocumentTypeConfiguration.xslt"/>
       <transform config="opencms-modules.xml" xslt="removeModuleExportPoints.xslt" />

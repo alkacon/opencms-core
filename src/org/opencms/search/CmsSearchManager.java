@@ -54,7 +54,6 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsSolrHandler;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -821,6 +820,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     }
 
+    /** A constant for the optional 'baseUri' parameter. */
+    public static final String PARAM_BASE_URI = "baseUri";
+
+    /** A constant for the optional 'core' parameter. */
+    public static final String PARAM_CORE = "core";
+
+    /** A constant for the optional 'index' parameter. */
+    public static final String PARAM_INDEX = "index";
+
     /** This needs to be a fair lock to preserve order of threads accessing the search manager. */
     private static final CmsPriorityLock OFFLINE_LOCK = new CmsPriorityLock();
 
@@ -1020,11 +1028,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSolrIndex index = null;
         // try to get the index name from the parameters: 'core' or 'index'
         if (params != null) {
-            indexName = params.get(OpenCmsSolrHandler.PARAM_CORE) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_CORE)[0]
-            : (params.get(OpenCmsSolrHandler.PARAM_INDEX) != null
-            ? params.get(OpenCmsSolrHandler.PARAM_INDEX)[0]
-            : null);
+            indexName = params.get(PARAM_CORE) != null
+            ? params.get(PARAM_CORE)[0]
+            : (params.get(PARAM_INDEX) != null ? params.get(PARAM_INDEX)[0] : null);
         }
         if (indexName == null) {
             // if no parameter is specified try to use the default online/offline indexes by context

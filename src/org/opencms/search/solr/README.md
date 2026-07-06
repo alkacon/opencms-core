@@ -26,130 +26,6 @@ The OpenCms standard distribution covers a full featured search demo, that shows
 Click here to open the [full featured faceted search based on Solr](http://localhost:8080/opencms/opencms/demo/search-page/).
 
 
-## Retrieve OpenCms content via HTTP endpoint ##
-
-Imagine you want search for "OpenCms" in all articles, that have been changed within the last week and sort the results by modification date:
-
-<pre>
-http://localhost:8080/opencms/opencms/handleSolrSelect
-                                         // URL of the Solr HTTP endpoint
-    ?q=OpenCms                           // Search for the word 'OpenCms'
-    &fq=type:bs-blog                     // Restrict the results by type
-    &fq=lastmodified:[NOW-7DAY TO NOW]   // Filter query on the field lastmodified with a range of seven days
-    &sort=lastmodified desc              // Sort the result by date beginning with the newest one
-</pre>
-
-
-## Pass any Solr query to the Solr select request handler ##
-
-As parameter of the new OpenCms Solr request handler (handleSolrSelect) you can pass any "Solr valid" input parameters.
-
-To get familiar with the Solr query syntax have a look at [Solr query syntax](https://cwiki.apache.org/confluence/display/solr/Query+Syntax+and+Parsing). OpenCms uses the [edismax](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser) query parser as default. For advanced query syntax features the [Solr Reference Guide](https://cwiki.apache.org/confluence/display/solr/Searching) will lend a hand.
-
-Please note that many characters in the Solr Query Syntax (most notable the plus sign: "+") are special characters in URLs, so when constructing request URLs manually, you must properly URL-Encode these characters.
-<pre>
-                                                          q=  +popularity:[10   TO   *]     +section:0
-   http://localhost:8080/opencms/opencms/handleSolrSelect?q=%2Bpopularity:[10%20TO%20*]%20%2Bsection:0
-</pre>
-
-For more information, see Yonik Seeley's blog on [Nested Queries in Solr](http://www.lucidimagination.com/blog/2009/03/31/nested-queries-in-solr/).
-
-
-## Handle the response ##
-
-The response produced by OpenCms/Solr can be XML or JSON. With an additional parameter 'wt' you can specify the [QueryResponseWriter](http://wiki.apache.org/solr/QueryResponseWriter) that should be used by Solr. For the above shown query example a result can look like this:
-
-```xml
-<response>
-  <lst name="responseHeader">
-    <int name="status">0</int>
-    <int name="QTime">7</int>
-    <lst name="params">
-      <str name="qt">dismax</str>
-      <str name="fl">*,score</str>
-      <int name="rows">50</int>
-      <str name="q">*:*</str>
-      <arr name="fq">
-        <str>type:v8article</str>
-        <str>contentdate:[NOW-1DAY TO NOW]</str>
-        <str>Title_prop:Flower</str>
-      </arr>
-      <long name="start">0</long>
-    </lst>
-  </lst>
-  <result name="response" numFound="2" start="0">
-    <doc>
-      <str name="id">51041618-77f5-11e0-be13-000c2972a6a4</str>
-      <str name="contentblob">[B:[B@6c1cb5</str>
-      <str name="path">/sites/default/.content/article/a_00003.html</str>
-      <str name="type">v8article</str>
-      <str name="suffix">.html</str>
-      <date name="created">2011-05-06T15:27:13Z</date>
-      <date name="lastmodified">2011-08-17T13:58:29Z</date>
-      <date name="contentdate">2012-09-03T10:41:13.56Z</date>
-      <date name="relased">1970-01-01T00:00:00Z</date>
-      <date name="expired">292278994-08-17T07:12:55.807Z</date>
-      <arr name="res_locales">
-        <str>en</str>
-        <str>de</str>
-      </arr>
-      <arr name="con_locales">
-        <str>en</str>
-        <str>de</str>
-      </arr>
-      <str name="template_prop">/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp</str>
-      <str name="style.layout_prop">/.content/style</str>
-      <str name="NavText_prop">OpenCms 8 Demo</str>
-      <str name="Title_prop">Flower Today</str>
-      <str name="ahtml_de_t">Nachfolgend finden Sie aktuelle Meldungen und Veranstaltungen rund um die Blume.</str>
-      <str name="ahtml_en_t">In this section, you find current flower related news and events.</str>
-      <arr name="content_en">
-        <str>News from the world of flowers you find current flower related news and events.</str>
-      </arr>
-      <arr name="content_de">
-        <str>Neuigkeiten aus der Welt der Blumen Blume aktuell Nachfolgend [...]</str>
-      </arr>
-      <date name="timestamp">2012-09-03T10:45:47.055Z</date>
-      <float name="score">1.0</float>
-    </doc>
-    <doc>
-      <str name="id">ac56418f-77fd-11e0-be13-000c2972a6a4</str>
-      <str name="contentblob">[B:[B@1d0e4a2</str>
-      <str name="path">/sites/default/.content/article/a_00030.html</str>
-      <str name="type">v8article</str>
-      <str name="suffix">.html</str>
-      <date name="created">2011-05-06T16:27:02Z</date>
-      <date name="lastmodified">2011-08-17T14:03:27Z</date>
-      <date name="contentdate">2012-09-03T10:41:18.155Z</date>
-      <date name="relased">1970-01-01T00:00:00Z</date>
-      <date name="expired">292278994-08-17T07:12:55.807Z</date>
-      <arr name="res_locales">
-        <str>en</str>
-        <str>de</str>
-      </arr>
-      <arr name="con_locales">
-        <str>en</str>
-        <str>de</str>
-      </arr>
-      <str name="template_prop">/system/modules/com.alkacon.opencms.v8.template3/templates/main.jsp</str>
-      <str name="style.layout_prop">/.content/style</str>
-      <str name="NavText_prop">OpenCms 8 Demo</str>
-      <str name="Title_prop">Flower Dictionary</str>
-      <str name="ahtml_de_t">In der Botanik existieren zahlreiche Gewächsfamilien [...]</str>
-      <str name="ahtml_en_t">There are many different types of plants [...]</str>
-      <arr name="content_en">
-        <str>The different types of flowers Flower Dictionary of plants and flowers [...]</str>
-      </arr>
-      <arr name="content_de">
-        <str>Die verschiedenen Gewächsfamilien Blumen Lexikon In der Botanik existieren zahlreiche [...]</str>
-      </arr>
-      <date name="timestamp">2012-09-03T10:45:49.265Z</date>
-      <float name="score">1.0</float>
-    </doc>
-  </result>
-</response>
-```
-
 ## Send a Java-API query ##
 ```java
   String query = "fq=type:v8article&fq=lastmodified:[NOW-1DAY TO NOW]&fq=Title_prop:Flower";
@@ -182,18 +58,6 @@ The class org.opencms.search.solr.CmsSolrResultList encapsulates a list of 'Open
 - [Spellchecking](http://wiki.apache.org/solr/SpellCheckComponent)
 - [Auto suggestion/completion/correction](http://wiki.apache.org/solr/Suggester)
 - [Thesaurus/Synonyms](http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters)
-
-
-## Querying multiple cores (indexes) ##
-
-'Core' is the wording in the Solr world for thinking of several indexes. Preferring the correct speech, let's say core instead index. Multiple cores should only be required if you have completely different applications but want a single Solr Server that manages all the data. See [Solr Core Administration](http://wiki.apache.org/solr/CoreAdmin) for detailed information. So assuming you have configured multiple Solr cores and you would like to query a specific one you have to tell Solr/OpenCms which core/index you want to search on. This is done by a special parameter:
-
-<pre>
-http://localhost:8080/opencms/opencms/handleSolrSelect?
-                              // The URI of the OpenCms Solr Select Handler configured in 'opencms-system.xml'
-    &core=My Solr-Index Name  // Searches on the core with the name 'My Solr-Index Name'
-    &q=content_en:Flower      // for the text 'Flower'
-</pre>
 
 
 ## Using the standard OpenCms Solr collector ##
@@ -676,30 +540,7 @@ If the standard configuration options are still not flexible enough you are able
 
 # Behind the walls #
 
-## The request handler ##
-The class org.opencms.main.OpenCmsSolrHandler offers the same functionality as the default select request handler of an standard Solr server installation. In the OpenCms default system configuration (opencms-system.xml) the Solr request handler is configured:
-```xml
-  <requesthandlers>
-    <requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
-  </requesthandlers>
-```
 
-Alternativly the request handler class can be used as Servlet, therefore add the handler class to
-the WEB-INF/web.xml of your OpenCms application:
-
-```xml
-  <servlet>
-    <description>Zhe OpenCms Solr servlet.</description>
-    <servlet-name>OpenCmsSolrServlet</servlet-name>
-    <servlet-class>org.opencms.main.OpenCmsSolrHandler</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-    [...]
-  <servlet-mapping>
-    <servlet-name>OpenCmsSolrServlet</servlet-name>
-    <url-pattern>/solr/*</url-pattern>
-  </servlet-mapping>
-```
 
 ## Permission check ##
 OpenCms performs a permission check for all resulting documents and throws those away that
@@ -742,6 +583,10 @@ For better index performance the extracted result is cached for siblings
 
 **<tt>@see org.opencms.search.extractors.I_CmsExtractionResult</tt>**
 
+## The request handler ##
+
+The class org.opencms.main.OpenCmsSolrHandler used to offer the same functionality as the default select request handler of an standard Solr server installation. But it is no longer available for security reasons.
+
 
 # Frequently asked questions #
 
@@ -768,11 +613,7 @@ http://localhost:8983/solr/select?q=*:*&rows=2 could look like:
   </response>
 ```
 
-Solr is implemented in Java and there exists an Apache library called solrj that enables to access a running Solr server by writing native Java code against this API. The Solr integration in OpenCms offers both Interfaces: Java and HTTP. The default URL for request Solr responses from OpenCms is:
-
-**<tt>http://localhost:8080/opencms/opencms/handleSolrSelect</tt>**
-
-this handler can answer any syntactically correct Solr query.
+Solr is implemented in Java and there exists an Apache library called solrj that enables to access a running Solr server by writing native Java code against this API. The Solr integration in OpenCms offers only the Java interfaces.
 
 The following code shows a simple example how to use the OpenCms Java API to send a Solr query:
 
@@ -841,40 +682,18 @@ working with Solr have a look at [Language Analysis](https://cwiki.apache.org/co
 
 ## How to highlight the search query in results? ##
 
-### Does OpenCms support result highlighting? ###
-Yes, use the OpenCms Solr Select handler at:
-
-<tt>http://localhost:8080/opencms/opencms/handleSolrSelect</tt>
-
-and you will find the highlighting section below the list of documents within the returned
-XML/JSON:
-
-```xml
-<lst name="highlighting">
-  <lst name="a710bb16-1e04-11e2-b767-6805ca037347">
-    <arr name="content_en">
-      <str><em>YIPI</em> <em>YOHO</em> text text text</str>
-    </arr>
-  </lst>
-  [...]
-</lst>
-```
 
 ### Does the Java API of OpenCms support highlighting? ###
 Currently the OpenCms search API does not support full featured Solr highlighting. But you can
-make use of the Solr default highlighting mechanism or course @see [1] or [2] and:
+make use of the Solr default highlighting mechanism or course @see [1]:
 
 1. Call org.opencms.search.solr.CmsSolrResultList#getSolrQueryResponse() that returns a
 SolrQueryResponse that is documented at: http://lucene.apache.org/solr/api-
 3_6_1/org/apache/solr/response/SolrQueryResponse.html
 
-2. Or you can use the above mentioned OpenCms Solr Select handler at:
-localhost:8080/opencms/opencms/handleSolrSelect
-
 ### Is highlighting a performance killer? ###
 Yes, for this reason highlighting is turned off before the first search is executed. After all not
 permitted resources are filtered out of the result list, the highlighting is performed again.
-
 
 ## Solr indexing questions ##
 
