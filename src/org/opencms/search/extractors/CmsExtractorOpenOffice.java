@@ -27,6 +27,7 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlGenericWrapper;
 
 import java.io.InputStream;
@@ -103,6 +104,7 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
 
         StringBuffer resultBuffer = new StringBuffer();
         SAXReader reader = new SAXReader();
+        reader.setEntityResolver(new CmsXmlEntityResolver(null));
         Document doc = reader.read(in);
         List<Node> textlist = CmsXmlGenericWrapper.selectNodes(doc, "//text:p[@*] | //text:span[@*]");
         Iterator<Node> li = textlist.iterator();
