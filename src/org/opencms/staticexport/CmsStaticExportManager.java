@@ -88,6 +88,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.logging.Log;
 
 /**
@@ -1970,7 +1971,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     return false;
                 }
             }
-            if (vfsName.toLowerCase().endsWith(".jsp")
+
+            if (Strings.builder().get().endsWithAny(vfsName.toLowerCase(), ".jsp", ".jspx")
                 && !OpenCms.getResourceManager().matchResourceType(
                     CmsResourceTypeJsp.getStaticTypeName(),
                     exportRes.getTypeId())) {
