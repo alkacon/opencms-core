@@ -154,6 +154,13 @@ public final class CmsDateConverter {
 
         Date result;
         try {
+            if (isEndOfDayTime(time)) {
+                result = new Date(date.getYear(), date.getMonth(), date.getDate() + 1);
+                result.setHours(0);
+                result.setMinutes(0);
+                result.setSeconds(0);
+                return result;
+            }
             Date timeAsDate = timeFormat.parse(time);
             result = new Date(date.getYear(), date.getMonth(), date.getDate());
             result.setHours(timeAsDate.getHours());
@@ -326,6 +333,20 @@ public final class CmsDateConverter {
                                                            hasMeridian = true;
                                                            }
                                                            var values = time.split(":");
+                                                           if (parseFloat(values[0]) == 24) {
+                                                           if (hasMeridian) {
+                                                           return false;
+                                                           }
+                                                           if (parseFloat(values[1]) != 0) {
+                                                           return false;
+                                                           }
+                                                           if (values.length > 2) {
+                                                           if (parseFloat(values[2]) != 0) {
+                                                           return false;
+                                                           }
+                                                           }
+                                                           return true;
+                                                           }
                                                            if ((parseFloat(values[0]) < 0) || (parseFloat(values[0]) > 23)) {
                                                            return false;
                                                            }
@@ -344,4 +365,15 @@ public final class CmsDateConverter {
                                                            }
                                                            return true;
                                                            }-*/;
+
+    /**
+     * Returns if the given time represents the end of day as 24:00.<p>
+     *
+     * @param time the time string
+     *
+     * @return true if the time is 24:00 or 24:00:00
+     */
+    private static native boolean isEndOfDayTime(String time) /*-{
+                                                              return /^\s*24:00(:00)?\s*$/.test(time);
+                                                              }-*/;
 }
