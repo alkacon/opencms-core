@@ -51,10 +51,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p>
@@ -523,7 +523,7 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
+     * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, jakarta.servlet.http.HttpSession)
      */
     @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
@@ -534,7 +534,7 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

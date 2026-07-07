@@ -33,12 +33,12 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyContent;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Provides access to the labels stored in the
@@ -73,7 +73,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
+     * @see jakarta.servlet.jsp.tagext.IterationTag#doAfterBody()
      */
     @Override
     public int doAfterBody() throws JspException {
@@ -97,7 +97,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "label"), ex);
                 }
-                throw new javax.servlet.jsp.JspException(ex);
+                throw new jakarta.servlet.jsp.JspException(ex);
             }
         }
         return SKIP_BODY;

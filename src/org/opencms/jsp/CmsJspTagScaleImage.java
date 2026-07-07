@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * This tag allows using the OpenCms native image scaling mechanism within JSP.<p>
@@ -125,7 +125,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
     /**
      * Does some cleanup before returning EVAL_PAGE
      *
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      */
     @SuppressWarnings("unused")
     @Override
@@ -180,7 +180,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
     /**
      * Does some cleanup before the tag is released to the tag pool
      *
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

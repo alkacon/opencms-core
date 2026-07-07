@@ -43,13 +43,13 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * Implementation of the <code>&lt;cms:editable/&gt;</code> tag.<p>

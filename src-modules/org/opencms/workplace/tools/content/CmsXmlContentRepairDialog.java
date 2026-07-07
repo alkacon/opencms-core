@@ -52,10 +52,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Widget dialog that sets the settings to repair XML contents where the XSD was changed below a given VFS folder.<p>
@@ -235,7 +235,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings,
-     *      javax.servlet.http.HttpServletRequest)
+     *      jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

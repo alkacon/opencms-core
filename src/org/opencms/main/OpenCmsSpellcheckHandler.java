@@ -34,11 +34,11 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handles spell check requests.<p>
@@ -92,7 +92,7 @@ public class OpenCmsSpellcheckHandler extends HttpServlet implements I_CmsReques
     }
 
     /**
-     * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
+     * @see org.opencms.main.I_CmsRequestHandler#handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.lang.String)
      */
     public void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException {
 

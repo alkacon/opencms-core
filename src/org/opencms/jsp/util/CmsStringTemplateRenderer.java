@@ -52,14 +52,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-
 import org.stringtemplate.v4.DateRenderer;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.compiler.CompiledST;
 import org.stringtemplate.v4.compiler.FormalArgument;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Renderer for string templates.<p>

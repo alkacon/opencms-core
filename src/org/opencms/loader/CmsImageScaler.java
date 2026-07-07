@@ -60,9 +60,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Creates scaled images, acting as it's own parameter container.<p>

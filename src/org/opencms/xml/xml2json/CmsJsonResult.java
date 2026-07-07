@@ -29,7 +29,7 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.file.CmsResource;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Result of rendering JSON.

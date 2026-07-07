@@ -36,9 +36,9 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
 
-import javax.servlet.jsp.JspException;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Selects the dialog which should be displayed by OpenCms depending on the configuration value.<p>

@@ -85,7 +85,7 @@ public class CmsResourceInitException extends CmsException {
     }
 
     /**
-     * If this method returns true, the {@link OpenCmsCore#initResource(org.opencms.file.CmsObject, String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+     * If this method returns true, the {@link OpenCmsCore#initResource(org.opencms.file.CmsObject, String, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)}
      * method should just return null instead of throwing an exception.<p>
      *
      * @return the 'clear errors' flag

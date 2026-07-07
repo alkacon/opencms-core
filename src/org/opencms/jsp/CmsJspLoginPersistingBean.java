@@ -39,9 +39,9 @@ import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.Cookie;
 
 /**
  * Login bean which sets a cookie that can be used by {@link CmsPersistentLoginAuthorizationHandler} to automatically

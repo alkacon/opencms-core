@@ -120,10 +120,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
 import org.jsoup.Jsoup;
@@ -133,6 +129,10 @@ import org.jsoup.select.Elements;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Sets;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Utility class to generate the element data objects used within the container-page editor.<p>

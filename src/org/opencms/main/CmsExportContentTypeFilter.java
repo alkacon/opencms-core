@@ -30,14 +30,14 @@ package org.opencms.main;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Servlet filter to set the Content-Type response header based on the request path, according to the rules configured in opencms-vfs.xml.
@@ -50,7 +50,7 @@ public class CmsExportContentTypeFilter implements Filter {
     private static final Log LOG = CmsLog.getLog(CmsExportContentTypeFilter.class);
 
     /**
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, jakarta.servlet.FilterChain)
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

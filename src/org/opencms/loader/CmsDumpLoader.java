@@ -48,10 +48,10 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
@@ -197,7 +197,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public byte[] dump(
         CmsObject cms,
@@ -212,7 +212,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
@@ -259,7 +259,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsStaticExportStreamLoader#exportTo(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.io.OutputStream)
+     * @see org.opencms.loader.I_CmsStaticExportStreamLoader#exportTo(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.io.OutputStream)
      */
     @Override
     public void exportTo(
@@ -351,7 +351,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsStoredContentDirectDeliveryLoader#isStoredContentDirectDeliveryEnabled(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsStoredContentDirectDeliveryLoader#isStoredContentDirectDeliveryEnabled(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     public boolean isStoredContentDirectDeliveryEnabled(
@@ -381,7 +381,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
@@ -401,7 +401,7 @@ implements I_CmsResourceLoader, I_CmsStaticExportStreamLoader, I_CmsStoredConten
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws CmsException, IOException {

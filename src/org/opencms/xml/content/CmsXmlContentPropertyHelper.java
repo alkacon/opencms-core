@@ -72,14 +72,14 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-import javax.servlet.ServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * Provides common methods on XML property configuration.<p>

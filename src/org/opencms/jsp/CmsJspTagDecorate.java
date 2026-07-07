@@ -39,11 +39,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Implements the <code>&lt;cms:decorate&gt;&lt;/cms:decorate&gt;</code>
@@ -129,7 +129,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      * @return EVAL_PAGE
      * @throws JspException in case something goes wrong
      */

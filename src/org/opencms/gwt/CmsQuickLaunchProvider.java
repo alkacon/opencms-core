@@ -53,14 +53,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Provides the data for the buttons in the quick launch menu.<p>

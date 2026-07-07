@@ -35,10 +35,10 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * This class provides a <code>&lt;cms:device type="..."&gt;</code>-Tag

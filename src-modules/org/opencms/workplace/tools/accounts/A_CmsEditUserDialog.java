@@ -69,9 +69,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Dialog to edit new or existing user in the administration view.<p>
@@ -848,7 +848,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

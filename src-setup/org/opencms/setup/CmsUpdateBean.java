@@ -82,12 +82,12 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import javax.servlet.jsp.JspWriter;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+
+import jakarta.servlet.jsp.JspWriter;
 
 /**
  * A java bean as a controller for the OpenCms update wizard.<p>

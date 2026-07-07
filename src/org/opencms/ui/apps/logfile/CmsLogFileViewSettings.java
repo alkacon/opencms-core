@@ -34,14 +34,14 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.SortedMap;
 
-import javax.servlet.http.HttpSession;
-
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.TextField;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Class for the log file view settings dialog.<p>

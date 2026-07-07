@@ -30,11 +30,11 @@ package org.opencms.xml.xml2json.handler;
 import org.opencms.main.CmsLog;
 import org.opencms.xml.xml2json.CmsJsonResult;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
 import org.json.JSONObject;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Wrapper around a JSON handler that catches exceptions.

@@ -41,10 +41,10 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.Messages;
 import org.opencms.workplace.threads.CmsRelationsValidatorThread;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Provides a report for publishing a project.<p>
@@ -157,7 +157,7 @@ public class CmsPublishProjectReport extends CmsReport {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

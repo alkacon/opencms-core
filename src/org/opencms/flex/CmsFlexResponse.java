@@ -48,13 +48,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Wrapper class for a HttpServletResponse, required in order to process JSPs from the OpenCms VFS.<p>
@@ -152,7 +152,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
 
         /**
-         * @see javax.servlet.ServletOutputStream#isReady()
+         * @see jakarta.servlet.ServletOutputStream#isReady()
          */
         @Override
         public boolean isReady() {
@@ -161,7 +161,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
 
         /**
-         * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
+         * @see jakarta.servlet.ServletOutputStream#setWriteListener(jakarta.servlet.WriteListener)
          */
         @Override
         public void setWriteListener(WriteListener writeListener) {
@@ -372,7 +372,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * Cookies must be set directly as a header, otherwise they might not be set
      * in the super class.<p>
      *
-     * @see javax.servlet.http.HttpServletResponseWrapper#addCookie(javax.servlet.http.Cookie)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#addCookie(jakarta.servlet.http.Cookie)
      */
     @Override
     public void addCookie(Cookie cookie) {
@@ -441,7 +441,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     * @see jakarta.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
     @Override
     public void addDateHeader(String name, long date) {
@@ -452,7 +452,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
      */
     @Override
     public void addHeader(String name, String value) {
@@ -498,7 +498,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     * @see jakarta.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
     @Override
     public void addIntHeader(String name, int value) {
@@ -538,7 +538,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#flushBuffer()
+     * @see jakarta.servlet.ServletResponseWrapper#flushBuffer()
      */
     @Override
     public void flushBuffer() throws IOException {
@@ -573,7 +573,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.ServletResponse#getOutputStream()
+     * @see jakarta.servlet.ServletResponse#getOutputStream()
      */
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
@@ -587,7 +587,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.ServletResponse#getWriter()
+     * @see jakarta.servlet.ServletResponse#getWriter()
      */
     @Override
     public PrintWriter getWriter() throws IOException {
@@ -656,7 +656,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
      *
      * @throws IllegalArgumentException In case of a malformed location string
      */
@@ -731,7 +731,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     * @see jakarta.servlet.ServletResponse#setContentType(java.lang.String)
      */
     @Override
     public void setContentType(String type) {
@@ -752,7 +752,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     * @see jakarta.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
     @Override
     public void setDateHeader(String name, long date) {
@@ -763,7 +763,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
      */
     @Override
     public void setHeader(String name, String value) {
@@ -809,7 +809,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Method overload from the standard HttpServletRequest API.<p>
      *
-     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     * @see jakarta.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
      */
     @Override
     public void setIntHeader(String name, int value) {

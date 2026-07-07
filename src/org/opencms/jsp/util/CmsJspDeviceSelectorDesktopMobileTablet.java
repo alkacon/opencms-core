@@ -36,7 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Device selector class which distinguishes between the cases "desktop", "mobile" and "tablet".<p>
@@ -59,7 +59,7 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
     private UAgentInfo m_userAgentInfo;
 
     /**
-     * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceType(javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceType(jakarta.servlet.http.HttpServletRequest)
      */
     public String getDeviceType(HttpServletRequest req) {
 

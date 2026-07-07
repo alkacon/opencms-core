@@ -59,7 +59,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * This class contains the data that should be cached for a specific service class.<p>
  *
  * We cache instances of this class rather than caching instances of {@link CmsGwtService} directly because
- * its superclass, {@link com.google.gwt.user.server.rpc.RemoteServiceServlet}, does some caching which we can't use because it doesn't
+ * its superclass, {@link com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet}, does some caching which we can't use because it doesn't
  * take the distinction between online and offline requests into account.
  *
  * @since 8.0.0

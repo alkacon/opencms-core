@@ -54,9 +54,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Stores the last opened locations for file explorer, page editor and sitemap editor.<p>

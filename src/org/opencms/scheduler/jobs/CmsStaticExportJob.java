@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 /**
  * A schedulable OpenCms job to write a complete static export (e.g. nightly exports).<p>

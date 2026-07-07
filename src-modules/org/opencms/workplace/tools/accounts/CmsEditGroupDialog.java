@@ -30,9 +30,9 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Dialog to create a new group or edit an existing group in the administration view.<p>

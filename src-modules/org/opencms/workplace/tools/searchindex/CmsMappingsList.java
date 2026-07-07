@@ -56,9 +56,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletException;
 
 /**
  * A list that displays the mappings of a request parameter given

@@ -42,12 +42,12 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Implements the <code>&lt;cms:link&gt;[filename]&lt;/cms:link&gt;</code>
@@ -479,7 +479,7 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      *
      * @return EVAL_PAGE
      *
@@ -548,7 +548,7 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

@@ -33,9 +33,9 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.util.CmsJspResourceAccessBean;
 import org.opencms.main.OpenCms;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * Used to access resource information from the current open <code>&lt;cms:resourceload&gt;</code>
@@ -58,7 +58,7 @@ public class CmsJspTagResourceAccess extends CmsJspScopedVarBodyTagSuport {
     private static final long serialVersionUID = 2588220869205763894L;
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -71,7 +71,7 @@ public class CmsJspTagResourceAccess extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {

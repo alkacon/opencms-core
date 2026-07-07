@@ -37,10 +37,10 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}</code>.<p>
@@ -93,7 +93,7 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
     }
 
     /**
-     * @see org.opencms.loader.A_CmsXmlDocumentLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
@@ -118,7 +118,7 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
     }
 
     /**
-     * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.ServletRequest)
      */
     @Override
     protected CmsXmlContainerPage unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)

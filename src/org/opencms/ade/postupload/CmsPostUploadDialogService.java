@@ -71,11 +71,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Iterables;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The service implementation for the org.opencms.ade.postupload module.<p>

@@ -45,11 +45,11 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.util.Random;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Basic functions for direct edit providers.<p>
@@ -211,7 +211,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEmptyList(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEmptyList(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     public void insertDirectEditEmptyList(PageContext context, CmsDirectEditParams params) throws JspException {
 
@@ -229,7 +229,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditListMetadata(javax.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditListMetadata(jakarta.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
      */
     @SuppressWarnings("unused")
     public void insertDirectEditListMetadata(PageContext context, I_CmsContentLoadCollectorInfo info)

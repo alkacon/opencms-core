@@ -285,7 +285,7 @@ public final class CmsJspVfsAccessBean {
      * the input is used as String for the resource name to use as link target.<p>
      *
      * This is using the same logic as
-     * {@link org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)}.<p>
+     * {@link org.opencms.jsp.CmsJspTagLink#linkTagAction(String, jakarta.servlet.ServletRequest)}.<p>
      */
     public class CmsVfsLinkTransformer implements Transformer {
 
@@ -582,7 +582,7 @@ public final class CmsJspVfsAccessBean {
      * @return a map that lazily calculates links to resources in the OpenCms VFS
      *
      * @see org.opencms.jsp.CmsJspActionElement#link(String)
-     * @see org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)
+     * @see org.opencms.jsp.CmsJspTagLink#linkTagAction(String, jakarta.servlet.ServletRequest)
      */
     public Map<String, String> getLink() {
 

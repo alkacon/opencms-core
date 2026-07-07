@@ -131,15 +131,15 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
@@ -372,7 +372,7 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
-         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest, java.util.Map)
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, jakarta.servlet.ServletRequest, java.util.Map)
          */
         @Override
         public void initSettings(

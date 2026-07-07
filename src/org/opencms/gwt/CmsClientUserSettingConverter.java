@@ -44,10 +44,10 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Helper class to deal with loading and saving user preferences from the ADE user interface.<p>

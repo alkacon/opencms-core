@@ -50,13 +50,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.codec.binary.Base64;
 
 import com.google.common.base.Joiner;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Defines default authorization methods.<p>
@@ -226,7 +226,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
     }
 
     /**
-     * @see org.opencms.security.I_CmsAuthorizationHandler#initCmsObject(javax.servlet.http.HttpServletRequest, org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction)
+     * @see org.opencms.security.I_CmsAuthorizationHandler#initCmsObject(jakarta.servlet.http.HttpServletRequest, org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction)
      */
     public CmsObject initCmsObject(
         HttpServletRequest request,

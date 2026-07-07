@@ -35,10 +35,10 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This resource handler checks if a resource has to be marked as visited by the current user.
@@ -67,7 +67,7 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
     private static final Log LOG = CmsLog.getLog(CmsUserTrackingResourceHandler.class);
 
     /**
-     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(
         CmsResource resource,

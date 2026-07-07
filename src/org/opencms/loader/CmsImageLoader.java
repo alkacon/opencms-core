@@ -59,11 +59,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Loader for images from the OpenCms VSF with integrated image scaling and processing capabilities.<p>
@@ -285,7 +285,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
@@ -317,7 +317,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * @see org.opencms.loader.I_CmsStaticExportStreamLoader#exportTo(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.io.OutputStream)
+     * @see org.opencms.loader.I_CmsStaticExportStreamLoader#exportTo(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.io.OutputStream)
      */
     @Override
     public void exportTo(
@@ -419,7 +419,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * @see org.opencms.loader.I_CmsStoredContentDirectDeliveryLoader#isStoredContentDirectDeliveryEnabled(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsStoredContentDirectDeliveryLoader#isStoredContentDirectDeliveryEnabled(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     public boolean isStoredContentDirectDeliveryEnabled(
@@ -437,7 +437,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
@@ -490,7 +490,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * @see org.opencms.loader.I_CmsStaticExportDirectResponseLoader#tryExportDirectResponse(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsStaticExportDirectResponseLoader#tryExportDirectResponse(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public boolean tryExportDirectResponse(
         CmsObject cms,

@@ -86,14 +86,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Helper class to generate all the data which is necessary for the resource status dialog(s).<p>

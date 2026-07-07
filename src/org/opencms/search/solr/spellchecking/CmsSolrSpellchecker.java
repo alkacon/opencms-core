@@ -46,9 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -59,6 +56,9 @@ import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * CmsSolrSpellchecker is used to perform spellchecking in OpenCms by using Solr. The JSON-formatted result of the

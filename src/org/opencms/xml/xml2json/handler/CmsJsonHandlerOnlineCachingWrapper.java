@@ -34,13 +34,13 @@ import org.opencms.xml.xml2json.CmsJsonResult;
 
 import java.util.concurrent.ExecutionException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Wrapper for JSON handlers that caches online project requests.

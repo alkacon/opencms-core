@@ -35,8 +35,8 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.login.CmsLoginHelper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Resource init handler that loads the login form with the right parameters.<p>
@@ -58,7 +58,7 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
     public static final String LOGIN_FORM = "/system/login/index.html";
 
     /**
-     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(
         CmsResource resource,

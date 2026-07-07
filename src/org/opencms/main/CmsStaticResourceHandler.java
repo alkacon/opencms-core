@@ -37,10 +37,10 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handles the requests for static resources located in the classpath.<p>
@@ -182,7 +182,7 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     }
 
     /**
-     * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
+     * @see org.opencms.main.I_CmsRequestHandler#handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.lang.String)
      */
     public void handle(HttpServletRequest request, HttpServletResponse response, String name) throws IOException {
 

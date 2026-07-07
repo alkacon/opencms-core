@@ -54,9 +54,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Generates the tree view for the OpenCms Workplace.<p>
@@ -582,7 +582,7 @@ public class CmsTree extends CmsWorkplace {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

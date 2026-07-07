@@ -106,13 +106,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Provides general core services.<p>

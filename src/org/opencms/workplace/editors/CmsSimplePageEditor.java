@@ -37,10 +37,10 @@ import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Creates the output for editing a CmsDefaultPage with the simple textarea editor.<p>
@@ -81,7 +81,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

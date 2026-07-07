@@ -31,10 +31,10 @@ import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * A Direct Edit provider class which also offers some limited ADE functionality,
@@ -75,7 +75,7 @@ public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider 
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     @Override
     public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException {

@@ -39,11 +39,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.tagext.Tag;
 
 /**
  * Used to access and display XML content item information from the VFS.<p>
@@ -76,7 +76,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     private String m_value;
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -89,7 +89,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {
@@ -215,7 +215,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

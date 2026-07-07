@@ -31,8 +31,8 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Provides the methods to generate the "direct edit" HTML fragments that are inserted

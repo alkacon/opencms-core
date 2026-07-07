@@ -29,9 +29,9 @@ package org.opencms.workplace.list;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
 
 /**
  * Helper class for managing two lists on the same dialog.<p>

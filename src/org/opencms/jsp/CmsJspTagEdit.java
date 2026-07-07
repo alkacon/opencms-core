@@ -51,11 +51,11 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 
 import java.util.Locale;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /** This tag is used to attach an edit provider to a snippet of HTML. */
 public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
@@ -342,7 +342,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -355,7 +355,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws CmsIllegalArgumentException {

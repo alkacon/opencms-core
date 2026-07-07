@@ -34,9 +34,9 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Displays a print preview of a given list.<p>

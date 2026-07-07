@@ -36,8 +36,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * The SEO file loader.<p>
@@ -67,7 +67,7 @@ public class CmsSeoFileLoader extends A_CmsXmlDocumentLoader {
     }
 
     /**
-     * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplateLoaderFacade(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplateLoaderFacade(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected CmsTemplateLoaderFacade getTemplateLoaderFacade(
@@ -91,7 +91,7 @@ public class CmsSeoFileLoader extends A_CmsXmlDocumentLoader {
     }
 
     /**
-     * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
+     * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.ServletRequest)
      */
     @Override
     protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)

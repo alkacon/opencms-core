@@ -48,10 +48,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
 import org.jsoup.nodes.Document;
@@ -82,6 +78,10 @@ import com.vaadin.server.VaadinServletService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.ui.UI;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Servlet for workplace UI requests.<p>
@@ -305,7 +305,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
     }
 
     /**
-     * @see com.vaadin.server.VaadinServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see com.vaadin.server.VaadinServlet#service(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)

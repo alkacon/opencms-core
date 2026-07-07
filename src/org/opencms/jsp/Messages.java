@@ -36,8 +36,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
 
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  *
  *
  * Additionally two utility methods for localization in the context of
- * {@link javax.servlet.jsp.tagext.TagSupport} implementations of the <code>org.opencms.jsp</code>
+ * {@link jakarta.servlet.jsp.tagext.TagSupport} implementations of the <code>org.opencms.jsp</code>
  * package are provided .
  * <p>
  *
@@ -306,7 +306,7 @@ public final class Messages extends A_CmsMessageBundle {
      *
      * @param container A CmsMessageContainer containing the message to localize.
      * @param context The page context that is known to any calling
-     *            {@link javax.servlet.jsp.tagext.TagSupport} instance (member
+     *            {@link jakarta.servlet.jsp.tagext.TagSupport} instance (member
      *            <code>pageContext</code>).
      * @return the String for the given CmsMessageContainer localized to the current user's locale
      *         if available or to the default locale else.
@@ -322,7 +322,7 @@ public final class Messages extends A_CmsMessageBundle {
      * if available or to the default locale else.
      * <p>
      *
-     * This method allows a static method ({@link CmsJspTagInfo#infoTagAction(String, javax.servlet.http.HttpServletRequest)})
+     * This method allows a static method ({@link CmsJspTagInfo#infoTagAction(String, jakarta.servlet.http.HttpServletRequest)})
      * that has no <code>pageContext</code> in scope to lookup the locale at request time.
      * <p>
      *

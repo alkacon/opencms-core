@@ -161,13 +161,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.CloseableThreadContext;
 
@@ -176,6 +169,13 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
@@ -1295,7 +1295,7 @@ public final class OpenCmsCore {
                 private CmsObject m_adminCms;
 
                 /**
-                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(javax.servlet.http.HttpServletRequest, java.lang.String)
+                 * @see org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction#doLogin(jakarta.servlet.http.HttpServletRequest, java.lang.String)
                  */
                 public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
 

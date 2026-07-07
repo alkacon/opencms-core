@@ -46,15 +46,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.fileupload2.core.AbstractFileUpload;
-import org.apache.commons.fileupload2.javax.JavaxServletRequestContext;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletRequestContext;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * The form editing service.<p>
@@ -234,13 +234,13 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see jakarta.servlet.http.HttpServlet#service(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
 
-        boolean isMultiPart = AbstractFileUpload.isMultipartContent(new JavaxServletRequestContext(request));
+        boolean isMultiPart = AbstractFileUpload.isMultipartContent(new JakartaServletRequestContext(request));
 
         if (isMultiPart) {
             try {

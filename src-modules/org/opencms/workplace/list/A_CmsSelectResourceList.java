@@ -37,9 +37,9 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * A base list dialog to select a resource.<p>
@@ -284,7 +284,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.list.A_CmsListExplorerDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

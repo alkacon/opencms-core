@@ -44,10 +44,10 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Locale;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Implementation of the <code>&lt;cms:formatter var="..." val="..." /&gt;</code> tag,
@@ -109,7 +109,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -119,7 +119,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException, CmsIllegalArgumentException {
@@ -160,7 +160,7 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

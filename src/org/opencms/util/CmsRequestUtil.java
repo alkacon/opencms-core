@@ -51,22 +51,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.fileupload2.core.FileUploadException;
-import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Provides utility functions for dealing with values a <code>{@link HttpServletRequest}</code>.<p>
@@ -840,13 +840,13 @@ public final class CmsRequestUtil {
      */
     public static List<DiskFileItem> readMultipartFileItems(HttpServletRequest request, String tempFolderPath) {
 
-        if (!JavaxServletFileUpload.isMultipartContent(request)) {
+        if (!JakartaServletFileUpload.isMultipartContent(request)) {
             return null;
         }
         DiskFileItemFactory.Builder builder = DiskFileItemFactory.builder();
         builder.setPath(tempFolderPath);
         DiskFileItemFactory factory = builder.get();
-        JavaxServletDiskFileUpload fu = new JavaxServletDiskFileUpload(factory);
+        JakartaServletDiskFileUpload fu = new JakartaServletDiskFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
         fu.setHeaderCharset(Charset.forName(request.getCharacterEncoding()));
         List<DiskFileItem> result = new ArrayList<DiskFileItem>();
@@ -940,7 +940,7 @@ public final class CmsRequestUtil {
     /**
      * Redirects the response to the target link.<p>
      *
-     * Use this method instead of {@link javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
+     * Use this method instead of {@link jakarta.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
      * to avoid relative links with secure sites (and issues with apache).<p>
      *
      * @param jsp the OpenCms JSP context

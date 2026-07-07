@@ -53,14 +53,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
-import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload;
 
 import com.google.common.collect.Sets;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Helper class used by a service to edit or import aliases for a whole site.<p>
@@ -93,7 +93,7 @@ public class CmsAliasBulkEditHelper {
     public void importAliases(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         DiskFileItemFactory factory = DiskFileItemFactory.builder().get();
-        JavaxServletDiskFileUpload upload = new JavaxServletDiskFileUpload(factory);
+        JakartaServletDiskFileUpload upload = new JakartaServletDiskFileUpload(factory);
         @SuppressWarnings("unchecked")
         List<DiskFileItem> items = upload.parseRequest(request);
         byte[] data = null;

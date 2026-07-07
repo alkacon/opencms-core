@@ -31,7 +31,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.CmsToolDialog;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Helper class to create the administration frameset.<p>
@@ -98,7 +98,7 @@ public class CmsAdminFrameset extends CmsToolDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

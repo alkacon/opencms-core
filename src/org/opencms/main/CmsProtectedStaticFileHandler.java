@@ -48,12 +48,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Resource init handler that provides an alternative way of serving static files like images or binary files, using the API authorization mechanism
@@ -256,7 +256,7 @@ implements I_CmsResourceInit, I_CmsConfigurationParameterHandler, I_CmsNeedsAdmi
     }
 
     /**
-     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(CmsResource origRes, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
     throws CmsResourceInitException {

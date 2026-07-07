@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class CmsTestDummyApiAuthorization implements I_CmsApiAuthorizationHandler {
 

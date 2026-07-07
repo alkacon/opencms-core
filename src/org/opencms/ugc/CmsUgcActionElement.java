@@ -30,9 +30,9 @@ package org.opencms.ugc;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.ugc.shared.CmsUgcException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Form action element class for use in rendering user-generated content forms.<p>

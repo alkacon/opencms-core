@@ -32,7 +32,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Default {@link I_CmsElementMarker} that emits nothing.<p>
@@ -56,7 +56,7 @@ public class CmsDefaultElementMarker implements I_CmsElementMarker {
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsElementMarker#addEndMarker(javax.servlet.jsp.PageContext, org.opencms.xml.containerpage.CmsContainerElementBean)
+     * @see org.opencms.jsp.I_CmsElementMarker#addEndMarker(jakarta.servlet.jsp.PageContext, org.opencms.xml.containerpage.CmsContainerElementBean)
      */
     public void addEndMarker(PageContext context, CmsContainerElementBean element) {
 
@@ -64,7 +64,7 @@ public class CmsDefaultElementMarker implements I_CmsElementMarker {
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsElementMarker#addStartMarker(javax.servlet.jsp.PageContext, org.opencms.xml.containerpage.CmsContainerElementBean, org.opencms.xml.containerpage.I_CmsFormatterBean)
+     * @see org.opencms.jsp.I_CmsElementMarker#addStartMarker(jakarta.servlet.jsp.PageContext, org.opencms.xml.containerpage.CmsContainerElementBean, org.opencms.xml.containerpage.I_CmsFormatterBean)
      */
     public void addStartMarker(PageContext context, CmsContainerElementBean element, I_CmsFormatterBean formatter) {
 

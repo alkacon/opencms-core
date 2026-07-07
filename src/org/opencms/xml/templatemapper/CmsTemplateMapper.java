@@ -53,13 +53,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * Responsible for mapping formatters, containers and settings to different formatters, containers and settings according to

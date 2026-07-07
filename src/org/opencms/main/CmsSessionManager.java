@@ -53,14 +53,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
 
 /**
  * Keeps track of the sessions running on the OpenCms server and
@@ -881,7 +881,7 @@ public class CmsSessionManager {
      *
      * @param event the http session event
      *
-     * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
+     * @see jakarta.servlet.http.HttpSessionListener#sessionCreated(jakarta.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionCreated(HttpSessionEvent)
      */
     protected void sessionCreated(HttpSessionEvent event) {
@@ -918,7 +918,7 @@ public class CmsSessionManager {
      *
      * @param event the http session event
      *
-     * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
+     * @see jakarta.servlet.http.HttpSessionListener#sessionDestroyed(jakarta.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionDestroyed(HttpSessionEvent)
      */
     protected void sessionDestroyed(HttpSessionEvent event) {

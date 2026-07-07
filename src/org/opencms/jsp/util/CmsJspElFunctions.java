@@ -58,14 +58,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Provides utility methods to be used as functions from a JSP with the EL.<p>

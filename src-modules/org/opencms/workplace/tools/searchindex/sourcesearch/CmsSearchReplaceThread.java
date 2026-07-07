@@ -61,9 +61,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Searches in sources.

@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletException;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletException;
 
 /**
  * Contains the contents of a cached resource.<p>

@@ -38,11 +38,11 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * Provides access to the settings of an ADE container element.<p>
@@ -119,7 +119,7 @@ public class CmsJspTagElementSetting extends TagSupport {
 
     /**
      * @return SKIP_BODY
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {
@@ -141,7 +141,7 @@ public class CmsJspTagElementSetting extends TagSupport {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "elementSetting"), ex);
                 }
-                throw new javax.servlet.jsp.JspException(ex);
+                throw new jakarta.servlet.jsp.JspException(ex);
             }
         }
         return SKIP_BODY;
@@ -178,7 +178,7 @@ public class CmsJspTagElementSetting extends TagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

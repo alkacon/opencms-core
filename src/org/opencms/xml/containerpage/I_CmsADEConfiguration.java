@@ -34,7 +34,7 @@ import org.opencms.main.CmsException;
 import java.util.Collection;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 /**
  * Configurable &amp; expandable configuration.<p>

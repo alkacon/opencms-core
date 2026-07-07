@@ -4,7 +4,7 @@ package org.opencms.jsp;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.util.CmsStringUtil;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Abstract parent for all JSP tags dealing with image scaling, defines some common image scaler
@@ -169,7 +169,7 @@ public abstract class CmsJspImageScalerTagSupport extends BodyTagSupport {
     /**
      * Does some cleanup and creates a new ImageScaler before the tag is released to the tag pool.
      *
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

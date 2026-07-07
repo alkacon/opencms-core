@@ -48,16 +48,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
+import com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Wrapper for GWT services served through OpenCms.<p>
@@ -179,7 +179,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
-     * @see javax.servlet.GenericServlet#log(java.lang.String)
+     * @see jakarta.servlet.GenericServlet#log(java.lang.String)
      */
     @Override
     public void log(String msg) {
@@ -188,7 +188,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
-     * @see javax.servlet.GenericServlet#log(java.lang.String, java.lang.Throwable)
+     * @see jakarta.servlet.GenericServlet#log(java.lang.String, java.lang.Throwable)
      */
     @Override
     public void log(String message, Throwable t) {
@@ -207,7 +207,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see jakarta.servlet.http.HttpServlet#service(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     @Override
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
@@ -302,7 +302,7 @@ public class CmsGwtService extends RemoteServiceServlet {
     /**
      * We do not want that the server goes to fetch files from the servlet context.<p>
      *
-     * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#doGetSerializationPolicy(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
+     * @see com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet#doGetSerializationPolicy(jakarta.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
      */
     @Override
     protected SerializationPolicy doGetSerializationPolicy(

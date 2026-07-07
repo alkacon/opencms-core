@@ -56,14 +56,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 
-import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.jakarta.RPC;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.UI;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Extension used to open existing GWT based dialogs (from ADE, etc.) from the server side, for use in context menu actions.<p>

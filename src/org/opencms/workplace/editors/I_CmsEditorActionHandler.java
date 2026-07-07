@@ -34,7 +34,7 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditPermissions;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Provides a method for performing an individual action if the user pressed a special button in the editor.<p>

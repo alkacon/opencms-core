@@ -35,9 +35,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor.CacheType;
 import org.opencms.util.CmsRequestUtil;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Authorization handler which uses a special cookie sent by the user's browser for authorization.<p>
@@ -56,7 +56,7 @@ public class CmsPersistentLoginAuthorizationHandler extends CmsDefaultAuthorizat
     private static final Log LOG = CmsLog.getLog(CmsPersistentLoginAuthorizationHandler.class);
 
     /**
-     * @see org.opencms.security.CmsDefaultAuthorizationHandler#initCmsObject(javax.servlet.http.HttpServletRequest, org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction)
+     * @see org.opencms.security.CmsDefaultAuthorizationHandler#initCmsObject(jakarta.servlet.http.HttpServletRequest, org.opencms.security.I_CmsAuthorizationHandler.I_PrivilegedLoginAction)
      */
     @Override
     public CmsObject initCmsObject(HttpServletRequest request, I_PrivilegedLoginAction loginAction) {

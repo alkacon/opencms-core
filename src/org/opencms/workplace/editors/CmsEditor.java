@@ -55,11 +55,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Provides basic methods for building the file editors of OpenCms.<p>

@@ -40,11 +40,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Key used to describe the caching behaviour of a specific resource.<p>

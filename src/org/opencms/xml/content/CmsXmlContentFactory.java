@@ -45,11 +45,11 @@ import org.opencms.xml.CmsXmlUtils;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.xml.sax.EntityResolver;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * Provides factory methods to unmarshal (read) an XML content object.<p>

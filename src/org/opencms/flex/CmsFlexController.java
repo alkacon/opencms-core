@@ -41,12 +41,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Controller for getting access to the CmsObject, should be used as a
@@ -474,7 +474,7 @@ public class CmsFlexController {
      * @param name
      * @param date
      *
-     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     * @see jakarta.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
     public void addDateHeader(String name, long date) {
 
@@ -490,7 +490,7 @@ public class CmsFlexController {
      * @param name
      * @param value
      *
-     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
      */
     public void addHeader(String name, String value) {
 
@@ -506,7 +506,7 @@ public class CmsFlexController {
      * @param name
      * @param value
      *
-     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     * @see jakarta.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
     public void addIntHeader(String name, int value) {
 
@@ -802,7 +802,7 @@ public class CmsFlexController {
      * @param name
      * @param date
      *
-     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     * @see jakarta.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
     public void setDateHeader(String name, long date) {
 
@@ -828,7 +828,7 @@ public class CmsFlexController {
      * @param name
      * @param value
      *
-     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
      */
     public void setHeader(String name, String value) {
 
@@ -844,7 +844,7 @@ public class CmsFlexController {
      * @param name
      * @param value
      *
-     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     * @see jakarta.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
      */
     public void setIntHeader(String name, int value) {
 

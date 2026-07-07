@@ -66,14 +66,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.logging.Log;
 
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Provider for the OpenCms AdvancedDirectEdit.<p>
@@ -264,7 +264,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEnd(javax.servlet.jsp.PageContext)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEnd(jakarta.servlet.jsp.PageContext)
      */
     public void insertDirectEditEnd(PageContext context) throws JspException {
 
@@ -285,7 +285,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     @SuppressWarnings("unused")
     public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException {
@@ -295,7 +295,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#insertDirectEditListMetadata(javax.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
+     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#insertDirectEditListMetadata(jakarta.servlet.jsp.PageContext, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
      */
     @Override
     public void insertDirectEditListMetadata(PageContext context, I_CmsContentLoadCollectorInfo info)
@@ -325,7 +325,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditStart(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditStart(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 

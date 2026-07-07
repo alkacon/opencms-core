@@ -42,15 +42,15 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * The sitemap editor app configuration.<p>

@@ -32,7 +32,7 @@ import org.opencms.util.CmsRequestUtil;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the detection for different devices, so that the
@@ -55,7 +55,7 @@ public class CmsJspDeviceSelector implements I_CmsJspDeviceSelector {
     private UAgentInfo m_userAgentInfo;
 
     /**
-     * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceType(javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.jsp.util.I_CmsJspDeviceSelector#getDeviceType(jakarta.servlet.http.HttpServletRequest)
      */
     public String getDeviceType(HttpServletRequest req) {
 

@@ -30,8 +30,8 @@ package org.opencms.jsp;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Builds a <i>java.util.Map</i> isntance with string keys and values from nested param tags, then stores it in a page context variable whose name is supplied by the user.
@@ -66,7 +66,7 @@ public class CmsJspTagMap extends BodyTagSupport implements I_CmsJspTagParamPare
     /**
      * @return <code>EVAL_PAGE</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      *
      * @throws JspException by interface default
      */
@@ -82,7 +82,7 @@ public class CmsJspTagMap extends BodyTagSupport implements I_CmsJspTagParamPare
      *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

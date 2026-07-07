@@ -34,9 +34,9 @@ import org.opencms.main.CmsException;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * Resource loaders that implement this method can easily provide the contents of a selected targe element as
@@ -49,7 +49,7 @@ public interface I_CmsResourceStringDumpLoader {
     /**
      * Dumps the processed content of the the requested file (and it's sub-elements) to a String.<p>
      *
-     * This is a special form of <code>{@link I_CmsResourceLoader#dump(CmsObject, CmsResource, String, Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}</code>
+     * This is a special form of <code>{@link I_CmsResourceLoader#dump(CmsObject, CmsResource, String, Locale, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)}</code>
      * where the result is required in a String, for example for printing it to a writer.<p>
      *
      * @param cms used to access the OpenCms VFS
@@ -65,7 +65,7 @@ public interface I_CmsResourceStringDumpLoader {
      * @throws IOException might be thrown by the servlet environment
      * @throws CmsException in case of errors acessing OpenCms functions
      *
-     * @see I_CmsResourceLoader#dump(CmsObject, CmsResource, String, Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see I_CmsResourceLoader#dump(CmsObject, CmsResource, String, Locale, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     String dumpAsString(
         CmsObject cms,

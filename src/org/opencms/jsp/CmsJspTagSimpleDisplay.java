@@ -48,11 +48,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * The 'simpledisplay' tag can be used to display a single resource using a formatter. It also allows to activate direct editing.<p>
@@ -129,7 +129,7 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -193,7 +193,7 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
     @Override
     public int doStartTag() {
@@ -253,7 +253,7 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#release()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#release()
      */
     @Override
     public void release() {

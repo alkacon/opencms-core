@@ -40,7 +40,7 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Provides a method to perform a user defined action when editing a page.<p>

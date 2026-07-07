@@ -31,7 +31,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Plug-in interface for emitting a marker into the page output around each element while the container

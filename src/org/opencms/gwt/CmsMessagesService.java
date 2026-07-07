@@ -34,8 +34,8 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * Exports the register client messages into a single JavaScript resource.<p>
@@ -58,7 +58,7 @@ public class CmsMessagesService extends CmsGwtService {
         org.opencms.gwt.seo.ClientMessages.get()};
 
     /**
-     * @see org.opencms.gwt.CmsGwtService#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see org.opencms.gwt.CmsGwtService#service(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     @Override
     public void service(ServletRequest request, ServletResponse response) throws IOException {

@@ -29,7 +29,7 @@ package org.opencms.gwt;
 
 import org.opencms.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Convenience interface to provide core server-side data to the client.<p>

@@ -27,12 +27,12 @@
 
 package org.opencms.jsp;
 
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.apache.taglibs.standard.tag.el.fmt.SetBundleTag;
+
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.jstl.core.Config;
+import jakarta.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /** Set bundle tag using OpenCms' bundle loader mechanism. */
 public class CmsJspTagSetBundle extends SetBundleTag {

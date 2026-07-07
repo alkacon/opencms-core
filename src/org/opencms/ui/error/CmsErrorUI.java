@@ -43,8 +43,6 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
@@ -52,6 +50,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.JavaScript;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Displays the error page.<p>

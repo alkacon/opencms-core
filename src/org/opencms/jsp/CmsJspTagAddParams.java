@@ -35,14 +35,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.TryCatchFinally;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 /**
  * This tag is used to dynamically add request parameters which are available during the execution of its body.<p>
@@ -133,7 +133,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
+     * @see jakarta.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
      */
     public void doCatch(Throwable t) throws Throwable {
 
@@ -141,7 +141,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.TryCatchFinally#doFinally()
+     * @see jakarta.servlet.jsp.tagext.TryCatchFinally#doFinally()
      */
     public void doFinally() {
 
@@ -149,7 +149,7 @@ public class CmsJspTagAddParams extends TagSupport implements I_CmsJspTagParamPa
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.TagSupport#doStartTag()
      */
     @Override
     public int doStartTag() {

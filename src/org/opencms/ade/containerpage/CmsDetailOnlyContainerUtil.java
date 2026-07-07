@@ -61,11 +61,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
+
+import jakarta.servlet.ServletRequest;
 
 /**
  * Static utility class for functions related to detail-only containers.<p>

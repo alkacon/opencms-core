@@ -50,16 +50,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import com.google.common.collect.Maps;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Implementation of the <code>&lt;cms:include/&gt;</code> tag,
@@ -456,7 +456,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @return <code>EVAL_PAGE</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      *
      * @throws JspException by interface default
      */
@@ -540,7 +540,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {
@@ -630,7 +630,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

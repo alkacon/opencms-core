@@ -39,12 +39,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
@@ -355,7 +355,7 @@ public class CmsJspTagProperty extends TagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.TagSupport#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -366,7 +366,7 @@ public class CmsJspTagProperty extends TagSupport {
 
     /**
      * @return SKIP_BODY
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {
@@ -388,7 +388,7 @@ public class CmsJspTagProperty extends TagSupport {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "property"), ex);
                 }
-                throw new javax.servlet.jsp.JspException(ex);
+                throw new jakarta.servlet.jsp.JspException(ex);
             }
         }
         return SKIP_BODY;
@@ -435,7 +435,7 @@ public class CmsJspTagProperty extends TagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#release()
+     * @see jakarta.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

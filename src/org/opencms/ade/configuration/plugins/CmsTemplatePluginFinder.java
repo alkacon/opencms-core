@@ -51,12 +51,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Helper class for finding the list of active template plugins for the current page.

@@ -33,9 +33,9 @@ import org.opencms.xml.xml2json.CmsJsonRequest;
 import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentResource;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * JSON handler for rendering a resource as JSON.

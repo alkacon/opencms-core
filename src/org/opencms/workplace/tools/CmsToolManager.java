@@ -46,9 +46,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletException;
 
 /**
  * Manages the registered tools, actualizing its state every time the workplace is reinitialize.<p>

@@ -43,11 +43,11 @@ import org.opencms.util.CmsStringUtil;
 
 import java.awt.Color;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Provides the specific constants, members and helper methods to generate the content of the image gallery dialog

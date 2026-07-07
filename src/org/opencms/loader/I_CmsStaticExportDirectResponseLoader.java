@@ -33,8 +33,8 @@ import org.opencms.main.CmsException;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Capability interface for loaders which can handle on-demand static export without a local export file.<p>

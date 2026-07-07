@@ -43,12 +43,12 @@ import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.validation.Valid;
-
 import org.apache.commons.logging.Log;
 
 import org.quartz.CronExpression;
 import org.quartz.Trigger;
+
+import jakarta.validation.Valid;
 
 /**
  * Describes a scheduled job for the OpenCms scheduler.<p>

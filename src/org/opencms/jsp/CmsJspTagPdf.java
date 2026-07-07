@@ -47,10 +47,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * JSP tag to generate a link to a PDF produced from a given XML content.<p>
@@ -144,7 +144,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -166,7 +166,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

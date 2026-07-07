@@ -40,17 +40,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
- * Implementation of the <code>{@link javax.servlet.RequestDispatcher}</code> interface to allow JSPs to be loaded
+ * Implementation of the <code>{@link jakarta.servlet.RequestDispatcher}</code> interface to allow JSPs to be loaded
  * from the OpenCms VFS.<p>
  *
  * This dispatcher will load data from 3 different data sources:
@@ -102,7 +102,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * @throws ServletException in case something goes wrong
      * @throws IOException in case something goes wrong
      *
-     * @see javax.servlet.RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see jakarta.servlet.RequestDispatcher#forward(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     public void forward(ServletRequest req, ServletResponse res) throws ServletException, IOException {
 

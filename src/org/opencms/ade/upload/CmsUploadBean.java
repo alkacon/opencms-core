@@ -71,22 +71,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.fileupload2.core.FileUploadByteCountLimitException;
 import org.apache.commons.fileupload2.core.FileUploadSizeException;
-import org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload;
-import org.apache.commons.fileupload2.javax.JavaxServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.HashMultimap;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Bean to be used in JSP scriptlet code that provides
@@ -732,7 +732,7 @@ public class CmsUploadBean extends CmsJspBean {
     private void parseRequest(CmsUploadListener listener) throws Exception {
 
         // check if the request is a multipart request
-        if (!JavaxServletFileUpload.isMultipartContent(getRequest())) {
+        if (!JakartaServletFileUpload.isMultipartContent(getRequest())) {
             // no multipart request: Abort the upload
             throw new CmsUploadException(m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_NO_MULTIPART_0));
         }
@@ -780,7 +780,7 @@ public class CmsUploadBean extends CmsJspBean {
         DiskFileItemFactory factory = builder.get();
 
         // create a file upload servlet
-        JavaxServletDiskFileUpload fu = new JavaxServletDiskFileUpload(factory);
+        JakartaServletDiskFileUpload fu = new JakartaServletDiskFileUpload(factory);
         // set the listener
         fu.setProgressListener(listener);
         // set encoding to correctly handle special chars (e.g. in filenames)

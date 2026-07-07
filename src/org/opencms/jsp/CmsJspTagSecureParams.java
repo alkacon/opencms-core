@@ -37,8 +37,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * This tag is used to enable parameter escaping for a single Flex Request.<p>
@@ -106,7 +106,7 @@ public class CmsJspTagSecureParams extends TagSupport {
     }
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

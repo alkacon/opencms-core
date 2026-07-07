@@ -33,9 +33,9 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * Stores specific servlet container options, that might influence OpenCms behavior.<p>
@@ -142,7 +142,7 @@ public class CmsServletContainerSettings {
     private static boolean m_servletThrowsException = true;
 
     /**
-     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method,
+     * The replacement request attribute for the {@link jakarta.servlet.http.HttpServletRequest#getPathInfo()} method,
      * which is needed because this method is not properly implemented in BEA WLS 9.x.<p>
      */
     private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
@@ -179,7 +179,7 @@ public class CmsServletContainerSettings {
     private boolean m_releaseTagsAfterEnd = true;
 
     /**
-       * The request error page attribute to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
+       * The request error page attribute to use if {@link jakarta.servlet.http.HttpServletRequest#getPathInfo()}
        * is not working properly, like in BEA WLS 9.x.
        */
     private String m_requestErrorPageAttribute;

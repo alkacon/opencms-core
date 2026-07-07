@@ -80,8 +80,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.ServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
@@ -102,6 +100,8 @@ import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
 
 import com.google.common.base.Objects;
+
+import jakarta.servlet.ServletResponse;
 
 /**
  * Implements the search within an Solr index.<p>

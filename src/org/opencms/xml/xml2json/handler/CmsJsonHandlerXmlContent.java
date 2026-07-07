@@ -36,9 +36,9 @@ import org.opencms.xml.xml2json.CmsJsonRequest;
 import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Sub-handler for converting XML contents to JSON, either as a whole or just specific locales or paths.

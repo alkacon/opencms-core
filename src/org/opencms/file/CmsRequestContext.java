@@ -375,12 +375,12 @@ public final class CmsRequestContext {
      * Returns the locale used by this request context.<p>
      *
      * In normal operation, the request context locale is initialized using
-     * {@link org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)}
+     * {@link org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(jakarta.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)}
      * depending on the requested resource URI.<p>
      *
      * @return the locale used by this request context
      *
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(jakarta.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)
      * @see org.opencms.i18n.CmsLocaleManager#getDefaultLocale(CmsObject, String)
      */
     public Locale getLocale() {

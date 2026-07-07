@@ -37,11 +37,11 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Functional {@link HttpServletRequest} mock for OpenCms tests, sufficient to drive the OpenCms
@@ -136,7 +136,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getAttribute(java.lang.String)
+     * @see jakarta.servlet.ServletRequestWrapper#getAttribute(java.lang.String)
      */
     @Override
     public Object getAttribute(String name) {
@@ -145,7 +145,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getAttributeNames()
+     * @see jakarta.servlet.ServletRequestWrapper#getAttributeNames()
      */
     @Override
     public Enumeration<String> getAttributeNames() {
@@ -154,7 +154,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getCharacterEncoding()
+     * @see jakarta.servlet.ServletRequestWrapper#getCharacterEncoding()
      */
     @Override
     public String getCharacterEncoding() {
@@ -163,7 +163,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getContextPath()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getContextPath()
      */
     @Override
     public String getContextPath() {
@@ -172,7 +172,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getHeader(java.lang.String)
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getHeader(java.lang.String)
      */
     @Override
     public String getHeader(String name) {
@@ -181,7 +181,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getHeaderNames()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getHeaderNames()
      */
     @Override
     public Enumeration<String> getHeaderNames() {
@@ -190,7 +190,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getHeaders(java.lang.String)
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getHeaders(java.lang.String)
      */
     @Override
     public Enumeration<String> getHeaders(String name) {
@@ -202,7 +202,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getInputStream()
+     * @see jakarta.servlet.ServletRequestWrapper#getInputStream()
      */
     @Override
     public ServletInputStream getInputStream() {
@@ -237,7 +237,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getMethod()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getMethod()
      */
     @Override
     public String getMethod() {
@@ -246,7 +246,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getParameter(java.lang.String)
+     * @see jakarta.servlet.ServletRequestWrapper#getParameter(java.lang.String)
      */
     @Override
     public String getParameter(String name) {
@@ -256,7 +256,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getParameterMap()
+     * @see jakarta.servlet.ServletRequestWrapper#getParameterMap()
      */
     @Override
     public Map<String, String[]> getParameterMap() {
@@ -265,7 +265,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getParameterNames()
+     * @see jakarta.servlet.ServletRequestWrapper#getParameterNames()
      */
     @Override
     public Enumeration<String> getParameterNames() {
@@ -274,7 +274,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getParameterValues(java.lang.String)
+     * @see jakarta.servlet.ServletRequestWrapper#getParameterValues(java.lang.String)
      */
     @Override
     public String[] getParameterValues(String name) {
@@ -283,7 +283,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getPathInfo()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getPathInfo()
      */
     @Override
     public String getPathInfo() {
@@ -292,7 +292,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getReader()
+     * @see jakarta.servlet.ServletRequestWrapper#getReader()
      */
     @Override
     public BufferedReader getReader() {
@@ -301,7 +301,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getRemoteAddr()
+     * @see jakarta.servlet.ServletRequestWrapper#getRemoteAddr()
      */
     @Override
     public String getRemoteAddr() {
@@ -310,7 +310,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getRequestURI()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getRequestURI()
      */
     @Override
     public String getRequestURI() {
@@ -319,7 +319,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getRequestURL()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getRequestURL()
      */
     @Override
     public StringBuffer getRequestURL() {
@@ -334,7 +334,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getScheme()
+     * @see jakarta.servlet.ServletRequestWrapper#getScheme()
      */
     @Override
     public String getScheme() {
@@ -343,7 +343,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getServerName()
+     * @see jakarta.servlet.ServletRequestWrapper#getServerName()
      */
     @Override
     public String getServerName() {
@@ -352,7 +352,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#getServerPort()
+     * @see jakarta.servlet.ServletRequestWrapper#getServerPort()
      */
     @Override
     public int getServerPort() {
@@ -361,7 +361,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getServletPath()
      */
     @Override
     public String getServletPath() {
@@ -371,7 +371,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getSession()
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getSession()
      */
     @Override
     public HttpSession getSession() {
@@ -380,7 +380,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletRequestWrapper#getSession(boolean)
+     * @see jakarta.servlet.http.HttpServletRequestWrapper#getSession(boolean)
      */
     @Override
     public HttpSession getSession(boolean create) {
@@ -397,7 +397,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#removeAttribute(java.lang.String)
+     * @see jakarta.servlet.ServletRequestWrapper#removeAttribute(java.lang.String)
      */
     @Override
     public void removeAttribute(String name) {
@@ -406,7 +406,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#setAttribute(java.lang.String, java.lang.Object)
+     * @see jakarta.servlet.ServletRequestWrapper#setAttribute(java.lang.String, java.lang.Object)
      */
     @Override
     public void setAttribute(String name, Object value) {
@@ -419,7 +419,7 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletRequestWrapper#setCharacterEncoding(java.lang.String)
+     * @see jakarta.servlet.ServletRequestWrapper#setCharacterEncoding(java.lang.String)
      */
     @Override
     public void setCharacterEncoding(String encoding) {

@@ -55,13 +55,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Template context provider that can be used to migrate from one template to another.
@@ -361,7 +361,7 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
     }
 
     /**
-     * @see org.opencms.loader.I_CmsTemplateContextProvider#getTemplateContext(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, org.opencms.file.CmsResource)
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getTemplateContext(org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, org.opencms.file.CmsResource)
      */
     public CmsTemplateContext getTemplateContext(CmsObject cms, HttpServletRequest request, CmsResource resource) {
 

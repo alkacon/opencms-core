@@ -35,9 +35,9 @@ import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Edit class to edit an exiting module.<p>

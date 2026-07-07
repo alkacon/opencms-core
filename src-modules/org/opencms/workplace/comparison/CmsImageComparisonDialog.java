@@ -31,7 +31,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 
-import javax.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.JspWriter;
 
 /**
  * Provides a GUI for displaying two images.<p>

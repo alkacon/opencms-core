@@ -52,8 +52,6 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.jackrabbit.webdav.DavCompliance;
 import org.apache.jackrabbit.webdav.DavException;
@@ -80,6 +78,8 @@ import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.PropEntry;
 import org.apache.jackrabbit.webdav.property.ResourceType;
 import org.apache.jackrabbit.webdav.xml.Namespace;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Represents a resource in the WebDav repository (may not actually correspond to an actual OpenCms resource, since

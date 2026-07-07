@@ -41,11 +41,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * OpenCms base loader implementation for resources of type <code>{@link org.opencms.xml.I_CmsXmlDocument}</code>.<p>
@@ -71,7 +71,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public byte[] dump(
         CmsObject cms,
@@ -101,7 +101,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceStringDumpLoader#dumpAsString(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see org.opencms.loader.I_CmsResourceStringDumpLoader#dumpAsString(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     public String dumpAsString(
         CmsObject cms,
@@ -144,7 +144,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
@@ -207,7 +207,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
@@ -221,7 +221,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws IOException, CmsException {

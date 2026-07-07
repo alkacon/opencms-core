@@ -32,11 +32,11 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsLog;
 import org.opencms.workplace.CmsWorkplace;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Implementation of the <code>&lt;cms:jquery/&gt;</code> tag.<p>

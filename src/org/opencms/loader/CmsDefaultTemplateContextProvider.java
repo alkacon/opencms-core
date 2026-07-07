@@ -49,9 +49,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Example implementation of a template context provider for deciding between a desktop template and a mobile template.<p>
@@ -146,7 +146,7 @@ public class CmsDefaultTemplateContextProvider implements I_CmsTemplateContextPr
     }
 
     /**
-     * @see org.opencms.loader.I_CmsTemplateContextProvider#getTemplateContext(org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, org.opencms.file.CmsResource)
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getTemplateContext(org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, org.opencms.file.CmsResource)
      */
     public synchronized CmsTemplateContext getTemplateContext(
         CmsObject cms,

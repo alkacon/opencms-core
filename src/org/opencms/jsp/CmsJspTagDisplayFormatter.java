@@ -29,10 +29,10 @@ package org.opencms.jsp;
 
 import org.opencms.util.CmsStringUtil;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.tagext.Tag;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * The tag 'displayFormatter' can be used to add a formatter resource type pairing to the surrounding 'display' tag.<p>
@@ -52,7 +52,7 @@ public class CmsJspTagDisplayFormatter extends TagSupport {
     private String m_type;
 
     /**
-     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.TagSupport#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {

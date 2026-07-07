@@ -42,9 +42,9 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p>
@@ -70,7 +70,7 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
     }
 
     /**
-     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.gwt.I_CmsClientMessageBundle#export(jakarta.servlet.http.HttpServletRequest)
      */
     public String export(HttpServletRequest request) {
 

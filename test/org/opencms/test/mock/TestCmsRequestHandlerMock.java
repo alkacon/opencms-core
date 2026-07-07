@@ -42,12 +42,12 @@ import org.opencms.util.CmsFileUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Smoke test for the servlet request and response mocks, exercising the request body, the captured
@@ -76,7 +76,7 @@ public class TestCmsRequestHandlerMock extends OpenCmsTestSnapRunner {
         }
 
         /**
-         * @see org.opencms.main.I_CmsRequestHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String)
+         * @see org.opencms.main.I_CmsRequestHandler#handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.lang.String)
          */
         @Override
         public void handle(HttpServletRequest req, HttpServletResponse res, String name) throws IOException {

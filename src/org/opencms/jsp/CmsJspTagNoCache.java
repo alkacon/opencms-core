@@ -29,9 +29,9 @@ package org.opencms.jsp;
 
 import org.opencms.util.CmsRequestUtil;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 /**
  * A tag to prevent caching by the browser.<p>
@@ -46,7 +46,7 @@ public class CmsJspTagNoCache extends TagSupport {
     private static final long serialVersionUID = -3571347942237415254L;
 
     /**
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

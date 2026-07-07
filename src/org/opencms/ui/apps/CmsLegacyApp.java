@@ -33,11 +33,11 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.tools.I_CmsToolHandler;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.JavaScript;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * App for legacy admin tools. Renders the tool in an iframe.<p>

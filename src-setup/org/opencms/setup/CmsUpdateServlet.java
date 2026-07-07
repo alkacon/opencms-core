@@ -27,10 +27,10 @@
 
 package org.opencms.setup;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-
 import com.vaadin.server.VaadinServlet;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 
 public class CmsUpdateServlet extends VaadinServlet {
 

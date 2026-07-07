@@ -37,15 +37,15 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
-
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.apache.taglibs.standard.tag.el.fmt.BundleTag;
+
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.jstl.fmt.LocalizationContext;
 
 /**
  * Provides tag access to OpenCms resource bundles.<p>
@@ -96,7 +96,7 @@ public class CmsJspTagBundle extends BundleTag {
         }
 
         // Try preferred locales
-        Locale pref = getLocale(pc, javax.servlet.jsp.jstl.core.Config.FMT_LOCALE);
+        Locale pref = getLocale(pc, jakarta.servlet.jsp.jstl.core.Config.FMT_LOCALE);
         if (pref != null) {
             // Preferred locale is application-based
             bundle = findMatch(basename, pref);
@@ -140,7 +140,7 @@ public class CmsJspTagBundle extends BundleTag {
 
         Locale loc = null;
 
-        Object obj = javax.servlet.jsp.jstl.core.Config.find(pageContext, name);
+        Object obj = jakarta.servlet.jsp.jstl.core.Config.find(pageContext, name);
         if (obj != null) {
             if (obj instanceof Locale) {
                 loc = (Locale)obj;
@@ -208,7 +208,7 @@ public class CmsJspTagBundle extends BundleTag {
      * Internal action method.<p>
      *
      * @return EVAL_BODY_BUFFERED
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {

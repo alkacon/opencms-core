@@ -47,15 +47,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
-
 import org.apache.commons.logging.Log;
 
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
  * Generates a special HTML element which enables the 'create list element' dialog for a set of types when used in a formatter.
@@ -75,7 +75,7 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
     private String m_uploadFolder;
 
     /**
-     * @see javax.servlet.jsp.tagext.SimpleTagSupport#doTag()
+     * @see jakarta.servlet.jsp.tagext.SimpleTagSupport#doTag()
      */
     @Override
     public void doTag() throws IOException {

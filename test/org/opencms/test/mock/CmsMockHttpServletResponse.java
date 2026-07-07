@@ -35,10 +35,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Functional {@link HttpServletResponse} mock for OpenCms tests that captures the status, headers and
@@ -99,7 +99,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#addHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#addHeader(java.lang.String, java.lang.String)
      */
     @Override
     public void addHeader(String name, String value) {
@@ -108,7 +108,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#flushBuffer()
+     * @see jakarta.servlet.ServletResponseWrapper#flushBuffer()
      */
     @Override
     public void flushBuffer() {
@@ -119,7 +119,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#getCharacterEncoding()
+     * @see jakarta.servlet.ServletResponseWrapper#getCharacterEncoding()
      */
     @Override
     public String getCharacterEncoding() {
@@ -143,7 +143,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#getContentType()
+     * @see jakarta.servlet.ServletResponseWrapper#getContentType()
      */
     @Override
     public String getContentType() {
@@ -162,7 +162,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#getHeader(java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#getHeader(java.lang.String)
      */
     @Override
     public String getHeader(String name) {
@@ -171,7 +171,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+     * @see jakarta.servlet.ServletResponseWrapper#getOutputStream()
      */
     @Override
     public ServletOutputStream getOutputStream() {
@@ -199,7 +199,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#getStatus()
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#getStatus()
      */
     @Override
     public int getStatus() {
@@ -208,7 +208,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#getWriter()
+     * @see jakarta.servlet.ServletResponseWrapper#getWriter()
      */
     @Override
     public PrintWriter getWriter() {
@@ -220,7 +220,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#sendError(int)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#sendError(int)
      */
     @Override
     public void sendError(int sc) {
@@ -229,7 +229,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#sendError(int, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#sendError(int, java.lang.String)
      */
     @Override
     public void sendError(int sc, String msg) {
@@ -239,7 +239,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#setCharacterEncoding(java.lang.String)
+     * @see jakarta.servlet.ServletResponseWrapper#setCharacterEncoding(java.lang.String)
      */
     @Override
     public void setCharacterEncoding(String charset) {
@@ -248,7 +248,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.ServletResponseWrapper#setContentType(java.lang.String)
+     * @see jakarta.servlet.ServletResponseWrapper#setContentType(java.lang.String)
      */
     @Override
     public void setContentType(String type) {
@@ -257,7 +257,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#setHeader(java.lang.String, java.lang.String)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#setHeader(java.lang.String, java.lang.String)
      */
     @Override
     public void setHeader(String name, String value) {
@@ -266,7 +266,7 @@ public class CmsMockHttpServletResponse extends HttpServletResponseWrapper {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#setStatus(int)
      */
     @Override
     public void setStatus(int sc) {

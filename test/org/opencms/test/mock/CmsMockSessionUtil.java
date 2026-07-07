@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
  *
  * It registers the user with the real {@link org.opencms.main.CmsSessionManager}, which writes the
  * OpenCms session id and the client token into the request session exactly like a real login; a
- * later {@link org.opencms.main.CmsSessionManager#getSessionInfo(javax.servlet.http.HttpServletRequest)}
+ * later {@link org.opencms.main.CmsSessionManager#getSessionInfo(jakarta.servlet.http.HttpServletRequest)}
  * for the same request then resolves the user.<p>
  *
  * @see CmsMockHttpServletRequest

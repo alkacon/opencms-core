@@ -30,9 +30,9 @@ package org.opencms.workplace.list;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Generates a CSV file for a given list.<p>

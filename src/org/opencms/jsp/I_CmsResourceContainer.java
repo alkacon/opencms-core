@@ -31,7 +31,7 @@ import org.opencms.file.CmsResource;
 
 import java.util.List;
 
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 /**
  * Provides access to a <code>{@link org.opencms.file.CmsResource}</code> object that was previously loaded by a parent tag.<p>

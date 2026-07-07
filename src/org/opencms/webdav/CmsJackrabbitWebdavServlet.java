@@ -37,12 +37,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections4.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
@@ -58,6 +52,12 @@ import org.apache.jackrabbit.webdav.lock.SimpleLockManager;
 import org.apache.jackrabbit.webdav.server.AbstractWebdavServlet;
 
 import com.google.common.collect.Iterators;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Webdav access servlet for OpenCms, implemented using jackrabbit-webdav library.
@@ -113,7 +113,7 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
     }
 
     /**
-     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+     * @see jakarta.servlet.GenericServlet#init(jakarta.servlet.ServletConfig)
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -208,7 +208,7 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
     }
 
     /**
-     * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#service(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
      */
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)

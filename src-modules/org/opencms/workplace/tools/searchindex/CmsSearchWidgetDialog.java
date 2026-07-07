@@ -56,9 +56,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that performs a
@@ -510,7 +510,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     /**
      * Additionally saves <code>{@link #PARAM_SEARCH_PARAMS}</code> to the dialog object map.<p>
      *
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override

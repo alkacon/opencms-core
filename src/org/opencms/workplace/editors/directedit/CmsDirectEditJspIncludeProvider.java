@@ -41,11 +41,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Direct edit provider that uses the same JSP include based logic that has been
@@ -218,7 +218,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEnd(javax.servlet.jsp.PageContext)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditEnd(jakarta.servlet.jsp.PageContext)
      */
     public void insertDirectEditEnd(PageContext context) throws JspException {
 
@@ -240,7 +240,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditIncludes(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     public void insertDirectEditIncludes(PageContext context, CmsDirectEditParams params) throws JspException {
 
@@ -261,7 +261,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditStart(javax.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
+     * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#insertDirectEditStart(jakarta.servlet.jsp.PageContext, org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 

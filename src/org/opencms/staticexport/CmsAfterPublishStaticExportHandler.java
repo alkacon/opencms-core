@@ -58,10 +58,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Implementation for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>

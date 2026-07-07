@@ -62,16 +62,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * This tag includes required CSS or JavaScript resources that are to be places in the HTML head.<p>
@@ -203,7 +203,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     /**
      * @return <code>EVAL_PAGE</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
      *
      * @throws JspException by interface default
      */
@@ -234,7 +234,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
      *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
      *
-     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
+     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

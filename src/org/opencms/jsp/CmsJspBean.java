@@ -35,11 +35,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsRequestUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.commons.logging.Log;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.PageContext;
 
 /**
  * Superclass for OpenCms JSP beans that provides convient access
@@ -189,11 +189,11 @@ public class CmsJspBean {
      * Sets the content type for the HTTP response.<p>
      *
      * This method is required since JSP's are handled in a special way for included template elements,
-     * so {@link javax.servlet.ServletResponse#setContentType(java.lang.String)} won't work.<p>
+     * so {@link jakarta.servlet.ServletResponse#setContentType(java.lang.String)} won't work.<p>
      *
      * @param type the type to set
      *
-     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     * @see jakarta.servlet.ServletResponse#setContentType(java.lang.String)
      */
     public void setContentType(String type) {
 
@@ -204,14 +204,14 @@ public class CmsJspBean {
      * Sets the status code for the HTTP response.<p>
      *
      * This method is required since JSP's are handled in a special way for included template elements,
-     * so {@link javax.servlet.http.HttpServletResponseWrapper#setStatus(int)} won't work.<p>
+     * so {@link jakarta.servlet.http.HttpServletResponseWrapper#setStatus(int)} won't work.<p>
      *
      * Please note that the status code set this way is never cached in the Flex cache,
      * so you must make sure to not cache the element when you use this method.<p>
      *
      * @param status the status code to set
      *
-     * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int)
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#setStatus(int)
      */
     public void setStatus(int status) {
 
