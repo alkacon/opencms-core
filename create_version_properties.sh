@@ -27,6 +27,11 @@ OPENCMS_BUILD_TYPE="${OpenCmsBuildType:-Manual}"
 #
 OPENCMS_BUILD_SYSTEM="${OpenCmsBuildSystem:-Jenkins}"
 
+#
+# The Java EE edition the build targets, e.g. "10 (jakarta)" or "8 (javax)".
+#
+OPENCMS_JAVA_EE="${OpenCmsJavaEE:-10 (jakarta)}"
+
 # The output path/filename where the properties are written.
 #
 # The idea of this script is as follows:
@@ -80,6 +85,7 @@ echo "# Build Number      : $OPENCMS_BUILD_NUMBER"
 echo "# Version Number    : $OPENCMS_VERSION_NUMBER"
 echo "# Version ID        : $OPENCMS_VERSION_ID"
 echo "# Version File      : $OUTPUT_FILE"
+echo "# Java EE           : $OPENCMS_JAVA_EE"
 echo "# Git commit        : $OPENCMS_GIT_ID"
 echo "# Git commit message: $OPENCMS_GIT_COMMIT_MESSAGE"
 echo "# Git branch        : $OPENCMS_GIT_BRANCH"
@@ -105,6 +111,7 @@ echo "build.system=$OPENCMS_BUILD_SYSTEM" >> "$OUTPUT_FILE"
 echo "build.gitid=$OPENCMS_GIT_ID" >> "$OUTPUT_FILE"
 echo "build.gitmessage=$OPENCMS_GIT_COMMIT_MESSAGE" >> "$OUTPUT_FILE"
 echo "build.gitbranch=$OPENCMS_GIT_BRANCH_SHOWN" >> "$OUTPUT_FILE"
+echo "javaee=$OPENCMS_JAVA_EE" >> "$OUTPUT_FILE"
 #
 # Nice names for the build information (optional).
 #
@@ -117,3 +124,4 @@ echo "nicename.build.system=Build System" >> "$OUTPUT_FILE"
 echo "nicename.build.gitid=Git Commit ID" >> "$OUTPUT_FILE"
 echo "nicename.build.gitmessage=Git Message" >> "$OUTPUT_FILE"
 echo "nicename.build.gitbranch=Git Branch" >> "$OUTPUT_FILE"
+echo "nicename.javaee=Java EE" >> "$OUTPUT_FILE"
