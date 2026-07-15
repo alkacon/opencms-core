@@ -1724,6 +1724,13 @@ public class CmsADEConfigData {
             CmsXmlContentDefinition def = CmsXmlContentDefinition.getContentDefinitionForType(
                 cms,
                 resType.getTypeName());
+            if (def == null) {
+                LOG.warn(
+                    "Type '"
+                        + resType.getTypeName()
+                        + "' has no schema configured, cannot check whether it has formatters.");
+                return false;
+            }
             CmsFormatterConfiguration schemaFormatters = def.getContentHandler().getFormatterConfiguration(cms, null);
             CmsFormatterConfiguration formatters = getFormatters(cms, resType, schemaFormatters);
             for (CmsContainer cont : containers) {
