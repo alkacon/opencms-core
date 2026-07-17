@@ -19,5 +19,13 @@ dependencies {
     distribution('com.kgs-software:chemistry-opencmis-commons-impl:1.2.3')
     distribution('com.kgs-software:chemistry-opencmis-server-bindings:1.2.3')
     distribution('com.kgs-software:chemistry-opencmis-server-support:1.2.3')
+    
+    constraints {
+      distribution('jakarta.mail:jakarta.mail-api:2.1.5')
+      distribution('jakarta.activation:jakarta.activation-api:2.1.4')
+      distribution('org.eclipse.angus:angus-mail:2.0.5')
+      distribution('org.eclipse.angus:angus-activation:2.0.3')
+  }
+    
 }
 
