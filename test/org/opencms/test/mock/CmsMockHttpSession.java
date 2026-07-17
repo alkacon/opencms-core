@@ -36,7 +36,6 @@ import java.util.Map;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionContext;
 
 /**
  * Minimal in-memory {@link HttpSession} mock for OpenCms tests, holding session attributes (e.g. the
@@ -132,42 +131,6 @@ public class CmsMockHttpSession implements HttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getSessionContext()
-     *
-     * @deprecated as in the servlet API
-     */
-    @Override
-    @Deprecated
-    public HttpSessionContext getSessionContext() {
-
-        throw new UnsupportedOperationException("getSessionContext");
-    }
-
-    /**
-     * @see jakarta.servlet.http.HttpSession#getValue(java.lang.String)
-     *
-     * @deprecated as in the servlet API
-     */
-    @Override
-    @Deprecated
-    public Object getValue(String name) {
-
-        return getAttribute(name);
-    }
-
-    /**
-     * @see jakarta.servlet.http.HttpSession#getValueNames()
-     *
-     * @deprecated as in the servlet API
-     */
-    @Override
-    @Deprecated
-    public String[] getValueNames() {
-
-        return m_attributes.keySet().toArray(new String[0]);
-    }
-
-    /**
      * @see jakarta.servlet.http.HttpSession#invalidate()
      */
     @Override
@@ -197,36 +160,12 @@ public class CmsMockHttpSession implements HttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#putValue(java.lang.String, java.lang.Object)
-     *
-     * @deprecated as in the servlet API
-     */
-    @Override
-    @Deprecated
-    public void putValue(String name, Object value) {
-
-        setAttribute(name, value);
-    }
-
-    /**
      * @see jakarta.servlet.http.HttpSession#removeAttribute(java.lang.String)
      */
     @Override
     public void removeAttribute(String name) {
 
         m_attributes.remove(name);
-    }
-
-    /**
-     * @see jakarta.servlet.http.HttpSession#removeValue(java.lang.String)
-     *
-     * @deprecated as in the servlet API
-     */
-    @Override
-    @Deprecated
-    public void removeValue(String name) {
-
-        removeAttribute(name);
     }
 
     /**
