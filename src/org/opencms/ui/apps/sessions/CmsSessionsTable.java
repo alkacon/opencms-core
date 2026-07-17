@@ -650,7 +650,11 @@ public class CmsSessionsTable extends Table {
             }
             //            CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             Item item = m_container.addItem(session.getSessionId().getStringValue());
-            item.getItemProperty(TableProperty.UserName).setValue(user.getName());
+            String userName = user.getName();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(session.getClientLabel())) {
+                userName += " (" + session.getClientLabel() + ")";
+            }
+            item.getItemProperty(TableProperty.UserName).setValue(userName);
             item.getItemProperty(TableProperty.DateCreated).setValue(
                 session.getAgeOfSession() + " " + CmsVaadinUtils.getMessageText(Messages.GUI_MESSAGES_HOUR_0));
             item.getItemProperty(TableProperty.IS_ACTIVE).setValue(

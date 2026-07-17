@@ -51,6 +51,9 @@ public final class CmsRequestContext {
     /** Request context attribute for the ADE context path (should be a root path). */
     public static final String ATTRIBUTE_ADE_CONTEXT_PATH = CmsRequestContext.class.getName() + ".ADE_CONTEXT_PATH";
 
+    /** Request context attribute for the optional client label a session created from this context is marked with. */
+    public static final String ATTRIBUTE_CLIENT_LABEL = CmsRequestContext.class.getName() + ".CLIENT_LABEL";
+
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = CmsRequestContext.class.getName() + ".ATTRIBUTE_EDITOR";
 

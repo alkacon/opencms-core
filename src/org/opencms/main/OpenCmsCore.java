@@ -1581,7 +1581,7 @@ public final class OpenCmsCore {
         try {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(memoryMonitorConfiguration.getClassName())) {
                 m_memoryMonitor = (CmsMemoryMonitor)Class.forName(
-                    memoryMonitorConfiguration.getClassName()).newInstance();
+                    memoryMonitorConfiguration.getClassName()).getDeclaredConstructor().newInstance();
             } else {
                 m_memoryMonitor = new CmsMemoryMonitor();
             }
@@ -3015,7 +3015,7 @@ public final class OpenCmsCore {
             context = new CmsGwtServiceContext2(serviceName);
             m_gwtServiceContexts.put(serviceName, context);
         }
-        CmsGwtService gwtService = (CmsGwtService)Class.forName(serviceName).newInstance();
+        CmsGwtService gwtService = (CmsGwtService)Class.forName(serviceName).getDeclaredConstructor().newInstance();
         gwtService.init(servletConfig);
         gwtService.setContext(context);
         return gwtService;

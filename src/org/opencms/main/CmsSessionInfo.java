@@ -63,6 +63,9 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     /** The broadcast queue buffer for the user of this session info. */
     private transient Buffer m_broadcastQueue;
 
+    /** The optional label of the client this session was created for. */
+    private String m_clientLabel;
+
     /** The maximum time, in seconds, this session info is allowed to be inactive. */
     private int m_maxInactiveInterval;
 
@@ -103,6 +106,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
         m_sessionId = sessionId;
         m_maxInactiveInterval = maxInactiveInterval;
         m_userId = context.getCurrentUser().getId();
+        m_clientLabel = (String)context.getAttribute(CmsRequestContext.ATTRIBUTE_CLIENT_LABEL);
         update(context);
     }
 
@@ -183,6 +187,17 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
             m_broadcastQueue = BufferUtils.synchronizedBuffer(new UnboundedFifoBuffer(QUEUE_SIZE));
         }
         return m_broadcastQueue;
+    }
+
+    /**
+     * Returns the optional label of the client this session was created for, taken once at session
+     * creation from the {@link CmsRequestContext#ATTRIBUTE_CLIENT_LABEL} context attribute.<p>
+     *
+     * @return the client label, or <code>null</code> for a session created without one
+     */
+    public String getClientLabel() {
+
+        return m_clientLabel;
     }
 
     /**
