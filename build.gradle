@@ -1684,7 +1684,7 @@ tasks.register('updater', Zip) {
         include 'opencms.tld'
         exclude 'web.xml'
         include 'cmsshell.sh'
-        include 'classes/META-INF/persistence.xml'
+        include 'classes/META-INF/**'
         include 'classes/ehcache.xml'
         include 'classes/repository.properties'
         include 'sun-jaxws.xml'
