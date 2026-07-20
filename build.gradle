@@ -1499,7 +1499,6 @@ tasks.register('war', Zip) {
         exclude '**/setupdata/**/*.jar'
         exclude '**/updatedata/**'
         exclude '**/workplaceThemes/**'
-        exclude '**/classes/META-INF/**'
         exclude '**/solr/**'
         exclude '**/spellcheck/**'
         exclude '**/*.html'
