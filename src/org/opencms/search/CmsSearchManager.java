@@ -2281,7 +2281,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 properties.put(CoreDescriptor.CORE_DATADIR, dataDir.getAbsolutePath());
                 properties.put(CoreDescriptor.CORE_CONFIGSET, "default");
                 core = m_coreContainer.create(index.getCoreName(), instanceDir.toPath(), properties, false);
-            } catch (NullPointerException e) {
+            } catch (RuntimeException e) {
+                // catch not only NPE, but also e.g. SolrException when the core cannot be created
+                // (like IndexFormatTooOldException for an index written by an older Lucene version):
+                // otherwise the exception propagates past the CmsConfigurationException handling in
+                // CmsSolrIndex#initialize(), the index stays enabled without a Solr client and every
+                // query later fails with a NullPointerException on the missing client
                 if (core != null) {
                     core.close();
                 }
@@ -3146,6 +3151,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 try {
                     index.initialize();
                 } catch (Exception e) {
+                    // disable the index - without this, an initialization failure that is not
+                    // handled inside initialize() itself leaves the index enabled and the
+                    // status report below wrongly logs it as successfully configured
+                    index.setEnabled(false);
                     if (CmsLog.INIT.isWarnEnabled()) {
                         // in this case the index will be disabled
                         CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index), e);
