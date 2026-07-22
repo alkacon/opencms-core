@@ -8,6 +8,21 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: https://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: https://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.ui.apps.user;
@@ -16,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
@@ -31,16 +45,9 @@ import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.util.CmsXsltUtil;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +56,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.base.Splitter;
 import com.google.common.base.Supplier;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -342,128 +348,10 @@ implements Receiver, I_CmsPasswordFetcher {
             throw new IllegalArgumentException("No CSV import data is available.");
         }
 
-        boolean keepPasswordIfPossible = m_importPasswords.getValue().booleanValue();
-        List<CmsUser> users = new ArrayList<CmsUser>();
-        List<String> columns = null;
-        String separator = null;
-        int lineNumber = 0;
-
-        try (BufferedReader reader = new BufferedReader(
-            new InputStreamReader(new ByteArrayInputStream(m_importFileStream.toByteArray())))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lineNumber++;
-                if ((lineNumber == 1) && CmsStringUtil.isEmptyOrWhitespaceOnly(line)) {
-                    throw new IllegalArgumentException("The CSV header is empty.");
-                }
-                if (separator == null) {
-                    separator = CmsXsltUtil.getPreferredDelimiter(line);
-                }
-                List<String> lineValues = Splitter.on(separator).splitToList(line);
-                if (columns == null) {
-                    columns = normalizeHeader(lineValues);
-                    validateHeader(columns);
-                    continue;
-                }
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(line)) {
-                    continue;
-                }
-                users.add(parseUser(columns, lineValues, lineNumber, keepPasswordIfPossible));
-            }
-        } catch (IOException e) {
-            throw new CmsRuntimeException("Unable to read the CSV user import file.", e);
-        }
-
-        if (columns == null) {
-            throw new IllegalArgumentException("The CSV file does not contain a header.");
-        }
-        return users;
-    }
-
-    private List<String> normalizeHeader(List<String> rawHeader) {
-
-        List<String> result = new ArrayList<String>();
-        for (int i = 0; i < rawHeader.size(); i++) {
-            String column = CmsCsvImportUtils.normalizeToken(rawHeader.get(i));
-            if (column != null) {
-                column = column.trim();
-            }
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(column)) {
-                throw new IllegalArgumentException("CSV column " + (i + 1) + " has an empty name.");
-            }
-            if (result.contains(column)) {
-                throw new IllegalArgumentException("Duplicate CSV column '" + column + "'.");
-            }
-            result.add(column);
-        }
-        return result;
-    }
-
-    private CmsUser parseUser(
-        List<String> columns,
-        List<String> rawValues,
-        int lineNumber,
-        boolean keepPasswordIfPossible) {
-
-        CmsUser user = new CmsUser();
-        for (int i = 0; i < columns.size(); i++) {
-            String column = columns.get(i);
-            String value = i < rawValues.size() ? CmsCsvImportUtils.normalizeToken(rawValues.get(i)) : "";
-            if (value == null) {
-                value = "";
-            }
-            if ("password".equals(column)
-                && (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || !keepPasswordIfPossible)) {
-                value = m_password.getValue();
-            }
-            setUserValue(user, column, value, lineNumber);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getName())) {
-            throw new IllegalArgumentException("CSV line " + lineNumber + " does not contain a user name.");
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getPassword())) {
-            user.setPassword(m_password.getValue());
-        }
-        return user;
-    }
-
-    private void setUserValue(CmsUser user, String column, String value, int lineNumber) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || "null".equals(value)) {
-            return;
-        }
-        try {
-            Method method = CmsUser.class.getMethod(
-                "set" + column.substring(0, 1).toUpperCase() + column.substring(1),
-                new Class[] {String.class});
-            method.invoke(user, new Object[] {value});
-        } catch (NoSuchMethodException e) {
-            user.setAdditionalInfo(column, value);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(
-                "CSV line " + lineNumber + ": field '" + column + "' is not accessible.",
-                e);
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            throw new IllegalArgumentException(
-                "CSV line " + lineNumber + ": invalid value for field '" + column + "'.",
-                cause);
-        } catch (CmsRuntimeException e) {
-            throw new IllegalArgumentException(
-                "CSV line " + lineNumber + ": unable to set field '" + column + "'.",
-                e);
-        }
-    }
-
-    private void validateHeader(List<String> columns) {
-
-        if (!columns.contains("name")) {
-            throw new IllegalArgumentException("The mandatory CSV column 'name' is missing.");
-        }
-        if (!columns.contains("password")) {
-            LOG.warn(
-                "CSV user import does not contain a password column. The password configured in the dialog will be used for all users.");
-        }
+        return CmsCsvImportUtils.readUsers(
+            m_importFileStream.toByteArray(),
+            m_password.getValue(),
+            m_importPasswords.getValue().booleanValue());
     }
 
     protected void importUserFromFile() {

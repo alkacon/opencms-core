@@ -3891,10 +3891,40 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_USERIMPORT_FILE_CONTAINS_1 = "RPT_USERIMPORT_FILE_CONTAINS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_GROUP_FAILED_2 = "RPT_USERIMPORT_GROUP_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_EMPTY_NAME_0 = "RPT_USERIMPORT_IMPORT_EMPTY_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_EMPTY_RECORD_0 = "RPT_USERIMPORT_IMPORT_EMPTY_RECORD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_FAILED_1 = "RPT_USERIMPORT_IMPORT_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1 = "RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_IMPORT_CREATE_FAILED_1 = "RPT_USERIMPORT_IMPORT_CREATE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_USERIMPORT_IMPORT_SUCCESFULL_1 = "RPT_USERIMPORT_IMPORT_SUCCESFULL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_MAIL_FAILED_1 = "RPT_USERIMPORT_MAIL_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_PASSWORD_EMPTY_1 = "RPT_USERIMPORT_PASSWORD_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_PASSWORD_ENCRYPTION_FAILED_1 = "RPT_USERIMPORT_PASSWORD_ENCRYPTION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_ROLE_FAILED_2 = "RPT_USERIMPORT_ROLE_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USERIMPORT_SETTINGS_FAILED_1 = "RPT_USERIMPORT_SETTINGS_FAILED_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.apps.messages";
