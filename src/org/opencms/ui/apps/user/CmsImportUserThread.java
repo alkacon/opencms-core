@@ -41,6 +41,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.Messages;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -119,91 +120,184 @@ public class CmsImportUserThread extends A_CmsReportThread {
         getReport().println(
             Messages.get().container(Messages.RPT_USERIMPORT_FILE_CONTAINS_1, String.valueOf(m_userList.size())),
             I_CmsReport.FORMAT_DEFAULT);
+
         Iterator<CmsUser> itUsers = m_userList.iterator();
         while (itUsers.hasNext()) {
             CmsUser user = itUsers.next();
-            CmsUser createdUser = null;
-            if (!isAlreadyAvailable(user.getName())) {
-
-                String password = user.getPassword();
-
-                if (password.indexOf("_") == -1) {
-                    try {
-
-                        password = OpenCms.getPasswordHandler().digest(password);
-
-                        if (m_sendMail) {
-                            CmsUserEditDialog.sendMail(getCms(), user.getPassword(), user, m_ou, true, false);
-                        }
-                    } catch (CmsPasswordEncryptionException e) {
-                        //
-                    }
-                } else {
-                    password = password.substring(password.indexOf("_") + 1);
-                    if (m_sendMail) {
-                        CmsUserEditDialog.sendMail(getCms(), "your old password", user, m_ou, true, false);
-                    }
-                }
-
-                try {
-                    createdUser = getCms().importUser(
-                        new CmsUUID().toString(),
-                        m_ou + user.getName(),
-                        password,
-                        user.getFirstname(),
-                        user.getLastname(),
-                        user.getEmail(),
-                        user.getFlags(),
-                        System.currentTimeMillis(),
-                        user.getAdditionalInfo());
-
-                    if (!m_groupList.isEmpty()) {
-
-                        Iterator<String> itGroups = m_groupList.iterator();
-                        while (itGroups.hasNext()) {
-                            try {
-                                getCms().addUserToGroup(createdUser.getName(), itGroups.next());
-                            } catch (CmsException e) {
-                                //
-                            }
-                        }
-                    }
-
-                    if (!m_roleList.isEmpty()) {
-                        Iterator<CmsRole> itRoles = m_roleList.iterator();
-                        while (itRoles.hasNext()) {
-
-                            OpenCms.getRoleManager().addUserToRole(
-                                getCms(),
-                                itRoles.next().forOrgUnit(m_ou),
-                                createdUser.getName());
-
-                        }
-
-                    }
-                    String startAppId = CmsPageEditorConfiguration.APP_ID;
-                    if (OpenCms.getRoleManager().hasRole(getCms(), createdUser.getName(), CmsRole.WORKPLACE_USER)) {
-                        startAppId = CmsFileExplorerConfiguration.APP_ID;
-                    }
-                    CmsUserSettings settings = new CmsUserSettings(createdUser);
-                    settings.setStartView(startAppId);
-                    settings.setStartProject("Offline");
-                    settings.save(getCms());
-                } catch (CmsException e) {
-                    LOG.error("Unable to create user", e);
-                }
-                if (createdUser != null) {
-                    getReport().println(
-                        Messages.get().container(Messages.RPT_USERIMPORT_IMPORT_SUCCESFULL_1, createdUser.getName()),
-                        I_CmsReport.FORMAT_OK);
-                }
-            } else {
+            try {
+                importUser(user);
+            } catch (RuntimeException e) {
+                String userName = user == null ? "<null>" : String.valueOf(user.getName());
+                LOG.error("Unexpected error while importing user '" + userName + "' into OU '" + m_ou + "'.", e);
                 getReport().println(
-                    Messages.get().container(Messages.RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1, user.getName()),
+                    "Unable to import user '" + userName + "'. See the OpenCms log for details.",
                     I_CmsReport.FORMAT_ERROR);
             }
         }
         getReport().println(Messages.get().container(Messages.RPT_USERIMPORT_END_0), I_CmsReport.FORMAT_DEFAULT);
+    }
+
+    /**
+     * Imports a single user.<p>
+     *
+     * @param user the user data parsed from the CSV file
+     */
+    private void importUser(CmsUser user) {
+
+        if (user == null) {
+            LOG.error("Unable to import null user into OU '" + m_ou + "'.");
+            getReport().println("Unable to import an empty user record.", I_CmsReport.FORMAT_ERROR);
+            return;
+        }
+
+        String userName = user.getName();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
+            LOG.error("Unable to import user without name into OU '" + m_ou + "'.");
+            getReport().println("Unable to import user: the user name is empty.", I_CmsReport.FORMAT_ERROR);
+            return;
+        }
+
+        if (isAlreadyAvailable(userName)) {
+            getReport().println(
+                Messages.get().container(Messages.RPT_USERIMPORT_IMPORT_ALREADY_IN_OU_1, userName),
+                I_CmsReport.FORMAT_ERROR);
+            return;
+        }
+
+        String sourcePassword = user.getPassword();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(sourcePassword)) {
+            LOG.error("Unable to import user '" + userName + "': no password was supplied by the CSV import.");
+            getReport().println(
+                "Unable to import user '" + userName + "': password is empty.",
+                I_CmsReport.FORMAT_ERROR);
+            return;
+        }
+
+        String password = sourcePassword;
+        String mailPassword = sourcePassword;
+        if (password.indexOf('_') == -1) {
+            try {
+                password = OpenCms.getPasswordHandler().digest(password);
+            } catch (CmsPasswordEncryptionException e) {
+                LOG.error("Unable to encrypt password for user '" + userName + "'.", e);
+                getReport().println(
+                    "Unable to import user '" + userName + "': password encryption failed.",
+                    I_CmsReport.FORMAT_ERROR);
+                return;
+            }
+        } else {
+            password = password.substring(password.indexOf('_') + 1);
+            mailPassword = "your old password";
+        }
+
+        CmsUser createdUser;
+        try {
+            createdUser = getCms().importUser(
+                new CmsUUID().toString(),
+                m_ou + userName,
+                password,
+                user.getFirstname(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getFlags(),
+                System.currentTimeMillis(),
+                user.getAdditionalInfo());
+        } catch (CmsException e) {
+            LOG.error("Unable to create user '" + userName + "' in OU '" + m_ou + "'.", e);
+            getReport().println(
+                "Unable to create user '" + userName + "'. See the OpenCms log for details.",
+                I_CmsReport.FORMAT_ERROR);
+            return;
+        }
+
+        addGroups(createdUser);
+        addRoles(createdUser);
+        saveUserSettings(createdUser);
+
+        if (m_sendMail) {
+            try {
+                CmsUserEditDialog.sendMail(getCms(), mailPassword, user, m_ou, true, false);
+            } catch (RuntimeException e) {
+                LOG.error("User '" + createdUser.getName() + "' was created, but the notification email could not be sent.", e);
+                getReport().println(
+                    "User '" + createdUser.getName() + "' was created, but the notification email failed.",
+                    I_CmsReport.FORMAT_WARNING);
+            }
+        }
+
+        getReport().println(
+            Messages.get().container(Messages.RPT_USERIMPORT_IMPORT_SUCCESFULL_1, createdUser.getName()),
+            I_CmsReport.FORMAT_OK);
+    }
+
+    /**
+     * Adds the imported user to the selected groups.<p>
+     *
+     * @param createdUser the imported user
+     */
+    private void addGroups(CmsUser createdUser) {
+
+        Iterator<String> itGroups = m_groupList.iterator();
+        while (itGroups.hasNext()) {
+            String groupName = itGroups.next();
+            try {
+                getCms().addUserToGroup(createdUser.getName(), groupName);
+            } catch (CmsException e) {
+                LOG.error(
+                    "Unable to add imported user '" + createdUser.getName() + "' to group '" + groupName + "'.",
+                    e);
+                getReport().println(
+                    "User '" + createdUser.getName() + "' could not be added to group '" + groupName + "'.",
+                    I_CmsReport.FORMAT_WARNING);
+            }
+        }
+    }
+
+    /**
+     * Adds the imported user to the selected roles.<p>
+     *
+     * @param createdUser the imported user
+     */
+    private void addRoles(CmsUser createdUser) {
+
+        Iterator<CmsRole> itRoles = m_roleList.iterator();
+        while (itRoles.hasNext()) {
+            CmsRole role = itRoles.next();
+            try {
+                OpenCms.getRoleManager().addUserToRole(getCms(), role.forOrgUnit(m_ou), createdUser.getName());
+            } catch (CmsException e) {
+                LOG.error(
+                    "Unable to add imported user '" + createdUser.getName() + "' to role '" + role + "'.",
+                    e);
+                getReport().println(
+                    "User '" + createdUser.getName() + "' could not be added to role '" + role + "'.",
+                    I_CmsReport.FORMAT_WARNING);
+            }
+        }
+    }
+
+    /**
+     * Saves the default workplace settings for the imported user.<p>
+     *
+     * @param createdUser the imported user
+     */
+    private void saveUserSettings(CmsUser createdUser) {
+
+        try {
+            String startAppId = CmsPageEditorConfiguration.APP_ID;
+            if (OpenCms.getRoleManager().hasRole(getCms(), createdUser.getName(), CmsRole.WORKPLACE_USER)) {
+                startAppId = CmsFileExplorerConfiguration.APP_ID;
+            }
+            CmsUserSettings settings = new CmsUserSettings(createdUser);
+            settings.setStartView(startAppId);
+            settings.setStartProject("Offline");
+            settings.save(getCms());
+        } catch (CmsException e) {
+            LOG.error("Unable to save settings for imported user '" + createdUser.getName() + "'.", e);
+            getReport().println(
+                "User '" + createdUser.getName() + "' was created, but its workplace settings could not be saved.",
+                I_CmsReport.FORMAT_WARNING);
+        }
     }
 
     /**
@@ -218,6 +312,7 @@ public class CmsImportUserThread extends A_CmsReportThread {
         try {
             availableUsers = OpenCms.getOrgUnitManager().getUsers(getCms(), m_ou, false);
         } catch (CmsException e) {
+            LOG.error("Unable to read users from OU '" + m_ou + "' while checking user '" + userName + "'.", e);
             availableUsers = new ArrayList<CmsUser>();
         }
         Iterator<CmsUser> itAvailableUsers = availableUsers.iterator();
@@ -228,5 +323,4 @@ public class CmsImportUserThread extends A_CmsReportThread {
         }
         return false;
     }
-
 }
