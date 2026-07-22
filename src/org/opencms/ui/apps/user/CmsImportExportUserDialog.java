@@ -8,21 +8,6 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * For further information about Alkacon Software, please see the
- * company website: https://www.alkacon.com
- *
- * For further information about OpenCms, please see the
- * project website: https://www.opencms.org
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.ui.apps.user;
@@ -51,7 +36,6 @@ import org.opencms.util.CmsXsltUtil;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -84,107 +68,42 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-/**
- * Dialog for CSV im- and export.<p>
- */
+/** Dialog for CSV user import and export. */
 public final class CmsImportExportUserDialog extends A_CmsImportExportUserDialog
 implements Receiver, I_CmsPasswordFetcher {
 
-    /** The "bom" bytes as String that need to be placed at the very beginning of the produced csv. */
-    private static final String BOM = "\ufeff";
-
-    /**The dialog height. */
     public static final String DIALOG_HEIGHT = "650px";
 
-    /** Log instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsImportExportUserDialog.class);
 
-    /**vaadin serial id. */
     private static final long serialVersionUID = -2055302491540892101L;
 
-    /**Label to show uploaded file. */
     protected Label m_uploadname;
-
-    /**Start import button. */
     Button m_startImport;
-
-    /**Vaadin Component. */
     private Panel m_includeTechnicalFieldsPanel;
-
-    /**Vaadin Component. */
     private CheckBox m_includeTechnicalFields;
-
-    /**Cancel button. */
     private Button m_cancel;
-
-    /**CmsObject. */
     private CmsObject m_cms;
-
-    /**Download button for export. */
     private Button m_download;
-
-    /**Layout for groups. */
     private VerticalLayout m_exportGroups;
-
-    /**Groups. */
     private CmsEditableGroup m_exportGroupsGroup;
-
-    /**Layout for roles. */
     private VerticalLayout m_exportRoles;
-
-    /**Roles. */
     private CmsEditableGroup m_exportRolesGroup;
-
-    /**Generate password button. */
     private Button m_generateButton;
-
-    /**Should the group field be editable? */
     private boolean m_groupEditable = true;
-
-    /**ID of group. */
     private CmsUUID m_groupID;
-
-    /**Stream for upload file. */
     private ByteArrayOutputStream m_importFileStream;
-
-    /**Layout for groups.*/
     private VerticalLayout m_importGroups;
-
-    /**Groups. */
     private CmsEditableGroup m_importGroupsGroup;
-
-    /**Should password be imported? */
     private CheckBox m_importPasswords;
-
-    /**Layout for roles. */
     private VerticalLayout m_importRoles;
-
-    /**Roles. */
     private CmsEditableGroup m_importRolesGroup;
-
-    /**Password for imported user. */
     private TextField m_password;
-
-    /**List of user to import. */
     List<CmsUser> m_userImportList;
-
-    /**Should the user get an email? */
     private CheckBox m_sendMail;
-
-    /**Tab with import and export sheet. */
     private TabSheet m_tab;
-
-    /**Upload for import. */
     private Upload m_upload;
 
-    /**
-     * public constructor.<p>
-     *
-     * @param ou ou name
-     * @param groupID id of group
-     * @param window window
-     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
-     */
     private CmsImportExportUserDialog(
         final String ou,
         CmsUUID groupID,
@@ -192,13 +111,11 @@ implements Receiver, I_CmsPasswordFetcher {
         boolean allowTechnicalFieldsExport) {
 
         setHeight(DIALOG_HEIGHT);
-
         m_groupID = groupID;
-
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
-        } catch (CmsException e1) {
-            //
+        } catch (CmsException e) {
+            LOG.error("Unable to initialize the CMS context for CSV user import/export.", e);
         }
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_includeTechnicalFieldsPanel.setVisible(allowTechnicalFieldsExport);
@@ -207,22 +124,16 @@ implements Receiver, I_CmsPasswordFetcher {
             public void valueChange(ValueChangeEvent event) {
 
                 initDownloadButton();
-
             }
-
         });
         m_importPasswords.setValue(Boolean.TRUE);
         m_sendMail.setValue(Boolean.TRUE);
-
         setButtonVisibility(0);
-
         m_tab.addSelectedTabChangeListener(
             event -> setButtonVisibility(m_tab.getTabPosition(m_tab.getTab(m_tab.getSelectedTab()))));
-
         m_password.setValue(CmsGeneratePasswordDialog.getRandomPassword());
         m_startImport.setEnabled(false);
         m_startImport.addClickListener(event -> importUserFromFile());
-
         m_generateButton.addClickListener(new Button.ClickListener() {
 
             private static final long serialVersionUID = 4128513094772586752L;
@@ -239,16 +150,13 @@ implements Receiver, I_CmsPasswordFetcher {
                         public void run() {
 
                             windowDialog.close();
-
                         }
                     });
                 windowDialog.setContent(dialog);
                 A_CmsUI.get().addWindow(windowDialog);
             }
         });
-
         m_upload.setReceiver(this);
-
         m_upload.addSucceededListener(new Upload.SucceededListener() {
 
             private static final long serialVersionUID = -6865652127878123021L;
@@ -257,10 +165,10 @@ implements Receiver, I_CmsPasswordFetcher {
 
                 try {
                     m_userImportList = getUsersFromFile();
-                    m_startImport.setEnabled(true);
+                    m_startImport.setEnabled(!m_userImportList.isEmpty());
                     m_uploadname.setValue(event.getFilename());
-                } catch (Exception e) {
-                    //wrong csv columns
+                } catch (RuntimeException e) {
+                    LOG.error("Invalid CSV user import file '" + event.getFilename() + "'.", e);
                     m_startImport.setEnabled(false);
                     m_uploadname.setValue("");
                     CmsConfirmationDialog.show(
@@ -270,35 +178,29 @@ implements Receiver, I_CmsPasswordFetcher {
 
                             public void run() {
 
+                                // nothing to do
                             }
-
                         });
                 }
             }
         });
 
         if (groupID == null) {
-
             m_importGroupsGroup = new CmsEditableGroup(m_importGroups, new Supplier<Component>() {
 
                 public Component get() {
 
                     return getGroupSelect(ou, true, null);
                 }
-
             }, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_GROUP_0));
-
             m_importGroupsGroup.init();
-
             m_exportGroupsGroup = new CmsEditableGroup(m_exportGroups, new Supplier<Component>() {
 
                 public Component get() {
 
                     return getGroupSelect(ou, true, null);
                 }
-
             }, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_GROUP_0));
-
             m_exportGroupsGroup.init();
         } else {
             m_exportGroups.addComponent(getGroupSelect(ou, false, groupID));
@@ -311,42 +213,25 @@ implements Receiver, I_CmsPasswordFetcher {
 
                 return getRoleComboBox(ou);
             }
-
         }, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_ROLE_0));
-
         m_importRolesGroup.init();
-
         m_exportRolesGroup = new CmsEditableGroup(m_exportRoles, new Supplier<Component>() {
 
             public Component get() {
 
                 return getRoleComboBox(ou);
             }
-
         }, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_ADD_ROLE_0));
-
         m_exportRolesGroup.init();
-
         super.init(ou, window);
-
     }
 
-    /**
-     * Returns a map with the users to export added.<p>
-     * @param cms CmsObject
-     * @param ou ou name
-     * @param exportUsers the map to add the users
-     * @return a map with the users to export added
-     * @throws CmsException if getting users failed
-     */
     public static Map<CmsUUID, CmsUser> addExportAllUsers(CmsObject cms, String ou, Map<CmsUUID, CmsUser> exportUsers)
     throws CmsException {
 
         List<CmsUser> users = OpenCms.getOrgUnitManager().getUsers(cms, ou, false);
-        if ((users != null) && (users.size() > 0)) {
-            Iterator<CmsUser> itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = itUsers.next();
+        if (users != null) {
+            for (CmsUser user : users) {
                 if (!exportUsers.containsKey(user.getId())) {
                     exportUsers.put(user.getId(), user);
                 }
@@ -355,31 +240,17 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
-    /**
-     * Returns a map with the users to export added.<p>
-     * @param cms CmsObject
-     * @param groups the selected groups
-     * @param exportUsers the map to add the users
-     *
-     * @return a map with the users to export added
-     *
-     * @throws CmsException if getting groups or users of group failed
-     */
     public static Map<CmsUUID, CmsUser> addExportUsersFromGroups(
         CmsObject cms,
         List<String> groups,
         Map<CmsUUID, CmsUser> exportUsers)
     throws CmsException {
 
-        if ((groups != null) && (groups.size() > 0)) {
-            Iterator<String> itGroups = groups.iterator();
-            while (itGroups.hasNext()) {
-                List<CmsUser> groupUsers = cms.getUsersOfGroup(itGroups.next());
-                Iterator<CmsUser> itGroupUsers = groupUsers.iterator();
-                while (itGroupUsers.hasNext()) {
-                    CmsUser groupUser = itGroupUsers.next();
-                    if (!exportUsers.containsKey(groupUser.getId())) {
-                        exportUsers.put(groupUser.getId(), groupUser);
+        if (groups != null) {
+            for (String group : groups) {
+                for (CmsUser user : cms.getUsersOfGroup(group)) {
+                    if (!exportUsers.containsKey(user.getId())) {
+                        exportUsers.put(user.getId(), user);
                     }
                 }
             }
@@ -387,18 +258,6 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
-    /**
-     * Returns a map with the users to export added.<p>
-     * @param cms CmsObject
-     * @param ou ou name
-     *
-     * @param roles the selected roles
-     * @param exportUsers the map to add the users
-     *
-     * @return a map with the users to export added
-     *
-     * @throws CmsException if getting roles or users of role failed
-     */
     public static Map<CmsUUID, CmsUser> addExportUsersFromRoles(
         CmsObject cms,
         String ou,
@@ -406,20 +265,16 @@ implements Receiver, I_CmsPasswordFetcher {
         Map<CmsUUID, CmsUser> exportUsers)
     throws CmsException {
 
-        if ((roles != null) && (roles.size() > 0)) {
-            Iterator<String> itRoles = roles.iterator();
-            while (itRoles.hasNext()) {
+        if (roles != null) {
+            for (String role : roles) {
                 List<CmsUser> roleUsers = OpenCms.getRoleManager().getUsersOfRole(
                     cms,
-                    CmsRole.valueOfGroupName(itRoles.next()).forOrgUnit(ou),
+                    CmsRole.valueOfGroupName(role).forOrgUnit(ou),
                     true,
                     false);
-                Iterator<CmsUser> itRoleUsers = roleUsers.iterator();
-                while (itRoleUsers.hasNext()) {
-                    CmsUser roleUser = itRoleUsers.next();
-                    // contains
-                    if (exportUsers.get(roleUser.getId()) == null) {
-                        exportUsers.put(roleUser.getId(), roleUser);
+                for (CmsUser user : roleUsers) {
+                    if (!exportUsers.containsKey(user.getId())) {
+                        exportUsers.put(user.getId(), user);
                     }
                 }
             }
@@ -427,68 +282,34 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
-    /**
-     * Gets an dialog instance for fixed group.<p>
-     *
-     * @param groupID id
-     * @param ou ou name
-     * @param window window
-     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
-     * @return an instance of this class
-         */
     public static CmsImportExportUserDialog getExportUserDialogForGroup(
         CmsUUID groupID,
         String ou,
         Window window,
         boolean allowTechnicalFieldsExport) {
 
-        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, groupID, window, allowTechnicalFieldsExport);
-        return res;
+        return new CmsImportExportUserDialog(ou, groupID, window, allowTechnicalFieldsExport);
     }
 
-    /**
-     * Gets an dialog instance for fixed group.<p>
-     *
-     * @param ou ou name
-     * @param window window
-     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
-     * @return an instance of this class
-     */
     public static CmsImportExportUserDialog getExportUserDialogForOU(
         String ou,
         Window window,
         boolean allowTechnicalFieldsExport) {
 
-        CmsImportExportUserDialog res = new CmsImportExportUserDialog(ou, null, window, allowTechnicalFieldsExport);
-        return res;
+        return new CmsImportExportUserDialog(ou, null, window, allowTechnicalFieldsExport);
     }
 
-    /**
-     * @see org.opencms.ui.apps.user.I_CmsPasswordFetcher#fetchPassword(java.lang.String)
-     */
     public void fetchPassword(String password) {
 
         m_password.setValue(password);
-
     }
 
-    /**
-     * @see com.vaadin.ui.Upload.Receiver#receiveUpload(java.lang.String, java.lang.String)
-     */
     public OutputStream receiveUpload(String filename, String mimeType) {
 
         m_importFileStream = new ByteArrayOutputStream();
         return m_importFileStream;
     }
 
-    /**
-     * Get a principle select for choosing groups.<p>
-     *
-     * @param ou name
-     * @param enabled enabled?
-     * @param groupID default value
-     * @return CmsPrinicpalSelect
-     */
     protected CmsPrincipalSelect getGroupSelect(String ou, boolean enabled, CmsUUID groupID) {
 
         CmsPrincipalSelect select = new CmsPrincipalSelect();
@@ -497,7 +318,6 @@ implements Receiver, I_CmsPasswordFetcher {
         select.setRealPrincipalsOnly(true);
         select.setPrincipalType(I_CmsPrincipal.PRINCIPAL_GROUP);
         select.setWidgetType(WidgetType.groupwidget);
-
         if (groupID != null) {
             try {
                 select.setValue(m_cms.readGroup(groupID).getName());
@@ -505,125 +325,147 @@ implements Receiver, I_CmsPasswordFetcher {
                 LOG.error("Unable to read group", e);
             }
         }
-
-        //OU Change enabled because ou-user can be part of other ou-groups
         return select;
     }
 
-    /**
-     * Get ComboBox for selecting roles.<p>
-     *
-     * @param ou name
-     * @return ComboBox
-     */
     protected ComboBox<CmsRole> getRoleComboBox(String ou) {
 
         ComboBox<CmsRole> box = new ComboBox<CmsRole>();
         CmsUserEditDialog.iniRole(A_CmsUI.getCmsObject(), ou, box, null);
         box.setSelectedItem(CmsRole.EDITOR.forOrgUnit(ou));
-
         return box;
     }
 
-    /**
-     * Reads user from import file.<p>
-     *
-     * @return List of user (with passwords)
-     */
     protected List<CmsUser> getUsersFromFile() {
 
-        String separator = null;
-        List values = null;
-
-        FileReader fileReader;
-        BufferedReader bufferedReader;
-        List<CmsUser> users = null;
+        if (m_importFileStream == null) {
+            throw new IllegalArgumentException("No CSV import data is available.");
+        }
 
         boolean keepPasswordIfPossible = m_importPasswords.getValue().booleanValue();
+        List<CmsUser> users = new ArrayList<CmsUser>();
+        List<String> columns = null;
+        String separator = null;
+        int lineNumber = 0;
 
-        try {
-            bufferedReader = new BufferedReader(
-                new InputStreamReader(new ByteArrayInputStream(m_importFileStream.toByteArray())));
+        try (BufferedReader reader = new BufferedReader(
+            new InputStreamReader(new ByteArrayInputStream(m_importFileStream.toByteArray())))) {
             String line;
-            boolean headline = true;
-            boolean hasBOM = false;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (users == null) {
-                    users = new ArrayList<CmsUser>();
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if ((lineNumber == 1) && CmsStringUtil.isEmptyOrWhitespaceOnly(line)) {
+                    throw new IllegalArgumentException("The CSV header is empty.");
                 }
                 if (separator == null) {
                     separator = CmsXsltUtil.getPreferredDelimiter(line);
                 }
-                List lineValues = Splitter.on(separator).splitToList(line);
-                if (headline) {
-                    values = new ArrayList();
-                    Iterator itLineValues = lineValues.iterator();
-                    while (itLineValues.hasNext()) {
-                        String va = (String)itLineValues.next();
-                        if (va.startsWith(BOM) && va.substring(1, 2).equals("\"")) {
-                            hasBOM = true;
-                            va = va.substring(1); //Cut BOM
-                        }
-                        if (hasBOM) {
-                            va = va.substring(1, va.length() - 1);
-                        }
-                        //}
-                        values.add(va);
-                    }
-                    headline = false;
-                } else if (values != null) {
-                    CmsUser curUser = new CmsUser();
-                    try {
-                        for (int i = 0; i < values.size(); i++) {
-                            String curValue = (String)values.get(i);
-                            try {
-                                Method method = CmsUser.class.getMethod(
-                                    "set" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1),
-                                    new Class[] {String.class});
-                                String value = "";
-                                if ((lineValues.size() > i) && (lineValues.get(i) != null)) {
-                                    value = (String)lineValues.get(i);
-                                    if (hasBOM) {
-
-                                        value = value.substring(1, value.length() - 1);
-                                    }
-
-                                }
-                                if (curValue.equals("password")) {
-                                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) | !keepPasswordIfPossible) {
-                                        value = m_password.getValue();
-                                    }
-                                }
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value) && !value.equals("null")) {
-                                    method.invoke(curUser, new Object[] {value});
-                                }
-                            } catch (NoSuchMethodException ne) {
-                                if (!CmsStringUtil.isEmptyOrWhitespaceOnly((String)lineValues.get(i))) {
-                                    curUser.setAdditionalInfo(curValue, lineValues.get(i));
-                                }
-                            } catch (IllegalAccessException le) {
-                                //
-                            } catch (InvocationTargetException te) {
-                                //
-                            }
-                        }
-                    } catch (CmsRuntimeException e) {
-                        //
-                    }
-                    users.add(curUser);
+                List<String> lineValues = Splitter.on(separator).splitToList(line);
+                if (columns == null) {
+                    columns = normalizeHeader(lineValues);
+                    validateHeader(columns);
+                    continue;
                 }
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(line)) {
+                    continue;
+                }
+                users.add(parseUser(columns, lineValues, lineNumber, keepPasswordIfPossible));
             }
-            bufferedReader.close();
         } catch (IOException e) {
-            //noop
+            throw new CmsRuntimeException("Unable to read the CSV user import file.", e);
         }
 
+        if (columns == null) {
+            throw new IllegalArgumentException("The CSV file does not contain a header.");
+        }
         return users;
     }
 
-    /**
-     * Import user from file.
-     */
+    private List<String> normalizeHeader(List<String> rawHeader) {
+
+        List<String> result = new ArrayList<String>();
+        for (int i = 0; i < rawHeader.size(); i++) {
+            String column = CmsCsvImportUtils.normalizeToken(rawHeader.get(i));
+            if (column != null) {
+                column = column.trim();
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(column)) {
+                throw new IllegalArgumentException("CSV column " + (i + 1) + " has an empty name.");
+            }
+            if (result.contains(column)) {
+                throw new IllegalArgumentException("Duplicate CSV column '" + column + "'.");
+            }
+            result.add(column);
+        }
+        return result;
+    }
+
+    private CmsUser parseUser(
+        List<String> columns,
+        List<String> rawValues,
+        int lineNumber,
+        boolean keepPasswordIfPossible) {
+
+        CmsUser user = new CmsUser();
+        for (int i = 0; i < columns.size(); i++) {
+            String column = columns.get(i);
+            String value = i < rawValues.size() ? CmsCsvImportUtils.normalizeToken(rawValues.get(i)) : "";
+            if (value == null) {
+                value = "";
+            }
+            if ("password".equals(column)
+                && (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || !keepPasswordIfPossible)) {
+                value = m_password.getValue();
+            }
+            setUserValue(user, column, value, lineNumber);
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getName())) {
+            throw new IllegalArgumentException("CSV line " + lineNumber + " does not contain a user name.");
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getPassword())) {
+            user.setPassword(m_password.getValue());
+        }
+        return user;
+    }
+
+    private void setUserValue(CmsUser user, String column, String value, int lineNumber) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || "null".equals(value)) {
+            return;
+        }
+        try {
+            Method method = CmsUser.class.getMethod(
+                "set" + column.substring(0, 1).toUpperCase() + column.substring(1),
+                new Class[] {String.class});
+            method.invoke(user, new Object[] {value});
+        } catch (NoSuchMethodException e) {
+            user.setAdditionalInfo(column, value);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(
+                "CSV line " + lineNumber + ": field '" + column + "' is not accessible.",
+                e);
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            throw new IllegalArgumentException(
+                "CSV line " + lineNumber + ": invalid value for field '" + column + "'.",
+                cause);
+        } catch (CmsRuntimeException e) {
+            throw new IllegalArgumentException(
+                "CSV line " + lineNumber + ": unable to set field '" + column + "'.",
+                e);
+        }
+    }
+
+    private void validateHeader(List<String> columns) {
+
+        if (!columns.contains("name")) {
+            throw new IllegalArgumentException("The mandatory CSV column 'name' is missing.");
+        }
+        if (!columns.contains("password")) {
+            LOG.warn(
+                "CSV user import does not contain a password column. The password configured in the dialog will be used for all users.");
+        }
+    }
+
     protected void importUserFromFile() {
 
         CmsImportUserThread thread = new CmsImportUserThread(
@@ -642,50 +484,37 @@ implements Receiver, I_CmsPasswordFetcher {
             }
         });
         m_window.setContent(dialog);
-
     }
 
-    /**
-     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getCloseButton()
-     */
     @Override
     Button getCloseButton() {
 
         return m_cancel;
     }
 
-    /**
-     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getDownloadButton()
-     */
     @Override
     Button getDownloadButton() {
 
         return m_download;
     }
 
-    /**
-     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getUserToExport()
-     */
     @Override
     Map<CmsUUID, CmsUser> getUserToExport() {
 
-        // get the data object from session
         List<String> groups = getGroupsList(m_exportGroups, false);
-
         Iterator<I_CmsEditableGroupRow> it = m_exportRolesGroup.getRows().iterator();
         List<String> roles = new ArrayList<String>();
         while (it.hasNext()) {
             CmsRole role = (CmsRole)((ComboBox)it.next().getComponent()).getValue();
             roles.add(role.getGroupName());
         }
-
         Map<CmsUUID, CmsUser> exportUsers = new HashMap<CmsUUID, CmsUser>();
         try {
-            if (((groups.size() < 1)) && ((roles.size() < 1))) {
-                exportUsers = CmsImportExportUserDialog.addExportAllUsers(m_cms, m_ou, exportUsers);
+            if ((groups.size() < 1) && (roles.size() < 1)) {
+                exportUsers = addExportAllUsers(m_cms, m_ou, exportUsers);
             } else {
-                exportUsers = CmsImportExportUserDialog.addExportUsersFromGroups(m_cms, groups, exportUsers);
-                exportUsers = CmsImportExportUserDialog.addExportUsersFromRoles(m_cms, m_ou, roles, exportUsers);
+                exportUsers = addExportUsersFromGroups(m_cms, groups, exportUsers);
+                exportUsers = addExportUsersFromRoles(m_cms, m_ou, roles, exportUsers);
             }
         } catch (CmsException e) {
             LOG.error("Unable to get export user list.", e);
@@ -693,77 +522,51 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
-    /**
-     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#isExportWithTechnicalFields()
-     */
     @Override
     boolean isExportWithTechnicalFields() {
 
         return m_includeTechnicalFields.getValue().booleanValue();
     }
 
-    /**
-     * Gets selected groups in List.<p>
-     *
-     * @param parent layout
-     * @param importCase boolean
-     * @return List of group names
-     */
     private List<String> getGroupsList(VerticalLayout parent, boolean importCase) {
 
-        List<String> res = new ArrayList<String>();
-
+        List<String> result = new ArrayList<String>();
         if (m_groupID != null) {
             try {
-                res.add(m_cms.readGroup(m_groupID).getName());
+                result.add(m_cms.readGroup(m_groupID).getName());
             } catch (CmsException e) {
                 LOG.error("Unable to read group", e);
             }
-            return res;
+            return result;
         }
-
         if (m_groupEditable) {
             CmsEditableGroup editableGroup = importCase ? m_importGroupsGroup : m_exportGroupsGroup;
             for (I_CmsEditableGroupRow row : editableGroup.getRows()) {
                 String groupName = ((CmsPrincipalSelect)row.getComponent()).getValue();
                 if (!CmsStringUtil.isEmptyOrWhitespaceOnly(groupName)) {
-                    res.add(groupName);
+                    result.add(groupName);
                 }
             }
         } else {
-            TextField comp = (TextField)parent.getComponent(0);
-            res.add(comp.getValue());
+            TextField component = (TextField)parent.getComponent(0);
+            result.add(component.getValue());
         }
-        return res;
+        return result;
     }
 
-    /**
-     * Get selected roles list.<p>
-     *
-     * @param parent layout
-     * @param importCase boolean
-     * @return List of roles
-     */
     private List<CmsRole> getRolesList(VerticalLayout parent, boolean importCase) {
 
-        List<CmsRole> res = new ArrayList<CmsRole>();
-
+        List<CmsRole> result = new ArrayList<CmsRole>();
         CmsEditableGroup editableGroup = importCase ? m_importRolesGroup : m_exportRolesGroup;
         for (I_CmsEditableGroupRow row : editableGroup.getRows()) {
-            res.add(((ComboBox<CmsRole>)row.getComponent()).getValue());
+            result.add(((ComboBox<CmsRole>)row.getComponent()).getValue());
         }
-        return res;
+        return result;
     }
 
-    /**
-     * Set the visibility of the buttons.<p>
-     *
-     * @param tab which is selected.
-     */
     private void setButtonVisibility(int tab) {
 
         m_download.setVisible(tab == 1);
         m_startImport.setVisible(tab == 0);
-
     }
 }
