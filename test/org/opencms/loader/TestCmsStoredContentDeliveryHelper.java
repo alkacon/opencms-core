@@ -111,6 +111,7 @@ public class TestCmsStoredContentDeliveryHelper {
         void setDateHeader(String name, long value) {
 
             m_dateHeaders.put(name, Long.valueOf(value));
+            m_headers.put(name, String.valueOf(value));
         }
 
         /**
@@ -444,6 +445,31 @@ public class TestCmsStoredContentDeliveryHelper {
     }
 
     /**
+     * Tests that Range is ignored for HEAD requests.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverHeadIgnoresRange() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder request = createRequest();
+        request.setMethod("HEAD");
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+        ResponseRecorder response = new ResponseRecorder();
+
+        CmsStoredContentDeliveryHelper.DeliveryResult result = deliver(storage, request, response);
+
+        assertEquals(CmsStoredContentDeliveryHelper.DeliveryResult.DELIVERED, result);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        assertEquals(CONTENT.length, response.getContentLength());
+        assertNull(response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+        assertEquals(0, response.getBody().length);
+        assertFalse(storage.m_streamedFull);
+        assertFalse(storage.m_streamedRange);
+    }
+
+    /**
      * Tests HEAD delivery.<p>
      *
      * @throws Exception if something goes wrong
@@ -493,6 +519,63 @@ public class TestCmsStoredContentDeliveryHelper {
     }
 
     /**
+     * Tests that conditional request evaluation takes precedence over Range.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverIfNoneMatchTakesPrecedenceOverRange() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder request = createRequest();
+        request.setHeader(CmsRequestUtil.HEADER_IF_NONE_MATCH, getETag());
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+        ResponseRecorder response = new ResponseRecorder();
+
+        CmsStoredContentDeliveryHelper.DeliveryResult result = deliver(storage, request, response);
+
+        assertEquals(CmsStoredContentDeliveryHelper.DeliveryResult.NOT_MODIFIED, result);
+        assertEquals(HttpServletResponse.SC_NOT_MODIFIED, response.getStatus());
+        assertNull(response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+        assertEquals(0, response.getBody().length);
+        assertFalse(storage.m_streamedFull);
+        assertFalse(storage.m_streamedRange);
+    }
+
+    /**
+     * Tests that If-Range dates have to match Last-Modified exactly.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverIfRangeDateRequiresExactMatch() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder matchingRequest = createRequest();
+        matchingRequest.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+        matchingRequest.setDateHeader(CmsRequestUtil.HEADER_IF_RANGE, LAST_MODIFIED);
+        ResponseRecorder matchingResponse = new ResponseRecorder();
+
+        deliver(storage, matchingRequest, matchingResponse);
+
+        assertEquals(HttpServletResponse.SC_PARTIAL_CONTENT, matchingResponse.getStatus());
+        assertArrayEquals("456789".getBytes(), matchingResponse.getBody());
+
+        storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder newerRequest = createRequest();
+        newerRequest.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+        newerRequest.setDateHeader(CmsRequestUtil.HEADER_IF_RANGE, LAST_MODIFIED + 1000);
+        ResponseRecorder newerResponse = new ResponseRecorder();
+
+        deliver(storage, newerRequest, newerResponse);
+
+        assertEquals(HttpServletResponse.SC_OK, newerResponse.getStatus());
+        assertArrayEquals(CONTENT, newerResponse.getBody());
+        assertTrue(storage.m_streamedFull);
+        assertFalse(storage.m_streamedRange);
+    }
+
+    /**
      * Tests matching If-Range ETag delivery.<p>
      *
      * @throws Exception if something goes wrong
@@ -533,6 +616,29 @@ public class TestCmsStoredContentDeliveryHelper {
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         assertArrayEquals(CONTENT, response.getBody());
         assertTrue(storage.m_streamedFull);
+        assertFalse(storage.m_streamedRange);
+    }
+
+    /**
+     * Tests that methods other than GET and HEAD are not handled.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverIgnoresUnsupportedMethod() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder request = createRequest();
+        request.setMethod("POST");
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+        ResponseRecorder response = new ResponseRecorder();
+
+        CmsStoredContentDeliveryHelper.DeliveryResult result = deliver(storage, request, response);
+
+        assertEquals(CmsStoredContentDeliveryHelper.DeliveryResult.NOT_DELIVERABLE, result);
+        assertEquals(-1, response.getStatus());
+        assertEquals(0, response.getBody().length);
+        assertFalse(storage.m_streamedFull);
         assertFalse(storage.m_streamedRange);
     }
 
@@ -594,6 +700,7 @@ public class TestCmsStoredContentDeliveryHelper {
         request.setDateHeader(
             CmsRequestUtil.HEADER_IF_MODIFIED_SINCE,
             (createResource().getDateLastModified() / 1000) * 1000);
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
         ResponseRecorder response = new ResponseRecorder();
 
         CmsStoredContentDeliveryHelper.DeliveryResult result = deliver(storage, request, response);
@@ -601,6 +708,7 @@ public class TestCmsStoredContentDeliveryHelper {
         assertEquals(CmsStoredContentDeliveryHelper.DeliveryResult.NOT_MODIFIED, result);
         assertEquals(HttpServletResponse.SC_NOT_MODIFIED, response.getStatus());
         assertEquals(getETag(), response.getHeader(CmsRequestUtil.HEADER_ETAG));
+        assertNull(response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
         assertEquals(0, response.getBody().length);
         assertFalse(storage.m_streamedFull);
         assertFalse(storage.m_streamedRange);
@@ -677,6 +785,49 @@ public class TestCmsStoredContentDeliveryHelper {
         assertTrue(storage.m_streamedFull);
         assertFalse(storage.m_streamedRange);
         assertNull(response.getHeader(CmsRequestUtil.HEADER_ACCEPT_RANGES));
+    }
+
+    /**
+     * Tests Range delivery for an empty representation.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverRangeForEmptyContent() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(new byte[0]);
+        RequestRecorder request = createRequest();
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=-1");
+        ResponseRecorder response = new ResponseRecorder();
+
+        CmsStoredContentDeliveryHelper.DeliveryResult result = deliver(storage, request, response);
+
+        assertEquals(CmsStoredContentDeliveryHelper.DeliveryResult.RANGE_NOT_SATISFIABLE, result);
+        assertEquals(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE, response.getStatus());
+        assertEquals("bytes */0", response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+        assertEquals(0, response.getBody().length);
+        assertFalse(storage.m_streamedFull);
+        assertFalse(storage.m_streamedRange);
+    }
+
+    /**
+     * Tests that the bytes range unit is case insensitive.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testDeliverRangeUnitIsCaseInsensitive() throws Exception {
+
+        TestStorageDelivery storage = new TestStorageDelivery(CONTENT);
+        RequestRecorder request = createRequest();
+        request.setHeader(CmsRequestUtil.HEADER_RANGE, "BYTES=4-9");
+        ResponseRecorder response = new ResponseRecorder();
+
+        deliver(storage, request, response);
+
+        assertEquals(HttpServletResponse.SC_PARTIAL_CONTENT, response.getStatus());
+        assertEquals("bytes 4-9/16", response.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+        assertArrayEquals("456789".getBytes(), response.getBody());
     }
 
     /**
@@ -804,6 +955,20 @@ public class TestCmsStoredContentDeliveryHelper {
     }
 
     /**
+     * Creates stored content info with an explicit content length.<p>
+     *
+     * @param storage the storage id
+     * @param hash the content hash
+     * @param length the content length
+     *
+     * @return the stored content info
+     */
+    private CmsStoredContentInfo createInfo(String storage, String hash, long length) {
+
+        return new CmsStoredContentInfo(createResource(), storage, hash, length);
+    }
+
+    /**
      * Creates a request proxy.<p>
      *
      * @return the request recorder
@@ -859,7 +1024,7 @@ public class TestCmsStoredContentDeliveryHelper {
     throws Exception {
 
         return new CmsStoredContentDeliveryHelper().deliver(
-            createInfo(),
+            createInfo(STORAGE, HASH, storage.m_content.length),
             storage,
             (HttpServletRequest)Proxy.newProxyInstance(
                 getClass().getClassLoader(),

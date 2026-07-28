@@ -27,26 +27,38 @@
 
 package org.opencms.loader;
 
-import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.util.CmsStringUtil;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-import java.nio.file.Paths;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * File system based storage for generated image cache entries.<p>
  */
 public class CmsFsImageCache extends CmsRfsImageCache {
 
-    /** Configuration parameter for the image cache path. */
-    public static final String PARAM_PATH = "path";
+    /** Maximum number of file lengths kept locally. */
+    private static final int LENGTH_CACHE_MAX_SIZE = 10000;
 
-    /**
-     * Creates a new uninitialized FS image cache.<p>
-     */
-    public CmsFsImageCache() {
+    /** Number of minutes after which a cached file length expires. */
+    private static final int LENGTH_CACHE_EXPIRY_MINUTES = 10;
 
-        super();
-    }
+    /** Locally cached file lengths. */
+    private Cache<Path, Long> m_lengthCache = CacheBuilder.newBuilder().maximumSize(
+        LENGTH_CACHE_MAX_SIZE).expireAfterAccess(LENGTH_CACHE_EXPIRY_MINUTES, TimeUnit.MINUTES).build();
 
     /**
      * Creates a new FS image cache.<p>
@@ -58,24 +70,159 @@ public class CmsFsImageCache extends CmsRfsImageCache {
     throws Exception {
 
         super(path);
+        validateAvailable();
     }
 
     /**
-     * @see org.opencms.loader.CmsRfsImageCache#initConfiguration()
+     * @see org.opencms.loader.I_CmsImageCache#close()
      */
     @Override
-    public void initConfiguration() throws CmsConfigurationException {
+    public void close() throws Exception {
 
-        String path = getConfiguration().get(PARAM_PATH);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, PARAM_PATH));
-        }
+        m_lengthCache.invalidateAll();
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#exists(java.lang.String)
+     */
+    @Override
+    public boolean exists(String key) throws Exception {
+
+        Path path = getPath(key);
         try {
-            initRepository(Paths.get(path).toAbsolutePath().normalize());
+            BasicFileAttributes attributes = Files.readAttributes(
+                path,
+                BasicFileAttributes.class,
+                LinkOption.NOFOLLOW_LINKS);
+            if (attributes.isRegularFile()) {
+                m_lengthCache.put(path, Long.valueOf(attributes.size()));
+                return true;
+            }
+            m_lengthCache.invalidate(path);
+            return false;
+        } catch (NoSuchFileException e) {
+            m_lengthCache.invalidate(path);
+            return false;
+        }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#getLength(java.lang.String)
+     */
+    @Override
+    public long getLength(String key) throws Exception {
+
+        Path path = getPath(key);
+        Long cachedLength = m_lengthCache.getIfPresent(path);
+        if (cachedLength != null) {
+            return cachedLength.longValue();
+        }
+        long length = Files.size(path);
+        m_lengthCache.put(path, Long.valueOf(length));
+        return length;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#write(java.lang.String, byte[])
+     */
+    @Override
+    public void write(String key, byte[] content) throws Exception {
+
+        Path path = getPath(key);
+        Path parent = path.getParent();
+        Files.createDirectories(parent);
+        Path temporaryFile = Files.createTempFile(parent, ".opencms-image-", ".tmp");
+        try {
+            Files.write(temporaryFile, content, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.move(temporaryFile, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            temporaryFile = null;
+            m_lengthCache.put(path, Long.valueOf(content.length));
+        } finally {
+            if (temporaryFile != null) {
+                Files.deleteIfExists(temporaryFile);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#writeRangeTo(java.lang.String, long, long, java.io.OutputStream)
+     */
+    @Override
+    public void writeRangeTo(String key, long start, long length, OutputStream out) throws Exception {
+
+        Path path = getPath(key);
+        try (SeekableByteChannel channel = Files.newByteChannel(path, StandardOpenOption.READ)) {
+            channel.position(start);
+            byte[] buffer = new byte[8192];
+            long remaining = length;
+            while (remaining > 0) {
+                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, (int)Math.min(buffer.length, remaining));
+                int read = channel.read(byteBuffer);
+                if (read < 0) {
+                    return;
+                }
+                out.write(buffer, 0, read);
+                remaining -= read;
+            }
         } catch (Exception e) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, getClass().getName()),
-                e);
+            m_lengthCache.invalidate(path);
+            throw e;
+        }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#writeTo(java.lang.String, java.io.OutputStream)
+     */
+    @Override
+    public void writeTo(String key, OutputStream out) throws Exception {
+
+        Path path = getPath(key);
+        try {
+            Files.copy(path, out);
+        } catch (Exception e) {
+            m_lengthCache.invalidate(path);
+            throw e;
+        }
+    }
+
+    /**
+     * Returns the cache path for a key.<p>
+     *
+     * @param key the image cache key
+     * @return the cache path
+     */
+    protected Path getPath(String key) {
+
+        String normalizedKey = key;
+        while (normalizedKey.startsWith("/")) {
+            normalizedKey = normalizedKey.substring(1);
+        }
+        Path repository = getRepository();
+        Path result = repository.resolve(normalizedKey).normalize();
+        if (!result.startsWith(repository)) {
+            throw new IllegalArgumentException("Image cache key outside repository: " + key);
+        }
+        return result;
+    }
+
+    /**
+     * Validates read and write access to the configured file system repository.<p>
+     *
+     * @throws Exception if validation fails
+     */
+    private void validateAvailable() throws Exception {
+
+        byte[] content = "OpenCms image cache health check".getBytes(StandardCharsets.UTF_8);
+        String key = ".opencms-healthcheck-" + UUID.randomUUID().toString();
+        Path testFile = getPath(key);
+        try {
+            write(key, content);
+            if (!Arrays.equals(content, Files.readAllBytes(testFile))) {
+                throw new IllegalStateException("FS image cache health check returned different content.");
+            }
+        } finally {
+            Files.deleteIfExists(testFile);
+            m_lengthCache.invalidate(testFile);
         }
     }
 }

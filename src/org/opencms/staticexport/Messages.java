@@ -65,6 +65,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_OUTPUT_STREAM_1 = "ERR_OUTPUT_STREAM_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_FULL_EXPORT_0 = "ERR_SHAREDCACHE_FULL_EXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_ON_DEMAND_ONLY_0 = "ERR_SHAREDCACHE_ON_DEMAND_ONLY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_VALIDATE_EXPORTPATH_0 = "ERR_VALIDATE_EXPORTPATH_0";
 
     /** Message constant for key in the resource bundle. */

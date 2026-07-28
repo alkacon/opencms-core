@@ -409,20 +409,24 @@ public class TestCmsS3Storage {
         configuration.add("storage.backend.s3test.pathStyle", "false");
         configuration.add("storage.backend.s3test.region", "eu-central-1");
         configuration.add("storage.backend.s3test.connectionTimeout", "1234");
+        configuration.add("storage.backend.s3test.connectionAcquisitionTimeout", "1334");
         configuration.add("storage.backend.s3test.socketTimeout", "2345");
         configuration.add("storage.backend.s3test.apiCallAttemptTimeout", "3456");
         configuration.add("storage.backend.s3test.apiCallTimeout", "4567");
         configuration.add("storage.backend.s3test.maxRetries", "4");
+        configuration.add("storage.backend.s3test.maxConnections", "75");
 
         CmsS3Storage storage = (CmsS3Storage)getActiveStorage(new CmsStorageManager(null, configuration));
 
         assertEquals("s3test", storage.getStorageIdentifier());
         assertEquals(false, storage.isPathStyle());
         assertEquals(1234, storage.getConnectionTimeout());
+        assertEquals(1334, storage.getConnectionAcquisitionTimeout());
         assertEquals(2345, storage.getSocketTimeout());
         assertEquals(3456, storage.getApiCallAttemptTimeout());
         assertEquals(4567, storage.getApiCallTimeout());
         assertEquals(4, storage.getMaxRetries());
+        assertEquals(75, storage.getMaxConnections());
         assertEquals("eu-central-1", storage.getRegion());
     }
 
@@ -464,10 +468,14 @@ public class TestCmsS3Storage {
         CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, new TestS3Client());
 
         assertEquals(CmsGenericS3Client.DEFAULT_CONNECTION_TIMEOUT, storage.getConnectionTimeout());
+        assertEquals(
+            CmsGenericS3Client.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT,
+            storage.getConnectionAcquisitionTimeout());
         assertEquals(CmsGenericS3Client.DEFAULT_SOCKET_TIMEOUT, storage.getSocketTimeout());
         assertEquals(CmsGenericS3Client.DEFAULT_API_CALL_ATTEMPT_TIMEOUT, storage.getApiCallAttemptTimeout());
         assertEquals(CmsGenericS3Client.DEFAULT_API_CALL_TIMEOUT, storage.getApiCallTimeout());
         assertEquals(CmsGenericS3Client.DEFAULT_MAX_RETRIES, storage.getMaxRetries());
+        assertEquals(CmsGenericS3Client.DEFAULT_MAX_CONNECTIONS, storage.getMaxConnections());
         assertEquals(CmsGenericS3Client.DEFAULT_REGION, storage.getRegion());
     }
 

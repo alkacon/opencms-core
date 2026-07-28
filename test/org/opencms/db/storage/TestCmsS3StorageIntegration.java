@@ -29,10 +29,15 @@ package org.opencms.db.storage;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
+import org.opencms.loader.CmsImageCacheFactory;
+import org.opencms.loader.CmsS3ImageCache;
+import org.opencms.loader.I_CmsImageCache;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -234,6 +239,39 @@ public class TestCmsS3StorageIntegration {
     private static boolean isEmpty(String value) {
 
         return (value == null) || (value.trim().length() == 0);
+    }
+
+    /**
+     * Tests selecting and validating an independent S3 image cache backend.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testImageCacheFactoryAgainstConfiguredS3Backend() throws Exception {
+
+        String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
+        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
+        String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
+        boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
+        ensureBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
+
+        CmsParameterConfiguration configuration = new CmsParameterConfiguration();
+        configuration.add(CmsStorageManager.PARAM_STORAGE_ACTIVE, I_CmsDbStorage.STORAGE_TYPE);
+        configuration.add(CmsStorageManager.PARAM_STORAGE_IMAGE_CACHE, "images");
+        configuration.add("storage.backend.images.type", CmsS3Storage.STORAGE_TYPE);
+        configuration.add("storage.backend.images.endpoint", endpoint);
+        configuration.add("storage.backend.images.bucket", bucket);
+        configuration.add("storage.backend.images.accessKey", accessKey);
+        configuration.add("storage.backend.images.secretKey", secretKey);
+        configuration.add("storage.backend.images.pathStyle", Boolean.toString(pathStyle));
+        configuration.add(
+            "storage.backend.images.region",
+            getConfig(PROP_REGION, ENV_REGION, CmsS3ClientConfiguration.DEFAULT_REGION));
+
+        try (I_CmsImageCache imageCache = CmsImageCacheFactory.create(configuration)) {
+            assertInstanceOf(CmsS3ImageCache.class, imageCache);
+        }
     }
 
     /**

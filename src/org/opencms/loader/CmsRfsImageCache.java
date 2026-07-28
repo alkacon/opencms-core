@@ -27,13 +27,6 @@
 
 package org.opencms.loader;
 
-import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
-
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -44,24 +37,10 @@ import java.nio.file.Paths;
 /**
  * RFS based storage for generated image cache entries.<p>
  */
-public class CmsRfsImageCache implements I_CmsImageCache, I_CmsConfigurationParameterHandler {
-
-    /** Configuration parameter for the image cache folder. */
-    public static final String PARAM_FOLDER = "folder";
+public class CmsRfsImageCache implements I_CmsImageCache {
 
     /** The image cache repository. */
     private Path m_repository;
-
-    /** The configuration parameters. */
-    private CmsParameterConfiguration m_configuration = new CmsParameterConfiguration();
-
-    /**
-     * Creates a new uninitialized RFS image cache.<p>
-     */
-    public CmsRfsImageCache() {
-
-        // empty
-    }
 
     /**
      * Creates a new RFS image cache.<p>
@@ -76,27 +55,11 @@ public class CmsRfsImageCache implements I_CmsImageCache, I_CmsConfigurationPara
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-
-        m_configuration.add(paramName, paramValue);
-    }
-
-    /**
      * @see org.opencms.loader.I_CmsImageCache#exists(java.lang.String)
      */
     public boolean exists(String key) throws Exception {
 
         return Files.isRegularFile(getPath(key), LinkOption.NOFOLLOW_LINKS);
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
-     */
-    public CmsParameterConfiguration getConfiguration() {
-
-        return m_configuration;
     }
 
     /**
@@ -108,21 +71,16 @@ public class CmsRfsImageCache implements I_CmsImageCache, I_CmsConfigurationPara
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     * Returns the absolute repository path.<p>
+     *
+     * @return the repository path
      */
-    public void initConfiguration() throws CmsConfigurationException {
+    public String getRepositoryPath() {
 
-        String folder = m_configuration.get(PARAM_FOLDER);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(folder)) {
-            folder = CmsImageLoader.IMAGE_REPOSITORY_DEFAULT;
+        if (m_repository == null) {
+            throw new IllegalStateException("Image cache has not been initialized.");
         }
-        try {
-            initRepository(resolveRepositoryFolder(folder));
-        } catch (Exception e) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, getClass().getName()),
-                e);
-        }
+        return m_repository.toString();
     }
 
     /**
@@ -172,6 +130,19 @@ public class CmsRfsImageCache implements I_CmsImageCache, I_CmsConfigurationPara
     }
 
     /**
+     * Returns the image cache repository.<p>
+     *
+     * @return the repository
+     */
+    protected Path getRepository() {
+
+        if (m_repository == null) {
+            throw new IllegalStateException("Image cache has not been initialized.");
+        }
+        return m_repository;
+    }
+
+    /**
      * Initializes the image cache repository.<p>
      *
      * @param repository the image cache repository
@@ -207,19 +178,6 @@ public class CmsRfsImageCache implements I_CmsImageCache, I_CmsConfigurationPara
             throw new IllegalArgumentException("Image cache key outside repository: " + key);
         }
         return result;
-    }
-
-    /**
-     * Resolves a classic RFS image cache folder relative to the web application root.<p>
-     *
-     * @param folder the configured image cache folder
-     * @return the resolved repository folder
-     */
-    private Path resolveRepositoryFolder(String folder) {
-
-        return Paths.get(
-            OpenCms.getSystemInfo().getWebApplicationRfsPath(),
-            folder.replace('/', File.separatorChar)).toAbsolutePath().normalize();
     }
 
     /**

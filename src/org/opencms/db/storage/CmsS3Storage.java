@@ -448,6 +448,16 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
     }
 
     /**
+     * Returns the configured connection acquisition timeout.<p>
+     *
+     * @return the timeout in milliseconds
+     */
+    int getConnectionAcquisitionTimeout() {
+
+        return m_configuration.getConnectionAcquisitionTimeout();
+    }
+
+    /**
      * Returns the configured connection timeout.
      *
      * @return the timeout in milliseconds
@@ -455,6 +465,16 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
     int getConnectionTimeout() {
 
         return m_configuration.getConnectionTimeout();
+    }
+
+    /**
+     * Returns the configured maximum number of pooled connections.<p>
+     *
+     * @return the maximum number of pooled connections
+     */
+    int getMaxConnections() {
+
+        return m_configuration.getMaxConnections();
     }
 
     /**

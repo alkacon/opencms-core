@@ -138,7 +138,13 @@
             <suffix key=".avi" />
         </enabledsuffixes>
     </storedcontentdelivery>
-    <imagecache class="org.opencms.loader.CmsRfsImageCache" />
+    <sharedcache enabled="false">
+        <cachepolicy>
+            <clientmaxage>0</clientmaxage>
+            <sharedmaxage>86400</sharedmaxage>
+            <staleiferror>604800</staleiferror>
+        </cachepolicy>
+    </sharedcache>
     <!-- Use the protected export feature to statically export resources while still ensuring resource permissions are not violated. This will work for static resources like images and binaries only. <protectedexport> <exportpath>protected</exportpath> <exportpoints> <exportpoint uri="/sites/default/documents/" destination="documents/"/> </exportpoints> </protectedexport> -->
     <usercsvexport>
         <separator>;</separator>

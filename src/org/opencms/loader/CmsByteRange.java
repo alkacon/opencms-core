@@ -61,9 +61,12 @@ class CmsByteRange {
     static CmsByteRange parse(String rangeHeader, long contentLength) {
 
         if ((rangeHeader == null)
-            || !rangeHeader.startsWith(RANGE_UNIT_BYTES_PREFIX)
+            || !rangeHeader.regionMatches(true, 0, RANGE_UNIT_BYTES_PREFIX, 0, RANGE_UNIT_BYTES_PREFIX.length())
             || (rangeHeader.indexOf(',') >= 0)) {
             return ignored();
+        }
+        if (contentLength <= 0) {
+            return invalid();
         }
         String rangeSpec = rangeHeader.substring(RANGE_UNIT_BYTES_PREFIX.length()).trim();
         int dashIndex = rangeSpec.indexOf('-');

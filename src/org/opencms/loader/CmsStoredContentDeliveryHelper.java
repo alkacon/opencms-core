@@ -120,17 +120,18 @@ public class CmsStoredContentDeliveryHelper {
         HttpServletResponse res)
     throws IOException, CmsException {
 
-        if (!canDeliver(info, storage) || (req == null) || (res == null)) {
+        if (!canDeliver(info, storage) || (req == null) || (res == null) || !isGetOrHeadRequest(req)) {
             return DeliveryResult.NOT_DELIVERABLE;
         }
         CmsResource resource = info.getResource();
-        String rangeHeader = req.getHeader(CmsRequestUtil.HEADER_RANGE);
-        boolean rangeRequest = (rangeHeader != null)
-            && storage.supportsRangeDelivery()
-            && matchesIfRange(req, resource, info);
-        if (!rangeRequest && isNotModified(info, req, res)) {
+        if (isNotModified(info, req, res)) {
             return DeliveryResult.NOT_MODIFIED;
         }
+        String rangeHeader = req.getHeader(CmsRequestUtil.HEADER_RANGE);
+        boolean rangeRequest = (rangeHeader != null)
+            && isGetRequest(req)
+            && storage.supportsRangeDelivery()
+            && matchesIfRange(req, resource, info);
         if (storage.supportsRangeDelivery()) {
             res.setHeader(CmsRequestUtil.HEADER_ACCEPT_RANGES, CmsByteRange.RANGE_UNIT_BYTES);
         }
@@ -177,6 +178,30 @@ public class CmsStoredContentDeliveryHelper {
 
         String tag = value.trim();
         return tag.startsWith("\"") || tag.startsWith(WEAK_ETAG_PREFIX + "\"");
+    }
+
+    /**
+     * Returns if the request is a GET or HEAD request.<p>
+     *
+     * @param req the request
+     *
+     * @return if the request is a GET or HEAD request
+     */
+    private boolean isGetOrHeadRequest(HttpServletRequest req) {
+
+        return isGetRequest(req) || isHeadRequest(req);
+    }
+
+    /**
+     * Returns if the request is a GET request.<p>
+     *
+     * @param req the request
+     *
+     * @return if the request is a GET request
+     */
+    private boolean isGetRequest(HttpServletRequest req) {
+
+        return "GET".equalsIgnoreCase(req.getMethod());
     }
 
     /**
@@ -264,7 +289,7 @@ public class CmsStoredContentDeliveryHelper {
         }
         try {
             long ifRangeDate = req.getDateHeader(CmsRequestUtil.HEADER_IF_RANGE);
-            return (ifRangeDate >= 0) && ((resource.getDateLastModified() / 1000) * 1000 <= ifRangeDate);
+            return (ifRangeDate >= 0) && ((resource.getDateLastModified() / 1000) * 1000 == ifRangeDate);
         } catch (IllegalArgumentException e) {
             return false;
         }

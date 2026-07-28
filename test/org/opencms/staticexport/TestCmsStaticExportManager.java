@@ -215,6 +215,30 @@ public class TestCmsStaticExportManager extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that a full RFS export can not be started in shared-cache mode.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Order(4)
+    public void testFullStaticExportIsRejectedInSharedCacheMode() throws Exception {
+
+        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
+        CmsSharedCacheConfiguration originalConfiguration = manager.getSharedCacheConfiguration();
+        CmsSharedCacheConfiguration sharedCacheConfiguration = new CmsSharedCacheConfiguration();
+        sharedCacheConfiguration.setEnabled(CmsStringUtil.TRUE);
+        manager.setSharedCacheConfiguration(sharedCacheConfiguration);
+        try {
+            manager.exportFullStaticRender(false, null);
+            fail("A full static export must not run in shared-cache mode.");
+        } catch (CmsStaticExportException expected) {
+            assertTrue(expected.getMessage().contains("full static export"));
+        } finally {
+            manager.setSharedCacheConfiguration(originalConfiguration);
+        }
+    }
+
+    /**
      * Tests saving XML contents with links from/to various sites.<p>
      *
      * @throws Exception if something goes wrong

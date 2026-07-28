@@ -722,6 +722,173 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that shared-cache delivery streams a DB-backed binary without writing a local export copy.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    public void testSharedCacheDeliveryStreamsDbBinaryWithoutLocalExport() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing shared-cache delivery for DB-backed binary resource");
+
+        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
+        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
+        CmsStorageManager countingStorageManager = null;
+        try (AutoCloseable sharedCache = configureSharedCacheDelivery(true)) {
+            countingStorageManager = createCountingStorageManager(getStorageSqlManager(originalStorageManager));
+            storageManagerField.set(getVfsDriver(), countingStorageManager);
+
+            String resourceName = "/shared-cache-db-binary.zip";
+            byte[] content = createContent((byte)61);
+            CmsResource resource = cms.createResource(
+                resourceName,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                content,
+                null);
+            cms.setDateExpired(resourceName, System.currentTimeMillis() + 3600000, false);
+            cms.unlockResource(resourceName);
+            OpenCms.getPublishManager().publishResource(cms, resourceName);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            CountingDbStorage.reset();
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
+            String rootPath = cms.getRequestContext().addSiteRoot(resourceName);
+            CmsResource onlineResource = exportCms.readResource(rootPath);
+            CmsStaticExportData data = new CmsStaticExportData(rootPath, rootPath, onlineResource, null);
+            File exportFile = getExportFile(rootPath);
+            if (exportFile.exists()) {
+                assertTrue(exportFile.delete());
+            }
+            ResponseRecorder responseRecorder = new ResponseRecorder();
+
+            int status = OpenCms.getStaticExportManager().export(
+                createRequest(new RequestRecorder()),
+                createResponse(responseRecorder),
+                exportCms,
+                data);
+
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_OK), Integer.valueOf(status));
+            assertFalse(exportFile.exists());
+            assertEquals(Integer.valueOf(0), Integer.valueOf(CountingDbStorage.getLoadContentCalls()));
+            assertEquals(Integer.valueOf(1), Integer.valueOf(CountingDbStorage.getLoadContentToCalls()));
+            assertTrue(Arrays.equals(content, responseRecorder.getBody()));
+            assertEquals(
+                "public, max-age=0, s-maxage=3600",
+                responseRecorder.getHeader(CmsRequestUtil.HEADER_CACHE_CONTROL));
+
+            CountingDbStorage.reset();
+            RequestRecorder conditionalRequest = new RequestRecorder();
+            conditionalRequest.setHeader(
+                CmsRequestUtil.HEADER_IF_MODIFIED_SINCE,
+                String.valueOf((onlineResource.getDateLastModified() / 1000) * 1000));
+            ResponseRecorder conditionalResponse = new ResponseRecorder();
+            int conditionalStatus = OpenCms.getStaticExportManager().export(
+                createRequest(conditionalRequest),
+                createResponse(conditionalResponse),
+                exportCms,
+                data);
+
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_NOT_MODIFIED), Integer.valueOf(conditionalStatus));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(CountingDbStorage.getLoadContentCalls()));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(CountingDbStorage.getLoadContentToCalls()));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(conditionalResponse.getBody().length));
+            assertEquals(
+                "public, max-age=0, s-maxage=3600",
+                conditionalResponse.getHeader(CmsRequestUtil.HEADER_CACHE_CONTROL));
+        } finally {
+            storageManagerField.set(getVfsDriver(), originalStorageManager);
+            if (countingStorageManager != null) {
+                countingStorageManager.close();
+            }
+        }
+    }
+
+    /**
+     * Tests that shared-cache delivery uses range delivery for externally stored content.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    public void testSharedCacheDeliveryUsesStoredContentRangeWithoutLocalExport() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing shared-cache range delivery for externally stored content");
+
+        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
+        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
+        TestDeliveryStorageManager deliveryStorageManager = null;
+        try (AutoCloseable sharedCache = configureSharedCacheDelivery(true)) {
+            deliveryStorageManager = new TestDeliveryStorageManager(getStorageSqlManager(originalStorageManager));
+            storageManagerField.set(getVfsDriver(), deliveryStorageManager);
+
+            String resourceName = "/shared-cache-range.zip";
+            byte[] content = "0123456789abcdef".getBytes("UTF-8");
+            CmsResource resource = cms.createResource(
+                resourceName,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                content,
+                null);
+            cms.unlockResource(resourceName);
+            OpenCms.getPublishManager().publishResource(cms, resourceName);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
+            String rootPath = cms.getRequestContext().addSiteRoot(resourceName);
+            CmsResource onlineResource = exportCms.readResource(rootPath);
+            CmsStaticExportData data = new CmsStaticExportData(rootPath, rootPath, onlineResource, null);
+            File exportFile = getExportFile(rootPath);
+            if (exportFile.exists()) {
+                assertTrue(exportFile.delete());
+            }
+            RequestRecorder requestRecorder = new RequestRecorder();
+            requestRecorder.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+            ResponseRecorder responseRecorder = new ResponseRecorder();
+
+            int status = OpenCms.getStaticExportManager().export(
+                createRequest(requestRecorder),
+                createResponse(responseRecorder),
+                exportCms,
+                data);
+
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_PARTIAL_CONTENT), Integer.valueOf(status));
+            assertFalse(exportFile.exists());
+            assertFalse(deliveryStorageManager.m_streamedFull);
+            assertTrue(deliveryStorageManager.m_streamedRange);
+            assertFalse(deliveryStorageManager.m_loadedContentTo);
+            assertEquals("bytes 4-9/16", responseRecorder.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+            assertTrue(Arrays.equals("456789".getBytes("UTF-8"), responseRecorder.getBody()));
+            assertEquals(
+                "public, max-age=0, s-maxage=3600",
+                responseRecorder.getHeader(CmsRequestUtil.HEADER_CACHE_CONTROL));
+
+            RequestRecorder headRequestRecorder = new RequestRecorder();
+            headRequestRecorder.setMethod("HEAD");
+            ResponseRecorder headResponseRecorder = new ResponseRecorder();
+            int headStatus = OpenCms.getStaticExportManager().export(
+                createRequest(headRequestRecorder),
+                createResponse(headResponseRecorder),
+                exportCms,
+                data);
+
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_OK), Integer.valueOf(headStatus));
+            assertEquals(Integer.valueOf(content.length), Integer.valueOf(headResponseRecorder.getContentLength()));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(headResponseRecorder.getBody().length));
+            assertFalse(deliveryStorageManager.m_streamedFull);
+            assertEquals(
+                "public, max-age=0, s-maxage=3600",
+                headResponseRecorder.getHeader(CmsRequestUtil.HEADER_CACHE_CONTROL));
+        } finally {
+            storageManagerField.set(getVfsDriver(), originalStorageManager);
+            if (deliveryStorageManager != null) {
+                deliveryStorageManager.close();
+            }
+        }
+    }
+
+    /**
      * Tests that stored content direct delivery is denied without read permissions.<p>
      *
      * @throws Throwable if something goes wrong
@@ -814,6 +981,15 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
             CmsResource onlineResource = exportCms.readResource(rootPath);
             CmsStaticExportData data = new CmsStaticExportData(rootPath, rootPath, onlineResource, null);
             ResponseRecorder responseRecorder = new ResponseRecorder();
+
+            ResponseRecorder fastPathResponseRecorder = new ResponseRecorder();
+            assertFalse(
+                OpenCms.getStaticExportManager().tryExportStoredContent(
+                    createRequest(new RequestRecorder()),
+                    createResponse(fastPathResponseRecorder),
+                    exportCms,
+                    data));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(fastPathResponseRecorder.getBody().length));
 
             int status = OpenCms.getStaticExportManager().export(
                 createRequest(new RequestRecorder()),
@@ -1186,74 +1362,6 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
     }
 
     /**
-     * Tests that range requests during export on demand are delivered through the storage delivery capability.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    public void testStoredBinaryExportOnDemandUsesDirectDeliveryForRangeRequest() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing direct range delivery for stored binary resource during export on demand");
-
-        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
-        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
-        TestDeliveryStorageManager deliveryStorageManager = null;
-        AutoCloseable directDelivery = null;
-        try {
-            deliveryStorageManager = new TestDeliveryStorageManager(getStorageSqlManager(originalStorageManager));
-            storageManagerField.set(getVfsDriver(), deliveryStorageManager);
-            directDelivery = enableStoredContentDirectDelivery();
-
-            String resourceName = "/stored-binary-delivery-range.zip";
-            byte[] content = "0123456789abcdef".getBytes("UTF-8");
-            CmsResource resource = cms.createResource(
-                resourceName,
-                CmsResourceTypeBinary.getStaticTypeId(),
-                content,
-                null);
-            cms.unlockResource(resourceName);
-
-            OpenCms.getPublishManager().publishResource(cms, resourceName);
-            OpenCms.getPublishManager().waitWhileRunning();
-
-            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
-            String rootPath = cms.getRequestContext().addSiteRoot(resourceName);
-            CmsResource onlineResource = exportCms.readResource(rootPath);
-            CmsStaticExportData data = new CmsStaticExportData(rootPath, rootPath, onlineResource, null);
-            File exportFile = getExportFile(rootPath);
-            createStaleExportFile(exportFile);
-            RequestRecorder requestRecorder = new RequestRecorder();
-            requestRecorder.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
-            ResponseRecorder responseRecorder = new ResponseRecorder();
-
-            int status = OpenCms.getStaticExportManager().export(
-                createRequest(requestRecorder),
-                createResponse(responseRecorder),
-                exportCms,
-                data);
-
-            assertEquals(Integer.valueOf(HttpServletResponse.SC_PARTIAL_CONTENT), Integer.valueOf(status));
-            assertFalse(exportFile.exists());
-            assertFalse(deliveryStorageManager.m_streamedFull);
-            assertTrue(deliveryStorageManager.m_streamedRange);
-            assertFalse(deliveryStorageManager.m_loadedContentTo);
-            assertEquals(Integer.valueOf(6), Integer.valueOf(responseRecorder.getContentLength()));
-            assertEquals("bytes 4-9/16", responseRecorder.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
-            assertTrue(Arrays.equals("456789".getBytes("UTF-8"), responseRecorder.getBody()));
-        } finally {
-            if (directDelivery != null) {
-                directDelivery.close();
-            }
-            storageManagerField.set(getVfsDriver(), originalStorageManager);
-            if (deliveryStorageManager != null) {
-                deliveryStorageManager.close();
-            }
-        }
-    }
-
-    /**
      * Tests that stored binary resources are streamed during static export.<p>
      *
      * @throws Throwable if something goes wrong
@@ -1378,6 +1486,74 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that range requests use the stored-content fast path.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    public void testStoredBinaryFastPathUsesDirectDeliveryForRangeRequest() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing stored-content fast path for a binary range request");
+
+        Field storageManagerField = getField(getVfsDriver().getClass(), "m_storageManager");
+        CmsStorageManager originalStorageManager = (CmsStorageManager)storageManagerField.get(getVfsDriver());
+        TestDeliveryStorageManager deliveryStorageManager = null;
+        AutoCloseable directDelivery = null;
+        try {
+            deliveryStorageManager = new TestDeliveryStorageManager(getStorageSqlManager(originalStorageManager));
+            storageManagerField.set(getVfsDriver(), deliveryStorageManager);
+            directDelivery = enableStoredContentDirectDelivery();
+
+            String resourceName = "/stored-binary-delivery-range.zip";
+            byte[] content = "0123456789abcdef".getBytes("UTF-8");
+            CmsResource resource = cms.createResource(
+                resourceName,
+                CmsResourceTypeBinary.getStaticTypeId(),
+                content,
+                null);
+            cms.unlockResource(resourceName);
+
+            OpenCms.getPublishManager().publishResource(cms, resourceName);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
+            String rootPath = cms.getRequestContext().addSiteRoot(resourceName);
+            CmsResource onlineResource = exportCms.readResource(rootPath);
+            CmsStaticExportData data = new CmsStaticExportData(rootPath, rootPath, onlineResource, null);
+            RequestRecorder requestRecorder = new RequestRecorder();
+            requestRecorder.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=4-9");
+            ResponseRecorder responseRecorder = new ResponseRecorder();
+
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportStoredContent(
+                    createRequest(requestRecorder),
+                    createResponse(responseRecorder),
+                    exportCms,
+                    data));
+
+            assertEquals(
+                Integer.valueOf(HttpServletResponse.SC_PARTIAL_CONTENT),
+                Integer.valueOf(responseRecorder.getStatus()));
+            assertFalse(deliveryStorageManager.m_streamedFull);
+            assertTrue(deliveryStorageManager.m_streamedRange);
+            assertFalse(deliveryStorageManager.m_loadedContentTo);
+            assertEquals(Integer.valueOf(6), Integer.valueOf(responseRecorder.getContentLength()));
+            assertEquals("bytes 4-9/16", responseRecorder.getHeader(CmsRequestUtil.HEADER_CONTENT_RANGE));
+            assertTrue(Arrays.equals("456789".getBytes("UTF-8"), responseRecorder.getBody()));
+        } finally {
+            if (directDelivery != null) {
+                directDelivery.close();
+            }
+            storageManagerField.set(getVfsDriver(), originalStorageManager);
+            if (deliveryStorageManager != null) {
+                deliveryStorageManager.close();
+            }
+        }
+    }
+
+    /**
      * Tests that image resources use direct storage delivery only for the original image, not for scaled variants.<p>
      *
      * @throws Throwable if something goes wrong
@@ -1419,6 +1595,13 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
                 assertTrue(exportFile.delete());
             }
 
+            assertFalse(
+                OpenCms.getStaticExportManager().tryExportStoredContent(
+                    createRequest(new RequestRecorder()),
+                    createResponse(new ResponseRecorder()),
+                    exportCms,
+                    data));
+
             int status = OpenCms.getStaticExportManager().export(null, null, exportCms, data);
 
             assertEquals(Integer.valueOf(HttpServletResponse.SC_OK), Integer.valueOf(status));
@@ -1447,6 +1630,39 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
                 deliveryStorageManager.close();
             }
         }
+    }
+
+    /**
+     * Configures shared-cache delivery for the current test and returns a reset hook.<p>
+     *
+     * @param enabled if shared-cache delivery should be enabled
+     *
+     * @return a reset hook
+     */
+    private AutoCloseable configureSharedCacheDelivery(boolean enabled) {
+
+        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
+        CmsSharedCacheConfiguration originalConfiguration = manager.getSharedCacheConfiguration();
+        CmsSharedCacheConfiguration configuration = new CmsSharedCacheConfiguration();
+        configuration.setEnabled(String.valueOf(enabled));
+        CmsSharedCachePolicy defaultPolicy = new CmsSharedCachePolicy();
+        defaultPolicy.setClientMaxAge("0");
+        defaultPolicy.setSharedMaxAge("3600");
+        configuration.addCachePolicy(defaultPolicy);
+        CmsSharedCachePolicy imagePolicy = new CmsSharedCachePolicy();
+        imagePolicy.setContentType("image/*");
+        imagePolicy.setClientMaxAge("60");
+        imagePolicy.setSharedMaxAge("86400");
+        imagePolicy.setStaleIfError("604800");
+        configuration.addCachePolicy(imagePolicy);
+        manager.setSharedCacheConfiguration(configuration);
+        return new AutoCloseable() {
+
+            public void close() {
+
+                manager.setSharedCacheConfiguration(originalConfiguration);
+            }
+        };
     }
 
     /**

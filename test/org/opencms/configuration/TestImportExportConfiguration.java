@@ -30,11 +30,11 @@ package org.opencms.configuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.opencms.loader.CmsFsImageCache;
-import org.opencms.loader.CmsS3ImageCache;
-import org.opencms.staticexport.CmsImageCacheConfiguration;
+import org.opencms.staticexport.CmsSharedCacheConfiguration;
+import org.opencms.staticexport.CmsSharedCachePolicy;
 import org.opencms.staticexport.CmsStoredContentDeliveryConfiguration;
 
 import java.io.StringReader;
@@ -56,6 +56,28 @@ import org.xml.sax.InputSource;
 public class TestImportExportConfiguration {
 
     /**
+     * Tests that missing shared cache settings are treated as an internal default only.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testMissingSharedCacheConfigurationIsNotSerialized() throws Exception {
+
+        CmsImportExportConfiguration configuration = parseImportExportConfiguration(createImportExportXml(null));
+
+        CmsSharedCacheConfiguration sharedCache = configuration.getSharedCacheConfiguration();
+
+        assertFalse(sharedCache.isConfigured());
+        assertFalse(sharedCache.isEnabled());
+        assertTrue(sharedCache.getCachePolicies().isEmpty());
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("opencms");
+        configuration.generateXml(root);
+
+        assertEquals(null, root.element(CmsImportExportConfiguration.N_SHAREDCACHE));
+    }
+
+    /**
      * Tests that missing stored content delivery settings are treated as an internal default only.<p>
      *
      * @throws Exception if something goes wrong
@@ -70,13 +92,153 @@ public class TestImportExportConfiguration {
         assertFalse(storedContentDelivery.isConfigured());
         assertFalse(storedContentDelivery.isEnabled());
         assertFalse(storedContentDelivery.hasEnabledSuffixes());
-        assertFalse(configuration.getImageCacheConfiguration().isConfigured());
-
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("opencms");
         configuration.generateXml(root);
 
         assertEquals(null, root.element(CmsImportExportConfiguration.N_STOREDCONTENTDELIVERY));
+    }
+
+    /**
+     * Tests that stored content delivery and shared cache delivery are mutually exclusive.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testSharedCacheAndStoredContentDeliveryConflict() throws Exception {
+
+        CmsImportExportConfiguration configuration = parseImportExportConfiguration(
+            createImportExportXml("<storedcontentdelivery enabled=\"true\" />", createSharedCacheXml()));
+
+        assertThrows(CmsConfigurationException.class, configuration::validate);
+    }
+
+    /**
+     * Tests that shared cache delivery rejects a conflicting static export Cache-Control header.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testSharedCacheCacheControlHeaderConflict() throws Exception {
+
+        String xml = createImportExportXml(null, createSharedCacheXml()).replace(
+            "<rendersettings>",
+            "<exportheaders><header>Cache-Control: public, max-age=60</header></exportheaders><rendersettings>");
+        CmsImportExportConfiguration configuration = parseImportExportConfiguration(xml);
+
+        assertThrows(CmsConfigurationException.class, configuration::validate);
+    }
+
+    /**
+     * Tests parsing, validation and writing of shared cache settings.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testSharedCacheConfigurationRoundtrip() throws Exception {
+
+        CmsImportExportConfiguration configuration = parseImportExportConfiguration(
+            createImportExportXml(
+                null,
+                "<sharedcache enabled=\"true\">"
+                    + "<cachepolicy>"
+                    + "<clientmaxage>0</clientmaxage>"
+                    + "<sharedmaxage>86400</sharedmaxage>"
+                    + "<staleiferror>604800</staleiferror>"
+                    + "</cachepolicy>"
+                    + "<cachepolicy contenttype=\"IMAGE/*\">"
+                    + "<clientmaxage>60</clientmaxage>"
+                    + "<sharedmaxage>3600</sharedmaxage>"
+                    + "</cachepolicy>"
+                    + "</sharedcache>"));
+
+        configuration.validate();
+        CmsSharedCacheConfiguration sharedCache = configuration.getSharedCacheConfiguration();
+
+        assertTrue(sharedCache.isEnabled());
+        assertEquals(2, sharedCache.getCachePolicies().size());
+        CmsSharedCachePolicy defaultPolicy = sharedCache.getDefaultCachePolicy();
+        assertNotNull(defaultPolicy);
+        assertEquals(0, defaultPolicy.getClientMaxAge());
+        assertEquals(86400, defaultPolicy.getSharedMaxAge());
+        assertEquals(604800, defaultPolicy.getStaleIfError());
+        CmsSharedCachePolicy imagePolicy = sharedCache.getCachePolicies().get(1);
+        assertEquals("image/*", imagePolicy.getContentType());
+        assertEquals(60, imagePolicy.getClientMaxAge());
+        assertEquals(3600, imagePolicy.getSharedMaxAge());
+        assertEquals(CmsSharedCachePolicy.DURATION_UNSET, imagePolicy.getStaleIfError());
+        assertEquals(imagePolicy, sharedCache.getCachePolicy("image/jpeg"));
+        assertEquals(imagePolicy, sharedCache.getCachePolicy("IMAGE/PNG; charset=binary"));
+        assertEquals(defaultPolicy, sharedCache.getCachePolicy("text/css"));
+        assertEquals(defaultPolicy, sharedCache.getCachePolicy(null));
+
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("opencms");
+        configuration.generateXml(root);
+
+        Element sharedCacheElement = root.element(CmsImportExportConfiguration.N_SHAREDCACHE);
+        assertNotNull(sharedCacheElement);
+        assertEquals("true", sharedCacheElement.attributeValue(I_CmsXmlConfiguration.A_ENABLED));
+        assertEquals(2, sharedCacheElement.elements(CmsImportExportConfiguration.N_SHAREDCACHE_CACHEPOLICY).size());
+        Element serializedImagePolicy = (Element)sharedCacheElement.elements(
+            CmsImportExportConfiguration.N_SHAREDCACHE_CACHEPOLICY).get(1);
+        assertEquals("image/*", serializedImagePolicy.attributeValue("contenttype"));
+        assertEquals(
+            "3600",
+            serializedImagePolicy.elementText(CmsImportExportConfiguration.N_SHAREDCACHE_SHAREDMAXAGE));
+        assertEquals(null, serializedImagePolicy.element(CmsImportExportConfiguration.N_SHAREDCACHE_STALEIFERROR));
+    }
+
+    /**
+     * Tests validation of shared cache policies.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testSharedCachePolicyValidation() throws Exception {
+
+        CmsImportExportConfiguration missingDefault = parseImportExportConfiguration(
+            createImportExportXml(
+                null,
+                "<sharedcache enabled=\"true\">"
+                    + "<cachepolicy contenttype=\"image/*\">"
+                    + "<clientmaxage>0</clientmaxage>"
+                    + "<sharedmaxage>86400</sharedmaxage>"
+                    + "</cachepolicy>"
+                    + "</sharedcache>"));
+        assertThrows(CmsConfigurationException.class, missingDefault::validate);
+
+        CmsImportExportConfiguration negativeDuration = parseImportExportConfiguration(
+            createImportExportXml(
+                null,
+                "<sharedcache enabled=\"true\">"
+                    + "<cachepolicy>"
+                    + "<clientmaxage>0</clientmaxage>"
+                    + "<sharedmaxage>-1</sharedmaxage>"
+                    + "</cachepolicy>"
+                    + "</sharedcache>"));
+        assertThrows(CmsConfigurationException.class, negativeDuration::validate);
+    }
+
+    /**
+     * Tests that shared cache delivery requires static export and an on-demand export handler.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testSharedCacheStaticExportValidation() throws Exception {
+
+        String disabledStaticExportXml = createImportExportXml(null, createSharedCacheXml()).replace(
+            "<staticexport enabled=\"true\">",
+            "<staticexport enabled=\"false\">");
+        CmsImportExportConfiguration disabledStaticExport = parseImportExportConfiguration(disabledStaticExportXml);
+        assertThrows(CmsConfigurationException.class, disabledStaticExport::validate);
+
+        String afterPublishXml = createImportExportXml(null, createSharedCacheXml()).replace(
+            "org.opencms.staticexport.CmsOnDemandStaticExportHandler",
+            "org.opencms.staticexport.CmsAfterPublishStaticExportHandler");
+        CmsImportExportConfiguration afterPublish = parseImportExportConfiguration(afterPublishXml);
+        assertThrows(CmsConfigurationException.class, afterPublish::validate);
     }
 
     /**
@@ -88,13 +250,8 @@ public class TestImportExportConfiguration {
     public void testStoredContentDeliveryConfigurationRoundtrip() throws Exception {
 
         CmsImportExportConfiguration configuration = parseImportExportConfiguration(
-            createImportExportXml(
+            createImportExportXmlWithStoredContentDelivery(
                 "true",
-                CmsS3ImageCache.class.getName(),
-                "<params>"
-                    + "<param name=\"bucket\">opencms-media</param>"
-                    + "<param name=\"prefix\">/imagecache//</param>"
-                    + "</params>",
                 "<enabledsuffixes>"
                     + "<suffix key=\".JPG\" />"
                     + "<suffix key=\"pdf\" />"
@@ -102,7 +259,6 @@ public class TestImportExportConfiguration {
                     + "</enabledsuffixes>"));
 
         CmsStoredContentDeliveryConfiguration storedContentDelivery = configuration.getStoredContentDeliveryConfiguration();
-        CmsImageCacheConfiguration imageCache = configuration.getImageCacheConfiguration();
 
         assertTrue(storedContentDelivery.isEnabled());
         assertTrue(storedContentDelivery.hasEnabledSuffixes());
@@ -110,11 +266,6 @@ public class TestImportExportConfiguration {
         assertTrue(storedContentDelivery.isSuffixEnabled("/sites/default/test.JPG"));
         assertTrue(storedContentDelivery.isSuffixEnabled("/sites/default/test.pdf"));
         assertFalse(storedContentDelivery.isSuffixEnabled("/sites/default/test.svg"));
-        assertTrue(imageCache.isConfigured());
-        assertEquals(CmsS3ImageCache.class.getName(), imageCache.getClassName());
-        assertEquals("opencms-media", imageCache.getConfiguration().get("bucket"));
-        assertEquals("/imagecache//", imageCache.getConfiguration().get("prefix"));
-
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("opencms");
         configuration.generateXml(root);
@@ -129,39 +280,6 @@ public class TestImportExportConfiguration {
         assertEquals(3, enabledSuffixesElement.elements(CmsImportExportConfiguration.N_STATICEXPORT_SUFFIX).size());
         assertEquals(set(".jpg", ".pdf", ".mp4"), collectSuffixes(enabledSuffixesElement));
 
-        Element imageCacheElement = root.element(CmsImportExportConfiguration.N_IMAGECACHE);
-        assertNotNull(imageCacheElement);
-        assertEquals(CmsS3ImageCache.class.getName(), imageCacheElement.attributeValue(I_CmsXmlConfiguration.A_CLASS));
-        Element paramsElement = imageCacheElement.element(CmsImportExportConfiguration.N_PARAMS);
-        assertNotNull(paramsElement);
-        assertEquals("opencms-media", findParam(paramsElement, "bucket"));
-        assertEquals("/imagecache//", findParam(paramsElement, "prefix"));
-    }
-
-    /**
-     * Tests parsing file system image cache settings.<p>
-     *
-     * @throws Exception if something goes wrong
-     */
-    @Test
-    public void testStoredContentDeliveryFsImageCacheConfiguration() throws Exception {
-
-        CmsImportExportConfiguration configuration = parseImportExportConfiguration(
-            createImportExportXml(
-                "false",
-                CmsFsImageCache.class.getName(),
-                "<params><param name=\"path\">/var/opencms/imagecache</param></params>",
-                ""));
-
-        CmsStoredContentDeliveryConfiguration storedContentDelivery = configuration.getStoredContentDeliveryConfiguration();
-        CmsImageCacheConfiguration imageCache = configuration.getImageCacheConfiguration();
-
-        assertFalse(storedContentDelivery.isEnabled());
-        assertFalse(storedContentDelivery.hasEnabledSuffixes());
-        assertTrue(storedContentDelivery.isSuffixEnabled("/sites/default/test.svg"));
-        assertTrue(imageCache.isConfigured());
-        assertEquals(CmsFsImageCache.class.getName(), imageCache.getClassName());
-        assertEquals("/var/opencms/imagecache", imageCache.getConfiguration().get("path"));
     }
 
     /**
@@ -188,6 +306,18 @@ public class TestImportExportConfiguration {
      * @return the XML
      */
     private String createImportExportXml(String storedContentDeliveryXml) {
+
+        return createImportExportXml(storedContentDeliveryXml, null);
+    }
+
+    /**
+     * Creates a minimal import/export configuration XML.<p>
+     *
+     * @param storedContentDeliveryXml the stored content delivery XML, or <code>null</code>
+     * @param sharedCacheXml the shared cache XML, or <code>null</code>
+     * @return the XML
+     */
+    private String createImportExportXml(String storedContentDeliveryXml, String sharedCacheXml) {
 
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "<opencms>"
@@ -222,6 +352,7 @@ public class TestImportExportConfiguration {
             + "</rendersettings>"
             + "</staticexport>"
             + (storedContentDeliveryXml == null ? "" : storedContentDeliveryXml)
+            + (sharedCacheXml == null ? "" : sharedCacheXml)
             + "<repositories />"
             + "</opencms>";
     }
@@ -230,46 +361,29 @@ public class TestImportExportConfiguration {
      * Creates a minimal import/export configuration XML.<p>
      *
      * @param enabled the stored content delivery enabled flag
-     * @param imageCacheClass the image cache class
-     * @param imageCacheBackendXml the image cache backend XML
      * @param enabledSuffixesXml the enabled suffixes XML
      * @return the XML
      */
-    private String createImportExportXml(
-        String enabled,
-        String imageCacheClass,
-        String imageCacheBackendXml,
-        String enabledSuffixesXml) {
+    private String createImportExportXmlWithStoredContentDelivery(String enabled, String enabledSuffixesXml) {
 
         return createImportExportXml(
-            "<storedcontentdelivery enabled=\""
-                + enabled
-                + "\">"
-                + enabledSuffixesXml
-                + "</storedcontentdelivery>"
-                + "<imagecache class=\""
-                + imageCacheClass
-                + "\">"
-                + imageCacheBackendXml
-                + "</imagecache>");
+            "<storedcontentdelivery enabled=\"" + enabled + "\">" + enabledSuffixesXml + "</storedcontentdelivery>");
     }
 
     /**
-     * Finds a parameter value.<p>
+     * Creates a valid shared cache configuration XML.<p>
      *
-     * @param paramsElement the params element
-     * @param name the parameter name
-     * @return the parameter value
+     * @return the shared cache XML
      */
-    private String findParam(Element paramsElement, String name) {
+    private String createSharedCacheXml() {
 
-        for (Object paramObject : paramsElement.elements(CmsImportExportConfiguration.N_PARAM)) {
-            Element paramElement = (Element)paramObject;
-            if (name.equals(paramElement.attributeValue(I_CmsXmlConfiguration.A_NAME))) {
-                return paramElement.getText();
-            }
-        }
-        return null;
+        return "<sharedcache enabled=\"true\">"
+            + "<cachepolicy>"
+            + "<clientmaxage>0</clientmaxage>"
+            + "<sharedmaxage>86400</sharedmaxage>"
+            + "<staleiferror>604800</staleiferror>"
+            + "</cachepolicy>"
+            + "</sharedcache>";
     }
 
     /**

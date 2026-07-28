@@ -27,45 +27,40 @@
 
 package org.opencms.loader;
 
-import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.db.storage.CmsStorageManager;
 import org.opencms.db.storage.s3.CmsGenericS3Client;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.db.storage.s3.I_CmsS3Client;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * S3 based storage for generated image cache entries.<p>
  */
-public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParameterHandler {
+public class CmsS3ImageCache implements I_CmsImageCache {
 
-    /** Configuration parameter for the S3 bucket. */
-    public static final String PARAM_BUCKET = "bucket";
+    /** Maximum number of S3 object lengths kept locally. */
+    private static final int LENGTH_CACHE_MAX_SIZE = 10000;
 
-    /** Configuration parameter for the S3 object key prefix. */
-    public static final String PARAM_PREFIX = "prefix";
+    /** Number of minutes after which a cached S3 object length expires. */
+    private static final int LENGTH_CACHE_EXPIRY_MINUTES = 10;
 
-    /** The configuration parameters. */
-    private CmsParameterConfiguration m_configuration = new CmsParameterConfiguration();
+    /** Locally cached S3 object lengths. */
+    private Cache<String, Long> m_lengthCache = CacheBuilder.newBuilder().maximumSize(
+        LENGTH_CACHE_MAX_SIZE).expireAfterAccess(LENGTH_CACHE_EXPIRY_MINUTES, TimeUnit.MINUTES).build();
 
     /** The S3 client. */
     private I_CmsS3Client m_s3Client;
 
     /** The object key prefix. */
     private String m_prefix = "";
-
-    /**
-     * Creates a new uninitialized image cache.<p>
-     */
-    public CmsS3ImageCache() {
-
-        // empty
-    }
 
     /**
      * Creates a new image cache.<p>
@@ -118,11 +113,17 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     }
 
     /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     * @see org.opencms.loader.I_CmsImageCache#close()
      */
-    public void addConfigurationParameter(String paramName, String paramValue) {
+    @Override
+    public void close() throws Exception {
 
-        m_configuration.add(paramName, paramValue);
+        I_CmsS3Client client = m_s3Client;
+        m_s3Client = null;
+        m_lengthCache.invalidateAll();
+        if (client != null) {
+            client.close();
+        }
     }
 
     /**
@@ -131,15 +132,17 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     public boolean exists(String key) throws Exception {
 
         ensureInitialized();
-        return m_s3Client.exists(getObjectKey(key));
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
-     */
-    public CmsParameterConfiguration getConfiguration() {
-
-        return m_configuration;
+        String objectKey = getObjectKey(key);
+        Long cachedLength = m_lengthCache.getIfPresent(objectKey);
+        if (cachedLength != null) {
+            return true;
+        }
+        long length = m_s3Client.getObjectLengthIfExists(objectKey);
+        if (length >= 0) {
+            m_lengthCache.put(objectKey, Long.valueOf(length));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -148,42 +151,14 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     public long getLength(String key) throws Exception {
 
         ensureInitialized();
-        return m_s3Client.getObjectLength(getObjectKey(key));
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    public void initConfiguration() throws CmsConfigurationException {
-
-        String bucket = m_configuration.get(PARAM_BUCKET);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(bucket)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, PARAM_BUCKET));
+        String objectKey = getObjectKey(key);
+        Long cachedLength = m_lengthCache.getIfPresent(objectKey);
+        if (cachedLength != null) {
+            return cachedLength.longValue();
         }
-        String prefix = m_configuration.get(PARAM_PREFIX);
-        try {
-            CmsParameterConfiguration propertyConfiguration = new CmsParameterConfiguration(
-                OpenCms.getSystemInfo().getConfigurationFileRfsPath());
-            CmsS3ClientConfiguration activeConfiguration = CmsStorageManager.createS3ClientConfiguration(
-                propertyConfiguration,
-                null,
-                null);
-            if (activeConfiguration.getBucketName().equals(bucket) && CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
-                throw new CmsConfigurationException(
-                    Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_2, PARAM_PREFIX, bucket));
-            }
-            initClient(
-                new CmsGenericS3Client(
-                    CmsStorageManager.createS3ClientConfiguration(propertyConfiguration, null, bucket)),
-                prefix);
-        } catch (CmsConfigurationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, getClass().getName()),
-                e);
-        }
+        long length = m_s3Client.getObjectLength(objectKey);
+        m_lengthCache.put(objectKey, Long.valueOf(length));
+        return length;
     }
 
     /**
@@ -200,7 +175,9 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     public void write(String key, byte[] content) throws Exception {
 
         ensureInitialized();
-        m_s3Client.putObject(getObjectKey(key), content);
+        String objectKey = getObjectKey(key);
+        m_s3Client.putObject(objectKey, content);
+        m_lengthCache.put(objectKey, Long.valueOf(content.length));
     }
 
     /**
@@ -209,7 +186,13 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     public void writeRangeTo(String key, long start, long length, OutputStream out) throws Exception {
 
         ensureInitialized();
-        m_s3Client.writeObjectRangeTo(getObjectKey(key), start, length, out);
+        String objectKey = getObjectKey(key);
+        try {
+            m_s3Client.writeObjectRangeTo(objectKey, start, length, out);
+        } catch (Exception e) {
+            m_lengthCache.invalidate(objectKey);
+            throw e;
+        }
     }
 
     /**
@@ -218,7 +201,13 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
     public void writeTo(String key, OutputStream out) throws Exception {
 
         ensureInitialized();
-        m_s3Client.writeObjectTo(getObjectKey(key), out);
+        String objectKey = getObjectKey(key);
+        try {
+            m_s3Client.writeObjectTo(objectKey, out);
+        } catch (Exception e) {
+            m_lengthCache.invalidate(objectKey);
+            throw e;
+        }
     }
 
     /**
@@ -230,9 +219,50 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsConfigurationParam
      */
     protected void initClient(I_CmsS3Client s3Client, String prefix) throws Exception {
 
-        m_prefix = normalizePrefix(prefix);
+        String normalizedPrefix = normalizePrefix(prefix);
+        String healthCheckKey = normalizedPrefix + ".opencms-healthcheck/" + UUID.randomUUID().toString();
+        byte[] healthCheckContent = "OpenCms image cache health check".getBytes(StandardCharsets.UTF_8);
+        boolean healthCheckStored = false;
+        Exception failure = null;
+        try {
+            s3Client.validateBucketAccess();
+            s3Client.putObject(healthCheckKey, healthCheckContent);
+            healthCheckStored = true;
+            if (!Arrays.equals(healthCheckContent, s3Client.getObject(healthCheckKey))) {
+                throw new IllegalStateException("S3 image cache health check returned different content.");
+            }
+        } catch (Exception e) {
+            failure = e;
+            throw e;
+        } finally {
+            if (healthCheckStored) {
+                try {
+                    s3Client.deleteObject(healthCheckKey);
+                } catch (Exception e) {
+                    if (failure != null) {
+                        failure.addSuppressed(e);
+                    } else {
+                        failure = e;
+                    }
+                }
+            }
+            if (failure != null) {
+                try {
+                    s3Client.close();
+                } catch (Exception closeException) {
+                    failure.addSuppressed(closeException);
+                }
+            }
+        }
+        if (failure != null) {
+            throw failure;
+        }
+        if ((m_s3Client != null) && (m_s3Client != s3Client)) {
+            m_s3Client.close();
+        }
+        m_prefix = normalizedPrefix;
         m_s3Client = s3Client;
-        m_s3Client.validateBucketAccess();
+        m_lengthCache.invalidateAll();
     }
 
     /**

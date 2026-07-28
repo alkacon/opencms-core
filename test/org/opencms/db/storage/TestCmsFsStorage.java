@@ -55,6 +55,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -918,6 +924,46 @@ public class TestCmsFsStorage {
         } finally {
             deleteDirectory(activeRepository);
             deleteDirectory(legacyRepository);
+        }
+    }
+
+    /**
+     * Tests that concurrent writers publish one complete content file atomically.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testStoreContentConcurrentWritesAreAtomic() throws Exception {
+
+        Path repository = Files.createTempDirectory("opencms-fs-storage");
+        ExecutorService executor = Executors.newFixedThreadPool(8);
+        try {
+            byte[] content = new byte[1024 * 1024];
+            Arrays.fill(content, (byte)1);
+            String hash = calculateSha512(content);
+            CountDownLatch start = new CountDownLatch(1);
+            Set<Future<?>> writers = new HashSet<>();
+            for (int i = 0; i < 8; i++) {
+                final CmsFsStorage storage = new CmsFsStorage("fs" + i, repository.toString());
+                writers.add(executor.submit(() -> {
+                    start.await();
+                    storage.storeContent(null, hash, content);
+                    return null;
+                }));
+            }
+            start.countDown();
+            for (Future<?> writer : writers) {
+                writer.get();
+            }
+
+            CmsFsStorage storage = new CmsFsStorage("fs", repository.toString());
+            assertTrue(Arrays.equals(content, storage.loadContent(null, hash)));
+            try (Stream<Path> paths = Files.walk(repository)) {
+                assertFalse(paths.anyMatch(path -> path.getFileName().toString().endsWith(".tmp")));
+            }
+        } finally {
+            executor.shutdownNow();
+            deleteDirectory(repository);
         }
     }
 

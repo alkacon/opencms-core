@@ -154,13 +154,19 @@ public class CmsStorageManager implements AutoCloseable {
     private static final Log LOG = CmsLog.getLog(CmsStorageManager.class);
 
     /** Prefix for storage properties. */
-    private static final String PARAM_STORAGE_ACTIVE = "storage.active";
+    public static final String PARAM_STORAGE_ACTIVE = "storage.active";
+
+    /** Property selecting the image cache backend. */
+    public static final String PARAM_STORAGE_IMAGE_CACHE = "storage.imagecache";
+
+    /** Property defining the image cache object key prefix. */
+    public static final String PARAM_STORAGE_IMAGE_CACHE_PREFIX = "storage.imagecache.prefix";
 
     /** Prefix for the legacy storage list. */
-    private static final String PARAM_STORAGE_LEGACY = "storage.legacy";
+    public static final String PARAM_STORAGE_LEGACY = "storage.legacy";
 
     /** Prefix for backend-specific configuration. */
-    private static final String PARAM_STORAGE_BACKEND_PREFIX = "storage.backend.";
+    public static final String PARAM_STORAGE_BACKEND_PREFIX = "storage.backend.";
 
     /** Property name for backend type. */
     private static final String PARAM_TYPE = "type";
@@ -194,6 +200,12 @@ public class CmsStorageManager implements AutoCloseable {
 
     /** Property name for the S3 connection timeout. */
     private static final String PARAM_CONNECTION_TIMEOUT = "connectionTimeout";
+
+    /** Property name for the S3 connection acquisition timeout. */
+    private static final String PARAM_CONNECTION_ACQUISITION_TIMEOUT = "connectionAcquisitionTimeout";
+
+    /** Property name for the S3 maximum number of pooled connections. */
+    private static final String PARAM_MAX_CONNECTIONS = "maxConnections";
 
     /** Property name for the S3 maximum number of retries. */
     private static final String PARAM_MAX_RETRIES = "maxRetries";
@@ -283,6 +295,9 @@ public class CmsStorageManager implements AutoCloseable {
         int connectionTimeout = configuration.getInteger(
             prefix + PARAM_CONNECTION_TIMEOUT,
             CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
+        int connectionAcquisitionTimeout = configuration.getInteger(
+            prefix + PARAM_CONNECTION_ACQUISITION_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT);
         int socketTimeout = configuration.getInteger(
             prefix + PARAM_SOCKET_TIMEOUT,
             CmsS3ClientConfiguration.DEFAULT_SOCKET_TIMEOUT);
@@ -295,6 +310,9 @@ public class CmsStorageManager implements AutoCloseable {
         int maxRetries = configuration.getInteger(
             prefix + PARAM_MAX_RETRIES,
             CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES);
+        int maxConnections = configuration.getInteger(
+            prefix + PARAM_MAX_CONNECTIONS,
+            CmsS3ClientConfiguration.DEFAULT_MAX_CONNECTIONS);
         String region = configuration.getString(prefix + PARAM_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
         return new CmsS3ClientConfiguration(
             endpoint,
@@ -307,7 +325,9 @@ public class CmsStorageManager implements AutoCloseable {
             socketTimeout,
             apiCallAttemptTimeout,
             apiCallTimeout,
-            maxRetries);
+            maxRetries,
+            maxConnections,
+            connectionAcquisitionTimeout);
     }
 
     /**
@@ -333,19 +353,91 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
+     * Returns the backend identifiers used for VFS data storage.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @return the active backend followed by all distinct legacy backends
+     */
+    public static List<String> getDataStorageIds(CmsParameterConfiguration configuration) {
+
+        List<String> result = new ArrayList<String>();
+        String activeStorageId = getActiveStorageId(configuration);
+        result.add(activeStorageId);
+        for (String legacyStorage : parseCommaSeparatedList(configuration.getString(PARAM_STORAGE_LEGACY, ""))) {
+            if (!result.contains(legacyStorage)) {
+                result.add(legacyStorage);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the configured file system repository path.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @param storageId the storage backend id
+     * @return the configured repository path
+     */
+    public static String getFileSystemStoragePath(CmsParameterConfiguration configuration, String storageId) {
+
+        String type = getStorageType(configuration, storageId);
+        if (!CmsFsStorage.STORAGE_TYPE.equals(type)) {
+            throw new IllegalArgumentException(
+                Messages.get().getBundle().key(Messages.ERR_STORAGE_UNSUPPORTED_TYPE_2, type, storageId));
+        }
+        return requireConfigValue(
+            configuration,
+            PARAM_STORAGE_BACKEND_PREFIX + storageId + "." + PARAM_PATH,
+            storageId);
+    }
+
+    /**
+     * Returns the configured image cache backend id, or <code>null</code> for the classic RFS cache.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @return the image cache backend id, or <code>null</code>
+     */
+    public static String getImageCacheStorageId(CmsParameterConfiguration configuration) {
+
+        String result = configuration.getString(PARAM_STORAGE_IMAGE_CACHE, null);
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(result) ? null : result.trim();
+    }
+
+    /**
      * Returns the type for a configured storage backend.<p>
      *
      * @param configuration the runtime property configuration
      * @param storageId the storage backend id
      * @return the storage backend type
      */
-    private static String getStorageType(CmsParameterConfiguration configuration, String storageId) {
+    public static String getStorageType(CmsParameterConfiguration configuration, String storageId) {
 
         if (I_CmsDbStorage.STORAGE_TYPE.equals(storageId)) {
             return I_CmsDbStorage.STORAGE_TYPE;
         }
         String prefix = PARAM_STORAGE_BACKEND_PREFIX + storageId + ".";
         return configuration.getString(prefix + PARAM_TYPE, null);
+    }
+
+    /**
+     * Parses a comma-separated backend list.
+     *
+     * @param value the raw configuration value
+     * @return the parsed backend identifiers
+     */
+    private static List<String> parseCommaSeparatedList(String value) {
+
+        List<String> result = new ArrayList<String>();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            return result;
+        }
+        for (String part : value.split(",")) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty() && !result.contains(trimmed)) {
+                result.add(trimmed);
+            }
+        }
+        return result;
     }
 
     /**
@@ -754,6 +846,9 @@ public class CmsStorageManager implements AutoCloseable {
             int connectionTimeout = configuration.getInteger(
                 prefix + PARAM_CONNECTION_TIMEOUT,
                 CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
+            int connectionAcquisitionTimeout = configuration.getInteger(
+                prefix + PARAM_CONNECTION_ACQUISITION_TIMEOUT,
+                CmsS3ClientConfiguration.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT);
             int socketTimeout = configuration.getInteger(
                 prefix + PARAM_SOCKET_TIMEOUT,
                 CmsS3ClientConfiguration.DEFAULT_SOCKET_TIMEOUT);
@@ -766,6 +861,9 @@ public class CmsStorageManager implements AutoCloseable {
             int maxRetries = configuration.getInteger(
                 prefix + PARAM_MAX_RETRIES,
                 CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES);
+            int maxConnections = configuration.getInteger(
+                prefix + PARAM_MAX_CONNECTIONS,
+                CmsS3ClientConfiguration.DEFAULT_MAX_CONNECTIONS);
             String region = configuration.getString(prefix + PARAM_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
             return new CmsS3Storage(
                 id,
@@ -780,7 +878,9 @@ public class CmsStorageManager implements AutoCloseable {
                     socketTimeout,
                     apiCallAttemptTimeout,
                     apiCallTimeout,
-                    maxRetries));
+                    maxRetries,
+                    maxConnections,
+                    connectionAcquisitionTimeout));
         }
         if (CmsFsStorage.STORAGE_TYPE.equals(type)) {
             String path = requireConfigValue(configuration, prefix + PARAM_PATH, id);
@@ -998,26 +1098,5 @@ public class CmsStorageManager implements AutoCloseable {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-    }
-
-    /**
-     * Parses a comma-separated backend list.
-     *
-     * @param value the raw configuration value
-     * @return the parsed backend identifiers
-     */
-    private List<String> parseCommaSeparatedList(String value) {
-
-        List<String> result = new ArrayList<String>();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
-            return result;
-        }
-        for (String part : value.split(",")) {
-            String trimmed = part.trim();
-            if (!trimmed.isEmpty() && !result.contains(trimmed)) {
-                result.add(trimmed);
-            }
-        }
-        return result;
     }
 }

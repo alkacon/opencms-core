@@ -5,7 +5,7 @@ OpenCms can store binary resource content outside the normal VFS content databas
 - deduplicating identical binary content by SHA-512 hash to reduce storage usage
 - keeping large blobs out of the `CMS_CONTENTS.FILE_CONTENT` and `CMS_OFFLINE_CONTENTS.FILE_CONTENT` database columns
 - storing blobs in the database, on a file system, or in S3-compatible object storage
-- delivering externally stored large media files (Audio, Video, PDF) directly from the storage backends with HTTP range requests
+- delivering large media files (Audio, Video, PDF) with HTTP range requests
 
 The storage implementation supports gradual migration from classic database content storage to dedicated blob storage. Storage delivery is also an optional feature supplementing the classic delivery via the static export folder.
 
@@ -42,55 +42,9 @@ Switch from `CmsNoExternalStoragePolicy` to `CmsDefaultStoragePolicy` to enable 
 </storage-policy>
 ```
 
-`CmsDefaultStoragePolicy` can be tuned with configuration parameters such as `threshold` and `resourceTypeIds`. The threshold value is configured in bytes. The default `0` means that every non-empty resource covered by the policy is stored externally. `resourceTypeIds` is a comma-separated list of numeric resource type ids. The default is `2,3`, which means binary files and images. With the `db` storage backend, this stores binary and image resources in the deduplicated `CMS_STORAGE` table. With an S3 backend with higher latency, configure a higher threshold so that only larger files are stored externally.
-
-For S3 and file system storage, the storage policy also determines which resources can use direct delivery. Direct delivery is only available for resources whose content has actually been offloaded to the configured storage backend. Resources which remain in the normal VFS content columns continue to use the classic database and static export delivery path.
+`CmsDefaultStoragePolicy` can be tuned with configuration parameters such as `threshold` and `resourceTypeIds`. The threshold value is configured in bytes. The default `0` means that every non-empty resource covered by the policy is stored externally. `resourceTypeIds` is a comma-separated list of numeric resource type ids. The default is `2,3`, which means binary files and images. With the `db` storage backend, this stores binary and image resources in the deduplicated `CMS_STORAGE` table. There are S3 services that require a higher threshold so that only larger files are stored externally.
 
 The storage policy can also be replaced with a custom implementation of `org.opencms.db.storage.policy.I_CmsStoragePolicy`.
-
-## Image Cache
-
-The OpenCms image cache stores generated image derivatives, for example scaled or cropped variants created by the `CmsImageLoader`. Traditionally these derivatives are stored on the application server file system below `WEB-INF/imagecache/`.
-
-When an S3 or file system storage backend is used, generated image derivatives can now also be stored in the corresponding storage backend. This is especially useful in clustered installations: derivatives no longer have to be stored locally on every node. It can also reduce work on individual nodes, because image derivatives generated on one node can be reused by another node instead of being generated again there.
-
-Image cache storage is configured in `WEB-INF/config/opencms-importexport.xml` via the top-level `<imagecache>` element. For example, an installation using S3 storage can configure `CmsS3ImageCache`:
-
-```xml
-<imagecache class="org.opencms.loader.CmsS3ImageCache">
-    <params>
-        <param name="bucket">opencms-image-cache</param>
-    </params>
-</imagecache>
-```
-
-The detailed configuration options for RFS, S3 and file system image cache storage are described in the configuration details below.
-
-## Storage Delivery
-
-The storage delivery feature is optional on top of the storage layer.
-
-With storage delivery enabled, PDFs, audio files, videos and other stored binaries can be streamed from the configured storage backend through OpenCms. The storage delivery path supports HTTP range requests. This is especially relevant for large PDFs, audio files and videos, where clients often request only parts of a file.
-
-The storage delivery feature is activated in `WEB-INF/config/opencms-importexport.xml` with the `storedcontentdelivery` configuration.
-
-```xml
-<storedcontentdelivery enabled="true">
-    <enabledsuffixes>
-        <suffix key=".pdf" />
-        <suffix key=".mp3" />
-        <suffix key=".mp4" />
-    </enabledsuffixes>
-</storedcontentdelivery>
-```
-
-The default configuration focuses on large media and download files.
-
-Images require special attention. Without an additional HTTP cache in front of OpenCms, original images and scaled image derivatives should generally continue to use the classic `/export` path. Do not add image suffixes to the `enabledsuffixes` list casually. If a CDN, Varnish, reverse proxy, or another capable HTTP cache is used for frontend traffic, image suffixes can be enabled for storage delivery as well. In that setup, images can be delivered directly from storage and the additional delivery copies in the `/export` folder are avoided.
-
-The static export folder remains part of the delivery architecture for images by default, and for file types such as CSS and JavaScript that benefit from GZIP compression.
-
-The storage delivery feature is available for S3 and file system storage. The database storage backend keeps the classic behavior and continues to use the static export folder and the classic image cache. Offline resources, unpublished files and ACL-protected public resources remain protected in the same way as with the classic database and static export delivery model.
 
 ## Supported Storage Backends
 
@@ -100,19 +54,52 @@ OpenCms supports three storage backend types:
 | Backend                      | Type | Typical use                                                                                                                                                                                     |
 | ---------------------------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Database                     | `db` | Default active backend. When an offloading policy is configured, binary resource content is stored in the same database as the other OpenCms data, but deduplicated in the `CMS_STORAGE` table. |
-| S3-compatible object storage | `s3` | Binary resource content is stored in an S3-compatible object store such as RustFS. Direct delivery with HTTP range requests is supported.                                                       |
-| File system                  | `fs` | Binary resource content is stored on a local or shared file system path. Direct delivery with HTTP range requests is supported.                                                                 |
+| S3-compatible object storage | `s3` | Binary resource content is stored in an S3-compatible object store such as Ceph or RustFS.                                                      |
+| File system                  | `fs` | Binary resource content is stored on a local or shared file system path. Requires a reliable shared file system supporting atomic file moves and consistent file visibility across all nodes. NFSv4 is the recommended baseline.                                                      |
 
 
 ### Choosing a Backend
 
-Use `db` when the installation should stay as simple and close to the classic OpenCms behavior as possible, or when binary content should be deduplicated without introducing a separate storage service. Use the default `CmsNoExternalStoragePolicy` when the storage-aware driver and schema should be active but content should keep using the classic content columns.
+Use `db` when the installation should stay as simple and close to the classic OpenCms behavior as possible, or when binary content should be deduplicated without introducing a separate storage service.
 
-Use `s3` when blob storage should be independent from the application server file system, for example for container deployments, clustered installations, large media volumes, external backups, or object-storage lifecycle management. The current implementation has been tested with RustFS. Other S3-compatible services, including AWS S3 and MinIO, should be validated before production use.
+Use `s3` when blob storage should be independent from the application server file system, for example for container deployments, clustered installations, large media volumes, external backups, or object-storage lifecycle management. The current implementation has been tested with Ceph and RustFS. Other S3-compatible services, including AWS S3 and MinIO, should be validated before production use.
 
 Use `fs` when blob data should be moved out of the database but a reliable local or shared file system path is available. In clustered or containerized setups, this path must be shared and durable for all OpenCms nodes that need to read the blobs.
 
-For installations which want to deliver PDFs, audio files, videos and other large binaries efficiently, choose an S3 or file system backend together with storage delivery and a storage policy which includes these media resource types. The default `CmsDefaultStoragePolicy` settings are a good starting point because they include binary and image resources. For production frontend delivery with storage delivery enabled, place a suitable HTTP cache such as a CDN, Varnish, reverse proxy, or web server cache in front of OpenCms. This keeps repeated requests for large PDFs, videos, audio files and other large downloads away from both OpenCms and the storage backend. If large media files are excluded from the storage policy, they remain database-backed and can still increase the size of the static export folder.
+## Image Cache
+
+The OpenCms image cache stores generated image derivatives created by the `CmsImageLoader`. Traditionally these derivatives are stored on the application server file system below `WEB-INF/imagecache/`.
+
+OpenCms supports three image-cache variants: the classic local RFS cache, a shared file-system cache, or S3-compatible object storage. Shared file systems and S3 allow derivatives generated by one cluster node to be reused by the other nodes.
+
+The image cache storage can be selected independently of the active storage backend. For example, it is possible to configure an active S3 storage backend and select a shared FS backend for the image cache.
+
+### Supported Image Caches
+
+
+| Image cache | Scope              | Requirements                                                                                                                        |
+| ----------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Local RFS   | One cache per node | Default, if no special image cache is configured. Requires sufficient local disk space on every node.                                                                                  |
+| Shared FS   | Shared by nodes    | Requires a reliable shared file system supporting atomic file moves and consistent file visibility across all nodes. NFSv4 is the recommended baseline. |
+| S3          | Shared by nodes    | Requires an S3-compatible object store with acceptable access latency.                                      |
+
+The detailed configuration options for RFS, S3 and file system image cache storage are described below.
+
+## Resource Delivery
+
+Resource delivery determines how externally stored content (images, documents, audio and video files) is served on the public online site together with other static resources like CSS, JavaScript or fonts.
+
+There are three modes of delivery that all use the /export URL path. While the classic mode delivers copies from a local /export folder under this URL path, other delivery modes internally work with direct storage delivery or a shared cache under the /export URL path.
+
+The delivery mode is selected in `WEB-INF/config/opencms-importexport.xml`.
+
+### Supported Delivery Modes
+
+| Delivery mode           | Operation |
+| ----------------------- | --------- |
+| Classic static export   | OpenCms creates physical delivery copies in the configured `/export` directory. The servlet container or a web server serves these files. |
+| Stored content delivery | Most resources continue to use classic static export, while selected media and download types, such as audio, video and PDF, are streamed through OpenCms without an export copy. Efficient media streaming requires an S3 or FS data storage backend. This is also the mode enforced internally for ACL protected online and offline resources. |
+| Shared cache delivery   | OpenCms does not create physical `/export` copies. Management of reusable responses is delegated to an external HTTP cache, reverse proxy, web server cache, or CDN. OpenCms provides standard HTTP cache headers for the shared cache. |
 
 ## Configuration Details
 
@@ -253,74 +240,81 @@ Use `pathStyle=true` for RustFS and other local S3-compatible services which req
 storage.backend.s3main.pathStyle=true
 storage.backend.s3main.region=aws-global
 storage.backend.s3main.connectionTimeout=5000
+storage.backend.s3main.connectionAcquisitionTimeout=10000
+storage.backend.s3main.maxConnections=50
 storage.backend.s3main.socketTimeout=30000
 storage.backend.s3main.apiCallAttemptTimeout=30000
 storage.backend.s3main.apiCallTimeout=60000
 storage.backend.s3main.maxRetries=2
 ```
 
+`maxConnections` limits the number of concurrent requests in the S3 HTTP connection pool. If all connections are in use, `connectionAcquisitionTimeout` limits how long another request waits for a pooled connection. The defaults are 50 connections and 10000 milliseconds. Size the pool for the expected number of concurrent storage and media requests on an OpenCms node.
+
 ### Image Cache Configuration
 
-The image cache is configured in `WEB-INF/config/opencms-importexport.xml` via the top-level `<imagecache>` element. If no separate image cache configuration is present, OpenCms keeps using the classic RFS image cache behavior from `CmsImageLoader`, i.e., the default `WEB-INF/imagecache/` folder.
+The image cache is configured only in `WEB-INF/config/opencms.properties`.
 
-For database storage, use `CmsRfsImageCache` or omit the separate image cache configuration:
+If `storage.imagecache` is omitted, OpenCms uses the classic local RFS image cache. Its location is still controlled by the `image.folder` loader parameter in `opencms-vfs.xml`; the default is `WEB-INF/imagecache/`.
 
-```xml
-<imagecache class="org.opencms.loader.CmsRfsImageCache">
-    <params>
-        <param name="folder">WEB-INF/imagecache/</param>
-    </params>
-</imagecache>
+To use a separate S3 image cache, reference a dedicated S3 backend:
+
+```properties
+storage.imagecache=s3images
+
+storage.backend.s3images.type=s3
+storage.backend.s3images.endpoint=http://localhost:9000
+storage.backend.s3images.bucket=opencms-imagecache
+storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
+storage.backend.s3images.secretKey=YOUR_SECRET_KEY
+storage.backend.s3images.pathStyle=true
+storage.backend.s3images.region=aws-global
 ```
 
-The `folder` parameter is optional. If it is not configured, the old `image.folder` parameter from the `CmsImageLoader` configuration in `WEB-INF/config/opencms-vfs.xml` is still honored. If neither parameter is configured, `WEB-INF/imagecache/` is used.
+The S3 image cache backend is independent of `storage.active`: data storage can use database, FS or another S3 backend. Connection pool, timeout and retry properties have the same meaning and defaults as for every other S3 backend.
 
-For S3 storage, configure `CmsS3ImageCache` and the image cache bucket:
+For smaller installations, it can be useful to use the same S3 endpoint—and even the same S3 bucket—for data storage AND for the image cache. In this specific case, a prefix must be specified for the image cache with the `storage.imagecache.prefix` parameter so that the image derivatives are stored in S3 separately from the original data.
 
-```xml
-<imagecache class="org.opencms.loader.CmsS3ImageCache">
-    <params>
-        <param name="bucket">opencms-image-cache</param>
-    </params>
-</imagecache>
+However, the `storage.imagecache.prefix` parameter must be configured only for an S3 image cache, and not for an file system image cache, and only if the S3 image cache uses the same bucket as the active storage. A prefix is rejected for a separate S3 endpoint or bucket.
+
+```properties
+storage.active=s3main
+storage.imagecache=s3main
+storage.imagecache.prefix=imagecache/
+
+storage.backend.s3main.type=s3
+storage.backend.s3main.endpoint=http://localhost:9000
+storage.backend.s3main.bucket=opencms-data
+# credentials and remaining S3 settings omitted
 ```
 
-The S3 image cache uses the active S3 storage backend connection settings from `opencms.properties`, but writes generated derivatives to the configured image cache bucket. The image cache may use the same bucket as the active S3 storage backend. In that case, a `prefix` parameter is required so that generated image cache objects are stored outside the storage hash namespace:
+To use a file system image cache, reference an FS backend whose path is the image cache root:
 
-```xml
-<imagecache class="org.opencms.loader.CmsS3ImageCache">
-    <params>
-        <param name="bucket">opencms-test</param>
-        <param name="prefix">imagecache/</param>
-    </params>
-</imagecache>
+```properties
+storage.imagecache=fsimages
+
+storage.backend.fsimages.type=fs
+storage.backend.fsimages.path=/mnt/opencms/imagecache
 ```
 
-The prefix is normalized to have no leading slash and exactly one trailing slash. Startup fails if the S3 image cache uses the active storage bucket without a `prefix` parameter.
+FS image caches do not support `storage.imagecache.prefix`.
 
-For file system storage, configure `CmsFsImageCache` and the target path:
+The configured file system must support atomic moves within one directory. OpenCms writes a derivative to a uniquely named temporary file beside its final location and atomically moves the completed file into place. Readers therefore see either no cache entry or one complete cache entry, even when several cluster nodes generate the same derivative concurrently. The startup validation includes this atomic write path and aborts startup when the configured file system does not support it.
 
-```xml
-<imagecache class="org.opencms.loader.CmsFsImageCache">
-    <params>
-        <param name="path">/var/opencms/image-cache</param>
-    </params>
-</imagecache>
-```
+For a shared cluster cache, NFSv4 is the recommended baseline. All OpenCms nodes must mount the same export read-write at the configured path and use mount and server settings which preserve hard-mount and atomic-rename semantics. Monitor NFS availability separately: a server outage can block OpenCms request threads according to the operating system's NFS mount timeout behavior. Validate concurrency, reconnect behavior and visibility between genuinely independent NFS clients before production use.
 
-Do not configure image cache classes for a different backend type. For example, `CmsFsImageCache` is invalid when the active storage backend is S3, and `CmsS3ImageCache` is invalid when the active storage backend is file system or database storage. Invalid combinations are rejected during startup. Mixed setups are not supported: S3 storage uses an S3 image cache, file system storage uses a file system image cache, and database storage uses the classic RFS image cache.
+When an external image cache is configured, OpenCms validates it during startup. S3 validation writes, reads and deletes a small test object; FS validation does the same with a temporary file. Configuration or availability failures abort startup.
 
-### Direct Delivery Configuration
+### Stored Content Delivery Configuration
 
-Direct delivery is controlled by the `storedcontentdelivery` configuration in `WEB-INF/config/opencms-importexport.xml`. When it is enabled and the active storage backend is S3 or file system storage, OpenCms can use direct delivery for externally stored resources.
+Stored content delivery is controlled by the `storedcontentdelivery` configuration in `WEB-INF/config/opencms-importexport.xml`. When it is enabled and the active storage backend is S3 or file system storage, OpenCms can use direct delivery for externally stored resources.
 
-The optional `enabledsuffixes` list can be used to decide which resources are delivered directly and which continue to use the classic static export path. This list is an additional storage delivery filter; it does not replace the normal `<staticexport>` configuration. For unchanged original files, matching suffixes enable delivery from the configured storage backend. For scaled image requests, matching suffixes enable delivery from the configured image cache backend without writing an additional `/export` copy. The `<imagecache>` configuration still controls where image derivatives are stored.
+The optional `enabledsuffixes` list can be used to decide which resources are delivered directly and which continue to use the classic static export path. This list is an additional storage delivery filter; it does not replace the normal `<staticexport>` configuration. For unchanged original files, matching suffixes enable delivery from the configured storage backend.
 
-The normal static export rules still decide whether a resource is exportable at all. If an exportable resource is stored externally and its suffix is listed under `storedcontentdelivery/enabledsuffixes`, the storage delivery path wins and no `/export` copy is written for that resource. For scaled image requests, the suffix check is applied to the generated export file name, so a generated file such as `image.jpg_123.jpg` is controlled by `.jpg`. If the suffix is not listed there, the resource continues to use the classic static export behavior even if the binary content itself is stored externally or the image derivative is stored in an external image cache. If the `enabledsuffixes` element is omitted, all exportable resources handled by direct-delivery-capable loaders are eligible for storage delivery.
+The normal static export rules still decide whether a resource is exportable at all. If an exportable resource is stored externally and its suffix is listed under `storedcontentdelivery/enabledsuffixes`, the storage delivery path wins and no `/export` copy is written for that resource.
 
-The default suffix list intentionally focuses on large media, office and archive downloads. Image suffixes such as `.jpg`, `.jpeg`, `.png`, `.gif`, `.tif`, `.tiff` and `.webp` are not enabled by default because original images and scaled image derivatives should normally use the classic `/export` path. Enable image suffixes only when a capable HTTP cache such as a CDN, Varnish or reverse proxy is in front of OpenCms for public frontend traffic and avoiding additional `/export` copies is desired.
+The default suffix list intentionally focuses on large media, office and archive downloads. Image suffixes such as `.jpg`, `.jpeg`, `.png`, `.gif`, `.tif`, `.tiff` and `.webp` are not enabled by default because original images and scaled image derivatives should normally use the classic `/export` path.
 
-Example for enabling direct delivery for PDF, MP3 and MP4 files:
+Example for enabling stored content delivery for PDF, MP3 and MP4 files:
 
 ```xml
 <storedcontentdelivery enabled="true">
@@ -332,7 +326,51 @@ Example for enabling direct delivery for PDF, MP3 and MP4 files:
 </storedcontentdelivery>
 ```
 
-The image cache is configured separately in the top-level `imagecache` element. It controls where generated image derivatives are stored and is not required to enable direct delivery for unchanged original files.
+### Shared Cache Configuration
+
+Shared cache delivery is configured in `WEB-INF/config/opencms-importexport.xml`. It is a third delivery model beside classic static export and stored content delivery. Static export continues to select resources and generate `/export` links, but an external HTTP cache stores the responses and OpenCms does not create local `/export` copies.
+
+Shared cache delivery requires static export with an on-demand export handler. It can not be enabled together with `storedcontentdelivery`, and its cache policy can not be combined with a `Cache-Control` entry in the static export `exportheaders`.
+
+The configuration requires one default cache policy. Additional policies can replace the default for an exact MIME type or a top-level wildcard such as `image/*`. OpenCms determines the resource MIME type using the existing MIME type configuration in `opencms-vfs.xml`; the shared cache configuration does not maintain a suffix list of its own. Exact MIME type policies take precedence over wildcard policies.
+
+All cache durations are configured in seconds:
+
+- `clientmaxage` controls the browser cache lifetime.
+- `sharedmaxage` controls the freshness lifetime in a shared cache.
+- The optional `staleiferror` duration allows an existing stale response to be used while the OpenCms origin is unavailable.
+
+For a matching policy, OpenCms sends `Cache-Control: public, max-age=<clientmaxage>, s-maxage=<sharedmaxage>` and appends `stale-if-error=<staleiferror>` when configured. Existing `Last-Modified` and `ETag` validators remain available. When a stale cache entry is revalidated and the resource is unchanged, OpenCms responds with `304 Not Modified` without sending the response body again.
+
+The default configuration keeps the feature disabled:
+
+```xml
+<sharedcache enabled="false">
+    <cachepolicy>
+        <clientmaxage>0</clientmaxage>
+        <sharedmaxage>86400</sharedmaxage>
+        <staleiferror>604800</staleiferror>
+    </cachepolicy>
+</sharedcache>
+```
+
+For example, an installation can use a shorter default policy and retain the 24-hour freshness and seven-day update fallback specifically for images:
+
+```xml
+<sharedcache enabled="true">
+    <cachepolicy>
+        <clientmaxage>0</clientmaxage>
+        <sharedmaxage>3600</sharedmaxage>
+    </cachepolicy>
+    <cachepolicy contenttype="image/*">
+        <clientmaxage>0</clientmaxage>
+        <sharedmaxage>86400</sharedmaxage>
+        <staleiferror>604800</staleiferror>
+    </cachepolicy>
+</sharedcache>
+```
+
+`staleiferror` is an availability allowance, not a retention guarantee. The external cache may evict an object because of its size or replacement policy. The external cache also has to be configured to revalidate stale entries and to use stale responses only for the intended origin errors. In particular, authorization failures and missing resources must not be configured as stale-cache fallback conditions.
 
 ## Backward Compatibility
 
@@ -582,7 +620,7 @@ By default, `delete-orphans` deletes at most 1000 blobs per run. Use `--delete-l
 
 The tool checks references again immediately before deleting a blob. It can enumerate file system and S3 storage backends, and scans the database backend through `CMS_STORAGE`. For S3, the backend must allow bucket listing in addition to object read/write/delete permissions.
 
-When an S3 image cache shares the active S3 storage bucket and uses the `prefix` parameter, the maintenance tool reads `WEB-INF/config/opencms-importexport.xml` and ignores objects below that prefix during orphan scans and orphan deletion.
+When an S3 image cache shares an active or legacy S3 data storage bucket, the maintenance tool reads `storage.imagecache` and `storage.imagecache.prefix` from `opencms.properties` and ignores objects below that prefix during orphan scans and orphan deletion. A backend used exclusively as image cache is not part of data-storage orphan scanning.
 
 ## Step-by-Step: Switch To S3 Storage
 
@@ -634,17 +672,20 @@ storage.backend.s3main.apiCallTimeout=60000
 storage.backend.s3main.maxRetries=2
 ```
 
-1. Configure the S3 image cache bucket in `WEB-INF/config/opencms-importexport.xml`:
+1. Optional: configure a separate S3 image cache backend in `opencms.properties`:
 
-```xml
-<imagecache class="org.opencms.loader.CmsS3ImageCache">
-    <params>
-        <param name="bucket">opencms-image-cache</param>
-    </params>
-</imagecache>
+```properties
+storage.imagecache=s3images
+
+storage.backend.s3images.type=s3
+storage.backend.s3images.endpoint=http://localhost:9000
+storage.backend.s3images.bucket=opencms-imagecache
+storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
+storage.backend.s3images.secretKey=YOUR_SECRET_KEY
+storage.backend.s3images.pathStyle=true
 ```
 
-If the image cache should share the active S3 storage bucket, use that bucket name and add a dedicated prefix, for example `<param name="prefix">imagecache/</param>`.
+If the image cache intentionally shares `s3main`, set `storage.imagecache=s3main` and configure `storage.imagecache.prefix=imagecache/` instead. Do not configure a prefix for a separate bucket.
 
 1. Configure an offloading storage policy in `WEB-INF/config/opencms-vfs.xml`. Make sure the policy includes the media resource types which should use direct delivery. The default `resourceTypeIds` value `2,3` includes binary and image resources:
 
@@ -684,6 +725,7 @@ db.history.sqlmanager=org.opencms.db.mysql.CmsSqlManager
 
 storage.active=s3main
 storage.legacy=db
+storage.imagecache=s3images
 
 storage.backend.s3main.type=s3
 storage.backend.s3main.endpoint=http://localhost:9000
@@ -691,6 +733,13 @@ storage.backend.s3main.bucket=opencms-test
 storage.backend.s3main.accessKey=YOUR_ACCESS_KEY
 storage.backend.s3main.secretKey=YOUR_SECRET_KEY
 storage.backend.s3main.pathStyle=true
+
+storage.backend.s3images.type=s3
+storage.backend.s3images.endpoint=http://localhost:9000
+storage.backend.s3images.bucket=opencms-imagecache
+storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
+storage.backend.s3images.secretKey=YOUR_SECRET_KEY
+storage.backend.s3images.pathStyle=true
 
 storage.backend.s3main.region=aws-global
 storage.backend.s3main.connectionTimeout=5000

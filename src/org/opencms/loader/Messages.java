@@ -53,22 +53,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1 = "ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_DB_1 = "ERR_IMAGE_CACHE_CONFIG_DB_1";
+    public static final String ERR_IMAGE_CACHE_CONFIG_FS_PATH_2 = "ERR_IMAGE_CACHE_CONFIG_FS_PATH_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_DB_2 = "ERR_IMAGE_CACHE_CONFIG_DB_2";
+    public static final String ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1 = "ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_FS_3 = "ERR_IMAGE_CACHE_CONFIG_FS_3";
+    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_FORBIDDEN_1 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_FORBIDDEN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_S3_3 = "ERR_IMAGE_CACHE_CONFIG_S3_3";
+    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_REQUIRED_1 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_REQUIRED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_2 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_TYPE_1 = "ERR_IMAGE_CACHE_CONFIG_TYPE_1";
+    public static final String ERR_IMAGE_CACHE_CONFIG_TYPE_2 = "ERR_IMAGE_CACHE_CONFIG_TYPE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMAGE_CACHE_INIT_1 = "ERR_IMAGE_CACHE_INIT_1";

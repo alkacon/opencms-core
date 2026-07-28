@@ -33,6 +33,8 @@ import org.opencms.file.I_CmsFileContentStreamHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
@@ -41,6 +43,8 @@ import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -149,7 +153,7 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
         Path tempFile = Files.createTempFile(parent, hash, ".tmp");
         try {
             Files.write(tempFile, content);
-            Files.move(tempFile, file);
+            Files.move(tempFile, file, StandardCopyOption.ATOMIC_MOVE);
         } catch (FileAlreadyExistsException e) {
             Files.deleteIfExists(tempFile);
             if (!Files.isRegularFile(file, LinkOption.NOFOLLOW_LINKS)) {
@@ -170,12 +174,15 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
     public void streamRangeTo(CmsDbContext dbc, String hash, long start, long length, OutputStream out)
     throws Exception {
 
-        try (InputStream in = Files.newInputStream(getExistingRegularContentPath(hash))) {
-            skipFully(in, start);
+        try (SeekableByteChannel channel = Files.newByteChannel(
+            getExistingRegularContentPath(hash),
+            StandardOpenOption.READ)) {
+            channel.position(start);
             byte[] buffer = new byte[8192];
             long remaining = length;
             while (remaining > 0) {
-                int read = in.read(buffer, 0, (int)Math.min(buffer.length, remaining));
+                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, (int)Math.min(buffer.length, remaining));
+                int read = channel.read(byteBuffer);
                 if (read < 0) {
                     return;
                 }
@@ -328,28 +335,6 @@ public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage
             }
         }
         return true;
-    }
-
-    /**
-     * Skips exactly the requested number of bytes.<p>
-     *
-     * @param in the input stream
-     * @param bytes the number of bytes to skip
-     * @throws IOException if skipping fails
-     */
-    private void skipFully(InputStream in, long bytes) throws IOException {
-
-        long remaining = bytes;
-        while (remaining > 0) {
-            long skipped = in.skip(remaining);
-            if (skipped > 0) {
-                remaining -= skipped;
-            } else if (in.read() < 0) {
-                return;
-            } else {
-                remaining--;
-            }
-        }
     }
 
 }

@@ -31,10 +31,6 @@ import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.cache.CmsVfsNameBasedDiskCache;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.db.storage.CmsFsStorage;
-import org.opencms.db.storage.CmsS3Storage;
-import org.opencms.db.storage.CmsStorageManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -45,8 +41,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.staticexport.CmsImageCacheConfiguration;
-import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -132,9 +126,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
     /** The optional image cache. */
     protected I_CmsImageCache m_imageCache;
-
-    /** If the image cache configuration has been applied after startup configuration was available. */
-    protected boolean m_imageCacheConfigurationApplied;
 
     /**
      * Creates a new image loader.<p>
@@ -279,8 +270,14 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
         m_enabled = false;
         m_vfsDiskCache = null;
+        if (m_imageCache != null) {
+            try {
+                m_imageCache.close();
+            } catch (Exception e) {
+                LOG.warn("Unable to close the configured image cache.", e);
+            }
+        }
         m_imageCache = null;
-        m_imageCacheConfigurationApplied = false;
         m_imageRepositoryFolder = null;
     }
 
@@ -292,7 +289,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     throws IOException, CmsException {
 
         if (m_enabled && (req != null)) {
-            ensureImageCacheConfiguration();
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             if (scaler.isValid()) {
                 if (m_imageCache != null) {
@@ -329,7 +325,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     throws IOException, CmsException {
 
         if (m_enabled && (req != null)) {
-            ensureImageCacheConfiguration();
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             if (scaler.isValid()) {
                 if (m_imageCache != null) {
@@ -404,8 +399,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        initDefaultImageCache();
-        m_imageCacheConfigurationApplied = false;
+        initImageCache();
         OpenCms.addCmsEventListener(this);
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -444,17 +438,21 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     throws IOException, CmsException {
 
         if (m_enabled) {
-            ensureImageCacheConfiguration();
-            if (canSendLastModifiedHeader(resource, req, res)) {
-                // no image processing required at all
-                return;
-            }
             // get the scale information from the request
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             if (scaler.isValid()) {
                 if (m_imageCache != null) {
-                    String key = ensureImageCacheEntry(cms, resource, scaler);
-                    loadImageCacheEntry(resource, key, req, res);
+                    String key = getImageCacheKey(resource, scaler);
+                    String etag = getImageCacheETag(key);
+                    if (trySendImageCacheNotModified(resource, req, res, etag)) {
+                        return;
+                    }
+                    key = ensureImageCacheEntry(cms, resource, scaler);
+                    loadImageCacheEntry(resource, key, req, res, etag);
+                    return;
+                }
+                if (canSendLastModifiedHeader(resource, req, res)) {
+                    // no image processing required at all
                     return;
                 }
                 File file = getScaledImageFile(cms, resource, scaler);
@@ -499,8 +497,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         HttpServletResponse res)
     throws IOException, CmsException {
 
-        ensureImageCacheConfiguration();
-        if ((m_imageCache == null) || !m_enabled || (req == null)) {
+        if ((m_imageCache == null)
+            || !m_enabled
+            || (req == null)
+            || !("GET".equalsIgnoreCase(req.getMethod()) || "HEAD".equalsIgnoreCase(req.getMethod()))) {
             return false;
         }
         if (!cms.hasPermissions(resource, CmsPermissionSet.ACCESS_READ)) {
@@ -510,63 +510,19 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         if (!scaler.isValid()) {
             return false;
         }
-        String key = ensureImageCacheEntry(cms, resource, scaler);
+        String key = getImageCacheKey(resource, scaler);
+        String etag = null;
         if (res != null) {
-            loadImageCacheEntry(resource, key, req, res);
+            etag = getImageCacheETag(key);
+            if (trySendImageCacheNotModified(resource, req, res, etag)) {
+                return true;
+            }
+        }
+        key = ensureImageCacheEntry(cms, resource, scaler);
+        if (res != null) {
+            loadImageCacheEntry(resource, key, req, res, etag);
         }
         return true;
-    }
-
-    /**
-     * Creates a configured image cache instance.<p>
-     *
-     * @param className the image cache class name
-     * @param parameters the image cache parameters
-     * @return the image cache instance
-     * @throws Exception if the instance can not be created
-     */
-    protected I_CmsImageCache createConfiguredImageCache(String className, CmsParameterConfiguration parameters)
-    throws Exception {
-
-        Class<?> clazz = Class.forName(className);
-        Object instance = clazz.newInstance();
-        if (!(instance instanceof I_CmsImageCache)) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, className));
-        }
-        if (instance instanceof I_CmsConfigurationParameterHandler) {
-            I_CmsConfigurationParameterHandler configurable = (I_CmsConfigurationParameterHandler)instance;
-            if (CmsRfsImageCache.class.getName().equals(className)
-                && CmsStringUtil.isEmptyOrWhitespaceOnly(parameters.get(CmsRfsImageCache.PARAM_FOLDER))) {
-                String folder = m_imageRepositoryFolder;
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(folder)) {
-                    folder = IMAGE_REPOSITORY_DEFAULT;
-                }
-                parameters.add(CmsRfsImageCache.PARAM_FOLDER, folder);
-            }
-            for (String key : parameters.keySet()) {
-                configurable.addConfigurationParameter(key, parameters.get(key));
-            }
-            configurable.initConfiguration();
-        }
-        return (I_CmsImageCache)instance;
-    }
-
-    /**
-     * Applies the configured image cache once the full OpenCms configuration is available.<p>
-     *
-     * @throws CmsConfigurationException if the configured image cache is invalid
-     */
-    protected synchronized void ensureImageCacheConfiguration() throws CmsConfigurationException {
-
-        if (m_imageCacheConfigurationApplied || (m_imageCache != null)) {
-            return;
-        }
-        if (OpenCms.getStaticExportManager() == null) {
-            initDefaultImageCache();
-            return;
-        }
-        initImageCache();
-        m_imageCacheConfigurationApplied = true;
     }
 
     /**
@@ -671,6 +627,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     protected File getScaledImageFile(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
     throws IOException, CmsException {
 
+        if ((m_imageCache instanceof CmsFsImageCache) && scaler.isValid()) {
+            String key = ensureImageCacheEntry(cms, resource, scaler);
+            return ((CmsFsImageCache)m_imageCache).getPath(key).toFile();
+        }
         String cacheParam = scaler.isValid() ? scaler.toString() : null;
         String cacheName = m_vfsDiskCache.getCacheName(resource, cacheParam);
         File cacheFile = m_vfsDiskCache.getCacheFile(cacheName);
@@ -693,7 +653,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * Initializes the classic RFS image cache used when direct image cache delivery is disabled.<p>
+     * Initializes the classic RFS image cache used when no external image cache backend is selected.<p>
      */
     protected void initDefaultImageCache() {
 
@@ -711,20 +671,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
      */
     protected void initImageCache() throws CmsConfigurationException {
 
-        CmsStaticExportManager staticExportManager = OpenCms.getStaticExportManager();
-        if (staticExportManager == null) {
-            initDefaultImageCache();
-            return;
-        }
-        CmsImageCacheConfiguration imageCacheConfiguration = staticExportManager.getImageCacheConfiguration();
-        if ((imageCacheConfiguration == null) || !imageCacheConfiguration.isConfigured()) {
-            initDefaultImageCache();
-            return;
-        }
-        String className = imageCacheConfiguration.getClassName();
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(className)) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "class"));
-        }
         CmsParameterConfiguration propertyConfiguration;
         try {
             propertyConfiguration = new CmsParameterConfiguration(
@@ -735,30 +681,19 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
                 Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
                 e);
         }
-        String activeType = CmsStorageManager.getActiveStorageType(propertyConfiguration);
-        validateImageCacheConfiguration(activeType, className);
-        CmsParameterConfiguration parameters = new CmsParameterConfiguration(
-            imageCacheConfiguration.getConfiguration());
         try {
-            I_CmsImageCache imageCache = createConfiguredImageCache(className, parameters);
+            I_CmsImageCache imageCache = CmsImageCacheFactory.create(propertyConfiguration);
+            if (imageCache == null) {
+                initDefaultImageCache();
+                return;
+            }
             if (imageCache instanceof CmsS3ImageCache) {
                 m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
             } else if (imageCache instanceof CmsFsImageCache) {
-                String path = parameters.get(CmsFsImageCache.PARAM_PATH);
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", path);
-            } else if (imageCache instanceof CmsRfsImageCache) {
-                String folder = parameters.get(CmsRfsImageCache.PARAM_FOLDER);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(folder)) {
-                    folder = m_imageRepositoryFolder;
-                }
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(folder)) {
-                    folder = IMAGE_REPOSITORY_DEFAULT;
-                }
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
-                    OpenCms.getSystemInfo().getWebApplicationRfsPath(),
-                    folder);
+                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", ((CmsFsImageCache)imageCache).getRepositoryPath());
             } else {
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, imageCache.getClass().getName()));
             }
             m_imageCache = imageCache;
         } catch (CmsConfigurationException e) {
@@ -767,7 +702,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         } catch (Exception e) {
             m_imageCache = null;
             throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, className),
+                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
                 e);
         }
     }
@@ -790,79 +725,11 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         HttpServletResponse res)
     throws IOException, CmsException {
 
-        try {
-            long length = m_imageCache.getLength(key);
-            String etag = getImageCacheETag(key);
-            if (m_imageCache.supportsRangeDelivery()) {
-                res.setHeader(CmsRequestUtil.HEADER_ACCEPT_RANGES, CmsByteRange.RANGE_UNIT_BYTES);
-            }
-            String rangeHeader = req.getHeader(CmsRequestUtil.HEADER_RANGE);
-            boolean rangeRequest = (rangeHeader != null)
-                && m_imageCache.supportsRangeDelivery()
-                && matchesImageCacheIfRange(req, resource, etag);
-            if (!rangeRequest && isImageCacheNotModified(resource, req, res, etag)) {
-                return;
-            }
-            if (rangeRequest) {
-                CmsByteRange range = CmsByteRange.parse(rangeHeader, length);
-                if (range.isInvalid()) {
-                    res.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-                    res.setHeader(CmsRequestUtil.HEADER_CONTENT_RANGE, CmsByteRange.RANGE_UNIT_BYTES + " */" + length);
-                    res.setHeader(CmsRequestUtil.HEADER_ETAG, etag);
-                    return;
-                }
-                if (!range.isIgnored()) {
-                    res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-                    setContentLength(res, range.m_length);
-                    res.setHeader(
-                        CmsRequestUtil.HEADER_CONTENT_RANGE,
-                        CmsByteRange.RANGE_UNIT_BYTES
-                            + " "
-                            + range.m_start
-                            + "-"
-                            + (range.m_start + range.m_length - 1)
-                            + "/"
-                            + length);
-                    setImageCacheHeaders(resource, req, res, etag);
-                    if (!"HEAD".equalsIgnoreCase(req.getMethod())) {
-                        m_imageCache.writeRangeTo(key, range.m_start, range.m_length, res.getOutputStream());
-                    }
-                    return;
-                }
-            }
-            res.setStatus(HttpServletResponse.SC_OK);
-            setContentLength(res, length);
-            setImageCacheHeaders(resource, req, res, etag);
-            if (!"HEAD".equalsIgnoreCase(req.getMethod())) {
-                writeImageCacheEntryTo(key, res.getOutputStream());
-            }
-        } catch (IOException | CmsException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CmsException(
-                Messages.get().container(Messages.ERR_STORED_CONTENT_DELIVERY_2, "image-cache", key),
-                e);
+        String etag = getImageCacheETag(key);
+        if (trySendImageCacheNotModified(resource, req, res, etag)) {
+            return;
         }
-    }
-
-    /**
-     * Validates the image cache configuration for the active storage type.<p>
-     *
-     * @param activeType the active storage backend type
-     * @param className the configured image cache class name
-     * @throws CmsConfigurationException if the image cache configuration is invalid
-     */
-    protected void validateImageCacheConfiguration(String activeType, String className)
-    throws CmsConfigurationException {
-
-        if (CmsS3ImageCache.class.getName().equals(className) && !CmsS3Storage.STORAGE_TYPE.equals(activeType)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_TYPE_1, activeType));
-        }
-        if (CmsFsImageCache.class.getName().equals(className) && !CmsFsStorage.STORAGE_TYPE.equals(activeType)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_TYPE_1, activeType));
-        }
+        loadImageCacheEntry(resource, key, req, res, etag);
     }
 
     /**
@@ -921,6 +788,75 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
+     * Loads an image cache entry from the configured storage after conditional request handling.<p>
+     *
+     * @param resource the original resource
+     * @param key the image cache key
+     * @param req the request
+     * @param res the response
+     * @param etag the image cache entry ETag
+     *
+     * @throws IOException in case writing fails
+     * @throws CmsException in case store access fails
+     */
+    private void loadImageCacheEntry(
+        CmsResource resource,
+        String key,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String etag)
+    throws IOException, CmsException {
+
+        try {
+            long length = m_imageCache.getLength(key);
+            String rangeHeader = req.getHeader(CmsRequestUtil.HEADER_RANGE);
+            boolean rangeRequest = (rangeHeader != null)
+                && "GET".equalsIgnoreCase(req.getMethod())
+                && m_imageCache.supportsRangeDelivery()
+                && matchesImageCacheIfRange(req, resource, etag);
+            if (rangeRequest) {
+                CmsByteRange range = CmsByteRange.parse(rangeHeader, length);
+                if (range.isInvalid()) {
+                    res.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+                    res.setHeader(CmsRequestUtil.HEADER_CONTENT_RANGE, CmsByteRange.RANGE_UNIT_BYTES + " */" + length);
+                    res.setHeader(CmsRequestUtil.HEADER_ETAG, etag);
+                    return;
+                }
+                if (!range.isIgnored()) {
+                    res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                    setContentLength(res, range.m_length);
+                    res.setHeader(
+                        CmsRequestUtil.HEADER_CONTENT_RANGE,
+                        CmsByteRange.RANGE_UNIT_BYTES
+                            + " "
+                            + range.m_start
+                            + "-"
+                            + (range.m_start + range.m_length - 1)
+                            + "/"
+                            + length);
+                    setImageCacheHeaders(resource, req, res, etag);
+                    if (!"HEAD".equalsIgnoreCase(req.getMethod())) {
+                        m_imageCache.writeRangeTo(key, range.m_start, range.m_length, res.getOutputStream());
+                    }
+                    return;
+                }
+            }
+            res.setStatus(HttpServletResponse.SC_OK);
+            setContentLength(res, length);
+            setImageCacheHeaders(resource, req, res, etag);
+            if (!"HEAD".equalsIgnoreCase(req.getMethod())) {
+                writeImageCacheEntryTo(key, res.getOutputStream());
+            }
+        } catch (IOException | CmsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CmsException(
+                Messages.get().container(Messages.ERR_STORED_CONTENT_DELIVERY_2, "image-cache", key),
+                e);
+        }
+    }
+
+    /**
      * Returns if the If-None-Match header matches the image cache entry ETag.<p>
      *
      * @param req the request
@@ -963,7 +899,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         }
         try {
             long ifRangeDate = req.getDateHeader(CmsRequestUtil.HEADER_IF_RANGE);
-            return (ifRangeDate >= 0) && ((resource.getDateLastModified() / 1000) * 1000 <= ifRangeDate);
+            return (ifRangeDate >= 0) && ((resource.getDateLastModified() / 1000) * 1000 == ifRangeDate);
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -1035,6 +971,27 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     private String stripWeakPrefix(String value) {
 
         return value.startsWith(WEAK_ETAG_PREFIX) ? value.substring(WEAK_ETAG_PREFIX.length()) : value;
+    }
+
+    /**
+     * Tries to answer a conditional image cache request without accessing the configured image cache storage.<p>
+     *
+     * @param resource the original resource
+     * @param req the request
+     * @param res the response
+     * @param etag the image cache entry ETag
+     * @return if the response was answered with 304
+     */
+    private boolean trySendImageCacheNotModified(
+        CmsResource resource,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String etag) {
+
+        if (m_imageCache.supportsRangeDelivery()) {
+            res.setHeader(CmsRequestUtil.HEADER_ACCEPT_RANGES, CmsByteRange.RANGE_UNIT_BYTES);
+        }
+        return isImageCacheNotModified(resource, req, res, etag);
     }
 
     /**

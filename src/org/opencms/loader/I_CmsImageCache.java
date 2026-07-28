@@ -32,7 +32,17 @@ import java.io.OutputStream;
 /**
  * Storage for generated image cache entries.<p>
  */
-public interface I_CmsImageCache {
+public interface I_CmsImageCache extends AutoCloseable {
+
+    /**
+     * Closes the image cache and releases associated resources.<p>
+     *
+     * @throws Exception if closing fails
+     */
+    default void close() throws Exception {
+
+        // default no-op
+    }
 
     /**
      * Returns if the image cache entry exists.<p>

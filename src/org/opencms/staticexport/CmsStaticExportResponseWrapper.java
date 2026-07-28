@@ -27,6 +27,8 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.util.CmsRequestUtil;
+
 import java.io.IOException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +46,9 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  */
 public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
 
+    /** The enforced cache control value, or {@code null} if no value is enforced. */
+    private String m_cacheControl;
+
     /** The status code. */
     protected int m_status;
 
@@ -59,6 +64,33 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     }
 
     /**
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#addHeader(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void addHeader(String name, String value) {
+
+        if ((m_cacheControl != null) && CmsRequestUtil.HEADER_CACHE_CONTROL.equalsIgnoreCase(name)) {
+            super.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, m_cacheControl);
+        } else {
+            super.addHeader(name, value);
+        }
+    }
+
+    /**
+     * Enforces the given Cache-Control value for this response.<p>
+     *
+     * Later attempts by a resource loader to replace or add Cache-Control headers retain this value. If this method
+     * is not called, the wrapper keeps its classic behavior and delegates all header changes unchanged.<p>
+     *
+     * @param cacheControl the Cache-Control value to enforce
+     */
+    public void enforceCacheControl(String cacheControl) {
+
+        m_cacheControl = cacheControl;
+        super.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, cacheControl);
+    }
+
+    /**
      * Returns the status code of this export response, if no status code was set so far,
      * <code>-1</code> is returned.<p>
      *
@@ -68,6 +100,19 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     public int getStatus() {
 
         return m_status;
+    }
+
+    /**
+     * @see jakarta.servlet.ServletResponseWrapper#reset()
+     */
+    @Override
+    public void reset() {
+
+        super.reset();
+        m_status = -1;
+        if (m_cacheControl != null) {
+            super.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, m_cacheControl);
+        }
     }
 
     /**
@@ -88,6 +133,19 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
 
         m_status = status;
         super.sendError(status, message);
+    }
+
+    /**
+     * @see jakarta.servlet.http.HttpServletResponseWrapper#setHeader(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void setHeader(String name, String value) {
+
+        if ((m_cacheControl != null) && CmsRequestUtil.HEADER_CACHE_CONTROL.equalsIgnoreCase(name)) {
+            super.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, m_cacheControl);
+        } else {
+            super.setHeader(name, value);
+        }
     }
 
     /**

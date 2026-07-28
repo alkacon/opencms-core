@@ -47,6 +47,30 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PARAMETER_CONFIG_FROZEN_0 = "ERR_PARAMETER_CONFIG_FROZEN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_CACHE_CONTROL_HEADER_0 = "ERR_SHAREDCACHE_CACHE_CONTROL_HEADER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_CONFLICT_STOREDCONTENT_0 = "ERR_SHAREDCACHE_CONFLICT_STOREDCONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_DEFAULT_POLICY_1 = "ERR_SHAREDCACHE_DEFAULT_POLICY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_HANDLER_1 = "ERR_SHAREDCACHE_HANDLER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_POLICY_CONTENTTYPE_1 = "ERR_SHAREDCACHE_POLICY_CONTENTTYPE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_POLICY_DUPLICATE_1 = "ERR_SHAREDCACHE_POLICY_DUPLICATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_POLICY_DURATION_2 = "ERR_SHAREDCACHE_POLICY_DURATION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SHAREDCACHE_STATICEXPORT_DISABLED_0 = "ERR_SHAREDCACHE_STATICEXPORT_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_CLASS_2 = "ERR_UNKNOWN_RESTYPE_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
@@ -98,8 +122,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_IMPORT_CONFIG_INIT_0 = "INIT_IMPORT_CONFIG_INIT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_IMAGECACHE_CONFIG_0 = "INIT_IMAGECACHE_CONFIG_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_MANAGER_0 = "INIT_IMPORT_MANAGER_0";
 
@@ -168,6 +190,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SEARCH_CONFIG_FINISHED_0 = "INIT_SEARCH_CONFIG_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SHAREDCACHE_CONFIG_0 = "INIT_SHAREDCACHE_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SEARCH_CONFIG_INIT_0 = "INIT_SEARCH_CONFIG_INIT_0";

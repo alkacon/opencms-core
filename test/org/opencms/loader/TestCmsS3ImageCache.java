@@ -29,11 +29,14 @@ package org.opencms.loader;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.opencms.db.storage.s3.I_CmsS3Client;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,11 +59,32 @@ public class TestCmsS3ImageCache {
         /** Whether bucket access was validated. */
         private boolean m_validated;
 
+        /** Whether the client was closed. */
+        private boolean m_closed;
+
+        /** Number of combined object metadata reads. */
+        private int m_metadataReads;
+
+        /** Whether deleting an object should fail. */
+        private boolean m_failDelete;
+
+        /**
+         * @see org.opencms.db.storage.s3.I_CmsS3Client#close()
+         */
+        @Override
+        public void close() throws Exception {
+
+            m_closed = true;
+        }
+
         /**
          * @see org.opencms.db.storage.s3.I_CmsS3Client#deleteObject(java.lang.String)
          */
         public void deleteObject(String key) throws Exception {
 
+            if (m_failDelete) {
+                throw new IOException("Simulated delete failure");
+            }
             m_objects.remove(key);
         }
 
@@ -87,6 +111,17 @@ public class TestCmsS3ImageCache {
         public long getObjectLength(String key) throws Exception {
 
             return m_objects.get(key).length;
+        }
+
+        /**
+         * @see org.opencms.db.storage.s3.I_CmsS3Client#getObjectLengthIfExists(java.lang.String)
+         */
+        @Override
+        public long getObjectLengthIfExists(String key) throws Exception {
+
+            m_metadataReads += 1;
+            byte[] content = m_objects.get(key);
+            return content == null ? -1 : content.length;
         }
 
         /**
@@ -122,8 +157,109 @@ public class TestCmsS3ImageCache {
         @Override
         public void writeObjectTo(String key, OutputStream out) throws Exception {
 
-            out.write(m_objects.get(key));
+            byte[] content = m_objects.get(key);
+            if (content == null) {
+                throw new IOException("Object not found: " + key);
+            }
+            out.write(content);
         }
+    }
+
+    /**
+     * Tests that closing the image cache closes the S3 client.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testCloseDelegatesToClient() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+
+        cache.close();
+
+        assertTrue(client.m_closed);
+        assertThrows(IllegalStateException.class, () -> cache.exists("image.jpg"));
+    }
+
+    /**
+     * Tests that an existing object's length is loaded once and reused.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testExistingObjectMetadataIsCached() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        byte[] content = "scaled image".getBytes("UTF-8");
+        client.m_objects.put("image.jpg", content);
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+
+        assertTrue(cache.exists("image.jpg"));
+        assertEquals(content.length, cache.getLength("image.jpg"));
+        assertTrue(cache.exists("image.jpg"));
+        assertEquals(1, client.m_metadataReads);
+    }
+
+    /**
+     * Tests that a failed object read invalidates cached metadata.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testFailedReadInvalidatesCachedMetadata() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+        cache.write("image.jpg", "old".getBytes("UTF-8"));
+        client.m_objects.remove("image.jpg");
+
+        assertThrows(IOException.class, () -> cache.writeTo("image.jpg", new ByteArrayOutputStream()));
+
+        byte[] replacement = "replacement".getBytes("UTF-8");
+        client.m_objects.put("image.jpg", replacement);
+        assertTrue(cache.exists("image.jpg"));
+        assertEquals(replacement.length, cache.getLength("image.jpg"));
+        assertEquals(1, client.m_metadataReads);
+    }
+
+    /** Tests that an incomplete startup health check closes and rejects the client. */
+    @Test
+    public void testHealthCheckDeleteFailureRejectsClient() {
+
+        TestS3Client client = new TestS3Client();
+        client.m_failDelete = true;
+
+        assertThrows(IOException.class, () -> new CmsS3ImageCache(client));
+        assertTrue(client.m_closed);
+    }
+
+    /** Tests that the startup health check object is removed. */
+    @Test
+    public void testHealthCheckObjectIsRemoved() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+
+        new CmsS3ImageCache(client, "imagecache/");
+
+        assertTrue(client.m_validated);
+        assertTrue(client.m_objects.isEmpty());
+    }
+
+    /**
+     * Tests that missing entries are not retained in the local metadata cache.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testMissingObjectMetadataIsNotCached() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+
+        assertFalse(cache.exists("missing.jpg"));
+        assertFalse(cache.exists("missing.jpg"));
+        assertEquals(2, client.m_metadataReads);
     }
 
     /**
@@ -152,5 +288,43 @@ public class TestCmsS3ImageCache {
         ByteArrayOutputStream range = new ByteArrayOutputStream();
         cache.writeRangeTo("export/sites/default/image.jpg_123.jpg", 7, 5, range);
         assertEquals("image", range.toString("UTF-8"));
+    }
+
+    /**
+     * Tests that replacing the S3 client closes the previous client.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testReplacingClientClosesPreviousClient() throws Exception {
+
+        TestS3Client firstClient = new TestS3Client();
+        TestS3Client secondClient = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(firstClient);
+
+        cache.initClient(secondClient, null);
+
+        assertTrue(firstClient.m_closed);
+        assertTrue(secondClient.m_validated);
+        assertFalse(secondClient.m_closed);
+    }
+
+    /**
+     * Tests that writing an image cache entry also caches its length.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testWriteCachesObjectLength() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+        byte[] content = "scaled image".getBytes("UTF-8");
+
+        cache.write("image.jpg", content);
+
+        assertTrue(cache.exists("image.jpg"));
+        assertEquals(content.length, cache.getLength("image.jpg"));
+        assertEquals(0, client.m_metadataReads);
     }
 }

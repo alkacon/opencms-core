@@ -103,6 +103,18 @@ public interface I_CmsS3Client extends AutoCloseable {
     }
 
     /**
+     * Returns the length of an object's content if the object exists.<p>
+     *
+     * @param key the identifier for the object
+     * @return the object content length, or {@code -1} if the object does not exist
+     * @throws Exception if the object can not be accessed
+     */
+    default long getObjectLengthIfExists(String key) throws Exception {
+
+        return exists(key) ? getObjectLength(key) : -1;
+    }
+
+    /**
      * Uploads an object to the specified bucket.<p>
      *
      * @param key the unique identifier (path) for the object

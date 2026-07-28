@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, storedcontentdelivery?, imagecache?, protectedexport?, usercsvexport?, repositories?, extendedhtmlimport?)>
+<!ELEMENT opencms (importexport, staticexport, storedcontentdelivery?, sharedcache?, protectedexport?, usercsvexport?, repositories?, extendedhtmlimport?)>
 
 <!--
 # <importexport> configuration:
@@ -167,19 +167,37 @@
 <!ATTLIST storedcontentdelivery enabled (TRUE|true|FALSE|false) #REQUIRED>
 
 <!--
-# Settings for generated image cache entries. This controls where generated
-# image derivatives are stored, not whether public online derivatives are
-# delivered directly or copied to the classic /export folder.
--->
-<!ELEMENT imagecache (params?)>
-<!ATTLIST imagecache class CDATA #REQUIRED>
-
-<!--
 # A list of suffixes for which direct stored content delivery is allowed. If this
 # list is omitted, all exportable externally stored resources may be delivered
 # directly.
 -->
 <!ELEMENT enabledsuffixes (suffix+)>
+
+<!--
+# <sharedcache> configuration:
+#
+# Settings for external shared cache delivery. Static export selection and link
+# generation continue to use the <staticexport> configuration, but no files are
+# written to the local export folder while this mode is enabled.
+#
+# Exactly one cache policy without a contenttype attribute is required as the
+# default. Additional policies may override it for exact content types or
+# top-level wildcards such as "image/*".
+-->
+<!ELEMENT sharedcache (cachepolicy+)>
+<!ATTLIST sharedcache enabled (TRUE|true|FALSE|false) #REQUIRED>
+
+<!--
+# Cache durations are configured in seconds. clientmaxage controls browser
+# caches, sharedmaxage controls shared caches, and staleiferror optionally
+# allows a stale response to be served while the OpenCms origin is unavailable.
+-->
+<!ELEMENT cachepolicy (clientmaxage, sharedmaxage, staleiferror?)>
+<!ATTLIST cachepolicy contenttype CDATA #IMPLIED>
+
+<!ELEMENT clientmaxage (#PCDATA)>
+<!ELEMENT sharedmaxage (#PCDATA)>
+<!ELEMENT staleiferror (#PCDATA)>
 
 <!--
 # The fully qualified class name of a concrete implementation of the 

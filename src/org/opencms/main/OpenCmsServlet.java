@@ -426,8 +426,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                     try {
                         // generate a static export request wrapper
                         CmsStaticExportRequest exportReq = new CmsStaticExportRequest(req, exportData);
-                        // export the resource and set the response status according to the result
-                        res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
+                        // stored content and registered scaled images can bypass the generic static export setup
+                        if (!OpenCms.getStaticExportManager().tryExportStoredContent(exportReq, res, cms, exportData)
+                            && !OpenCms.getStaticExportManager().tryExportImageCache(exportReq, res, cms, exportData)) {
+                            // export the resource and set the response status according to the result
+                            res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
+                        }
                     } catch (Throwable t) {
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(Messages.get().getBundle().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);

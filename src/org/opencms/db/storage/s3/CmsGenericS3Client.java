@@ -78,6 +78,12 @@ public class CmsGenericS3Client implements I_CmsS3Client {
     /** Default connection timeout in milliseconds. */
     public static final int DEFAULT_CONNECTION_TIMEOUT = CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT;
 
+    /** Default timeout for acquiring a pooled connection in milliseconds. */
+    public static final int DEFAULT_CONNECTION_ACQUISITION_TIMEOUT = CmsS3ClientConfiguration.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT;
+
+    /** Default maximum number of pooled connections. */
+    public static final int DEFAULT_MAX_CONNECTIONS = CmsS3ClientConfiguration.DEFAULT_MAX_CONNECTIONS;
+
     /** Default maximum number of retries. */
     public static final int DEFAULT_MAX_RETRIES = CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES;
 
@@ -102,8 +108,10 @@ public class CmsGenericS3Client implements I_CmsS3Client {
 
         m_configuration = resolveCredentials(configuration);
         ApacheHttpClient.Builder httpClientBuilder = ApacheHttpClient.builder().connectionTimeout(
-            Duration.ofMillis(m_configuration.getConnectionTimeout())).socketTimeout(
-                Duration.ofMillis(m_configuration.getSocketTimeout()));
+            Duration.ofMillis(m_configuration.getConnectionTimeout())).connectionAcquisitionTimeout(
+                Duration.ofMillis(m_configuration.getConnectionAcquisitionTimeout())).maxConnections(
+                    m_configuration.getMaxConnections()).socketTimeout(
+                        Duration.ofMillis(m_configuration.getSocketTimeout()));
         ClientOverrideConfiguration overrideConfiguration = ClientOverrideConfiguration.builder().apiCallAttemptTimeout(
             Duration.ofMillis(m_configuration.getApiCallAttemptTimeout())).apiCallTimeout(
                 Duration.ofMillis(m_configuration.getApiCallTimeout())).retryPolicy(
@@ -215,7 +223,9 @@ public class CmsGenericS3Client implements I_CmsS3Client {
             configuration.getSocketTimeout(),
             configuration.getApiCallAttemptTimeout(),
             configuration.getApiCallTimeout(),
-            configuration.getMaxRetries());
+            configuration.getMaxRetries(),
+            configuration.getMaxConnections(),
+            configuration.getConnectionAcquisitionTimeout());
     }
 
     /**
@@ -304,6 +314,25 @@ public class CmsGenericS3Client implements I_CmsS3Client {
         } catch (S3Exception e) {
             if (e.statusCode() == 404) {
                 throw new CmsStorageBlobNotFoundException(key, e);
+            }
+            throw createStorageException("HEAD", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("HEAD", key, e);
+        }
+    }
+
+    @Override
+    public long getObjectLengthIfExists(String key) throws Exception {
+
+        try {
+            HeadObjectRequest request = HeadObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).build();
+            return m_s3Client.headObject(request).contentLength();
+        } catch (NoSuchKeyException e) {
+            return -1;
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                return -1;
             }
             throw createStorageException("HEAD", key, e);
         } catch (RuntimeException e) {

@@ -45,6 +45,12 @@ public class CmsS3ClientConfiguration {
     /** Default connection timeout in milliseconds. */
     public static final int DEFAULT_CONNECTION_TIMEOUT = 5000;
 
+    /** Default timeout for acquiring a pooled connection in milliseconds. */
+    public static final int DEFAULT_CONNECTION_ACQUISITION_TIMEOUT = 10000;
+
+    /** Default maximum number of pooled connections. */
+    public static final int DEFAULT_MAX_CONNECTIONS = 50;
+
     /** Default maximum number of retries. */
     public static final int DEFAULT_MAX_RETRIES = 2;
 
@@ -69,11 +75,17 @@ public class CmsS3ClientConfiguration {
     /** The connection timeout in milliseconds. */
     private final int m_connectionTimeout;
 
+    /** The timeout for acquiring a pooled connection in milliseconds. */
+    private final int m_connectionAcquisitionTimeout;
+
     /** The endpoint. */
     private final String m_endpoint;
 
     /** The maximum number of retries. */
     private final int m_maxRetries;
+
+    /** The maximum number of pooled connections. */
+    private final int m_maxConnections;
 
     /** Whether path-style access should be used. */
     private final boolean m_pathStyle;
@@ -115,6 +127,54 @@ public class CmsS3ClientConfiguration {
         int apiCallTimeout,
         int maxRetries) {
 
+        this(
+            endpoint,
+            bucketName,
+            accessKey,
+            secretKey,
+            pathStyle,
+            region,
+            connectionTimeout,
+            socketTimeout,
+            apiCallAttemptTimeout,
+            apiCallTimeout,
+            maxRetries,
+            DEFAULT_MAX_CONNECTIONS,
+            DEFAULT_CONNECTION_ACQUISITION_TIMEOUT);
+    }
+
+    /**
+     * Creates a new S3 client configuration including connection pool settings.<p>
+     *
+     * @param endpoint the S3 endpoint
+     * @param bucketName the bucket name
+     * @param accessKey the S3 access key
+     * @param secretKey the S3 secret key
+     * @param pathStyle whether path-style access should be used
+     * @param region the AWS region
+     * @param connectionTimeout the connection timeout in milliseconds
+     * @param socketTimeout the socket timeout in milliseconds
+     * @param apiCallAttemptTimeout the timeout for a single API call attempt in milliseconds
+     * @param apiCallTimeout the timeout for the complete API call in milliseconds
+     * @param maxRetries the maximum number of retries
+     * @param maxConnections the maximum number of pooled connections
+     * @param connectionAcquisitionTimeout the timeout for acquiring a pooled connection in milliseconds
+     */
+    public CmsS3ClientConfiguration(
+        String endpoint,
+        String bucketName,
+        String accessKey,
+        String secretKey,
+        boolean pathStyle,
+        String region,
+        int connectionTimeout,
+        int socketTimeout,
+        int apiCallAttemptTimeout,
+        int apiCallTimeout,
+        int maxRetries,
+        int maxConnections,
+        int connectionAcquisitionTimeout) {
+
         validateRequired("endpoint", endpoint);
         validateRequired("bucketName", bucketName);
         validateRequired("accessKey", accessKey);
@@ -125,6 +185,8 @@ public class CmsS3ClientConfiguration {
         validatePositive("apiCallAttemptTimeout", apiCallAttemptTimeout);
         validatePositive("apiCallTimeout", apiCallTimeout);
         validateNonNegative("maxRetries", maxRetries);
+        validatePositive("maxConnections", maxConnections);
+        validatePositive("connectionAcquisitionTimeout", connectionAcquisitionTimeout);
         m_endpoint = endpoint.trim();
         m_bucketName = bucketName.trim();
         m_accessKey = accessKey;
@@ -132,10 +194,12 @@ public class CmsS3ClientConfiguration {
         m_pathStyle = pathStyle;
         m_region = region.trim();
         m_connectionTimeout = connectionTimeout;
+        m_connectionAcquisitionTimeout = connectionAcquisitionTimeout;
         m_socketTimeout = socketTimeout;
         m_apiCallAttemptTimeout = apiCallAttemptTimeout;
         m_apiCallTimeout = apiCallTimeout;
         m_maxRetries = maxRetries;
+        m_maxConnections = maxConnections;
     }
 
     /**
@@ -250,6 +314,16 @@ public class CmsS3ClientConfiguration {
     }
 
     /**
+     * Returns the timeout for acquiring a pooled connection.<p>
+     *
+     * @return the timeout in milliseconds
+     */
+    public int getConnectionAcquisitionTimeout() {
+
+        return m_connectionAcquisitionTimeout;
+    }
+
+    /**
      * Returns the connection timeout.<p>
      *
      * @return the timeout in milliseconds
@@ -267,6 +341,16 @@ public class CmsS3ClientConfiguration {
     public String getEndpoint() {
 
         return m_endpoint;
+    }
+
+    /**
+     * Returns the maximum number of pooled connections.<p>
+     *
+     * @return the maximum number of pooled connections
+     */
+    public int getMaxConnections() {
+
+        return m_maxConnections;
     }
 
     /**
