@@ -399,16 +399,56 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        initImageCache();
-        OpenCms.addCmsEventListener(this);
+        if (CmsStringUtil.isEmpty(m_imageRepositoryFolder)) {
+            m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
+        }
+        m_imageCache = null;
+        m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", m_imageRepositoryFolder);
         // output setup information
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
+        }
+    }
+
+    /**
+     * Initializes the image cache after the complete OpenCms runtime configuration is available.<p>
+     *
+     * @param propertyConfiguration the OpenCms properties
+     *
+     * @throws CmsConfigurationException if the image cache can not be initialized
+     */
+    public void initializeImageCache(CmsParameterConfiguration propertyConfiguration) throws CmsConfigurationException {
+
+        try {
+            I_CmsImageCache imageCache = CmsImageCacheFactory.create(propertyConfiguration);
+            if (imageCache == null) {
+                initDefaultImageCache();
+            } else if (imageCache instanceof CmsS3ImageCache) {
+                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
+                m_imageCache = imageCache;
+            } else if (imageCache instanceof CmsFsImageCache) {
+                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", ((CmsFsImageCache)imageCache).getRepositoryPath());
+                m_imageCache = imageCache;
+            } else {
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, imageCache.getClass().getName()));
+            }
+        } catch (CmsConfigurationException e) {
+            m_imageCache = null;
+            throw e;
+        } catch (Exception e) {
+            m_imageCache = null;
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
+                e);
+        }
+        OpenCms.addCmsEventListener(this);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_IMAGE_REPOSITORY_PATH_1,
                     m_vfsDiskCache.getRepositoryPath()));
-            CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
         }
     }
 
@@ -664,47 +704,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
             OpenCms.getSystemInfo().getWebApplicationRfsPath(),
             m_imageRepositoryFolder);
-    }
-
-    /**
-     * Initializes the optional image cache.<p>
-     */
-    protected void initImageCache() throws CmsConfigurationException {
-
-        CmsParameterConfiguration propertyConfiguration;
-        try {
-            propertyConfiguration = new CmsParameterConfiguration(
-                OpenCms.getSystemInfo().getConfigurationFileRfsPath());
-        } catch (Exception e) {
-            m_imageCache = null;
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
-                e);
-        }
-        try {
-            I_CmsImageCache imageCache = CmsImageCacheFactory.create(propertyConfiguration);
-            if (imageCache == null) {
-                initDefaultImageCache();
-                return;
-            }
-            if (imageCache instanceof CmsS3ImageCache) {
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
-            } else if (imageCache instanceof CmsFsImageCache) {
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", ((CmsFsImageCache)imageCache).getRepositoryPath());
-            } else {
-                throw new CmsConfigurationException(
-                    Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, imageCache.getClass().getName()));
-            }
-            m_imageCache = imageCache;
-        } catch (CmsConfigurationException e) {
-            m_imageCache = null;
-            throw e;
-        } catch (Exception e) {
-            m_imageCache = null;
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
-                e);
-        }
     }
 
     /**

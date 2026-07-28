@@ -85,6 +85,7 @@ import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
+import org.opencms.loader.CmsImageLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -1666,6 +1667,14 @@ public final class OpenCmsCore {
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(
             CmsVfsConfiguration.class);
         m_resourceManager = vfsConfiguation.getResourceManager();
+        I_CmsResourceLoader imageLoader = m_resourceManager.getLoader(CmsImageLoader.RESOURCE_LOADER_ID_IMAGE_LOADER);
+        if (imageLoader instanceof CmsImageLoader) {
+            try {
+                ((CmsImageLoader)imageLoader).initializeImageCache(configuration);
+            } catch (CmsConfigurationException e) {
+                throw new CmsInitException(e.getMessageContainer(), e);
+            }
+        }
         m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
         m_defaultFiles = vfsConfiguation.getDefaultFiles();
 
