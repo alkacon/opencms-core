@@ -44,6 +44,7 @@ import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -204,6 +205,11 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
                 setupDb.closeConnection();
             }
 
+            assertEquals(0, runMaintenanceVerify(webInf));
+            Files.write(resolveStoredFile(storagePath, referencedHash), "corrupt".getBytes(StandardCharsets.UTF_8));
+            assertEquals(2, runMaintenanceVerify(webInf));
+            Files.write(resolveStoredFile(storagePath, referencedHash), referencedContent);
+
             runMaintenance(webInf, false);
             assertTrue(Files.exists(resolveStoredFile(storagePath, referencedHash)));
             assertTrue(Files.exists(resolveStoredFile(storagePath, orphanHash)));
@@ -253,9 +259,14 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
         String offlineResourceId = UUID.randomUUID().toString();
         String onlineResourceId = UUID.randomUUID().toString();
         String historyResourceId = UUID.randomUUID().toString();
+        String largeHistoryResourceId = UUID.randomUUID().toString();
         byte[] offlineContent = "offline migration content".getBytes(StandardCharsets.UTF_8);
         byte[] onlineContent = "online migration content".getBytes(StandardCharsets.UTF_8);
         byte[] historyContent = "history migration content".getBytes(StandardCharsets.UTF_8);
+        byte[] largeHistoryContent = new byte[20 * 1024 * 1024];
+        for (int i = 0; i < largeHistoryContent.length; i++) {
+            largeHistoryContent[i] = (byte)(i % 251);
+        }
 
         try {
             createFreshDatabase();
@@ -263,6 +274,7 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
             createVfsConfigForExternalStorage(webInf);
             CmsSetupDb setupDb = getSetupDbForDefaultConnection();
             try (Connection connection = setupDb.getConnection()) {
+                configureMySqlContentTableEngines(connection);
                 seedContent(
                     connection,
                     offlineResourceId,
@@ -271,6 +283,13 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
                     offlineContent,
                     onlineContent,
                     historyContent);
+                insertHistoryResource(
+                    connection,
+                    largeHistoryResourceId,
+                    largeHistoryContent.length,
+                    System.currentTimeMillis(),
+                    9);
+                insertContent(connection, largeHistoryResourceId, largeHistoryContent, 9, 10, 0);
             } finally {
                 setupDb.closeConnection();
             }
@@ -287,6 +306,13 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
                     offlineContent);
                 assertExternallyStored(connection, storagePath, "CMS_CONTENTS", onlineResourceId, 1, onlineContent);
                 assertExternallyStored(connection, storagePath, "CMS_CONTENTS", historyResourceId, 7, historyContent);
+                assertExternallyStored(
+                    connection,
+                    storagePath,
+                    "CMS_CONTENTS",
+                    largeHistoryResourceId,
+                    9,
+                    largeHistoryContent);
             } finally {
                 setupDb.closeConnection();
             }
@@ -298,6 +324,7 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
                 assertLocallyStored(connection, "CMS_OFFLINE_CONTENTS", offlineResourceId, null, offlineContent);
                 assertLocallyStored(connection, "CMS_CONTENTS", onlineResourceId, 1, onlineContent);
                 assertLocallyStored(connection, "CMS_CONTENTS", historyResourceId, 7, historyContent);
+                assertLocallyStored(connection, "CMS_CONTENTS", largeHistoryResourceId, 9, largeHistoryContent);
             } finally {
                 setupDb.closeConnection();
             }
@@ -446,6 +473,23 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
         statement.setString(11, userId);
         statement.setString(12, UUID.randomUUID().toString());
         statement.setInt(13, 1);
+    }
+
+    /**
+     * Uses MyISAM content tables for the MySQL integration test to cover legacy installations.<p>
+     *
+     * @param connection the database connection
+     * @throws Exception if changing the table engine fails
+     */
+    private void configureMySqlContentTableEngines(Connection connection) throws Exception {
+
+        if (!DB_MYSQL.equals(getDbProduct())) {
+            return;
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("ALTER TABLE CMS_CONTENTS ENGINE=MyISAM");
+            statement.executeUpdate("ALTER TABLE CMS_OFFLINE_CONTENTS ENGINE=MyISAM");
+        }
     }
 
     /**
@@ -798,12 +842,27 @@ public class TestCmsStorageMigrationToolIntegration extends OpenCmsTestRunner {
         args.add(webInf.toString());
         args.add("--mode");
         args.add("delete-orphans");
+        args.add("--batch-size");
+        args.add("1");
         args.add("--delete-limit");
         args.add("0");
         if (execute) {
             args.add("--execute");
         }
         assertEquals(0, CmsStorageMaintenanceTool.run(args.toArray(new String[args.size()])));
+    }
+
+    /**
+     * Runs the maintenance tool in reference verification mode.<p>
+     *
+     * @param webInf the temporary WEB-INF folder
+     *
+     * @return the tool exit code
+     */
+    private int runMaintenanceVerify(Path webInf) {
+
+        return CmsStorageMaintenanceTool.run(
+            new String[] {"--webinf", webInf.toString(), "--mode", "verify-references"});
     }
 
     /**

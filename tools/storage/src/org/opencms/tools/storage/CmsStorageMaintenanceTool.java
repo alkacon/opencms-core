@@ -37,24 +37,24 @@ import org.opencms.db.storage.I_CmsStorage;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.util.CmsStringUtil;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Command line entry point for OpenCms storage maintenance checks.<p>
@@ -90,6 +90,9 @@ public final class CmsStorageMaintenanceTool {
         /** Whether deleting orphans should actually modify storage. */
         private boolean m_execute;
 
+        /** Page size for database orphan candidates. */
+        private int m_batchSize = DEFAULT_BATCH_SIZE;
+
         /** Maximum number of orphans to delete, 0 means unlimited. */
         private int m_deleteLimit = 1000;
 
@@ -104,12 +107,15 @@ public final class CmsStorageMaintenanceTool {
     }
 
     /**
-     * S3 image cache prefix protection parsed from the import/export configuration.<p>
+     * S3 image cache prefix protection parsed from OpenCms properties.<p>
      */
     private static class ImageCachePrefixProtection {
 
         /** The configured image cache bucket. */
         private String m_s3Bucket;
+
+        /** The configured image cache S3 endpoint. */
+        private String m_s3Endpoint;
 
         /** The configured image cache prefix. */
         private String m_s3Prefix;
@@ -131,6 +137,48 @@ public final class CmsStorageMaintenanceTool {
 
         /** Stored blobs. */
         private long m_stored;
+    }
+
+    /**
+     * Periodically prints progress without flooding the console.<p>
+     */
+    private static class ProgressReporter {
+
+        /** Label printed before the progress details. */
+        private String m_label;
+
+        /** Last count which was printed. */
+        private long m_lastCount;
+
+        /** Time of the last progress output. */
+        private long m_lastOutputNanos = System.nanoTime();
+
+        /**
+         * Creates a progress reporter.<p>
+         *
+         * @param label the label
+         */
+        ProgressReporter(String label) {
+
+            m_label = label;
+        }
+
+        /**
+         * Prints progress after a count or time interval has elapsed.<p>
+         *
+         * @param count the current item count
+         * @param details additional details
+         */
+        void report(long count, String details) {
+
+            long now = System.nanoTime();
+            if (((count - m_lastCount) >= PROGRESS_ITEM_INTERVAL)
+                || ((now - m_lastOutputNanos) >= PROGRESS_TIME_INTERVAL_NANOS)) {
+                System.out.println("  " + m_label + ": " + count + details);
+                m_lastCount = count;
+                m_lastOutputNanos = now;
+            }
+        }
     }
 
     /**
@@ -206,6 +254,110 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
+         * Reads and hashes one database storage BLOB in bounded chunks.<p>
+         *
+         * @param connection the JDBC connection
+         * @param hash the expected content hash
+         * @param digest the message digest
+         * @return the number of content bytes
+         * @throws SQLException if reading fails
+         */
+        private long digestDatabaseContentChunks(Connection connection, String hash, MessageDigest digest)
+        throws SQLException {
+
+            long contentLength;
+            try (PreparedStatement statement = connection.prepareStatement(SQL_DB_CONTENT_LENGTH)) {
+                statement.setString(1, hash);
+                try (ResultSet rows = statement.executeQuery()) {
+                    if (!rows.next()) {
+                        throw new SQLException("Database storage content does not exist for hash " + hash + ".");
+                    }
+                    contentLength = rows.getLong("CONTENT_LENGTH");
+                    if (rows.wasNull()) {
+                        contentLength = 0;
+                    }
+                }
+            }
+            if (contentLength < 0) {
+                throw new SQLException("Negative database storage BLOB length reported for hash " + hash + ".");
+            }
+            long offset = 0;
+            try (PreparedStatement statement = connection.prepareStatement(SQL_DB_CONTENT_CHUNK)) {
+                while (offset < contentLength) {
+                    int expectedLength = (int)Math.min(DB_CONTENT_READ_CHUNK_SIZE, contentLength - offset);
+                    statement.setLong(1, offset + 1);
+                    statement.setInt(2, expectedLength);
+                    statement.setString(3, hash);
+                    try (ResultSet rows = statement.executeQuery()) {
+                        if (!rows.next()) {
+                            throw new SQLException(
+                                "Database storage content disappeared while reading hash " + hash + ".");
+                        }
+                        byte[] chunk = rows.getBytes("CONTENT_CHUNK");
+                        if ((chunk == null) || (chunk.length != expectedLength)) {
+                            throw new SQLException(
+                                "Expected "
+                                    + expectedLength
+                                    + " database storage BLOB bytes at offset "
+                                    + offset
+                                    + " for hash "
+                                    + hash
+                                    + ", but received "
+                                    + (chunk == null ? 0 : chunk.length)
+                                    + ".");
+                        }
+                        digest.update(chunk);
+                        offset += chunk.length;
+                    }
+                }
+            }
+            return contentLength;
+        }
+
+        /**
+         * Streams and hashes one external storage reference.<p>
+         *
+         * @param connection the JDBC connection
+         * @param storageManager the storage manager
+         * @param dbc the database context
+         * @param reference the reference
+         * @param digest the message digest
+         * @param chunkDatabaseContent whether database content should be read in chunks
+         * @return the number of content bytes
+         * @throws Exception if reading fails
+         */
+        private long digestStorageReference(
+            Connection connection,
+            CmsStorageManager storageManager,
+            CmsDbContext dbc,
+            Reference reference,
+            MessageDigest digest,
+            boolean chunkDatabaseContent)
+        throws Exception {
+
+            if (chunkDatabaseContent && I_CmsDbStorage.STORAGE_TYPE.equals(reference.m_storage)) {
+                return digestDatabaseContentChunks(connection, reference.m_hash, digest);
+            }
+            boolean[] streamOpened = new boolean[1];
+            long[] contentBytes = new long[1];
+            storageManager.loadContentFrom(dbc, new byte[0], reference.m_storage, reference.m_hash, in -> {
+                streamOpened[0] = true;
+                byte[] buffer = new byte[VERIFY_BUFFER_SIZE];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    if (read > 0) {
+                        digest.update(buffer, 0, read);
+                        contentBytes[0] += read;
+                    }
+                }
+            });
+            if (!streamOpened[0]) {
+                throw new IllegalStateException("Storage backend returned no content stream.");
+            }
+            return contentBytes[0];
+        }
+
+        /**
          * Gets configured storage backend metadata.<p>
          *
          * @param properties the OpenCms properties
@@ -254,19 +406,15 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
-         * Returns the direct child element text.<p>
+         * Returns a short printable description of a failure.<p>
          *
-         * @param parent the parent element
-         * @param name the child element name
-         * @return the element text
+         * @param failure the failure
+         * @return the printable description
          */
-        private String getElementText(Element parent, String name) {
+        private String getFailureSummary(Throwable failure) {
 
-            NodeList elements = parent.getElementsByTagName(name);
-            if (elements.getLength() == 0) {
-                return null;
-            }
-            return elements.item(0).getTextContent();
+            String message = getPrintableExceptionMessage(failure.getMessage());
+            return failure.getClass().getName() + (message == null ? "" : ": " + message);
         }
 
         /**
@@ -292,7 +440,8 @@ public final class CmsStorageMaintenanceTool {
                 properties,
                 backend.m_id,
                 null);
-            if (protection.m_s3Bucket.equals(backendConfiguration.getBucketName())) {
+            if (protection.m_s3Bucket.equals(backendConfiguration.getBucketName())
+                && protection.m_s3Endpoint.equals(normalizeS3Endpoint(backendConfiguration.getEndpoint()))) {
                 return java.util.Collections.singletonList(protection.m_s3Prefix);
             }
             return java.util.Collections.emptyList();
@@ -313,22 +462,29 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
-         * Returns the configured parameter value.<p>
+         * Returns a short text exception message, or an omission notice for unsafe messages.<p>
          *
-         * @param parent the parent element
-         * @param name the parameter name
-         * @return the parameter value
+         * @param message the exception message
+         * @return the printable message, or null
          */
-        private String getParamText(Element parent, String name) {
+        private String getPrintableExceptionMessage(String message) {
 
-            NodeList params = parent.getElementsByTagName("param");
-            for (int i = 0; i < params.getLength(); i++) {
-                Element param = (Element)params.item(i);
-                if (name.equals(param.getAttribute("name"))) {
-                    return param.getTextContent();
+            if (message == null) {
+                return null;
+            }
+            if (message.length() > MAX_PRINTABLE_EXCEPTION_MESSAGE_LENGTH) {
+                return "[message omitted because it is unusually large and may contain binary content]";
+            }
+            for (int i = 0; i < message.length(); i++) {
+                char character = message.charAt(i);
+                if (Character.isISOControl(character)
+                    && (character != '\n')
+                    && (character != '\r')
+                    && (character != '\t')) {
+                    return "[message omitted because it contains binary control characters]";
                 }
             }
-            return null;
+            return message;
         }
 
         /**
@@ -379,6 +535,21 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
+         * Normalizes an S3 endpoint for comparisons.<p>
+         *
+         * @param endpoint the endpoint
+         * @return the normalized endpoint
+         */
+        private String normalizeS3Endpoint(String endpoint) {
+
+            String result = URI.create(endpoint.trim()).normalize().toString();
+            while (result.endsWith("/")) {
+                result = result.substring(0, result.length() - 1);
+            }
+            return result.toLowerCase(Locale.ROOT);
+        }
+
+        /**
          * Normalizes an S3 object key prefix.<p>
          *
          * @param prefix the raw prefix
@@ -426,6 +597,11 @@ public final class CmsStorageMaintenanceTool {
                         Paths.get(requireValue(args, ++i, arg)));
                 } else if ("--driver-jar".equals(arg)) {
                     result.m_driverJars.add(Paths.get(requireValue(args, ++i, arg)));
+                } else if ("--batch-size".equals(arg)) {
+                    result.m_batchSize = Integer.parseInt(requireValue(args, ++i, arg));
+                    if (result.m_batchSize <= 0) {
+                        throw new IllegalArgumentException("--batch-size must be greater than zero.");
+                    }
                 } else if ("--delete-limit".equals(arg)) {
                     result.m_deleteLimit = Integer.parseInt(requireValue(args, ++i, arg));
                     if (result.m_deleteLimit < 0) {
@@ -470,49 +646,69 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
-         * Parses the stored content delivery S3 image cache prefix protection.<p>
+         * Parses the S3 image cache prefix protection.<p>
          *
-         * @param webInfPath the WEB-INF path
+         * @param properties the OpenCms properties
          * @return the image cache prefix protection, or <code>null</code>
          */
-        private ImageCachePrefixProtection parseImageCachePrefixProtection(Path webInfPath) {
+        private ImageCachePrefixProtection parseImageCachePrefixProtection(CmsParameterConfiguration properties) {
 
-            Path importExportConfiguration = webInfPath.resolve("config/opencms-importexport.xml");
-            if (!java.nio.file.Files.exists(importExportConfiguration)) {
+            String backendId = CmsStorageManager.getImageCacheStorageId(properties);
+            String prefix = normalizeS3Prefix(
+                properties.getString(CmsStorageManager.PARAM_STORAGE_IMAGE_CACHE_PREFIX, null));
+            if ((backendId == null)
+                || (prefix == null)
+                || !CmsS3Storage.STORAGE_TYPE.equals(CmsStorageManager.getStorageType(properties, backendId))) {
                 return null;
             }
-            try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-                factory.setExpandEntityReferences(false);
-                org.w3c.dom.Document document = factory.newDocumentBuilder().parse(importExportConfiguration.toFile());
-                NodeList imageCaches = document.getElementsByTagName("imagecache");
-                if (imageCaches.getLength() == 0) {
-                    return null;
-                }
-                Element imageCache = (Element)imageCaches.item(0);
-                if (!"org.opencms.loader.CmsS3ImageCache".equals(imageCache.getAttribute("class"))) {
-                    return null;
-                }
-                String bucket = getParamText(imageCache, "bucket");
-                String prefix = normalizeS3Prefix(getParamText(imageCache, "prefix"));
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(bucket) || CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
-                    return null;
-                }
-                ImageCachePrefixProtection result = new ImageCachePrefixProtection();
-                result.m_s3Bucket = bucket.trim();
-                result.m_s3Prefix = prefix;
-                return result;
-            } catch (Exception e) {
-                System.out.println(
-                    "Image cache prefix protection: skipped, could not parse "
-                        + importExportConfiguration
-                        + ": "
-                        + e.getMessage());
-                return null;
+            CmsS3ClientConfiguration configuration = CmsStorageManager.createS3ClientConfiguration(
+                properties,
+                backendId,
+                null);
+            ImageCachePrefixProtection result = new ImageCachePrefixProtection();
+            result.m_s3Bucket = configuration.getBucketName();
+            result.m_s3Endpoint = normalizeS3Endpoint(configuration.getEndpoint());
+            result.m_s3Prefix = prefix;
+            return result;
+        }
+
+        /**
+         * Prints a failure without dumping a potentially binary JDBC message.<p>
+         *
+         * @param failure the failure
+         */
+        private void printFailure(Throwable failure) {
+
+            Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+            printFailure(failure, "Storage maintenance failed: ", seen, 0);
+        }
+
+        /**
+         * Prints one throwable and its nested failures without unsafe message contents.<p>
+         *
+         * @param failure the failure
+         * @param prefix the line prefix
+         * @param seen already printed failures
+         * @param depth nesting depth
+         */
+        private void printFailure(Throwable failure, String prefix, Set<Throwable> seen, int depth) {
+
+            if ((failure == null) || !seen.add(failure) || (depth > 16)) {
+                return;
             }
+            System.err.println(prefix + getFailureSummary(failure));
+            if (failure instanceof SQLException) {
+                SQLException sqlFailure = (SQLException)failure;
+                System.err.println(
+                    "  SQLState=" + sqlFailure.getSQLState() + ", errorCode=" + sqlFailure.getErrorCode());
+            }
+            for (StackTraceElement element : failure.getStackTrace()) {
+                System.err.println("\tat " + element);
+            }
+            for (Throwable suppressed : failure.getSuppressed()) {
+                printFailure(suppressed, "Suppressed: ", seen, depth + 1);
+            }
+            printFailure(failure.getCause(), "Caused by: ", seen, depth + 1);
         }
 
         /**
@@ -530,6 +726,8 @@ public final class CmsStorageMaintenanceTool {
             System.out.println("  --properties <path>          Explicit opencms.properties path");
             System.out.println("  --driver-jar <path>          Additional JDBC driver jar");
             System.out.println("  --driver-dir <path>          Directory with additional JDBC driver jars");
+            System.out.println(
+                "  --batch-size <number>         CMS_STORAGE orphan page size (default: " + DEFAULT_BATCH_SIZE + ")");
             System.out.println(
                 "  --mode <mode>                all, validate-backends, verify-references, scan-orphans, delete-orphans");
             System.out.println("  --execute                    Actually delete orphans in delete-orphans mode");
@@ -553,6 +751,7 @@ public final class CmsStorageMaintenanceTool {
         private Map<String, Reference> readReferences(Connection connection) throws SQLException {
 
             Map<String, Reference> result = new LinkedHashMap<>();
+            ProgressReporter progress = new ProgressReporter("database references read");
             try (PreparedStatement statement = connection.prepareStatement(SQL_REFERENCES);
             ResultSet rows = statement.executeQuery()) {
                 while (rows.next()) {
@@ -561,6 +760,7 @@ public final class CmsStorageMaintenanceTool {
                     reference.m_hash = rows.getString("HASH");
                     reference.m_rows = rows.getLong("ROW_COUNT");
                     result.put(referenceKey(reference.m_storage, reference.m_hash), reference);
+                    progress.report(result.size(), "");
                 }
             }
             return result;
@@ -644,8 +844,7 @@ public final class CmsStorageMaintenanceTool {
                     () -> CmsStorageToolSupport.openConnection(database));
                 CmsStorageManager storageManager = new CmsStorageManager(toolSqlManager, properties);
                 Map<String, Backend> backends = getBackends(properties);
-                ImageCachePrefixProtection imageCachePrefixProtection = parseImageCachePrefixProtection(
-                    commandLine.m_webInfPath);
+                ImageCachePrefixProtection imageCachePrefixProtection = parseImageCachePrefixProtection(properties);
 
                 System.out.println("OpenCms storage maintenance tool");
                 System.out.println("Mode              : " + commandLine.m_mode);
@@ -661,6 +860,11 @@ public final class CmsStorageMaintenanceTool {
                             + imageCachePrefixProtection.m_s3Prefix);
                 }
                 System.out.println("Read-only         : " + !isDeleting(commandLine));
+                if (MODE_ALL.equals(commandLine.m_mode)
+                    || MODE_SCAN_ORPHANS.equals(commandLine.m_mode)
+                    || MODE_DELETE_ORPHANS.equals(commandLine.m_mode)) {
+                    System.out.println("Batch size        : " + commandLine.m_batchSize);
+                }
                 if (MODE_DELETE_ORPHANS.equals(commandLine.m_mode)) {
                     System.out.println("Delete limit      : " + getDeleteLimitText(commandLine.m_deleteLimit));
                     System.out.println("Execute deletes   : " + commandLine.m_execute);
@@ -677,7 +881,7 @@ public final class CmsStorageMaintenanceTool {
                             if (verifyReferences(
                                 connection,
                                 storageManager,
-                                commandLine.m_sampleLimit).m_missingReferences > 0) {
+                                commandLine.m_sampleLimit).m_failedReferences > 0) {
                                 result = 2;
                             }
                         }
@@ -709,8 +913,7 @@ public final class CmsStorageMaintenanceTool {
                 }
                 return result;
             } catch (Exception e) {
-                System.err.println("Storage maintenance failed: " + e.getMessage());
-                e.printStackTrace(System.err);
+                printFailure(e);
                 return 1;
             }
         }
@@ -740,25 +943,45 @@ public final class CmsStorageMaintenanceTool {
             List<String> samples = new ArrayList<>();
             I_CmsStorage storage = storageManager.getStorage(I_CmsDbStorage.STORAGE_TYPE);
             CmsDbContext dbc = new CmsDbContext();
-            try (PreparedStatement statement = connection.prepareStatement(SQL_DB_ORPHANS);
-            ResultSet rows = statement.executeQuery()) {
-                while (rows.next()) {
-                    stats.m_orphans++;
-                    if (samples.size() < sampleLimit) {
-                        samples.add(rows.getString("HASH"));
+            ProgressReporter progress = new ProgressReporter("db orphan candidates scanned");
+            String lastHash = "";
+            try (PreparedStatement statement = connection.prepareStatement(SQL_DB_ORPHANS_PAGE)) {
+                statement.setMaxRows(commandLine.m_batchSize);
+                while (true) {
+                    List<String> page = new ArrayList<>(commandLine.m_batchSize);
+                    statement.setString(1, lastHash);
+                    try (ResultSet rows = statement.executeQuery()) {
+                        while (rows.next()) {
+                            page.add(rows.getString("HASH"));
+                        }
                     }
-                    if (delete && (storage != null) && !isDeleteLimitReached(commandLine, stats)) {
-                        String hash = rows.getString("HASH");
-                        if (!isReferenced(connection, I_CmsDbStorage.STORAGE_TYPE, hash)) {
-                            try {
-                                deleteOrphan(storage, dbc, hash, commandLine, stats);
-                            } catch (Exception e) {
-                                stats.m_deleteFailures++;
-                                if (samples.size() < sampleLimit) {
-                                    samples.add(hash + " : delete failed: " + e.getMessage());
+                    if (page.isEmpty()) {
+                        break;
+                    }
+                    for (String hash : page) {
+                        lastHash = hash;
+                        stats.m_orphans++;
+                        if (samples.size() < sampleLimit) {
+                            samples.add(hash);
+                        }
+                        if (delete && (storage != null) && !isDeleteLimitReached(commandLine, stats)) {
+                            if (!isReferenced(connection, I_CmsDbStorage.STORAGE_TYPE, hash)) {
+                                try {
+                                    deleteOrphan(storage, dbc, hash, commandLine, stats);
+                                } catch (Exception e) {
+                                    stats.m_deleteFailures++;
+                                    if (samples.size() < sampleLimit) {
+                                        samples.add(hash + " : delete failed: " + getFailureSummary(e));
+                                    }
                                 }
                             }
                         }
+                        progress.report(
+                            stats.m_orphans,
+                            ", deleted=" + stats.m_deleted + ", delete failures=" + stats.m_deleteFailures);
+                    }
+                    if (page.size() < commandLine.m_batchSize) {
+                        break;
                     }
                 }
             }
@@ -798,6 +1021,7 @@ public final class CmsStorageMaintenanceTool {
             OrphanStats stats = new OrphanStats();
             List<String> samples = new ArrayList<>();
             CmsDbContext dbc = new CmsDbContext();
+            ProgressReporter progress = new ProgressReporter(storageIdentifier + " stored blobs scanned");
             I_CmsEnumerableStorage.I_CmsContentHashVisitor visitor = hash -> {
                 stats.m_stored++;
                 if (!references.containsKey(referenceKey(storageIdentifier, hash))) {
@@ -813,11 +1037,19 @@ public final class CmsStorageMaintenanceTool {
                         } catch (Exception e) {
                             stats.m_deleteFailures++;
                             if (samples.size() < sampleLimit) {
-                                samples.add(hash + " : delete failed: " + e.getMessage());
+                                samples.add(hash + " : delete failed: " + getFailureSummary(e));
                             }
                         }
                     }
                 }
+                progress.report(
+                    stats.m_stored,
+                    ", orphaned="
+                        + stats.m_orphans
+                        + ", deleted="
+                        + stats.m_deleted
+                        + ", delete failures="
+                        + stats.m_deleteFailures);
             };
             if (storage instanceof CmsS3Storage) {
                 ((CmsS3Storage)storage).visitContentHashes(new CmsDbContext(), ignoredPrefixes, visitor);
@@ -895,6 +1127,40 @@ public final class CmsStorageMaintenanceTool {
         }
 
         /**
+         * Converts bytes to a lower-case hexadecimal string.<p>
+         *
+         * @param bytes the bytes
+         * @return the hexadecimal string
+         */
+        private String toHex(byte[] bytes) {
+
+            StringBuilder result = new StringBuilder(bytes.length * 2);
+            for (byte value : bytes) {
+                String hex = Integer.toHexString(value & 0xff);
+                if (hex.length() == 1) {
+                    result.append('0');
+                }
+                result.append(hex);
+            }
+            return result.toString();
+        }
+
+        /**
+         * Returns true if database BLOBs should be read in bounded chunks.<p>
+         *
+         * @param connection the JDBC connection
+         * @return true for MySQL and MariaDB
+         * @throws SQLException if database metadata can not be read
+         */
+        private boolean useChunkedDatabaseContentReads(Connection connection) throws SQLException {
+
+            String productName = connection.getMetaData().getDatabaseProductName();
+            return (productName != null)
+                && (productName.toLowerCase(Locale.ROOT).contains("mysql")
+                    || productName.toLowerCase(Locale.ROOT).contains("mariadb"));
+        }
+
+        /**
          * Validates configured storage backends.<p>
          *
          * @param storageManager the storage manager
@@ -931,30 +1197,47 @@ public final class CmsStorageMaintenanceTool {
             VerificationStats stats = new VerificationStats();
             List<String> samples = new ArrayList<>();
             CmsDbContext dbc = new CmsDbContext();
+            ProgressReporter progress = new ProgressReporter("references verified");
+            boolean chunkDatabaseContent = useChunkedDatabaseContentReads(connection);
             for (Reference reference : readReferences(connection).values()) {
                 stats.m_references++;
                 stats.m_referencingRows += reference.m_rows;
                 try {
-                    byte[] content = storageManager.loadContent(
+                    MessageDigest digest = MessageDigest.getInstance("SHA-512");
+                    long contentBytes = digestStorageReference(
+                        connection,
+                        storageManager,
                         dbc,
-                        new byte[0],
-                        reference.m_storage,
-                        reference.m_hash);
-                    if (content == null) {
-                        throw new IllegalStateException("Storage backend returned null.");
+                        reference,
+                        digest,
+                        chunkDatabaseContent);
+                    String actualHash = toHex(digest.digest());
+                    if (!reference.m_hash.equalsIgnoreCase(actualHash)) {
+                        throw new IllegalStateException(
+                            "Content hash mismatch: expected " + reference.m_hash + ", actual " + actualHash);
                     }
                     stats.m_verifiedReferences++;
+                    stats.m_verifiedBytes += contentBytes;
                 } catch (Exception e) {
-                    stats.m_missingReferences++;
+                    stats.m_failedReferences++;
                     if (samples.size() < sampleLimit) {
-                        samples.add(reference.m_storage + " " + reference.m_hash + " : " + e.getMessage());
+                        samples.add(reference.m_storage + " " + reference.m_hash + " : " + getFailureSummary(e));
                     }
                 }
+                progress.report(
+                    stats.m_references,
+                    ", verified="
+                        + stats.m_verifiedReferences
+                        + ", failed="
+                        + stats.m_failedReferences
+                        + ", bytes="
+                        + stats.m_verifiedBytes);
             }
             System.out.println("  distinct references : " + stats.m_references);
             System.out.println("  referencing rows    : " + stats.m_referencingRows);
             System.out.println("  verified references : " + stats.m_verifiedReferences);
-            System.out.println("  missing references  : " + stats.m_missingReferences);
+            System.out.println("  verified bytes      : " + stats.m_verifiedBytes);
+            System.out.println("  failed references   : " + stats.m_failedReferences);
             for (String sample : samples) {
                 System.out.println("    " + sample);
             }
@@ -967,8 +1250,8 @@ public final class CmsStorageMaintenanceTool {
      */
     private static class VerificationStats {
 
-        /** Distinct references which could not be loaded. */
-        private long m_missingReferences;
+        /** Distinct references which could not be loaded or verified. */
+        private long m_failedReferences;
 
         /** Distinct references. */
         private long m_references;
@@ -978,10 +1261,22 @@ public final class CmsStorageMaintenanceTool {
 
         /** Distinct references which could be loaded. */
         private long m_verifiedReferences;
+
+        /** Bytes read while verifying references. */
+        private long m_verifiedBytes;
     }
+
+    /** Default page size for database orphan candidates. */
+    private static final int DEFAULT_BATCH_SIZE = 100;
+
+    /** Chunk size for reading database storage BLOBs from MySQL/MariaDB. */
+    private static final int DB_CONTENT_READ_CHUNK_SIZE = 4 * 1024 * 1024;
 
     /** The default properties path below WEB-INF. */
     private static final String DEFAULT_PROPERTIES = "config/opencms.properties";
+
+    /** Maximum exception message length which is safe to print. */
+    private static final int MAX_PRINTABLE_EXCEPTION_MESSAGE_LENGTH = 1000;
 
     /** Maintenance mode for all read-only checks. */
     private static final String MODE_ALL = "all";
@@ -1007,10 +1302,29 @@ public final class CmsStorageMaintenanceTool {
             MODE_SCAN_ORPHANS,
             MODE_DELETE_ORPHANS));
 
-    /** SQL for database storage blobs without content table references. */
-    private static final String SQL_DB_ORPHANS = "SELECT S.HASH FROM CMS_STORAGE S "
-        + "WHERE NOT EXISTS (SELECT 1 FROM CMS_OFFLINE_CONTENTS C WHERE C.STORAGE='db' AND C.HASH=S.HASH) "
-        + "AND NOT EXISTS (SELECT 1 FROM CMS_CONTENTS C WHERE C.STORAGE='db' AND C.HASH=S.HASH)";
+    /** Number of processed items between progress output. */
+    private static final int PROGRESS_ITEM_INTERVAL = 1000;
+
+    /** Maximum time between progress output. */
+    private static final long PROGRESS_TIME_INTERVAL_NANOS = 30L * 1000L * 1000L * 1000L;
+
+    /** SQL page for database storage blobs without content table references. */
+    private static final String SQL_DB_ORPHANS_PAGE = "SELECT S.HASH FROM CMS_STORAGE S "
+        + "WHERE S.HASH>? "
+        + "AND NOT EXISTS (SELECT 1 FROM CMS_OFFLINE_CONTENTS C WHERE C.STORAGE='db' AND C.HASH=S.HASH) "
+        + "AND NOT EXISTS (SELECT 1 FROM CMS_CONTENTS C WHERE C.STORAGE='db' AND C.HASH=S.HASH) "
+        + "ORDER BY S.HASH";
+
+    /** SQL for the logical size of one database storage BLOB. */
+    private static final String SQL_DB_CONTENT_LENGTH = "SELECT OCTET_LENGTH(FILE_CONTENT) AS CONTENT_LENGTH "
+        + "FROM CMS_STORAGE WHERE HASH=?";
+
+    /** SQL for one bounded database storage BLOB chunk. */
+    private static final String SQL_DB_CONTENT_CHUNK = "SELECT SUBSTRING(FILE_CONTENT, ?, ?) AS CONTENT_CHUNK "
+        + "FROM CMS_STORAGE WHERE HASH=?";
+
+    /** Buffer size used while streaming storage content. */
+    private static final int VERIFY_BUFFER_SIZE = 64 * 1024;
 
     /** SQL for all external storage references in content tables. */
     private static final String SQL_REFERENCES = "SELECT STORAGE, HASH, SUM(ROW_COUNT) AS ROW_COUNT FROM ("

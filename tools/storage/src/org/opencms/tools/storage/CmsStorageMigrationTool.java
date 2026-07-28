@@ -53,6 +53,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,6 +97,29 @@ public final class CmsStorageMigrationTool {
 
         /** The resource type id. */
         private int m_typeId;
+    }
+
+    /**
+     * Stable key used to continue a paged candidate scan.<p>
+     */
+    private static class CandidateCursor {
+
+        /** The publish tag from value. */
+        private int m_publishTagFrom;
+
+        /** The resource id. */
+        private String m_resourceId;
+
+        /**
+         * Creates a cursor after the given candidate.<p>
+         *
+         * @param candidate the candidate
+         */
+        private CandidateCursor(Candidate candidate) {
+
+            m_resourceId = candidate.m_resourceId.toString();
+            m_publishTagFrom = candidate.m_publishTagFrom;
+        }
     }
 
     /**
@@ -223,6 +247,32 @@ public final class CmsStorageMigrationTool {
         }
 
         /**
+         * Returns a short text exception message, or an omission notice for unsafe messages.<p>
+         *
+         * @param message the exception message
+         * @return the printable message, or null
+         */
+        private String getPrintableExceptionMessage(String message) {
+
+            if (message == null) {
+                return null;
+            }
+            if (message.length() > MAX_PRINTABLE_EXCEPTION_MESSAGE_LENGTH) {
+                return "[message omitted because it is unusually large and may contain binary content]";
+            }
+            for (int i = 0; i < message.length(); i++) {
+                char character = message.charAt(i);
+                if (Character.isISOControl(character)
+                    && (character != '\n')
+                    && (character != '\r')
+                    && (character != '\t')) {
+                    return "[message omitted because it contains binary control characters]";
+                }
+            }
+            return message;
+        }
+
+        /**
          * Gets the storage policy class name.<p>
          *
          * @param configuration the policy configuration
@@ -304,6 +354,153 @@ public final class CmsStorageMigrationTool {
         }
 
         /**
+         * Loads one candidate page without selecting BLOB data.<p>
+         *
+         * @param connection the JDBC connection
+         * @param scope the migration scope
+         * @param queryPlan the candidate query plan
+         * @param cursor the previous page cursor, or null for the first page
+         * @param batchSize the maximum page size
+         * @return the candidate page
+         * @throws SQLException if reading fails
+         */
+        private List<Candidate> loadCandidateBatch(
+            Connection connection,
+            Scope scope,
+            QueryPlan queryPlan,
+            CandidateCursor cursor,
+            int batchSize)
+        throws SQLException {
+
+            int pageSize = Math.max(1, batchSize);
+            List<Candidate> result = new ArrayList<>(pageSize);
+            try (PreparedStatement statement = connection.prepareStatement(
+                scope.createSelectSql(queryPlan, cursor != null))) {
+                int index = queryPlan.bind(statement, 1);
+                if (cursor != null) {
+                    scope.bindCursor(statement, index, cursor);
+                }
+                statement.setFetchSize(pageSize);
+                statement.setMaxRows(pageSize);
+                try (ResultSet rows = statement.executeQuery()) {
+                    while (rows.next()) {
+                        result.add(readCandidate(rows));
+                    }
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Loads the content column for one candidate after the candidate page result set has been closed.<p>
+         *
+         * @param statement the content statement
+         * @param chunkStatement the optional chunk statement
+         * @param scope the migration scope
+         * @param candidate the candidate
+         * @return true if the row still has the selected storage state
+         * @throws SQLException if reading fails
+         */
+        private boolean loadCandidateContent(
+            PreparedStatement statement,
+            PreparedStatement chunkStatement,
+            Scope scope,
+            Candidate candidate)
+        throws SQLException {
+
+            scope.bindCandidateKey(statement, candidate);
+            try (ResultSet rows = statement.executeQuery()) {
+                if (!rows.next()) {
+                    return false;
+                }
+                String storage = rows.getString("STORAGE");
+                String hash = rows.getString("HASH");
+                if (!same(candidate.m_storage, storage) || !same(candidate.m_hash, hash)) {
+                    return false;
+                }
+                if (chunkStatement == null) {
+                    candidate.m_content = rows.getBytes("FILE_CONTENT");
+                    if (candidate.m_content == null) {
+                        candidate.m_content = new byte[0];
+                    }
+                } else {
+                    long contentLength = rows.getLong("CONTENT_LENGTH");
+                    if (rows.wasNull()) {
+                        contentLength = 0;
+                    }
+                    candidate.m_content = loadCandidateContentChunks(chunkStatement, scope, candidate, contentLength);
+                }
+                return true;
+            } catch (SQLException e) {
+                throw new SQLException(
+                    "Failed to read "
+                        + scope.m_label
+                        + " content for resource "
+                        + candidate.m_resourceId
+                        + (scope.m_hasPublishTagFrom ? " and publish tag " + candidate.m_publishTagFrom : "")
+                        + ".",
+                    e.getSQLState(),
+                    e.getErrorCode(),
+                    e);
+            }
+        }
+
+        /**
+         * Loads a MySQL/MariaDB BLOB in bounded chunks.<p>
+         *
+         * @param statement the chunk query statement
+         * @param scope the migration scope
+         * @param candidate the candidate
+         * @param contentLength the BLOB length
+         * @return the complete content
+         * @throws SQLException if reading fails
+         */
+        private byte[] loadCandidateContentChunks(
+            PreparedStatement statement,
+            Scope scope,
+            Candidate candidate,
+            long contentLength)
+        throws SQLException {
+
+            if (contentLength < 0) {
+                throw new SQLException("Negative BLOB length reported for " + scope.m_label + ".");
+            }
+            if (contentLength > (Integer.MAX_VALUE - 8L)) {
+                throw new SQLException(
+                    "BLOB length " + contentLength + " for " + scope.m_label + " exceeds the Java byte array limit.");
+            }
+            byte[] result = new byte[(int)contentLength];
+            int offset = 0;
+            while (offset < result.length) {
+                int expectedLength = Math.min(CONTENT_READ_CHUNK_SIZE, result.length - offset);
+                statement.setInt(1, offset + 1);
+                statement.setInt(2, expectedLength);
+                scope.bindCandidateKey(statement, candidate, 3);
+                try (ResultSet rows = statement.executeQuery()) {
+                    if (!rows.next()) {
+                        throw new SQLException("Content row disappeared while reading " + scope.m_label + ".");
+                    }
+                    byte[] chunk = rows.getBytes("CONTENT_CHUNK");
+                    if ((chunk == null) || (chunk.length != expectedLength)) {
+                        throw new SQLException(
+                            "Expected "
+                                + expectedLength
+                                + " BLOB bytes at offset "
+                                + offset
+                                + " for "
+                                + scope.m_label
+                                + ", but received "
+                                + (chunk == null ? 0 : chunk.length)
+                                + ".");
+                    }
+                    System.arraycopy(chunk, 0, result, offset, chunk.length);
+                    offset += chunk.length;
+                }
+            }
+            return result;
+        }
+
+        /**
          * Loads the effective content bytes for a candidate.<p>
          *
          * @param storageManager the storage manager
@@ -352,56 +549,85 @@ public final class CmsStorageMigrationTool {
             boolean originalAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
             toolSqlManager.setCurrentConnection(connection);
-            long pendingWrites = 0;
-            try (PreparedStatement selectStatement = connection.prepareStatement(scope.createSelectSql(queryPlan));
+            Throwable failure = null;
+            boolean chunkedContentReads = useChunkedContentReads(connection);
+            try (
+            PreparedStatement contentStatement = connection.prepareStatement(
+                chunkedContentReads ? scope.m_contentMetadataSql : scope.m_contentSql);
+            PreparedStatement chunkStatement = chunkedContentReads
+            ? connection.prepareStatement(scope.m_contentChunkSql)
+            : null;
             PreparedStatement updateStatement = connection.prepareStatement(scope.m_updateSql)) {
-                queryPlan.bind(selectStatement);
-                selectStatement.setFetchSize(Math.max(1, batchSize));
-                try (ResultSet rows = selectStatement.executeQuery()) {
-                    while (rows.next()) {
-                        Candidate candidate = readCandidate(rows);
-                        candidate.m_content = loadContent(storageManager, dbc, candidate);
-                        result.m_scannedRows += 1;
-                        result.m_scannedBytes += candidate.m_content.length;
-                        CmsStoragePolicyContext context = new CmsStoragePolicyContext(
-                            candidate.m_content,
-                            createResource(candidate));
-                        boolean externalStorageRequired = storagePolicy.isExternalStorageRequired(context);
-                        if (!isMigrationRequired(candidate, externalStorageRequired, activeStorageId)) {
-                            result.m_skippedRows += 1;
-                            continue;
-                        }
-                        result.m_migrationRows += 1;
-                        result.m_migrationBytes += candidate.m_content.length;
-                        if (externalStorageRequired && CmsStringUtil.isNotEmpty(candidate.m_storage)) {
-                            result.m_legacyRows += 1;
-                        } else if (!externalStorageRequired) {
-                            result.m_returnRows += 1;
-                        }
-                        StorageResult storageResult = storageManager.prepareContent(dbc, context);
-                        int updatedRows = updateCandidate(updateStatement, scope, candidate, storageResult);
-                        if (updatedRows == 1) {
-                            result.m_migratedRows += 1;
-                            pendingWrites += 1;
-                        } else {
-                            result.m_staleRows += 1;
-                        }
-                        if (pendingWrites >= Math.max(1, batchSize)) {
-                            connection.commit();
-                            pendingWrites = 0;
-                            System.out.println(
-                                "  committed " + result.m_migratedRows + " rows for " + scope.m_label + "...");
+                CandidateCursor cursor = null;
+                long selectedRows = 0;
+                int pageSize = Math.max(1, batchSize);
+                while (true) {
+                    List<Candidate> candidates = loadCandidateBatch(connection, scope, queryPlan, cursor, pageSize);
+                    if (candidates.isEmpty()) {
+                        break;
+                    }
+                    for (Candidate candidate : candidates) {
+                        try {
+                            if (!loadCandidateContent(contentStatement, chunkStatement, scope, candidate)) {
+                                result.m_staleRows += 1;
+                                continue;
+                            }
+                            candidate.m_content = loadContent(storageManager, dbc, candidate);
+                            result.m_scannedRows += 1;
+                            result.m_scannedBytes += candidate.m_content.length;
+                            CmsStoragePolicyContext context = new CmsStoragePolicyContext(
+                                candidate.m_content,
+                                createResource(candidate));
+                            boolean externalStorageRequired = storagePolicy.isExternalStorageRequired(context);
+                            if (!isMigrationRequired(candidate, externalStorageRequired, activeStorageId)) {
+                                result.m_skippedRows += 1;
+                                continue;
+                            }
+                            result.m_migrationRows += 1;
+                            result.m_migrationBytes += candidate.m_content.length;
+                            if (externalStorageRequired && CmsStringUtil.isNotEmpty(candidate.m_storage)) {
+                                result.m_legacyRows += 1;
+                            } else if (!externalStorageRequired) {
+                                result.m_returnRows += 1;
+                            }
+                            StorageResult storageResult = storageManager.prepareContent(dbc, context);
+                            int updatedRows = updateCandidate(updateStatement, scope, candidate, storageResult);
+                            if (updatedRows == 1) {
+                                result.m_migratedRows += 1;
+                            } else {
+                                result.m_staleRows += 1;
+                            }
+                        } finally {
+                            candidate.m_content = null;
                         }
                     }
+                    connection.commit();
+                    selectedRows += candidates.size();
+                    cursor = new CandidateCursor(candidates.get(candidates.size() - 1));
+                    System.out.println(
+                        "  processed "
+                            + selectedRows
+                            + " candidates; committed "
+                            + result.m_migratedRows
+                            + " migrated rows for "
+                            + scope.m_label
+                            + "...");
+                    if (candidates.size() < pageSize) {
+                        break;
+                    }
                 }
-                connection.commit();
                 return result;
             } catch (Exception e) {
-                connection.rollback();
+                failure = e;
+                rollbackAfterFailure(connection, e);
+                throw e;
+            } catch (Error e) {
+                failure = e;
+                rollbackAfterFailure(connection, e);
                 throw e;
             } finally {
                 toolSqlManager.clearCurrentConnection();
-                connection.setAutoCommit(originalAutoCommit);
+                restoreAutoCommit(connection, originalAutoCommit, failure);
             }
         }
 
@@ -493,6 +719,46 @@ public final class CmsStorageMigrationTool {
         }
 
         /**
+         * Prints a failure without dumping a potentially binary JDBC message.<p>
+         *
+         * @param failure the failure
+         */
+        private void printFailure(Throwable failure) {
+
+            Set<Throwable> seen = Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+            printFailure(failure, "Storage migration failed: ", seen, 0);
+        }
+
+        /**
+         * Prints one throwable and its nested failures without unsafe message contents.<p>
+         *
+         * @param failure the failure
+         * @param prefix the line prefix
+         * @param seen already printed failures
+         * @param depth nesting depth
+         */
+        private void printFailure(Throwable failure, String prefix, Set<Throwable> seen, int depth) {
+
+            if ((failure == null) || !seen.add(failure) || (depth > 16)) {
+                return;
+            }
+            String message = getPrintableExceptionMessage(failure.getMessage());
+            System.err.println(prefix + failure.getClass().getName() + (message == null ? "" : ": " + message));
+            if (failure instanceof SQLException) {
+                SQLException sqlFailure = (SQLException)failure;
+                System.err.println(
+                    "  SQLState=" + sqlFailure.getSQLState() + ", errorCode=" + sqlFailure.getErrorCode());
+            }
+            for (StackTraceElement element : failure.getStackTrace()) {
+                System.err.println("\tat " + element);
+            }
+            for (Throwable suppressed : failure.getSuppressed()) {
+                printFailure(suppressed, "Suppressed: ", seen, depth + 1);
+            }
+            printFailure(failure.getCause(), "Caused by: ", seen, depth + 1);
+        }
+
+        /**
          * Prints scan stats.<p>
          *
          * @param label the label
@@ -540,7 +806,7 @@ public final class CmsStorageMigrationTool {
             System.out.println("  --driver-jar <path>          Additional JDBC driver jar");
             System.out.println("  --driver-dir <path>          Directory with additional JDBC driver jars");
             System.out.println("  --tables <list>              offline, contents, or offline,contents");
-            System.out.println("  --batch-size <number>        JDBC fetch size and commit interval");
+            System.out.println("  --batch-size <number>        Candidate page size and commit interval (default: 100)");
             System.out.println("  --dry-run                    Analyze only; this is the default");
             System.out.println(
                 "  --execute                    Write blobs to the active backend and update content tables");
@@ -608,10 +874,6 @@ public final class CmsStorageMigrationTool {
 
             Candidate result = new Candidate();
             result.m_resourceId = new CmsUUID(rows.getString("RESOURCE_ID"));
-            result.m_content = rows.getBytes("FILE_CONTENT");
-            if (result.m_content == null) {
-                result.m_content = new byte[0];
-            }
             result.m_storage = rows.getString("STORAGE");
             result.m_hash = rows.getString("HASH");
             result.m_typeId = rows.getInt("RESOURCE_TYPE");
@@ -683,6 +945,9 @@ public final class CmsStorageMigrationTool {
          */
         private void resolveDefaults(CommandLine commandLine) {
 
+            if (commandLine.m_batchSize < 1) {
+                throw new IllegalArgumentException("--batch-size must be greater than zero.");
+            }
             if (commandLine.m_webInfPath == null) {
                 if ((commandLine.m_propertiesPath == null) || (commandLine.m_vfsConfigPath == null)) {
                     throw new IllegalArgumentException(
@@ -696,6 +961,45 @@ public final class CmsStorageMigrationTool {
             }
             if (commandLine.m_vfsConfigPath == null) {
                 commandLine.m_vfsConfigPath = commandLine.m_webInfPath.resolve(DEFAULT_VFS_CONFIG);
+            }
+        }
+
+        /**
+         * Restores the connection auto-commit state without hiding an earlier migration failure.<p>
+         *
+         * @param connection the JDBC connection
+         * @param originalAutoCommit the original auto-commit state
+         * @param failure an earlier failure, or null
+         * @throws SQLException if restoring fails after an otherwise successful migration
+         */
+        private void restoreAutoCommit(Connection connection, boolean originalAutoCommit, Throwable failure)
+        throws SQLException {
+
+            try {
+                if (!connection.isClosed()) {
+                    connection.setAutoCommit(originalAutoCommit);
+                }
+            } catch (SQLException restoreFailure) {
+                if (failure != null) {
+                    failure.addSuppressed(restoreFailure);
+                } else {
+                    throw restoreFailure;
+                }
+            }
+        }
+
+        /**
+         * Rolls back after a migration failure without hiding the original failure.<p>
+         *
+         * @param connection the JDBC connection
+         * @param failure the original failure
+         */
+        private void rollbackAfterFailure(Connection connection, Throwable failure) {
+
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackFailure) {
+                failure.addSuppressed(rollbackFailure);
             }
         }
 
@@ -797,10 +1101,21 @@ public final class CmsStorageMigrationTool {
                 printStats("TOTAL", total);
                 return 0;
             } catch (Exception e) {
-                System.err.println("Storage migration failed: " + e.getMessage());
-                e.printStackTrace(System.err);
+                printFailure(e);
                 return 1;
             }
+        }
+
+        /**
+         * Compares nullable strings.<p>
+         *
+         * @param first the first value
+         * @param second the second value
+         * @return true if both values are equal
+         */
+        private boolean same(String first, String second) {
+
+            return first == null ? second == null : first.equals(second);
         }
 
         /**
@@ -809,7 +1124,7 @@ public final class CmsStorageMigrationTool {
          * @param connection the JDBC connection
          * @param storagePolicy the storage policy
          * @param scope the scope
-         * @param batchSize the fetch size
+         * @param batchSize the maximum candidate page size
          * @return the scan stats
          * @throws SQLException if the query fails
          */
@@ -829,28 +1144,53 @@ public final class CmsStorageMigrationTool {
             System.out.println();
             System.out.println("Scanning " + scope.m_label + "...");
             toolSqlManager.setCurrentConnection(connection);
-            try (PreparedStatement statement = connection.prepareStatement(scope.createSelectSql(queryPlan))) {
-                queryPlan.bind(statement);
-                statement.setFetchSize(Math.max(1, batchSize));
-                try (ResultSet rows = statement.executeQuery()) {
-                    while (rows.next()) {
-                        Candidate candidate = readCandidate(rows);
-                        candidate.m_content = loadContent(storageManager, dbc, candidate);
-                        result.m_scannedRows += 1;
-                        result.m_scannedBytes += candidate.m_content.length;
-                        boolean externalStorageRequired = storagePolicy.isExternalStorageRequired(
-                            new CmsStoragePolicyContext(candidate.m_content, createResource(candidate)));
-                        if (isMigrationRequired(candidate, externalStorageRequired, activeStorageId)) {
-                            result.m_migrationRows += 1;
-                            result.m_migrationBytes += candidate.m_content.length;
-                            if (externalStorageRequired && CmsStringUtil.isNotEmpty(candidate.m_storage)) {
-                                result.m_legacyRows += 1;
-                            } else if (!externalStorageRequired) {
-                                result.m_returnRows += 1;
+            boolean chunkedContentReads = useChunkedContentReads(connection);
+            try (
+            PreparedStatement contentStatement = connection.prepareStatement(
+                chunkedContentReads ? scope.m_contentMetadataSql : scope.m_contentSql);
+            PreparedStatement chunkStatement = chunkedContentReads
+            ? connection.prepareStatement(scope.m_contentChunkSql)
+            : null) {
+                CandidateCursor cursor = null;
+                long selectedRows = 0;
+                int pageSize = Math.max(1, batchSize);
+                while (true) {
+                    List<Candidate> candidates = loadCandidateBatch(connection, scope, queryPlan, cursor, pageSize);
+                    if (candidates.isEmpty()) {
+                        break;
+                    }
+                    for (Candidate candidate : candidates) {
+                        try {
+                            if (!loadCandidateContent(contentStatement, chunkStatement, scope, candidate)) {
+                                result.m_staleRows += 1;
+                                continue;
                             }
-                        } else {
-                            result.m_skippedRows += 1;
+                            candidate.m_content = loadContent(storageManager, dbc, candidate);
+                            result.m_scannedRows += 1;
+                            result.m_scannedBytes += candidate.m_content.length;
+                            boolean externalStorageRequired = storagePolicy.isExternalStorageRequired(
+                                new CmsStoragePolicyContext(candidate.m_content, createResource(candidate)));
+                            if (isMigrationRequired(candidate, externalStorageRequired, activeStorageId)) {
+                                result.m_migrationRows += 1;
+                                result.m_migrationBytes += candidate.m_content.length;
+                                if (externalStorageRequired && CmsStringUtil.isNotEmpty(candidate.m_storage)) {
+                                    result.m_legacyRows += 1;
+                                } else if (!externalStorageRequired) {
+                                    result.m_returnRows += 1;
+                                }
+                            } else {
+                                result.m_skippedRows += 1;
+                            }
+                        } finally {
+                            candidate.m_content = null;
                         }
+                    }
+                    selectedRows += candidates.size();
+                    cursor = new CandidateCursor(candidates.get(candidates.size() - 1));
+                    System.out.println(
+                        "  processed " + selectedRows + " candidates while scanning " + scope.m_label + "...");
+                    if (candidates.size() < pageSize) {
+                        break;
                     }
                 }
             } finally {
@@ -897,6 +1237,20 @@ public final class CmsStorageMigrationTool {
                 statement.setLong(index++, candidate.m_dateContent);
             }
             return statement.executeUpdate();
+        }
+
+        /**
+         * Returns true if BLOBs should be loaded in bounded chunks for this database.<p>
+         *
+         * @param connection the database connection
+         * @return true for MySQL and MariaDB
+         * @throws SQLException if database metadata can not be read
+         */
+        private boolean useChunkedContentReads(Connection connection) throws SQLException {
+
+            String productName = connection.getMetaData().getDatabaseProductName();
+            return (productName != null)
+                && (productName.toLowerCase().contains("mysql") || productName.toLowerCase().contains("mariadb"));
         }
 
         /**
@@ -1005,8 +1359,8 @@ public final class CmsStorageMigrationTool {
         /** The active storage id. */
         private String m_activeStorageId;
 
-        /** Batch size for JDBC fetches. */
-        private int m_batchSize = 1000;
+        /** Maximum candidate page size and commit interval. */
+        private int m_batchSize = 100;
 
         /** If true, no writes are performed. */
         private boolean m_dryRun = true;
@@ -1108,13 +1462,17 @@ public final class CmsStorageMigrationTool {
          * Binds the query parameters.<p>
          *
          * @param statement the statement
+         * @param startIndex the first parameter index
+         * @return the next free parameter index
          * @throws SQLException if binding fails
          */
-        private void bind(PreparedStatement statement) throws SQLException {
+        private int bind(PreparedStatement statement, int startIndex) throws SQLException {
 
+            int index = startIndex;
             for (int i = 0; i < m_parameters.size(); i++) {
-                statement.setInt(i + 1, m_parameters.get(i).intValue());
+                statement.setInt(index++, m_parameters.get(i).intValue());
             }
+            return index;
         }
     }
 
@@ -1180,6 +1538,15 @@ public final class CmsStorageMigrationTool {
         /** If true, the update uses PUBLISH_TAG_FROM. */
         private boolean m_hasPublishTagFrom;
 
+        /** SQL used to load one content BLOB. */
+        private String m_contentSql;
+
+        /** SQL used to load one content BLOB in chunks. */
+        private String m_contentChunkSql;
+
+        /** SQL used to load BLOB metadata before chunked reads. */
+        private String m_contentMetadataSql;
+
         /** Human readable label. */
         private String m_label;
 
@@ -1198,6 +1565,9 @@ public final class CmsStorageMigrationTool {
          * @param label the label
          * @param tableSelector the table selector
          * @param selectSql the select SQL
+         * @param contentSql the SQL used to load one content BLOB
+         * @param contentMetadataSql the SQL used to load BLOB metadata
+         * @param contentChunkSql the SQL used to load one BLOB chunk
          * @param updateSql the update SQL
          * @param hasPublishTagFrom if true, the scope uses PUBLISH_TAG_FROM
          * @param hasDateContentGuard if true, the scope guards DATE_CONTENT
@@ -1206,6 +1576,9 @@ public final class CmsStorageMigrationTool {
             String label,
             String tableSelector,
             String selectSql,
+            String contentSql,
+            String contentMetadataSql,
+            String contentChunkSql,
             String updateSql,
             boolean hasPublishTagFrom,
             boolean hasDateContentGuard) {
@@ -1213,22 +1586,92 @@ public final class CmsStorageMigrationTool {
             m_label = label;
             m_tableSelector = tableSelector;
             m_selectSql = selectSql;
+            m_contentSql = contentSql;
+            m_contentMetadataSql = contentMetadataSql;
+            m_contentChunkSql = contentChunkSql;
             m_updateSql = updateSql;
             m_hasPublishTagFrom = hasPublishTagFrom;
             m_hasDateContentGuard = hasDateContentGuard;
         }
 
         /**
+         * Binds a candidate key.<p>
+         *
+         * @param statement the statement
+         * @param candidate the candidate
+         * @throws SQLException if binding fails
+         */
+        private void bindCandidateKey(PreparedStatement statement, Candidate candidate) throws SQLException {
+
+            bindCandidateKey(statement, candidate, 1);
+        }
+
+        /**
+         * Binds a candidate key starting at the given parameter index.<p>
+         *
+         * @param statement the statement
+         * @param candidate the candidate
+         * @param startIndex the first parameter index
+         * @throws SQLException if binding fails
+         */
+        private void bindCandidateKey(PreparedStatement statement, Candidate candidate, int startIndex)
+        throws SQLException {
+
+            statement.setString(startIndex, candidate.m_resourceId.toString());
+            if (m_hasPublishTagFrom) {
+                statement.setInt(startIndex + 1, candidate.m_publishTagFrom);
+            }
+        }
+
+        /**
          * Creates the select SQL for the query plan.<p>
          *
+         * @param statement the statement
+         * @param startIndex the first parameter index
+         * @param cursor the page cursor
+         * @throws SQLException if binding fails
+         */
+        private void bindCursor(PreparedStatement statement, int startIndex, CandidateCursor cursor)
+        throws SQLException {
+
+            int index = startIndex;
+            statement.setString(index++, cursor.m_resourceId);
+            if (m_hasPublishTagFrom) {
+                statement.setString(index++, cursor.m_resourceId);
+                statement.setInt(index++, cursor.m_publishTagFrom);
+            }
+        }
+
+        /**
+         * Creates the ordered, optionally paged select SQL for the query plan.<p>
+         *
          * @param queryPlan the query plan
+         * @param hasCursor true if a page cursor is bound
          * @return the select SQL
          */
-        private String createSelectSql(QueryPlan queryPlan) {
+        private String createSelectSql(QueryPlan queryPlan, boolean hasCursor) {
 
-            return String.format(m_selectSql, queryPlan.m_condition);
+            StringBuilder result = new StringBuilder(String.format(m_selectSql, queryPlan.m_condition));
+            if (hasCursor) {
+                if (m_hasPublishTagFrom) {
+                    result.append(" AND (C.RESOURCE_ID>? OR (C.RESOURCE_ID=? AND C.PUBLISH_TAG_FROM>?))");
+                } else {
+                    result.append(" AND C.RESOURCE_ID>?");
+                }
+            }
+            result.append(" ORDER BY C.RESOURCE_ID");
+            if (m_hasPublishTagFrom) {
+                result.append(", C.PUBLISH_TAG_FROM");
+            }
+            return result.toString();
         }
     }
+
+    /** Chunk size for reading BLOBs from MySQL/MariaDB without crossing protocol packet boundaries. */
+    private static final int CONTENT_READ_CHUNK_SIZE = 4 * 1024 * 1024;
+
+    /** Maximum exception message length which is safe to print. */
+    private static final int MAX_PRINTABLE_EXCEPTION_MESSAGE_LENGTH = 1000;
 
     /** The default VFS configuration path below WEB-INF. */
     private static final String DEFAULT_VFS_CONFIG = "config/opencms-vfs.xml";
@@ -1237,26 +1680,65 @@ public final class CmsStorageMigrationTool {
     private static final String DEFAULT_PROPERTIES = "config/opencms.properties";
 
     /** SQL for historical CMS_CONTENTS candidates. */
-    private static final String SQL_CONTENTS_HISTORY = "SELECT C.RESOURCE_ID, C.PUBLISH_TAG_FROM, C.FILE_CONTENT, "
+    private static final String SQL_CONTENTS_HISTORY = "SELECT C.RESOURCE_ID, C.PUBLISH_TAG_FROM, "
         + "C.STORAGE, C.HASH, R.RESOURCE_TYPE, R.DATE_CONTENT FROM CMS_CONTENTS C, CMS_HISTORY_RESOURCES R "
         + "WHERE C.RESOURCE_ID=R.RESOURCE_ID AND C.PUBLISH_TAG_FROM=R.PUBLISH_TAG "
         + "AND C.ONLINE_FLAG=0 AND %s";
 
     /** SQL for current online CMS_CONTENTS candidates. */
-    private static final String SQL_CONTENTS_ONLINE = "SELECT C.RESOURCE_ID, C.PUBLISH_TAG_FROM, C.FILE_CONTENT, "
+    private static final String SQL_CONTENTS_ONLINE = "SELECT C.RESOURCE_ID, C.PUBLISH_TAG_FROM, "
         + "C.STORAGE, C.HASH, R.RESOURCE_TYPE, R.DATE_CONTENT FROM CMS_CONTENTS C, CMS_ONLINE_RESOURCES R "
         + "WHERE C.RESOURCE_ID=R.RESOURCE_ID AND C.ONLINE_FLAG=1 AND %s";
 
     /** SQL for CMS_OFFLINE_CONTENTS candidates. */
-    private static final String SQL_OFFLINE = "SELECT C.RESOURCE_ID, 0 AS PUBLISH_TAG_FROM, C.FILE_CONTENT, "
+    private static final String SQL_OFFLINE = "SELECT C.RESOURCE_ID, 0 AS PUBLISH_TAG_FROM, "
         + "C.STORAGE, C.HASH, R.RESOURCE_TYPE, R.DATE_CONTENT FROM CMS_OFFLINE_CONTENTS C, CMS_OFFLINE_RESOURCES R "
         + "WHERE C.RESOURCE_ID=R.RESOURCE_ID AND %s";
+
+    /** SQL for loading one historical CMS_CONTENTS BLOB. */
+    private static final String SQL_CONTENTS_HISTORY_CONTENT = "SELECT FILE_CONTENT, STORAGE, HASH "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=0";
+
+    /** SQL for loading historical CMS_CONTENTS BLOB metadata. */
+    private static final String SQL_CONTENTS_HISTORY_CONTENT_METADATA = "SELECT OCTET_LENGTH(FILE_CONTENT) AS CONTENT_LENGTH, STORAGE, HASH "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=0";
+
+    /** SQL for loading one historical CMS_CONTENTS BLOB chunk. */
+    private static final String SQL_CONTENTS_HISTORY_CONTENT_CHUNK = "SELECT SUBSTRING(FILE_CONTENT, ?, ?) AS CONTENT_CHUNK "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=0";
+
+    /** SQL for loading one current online CMS_CONTENTS BLOB. */
+    private static final String SQL_CONTENTS_ONLINE_CONTENT = "SELECT FILE_CONTENT, STORAGE, HASH "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=1";
+
+    /** SQL for loading current online CMS_CONTENTS BLOB metadata. */
+    private static final String SQL_CONTENTS_ONLINE_CONTENT_METADATA = "SELECT OCTET_LENGTH(FILE_CONTENT) AS CONTENT_LENGTH, STORAGE, HASH "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=1";
+
+    /** SQL for loading one current online CMS_CONTENTS BLOB chunk. */
+    private static final String SQL_CONTENTS_ONLINE_CONTENT_CHUNK = "SELECT SUBSTRING(FILE_CONTENT, ?, ?) AS CONTENT_CHUNK "
+        + "FROM CMS_CONTENTS WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=1";
+
+    /** SQL for loading one CMS_OFFLINE_CONTENTS BLOB. */
+    private static final String SQL_OFFLINE_CONTENT = "SELECT FILE_CONTENT, STORAGE, HASH "
+        + "FROM CMS_OFFLINE_CONTENTS WHERE RESOURCE_ID=?";
+
+    /** SQL for loading CMS_OFFLINE_CONTENTS BLOB metadata. */
+    private static final String SQL_OFFLINE_CONTENT_METADATA = "SELECT OCTET_LENGTH(FILE_CONTENT) AS CONTENT_LENGTH, STORAGE, HASH "
+        + "FROM CMS_OFFLINE_CONTENTS WHERE RESOURCE_ID=?";
+
+    /** SQL for loading one CMS_OFFLINE_CONTENTS BLOB chunk. */
+    private static final String SQL_OFFLINE_CONTENT_CHUNK = "SELECT SUBSTRING(FILE_CONTENT, ?, ?) AS CONTENT_CHUNK "
+        + "FROM CMS_OFFLINE_CONTENTS WHERE RESOURCE_ID=?";
 
     /** Scope for historical CMS_CONTENTS. */
     private static final Scope SCOPE_CONTENTS_HISTORY = new Scope(
         "CMS_CONTENTS history",
         "contents",
         SQL_CONTENTS_HISTORY,
+        SQL_CONTENTS_HISTORY_CONTENT,
+        SQL_CONTENTS_HISTORY_CONTENT_METADATA,
+        SQL_CONTENTS_HISTORY_CONTENT_CHUNK,
         "UPDATE CMS_CONTENTS SET FILE_CONTENT=?, STORAGE=?, HASH=? "
             + "WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=0 "
             + "AND ((STORAGE IS NULL AND HASH IS NULL AND ? IS NULL AND ? IS NULL) OR (STORAGE=? AND HASH=?))",
@@ -1268,6 +1750,9 @@ public final class CmsStorageMigrationTool {
         "CMS_CONTENTS online",
         "contents",
         SQL_CONTENTS_ONLINE,
+        SQL_CONTENTS_ONLINE_CONTENT,
+        SQL_CONTENTS_ONLINE_CONTENT_METADATA,
+        SQL_CONTENTS_ONLINE_CONTENT_CHUNK,
         "UPDATE CMS_CONTENTS SET FILE_CONTENT=?, STORAGE=?, HASH=? "
             + "WHERE RESOURCE_ID=? AND PUBLISH_TAG_FROM=? AND ONLINE_FLAG=1 "
             + "AND ((STORAGE IS NULL AND HASH IS NULL AND ? IS NULL AND ? IS NULL) OR (STORAGE=? AND HASH=?)) "
@@ -1281,6 +1766,9 @@ public final class CmsStorageMigrationTool {
         "CMS_OFFLINE_CONTENTS",
         "offline",
         SQL_OFFLINE,
+        SQL_OFFLINE_CONTENT,
+        SQL_OFFLINE_CONTENT_METADATA,
+        SQL_OFFLINE_CONTENT_CHUNK,
         "UPDATE CMS_OFFLINE_CONTENTS SET FILE_CONTENT=?, STORAGE=?, HASH=? "
             + "WHERE RESOURCE_ID=? "
             + "AND ((STORAGE IS NULL AND HASH IS NULL AND ? IS NULL AND ? IS NULL) OR (STORAGE=? AND HASH=?)) "
