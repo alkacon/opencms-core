@@ -1,6 +1,7 @@
 dependencies {
-	usedApis('jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1') { transitive = false }
+	usedApis('jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.1') { transitive = true }
     usedApis('jakarta.servlet:jakarta.servlet-api:6.0.0') { transitive = false }
+    usedApis('jakarta.el:jakarta.el-api:6.0.0') { transitive = false } 
 
     distribution('jakarta.annotation:jakarta.annotation-api:3.0.0') { transitive = false }
 

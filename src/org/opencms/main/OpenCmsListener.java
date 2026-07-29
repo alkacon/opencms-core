@@ -27,6 +27,8 @@
 
 package org.opencms.main;
 
+import org.opencms.jsp.util.CmsJspElResolver;
+
 import java.lang.reflect.Method;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -34,10 +36,13 @@ import java.util.Enumeration;
 
 import org.apache.commons.logging.Log;
 
+import jakarta.el.ELResolver;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
+import jakarta.servlet.jsp.JspApplicationContext;
+import jakarta.servlet.jsp.JspFactory;
 
 /**
  * Provides the OpenCms system with information from the servlet context.<p>
@@ -88,6 +93,24 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             summaryPath,
             Thread.currentThread().getId());
         boolean enableThreadDumps = "true".equalsIgnoreCase(System.getProperty("opencms.profile.startup.stacktraces"));
+        JspApplicationContext jspContext = JspFactory.getDefaultFactory().getJspApplicationContext(
+            event.getServletContext());
+        ELResolver elResolver = new CmsJspElResolver();
+        String elResolverClass = event.getServletContext().getInitParameter("el-resolver");
+        if (elResolverClass != null) {
+            if ("none".equals(elResolverClass)) {
+                elResolver = null;
+            } else {
+                try {
+                    elResolver = (ELResolver)Class.forName(elResolverClass).getConstructor().newInstance();
+                } catch (Exception e) {
+                    LOG.warn("Bogus EL resolver configured in web.xml: " + elResolverClass, e);
+                }
+            }
+        }
+        if (elResolver != null) {
+            jspContext.addELResolver(elResolver);
+        }
         try {
             if (enableThreadDumps) {
                 dumpThread.start();

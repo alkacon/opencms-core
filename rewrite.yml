@@ -31,6 +31,10 @@ recipeList:
       oldPackageName: javax.servlet
       newPackageName: jakarta.servlet
       recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.el
+      newPackageName: jakarta.el
+      recursive: true
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload
       newFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
@@ -61,6 +65,10 @@ recipeList:
   - org.openrewrite.java.ChangePackage:
       oldPackageName: jakarta.servlet
       newPackageName: javax.servlet
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: jakarta.el
+      newPackageName: javax.el
       recursive: true
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
