@@ -35,7 +35,6 @@ import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
 import jakarta.el.ImportHandler;
 import jakarta.servlet.jsp.JspContext;
-import jakarta.servlet.jsp.el.NotFoundELResolver;
 
 /**
  * This EL resolver is a workaround for performance problems in Jetty when using EE 10.
@@ -59,6 +58,9 @@ public class CmsJspElResolver extends ELResolver {
      */
     private static final Class<?> AST_IDENTIFIER_KEY;
 
+    /** The class for the NotFoundELResolver - we can't just use a class constant because it's not available in EE9 and older. */
+    private static final Class<?> NOT_FOUND_EL_RESOLVER;
+
     static {
         Class<?> key = null;
         try {
@@ -69,6 +71,13 @@ public class CmsJspElResolver extends ELResolver {
                 e);
         }
         AST_IDENTIFIER_KEY = key;
+        Class<?> resolverClass = null;
+        try {
+            resolverClass = Class.forName("jakarta.servlet.jsp.el.NotFoundELResolver");
+        } catch (ClassNotFoundException e) {
+            LOG.info("Did not find NotFoundELResolver - probably Jakarta EE 9 or older", e);
+        }
+        NOT_FOUND_EL_RESOLVER = resolverClass;
     }
 
     /**
@@ -100,14 +109,15 @@ public class CmsJspElResolver extends ELResolver {
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
 
-        if ((AST_IDENTIFIER_KEY == null) || (base != null) || (property == null)) {
+        if ((AST_IDENTIFIER_KEY == null) || (NOT_FOUND_EL_RESOLVER == null) || (base != null) || (property == null)) {
             return null;
         }
         if (!Boolean.TRUE.equals(context.getContext(AST_IDENTIFIER_KEY))) {
             // not a stand-alone identifier, the identifier may well be an imported class name
             return null;
         }
-        if (Boolean.TRUE.equals(context.getContext(NotFoundELResolver.class))) {
+
+        if (Boolean.TRUE.equals(context.getContext(NOT_FOUND_EL_RESOLVER))) {
             // the page uses errorOnELNotFound, the chain must reach the NotFoundELResolver
             return null;
         }
