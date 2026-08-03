@@ -50,7 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -58,6 +58,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -110,8 +111,10 @@ public class CmsADEConfigCacheState {
     /** Site plugins. */
     private Map<CmsUUID, CmsSitePlugin> m_sitePlugins;
 
-    /** Cache for sitemap attribute overview maps. */
-    private ConcurrentHashMap<String, Map<String, String>> m_attributeValuesByPathCache = new ConcurrentHashMap<>();
+    /** Cache for attribute overview maps - keys are attribute names, values are maps from paths to attribute values. */
+    private Cache<String, Map<String, String>> m_attributeValuesByPathCache = CacheBuilder.newBuilder().expireAfterWrite(
+        3,
+        TimeUnit.SECONDS).concurrencyLevel(2).build();
 
     /** Cached list of subsites to be included in the site selector. */
     private volatile List<String> m_subsitesForSiteSelector;
@@ -283,17 +286,23 @@ public class CmsADEConfigCacheState {
      */
     public Map<String, String> getAttributeValuesByPath(String attribute) {
 
-        return m_attributeValuesByPathCache.computeIfAbsent(attribute, attr -> {
-            Map<String, String> result = new HashMap<>();
-            for (String path : m_siteConfigurationsByPath.keySet()) {
-                CmsADEConfigData config = lookupConfiguration(path);
-                String value = config.getAttribute(attr, null);
-                if (value != null) {
-                    result.put(path, value);
+        try {
+            return m_attributeValuesByPathCache.get(attribute, () -> {
+                Map<String, String> result = new HashMap<>();
+                for (String path : m_siteConfigurationsByPath.keySet()) {
+                    CmsADEConfigData config = lookupConfiguration(path);
+                    String value = config.getAttribute(attribute, null);
+                    if (value != null) {
+                        result.put(path, value);
+                    }
                 }
-            }
-            return Collections.unmodifiableMap(result);
-        });
+                return Collections.unmodifiableMap(result);
+            });
+        } catch (ExecutionException e) {
+            // shouldn't happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return Collections.emptyMap();
+        }
     }
 
     /**
