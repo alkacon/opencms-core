@@ -338,8 +338,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 String encoding;
                 if (loader instanceof CmsJspLoader) {
                     // in case of JSPs use the response encoding
-                    if (res instanceof CmsFlexResponse) {
-                        encoding = ((CmsFlexResponse)res).getEncoding();
+                    CmsFlexResponse flexRes = CmsRequestUtil.getFlexResponse(res);
+                    if (flexRes != null) {
+                        encoding = flexRes.getEncoding();
                     } else {
                         encoding = res.getCharacterEncoding();
                     }

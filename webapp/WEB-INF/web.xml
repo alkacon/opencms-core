@@ -31,6 +31,13 @@
         <dispatcher>ERROR</dispatcher>
         <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
     </filter-mapping>
+    
+    <filter-mapping>
+          <filter-name>CmsEE10CompatibilityFilter</filter-name>
+          <url-pattern>/*</url-pattern>
+          <dispatcher>FORWARD</dispatcher>
+          <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
 
     <!-- Changing the servlet name from "opencms" to something else requires
         2 changes in this file. For example, to change the servlet name to "mycms"
@@ -68,6 +75,11 @@
             <param-value>/my-servlet-1|/my-servlet-2</param-value>
         </init-param>
          -->
+    </filter>
+    
+    <filter>
+          <filter-name>CmsEE10CompatibilityFilter</filter-name>
+          <filter-class>org.opencms.CmsEE10CompatibilityFilter</filter-class>
     </filter>
 
     <filter>

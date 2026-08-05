@@ -63,9 +63,12 @@ import com.google.common.collect.Multimap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -600,8 +603,9 @@ public final class CmsRequestUtil {
      */
     public static Map<String, Object> getAttributeMap(ServletRequest req) {
 
-        if (req instanceof CmsFlexRequest) {
-            return ((CmsFlexRequest)req).getAttributeMap();
+        CmsFlexRequest flexReq = getFlexRequest(req);
+        if (flexReq != null) {
+            return flexReq.getAttributeMap();
         }
         Map<String, Object> attrs = new HashMap<String, Object>();
         Enumeration<String> atrrEnum = CmsCollectionsGenericWrapper.enumeration(req.getAttributeNames());
@@ -643,6 +647,48 @@ public final class CmsRequestUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * Tries to extract a wrapped CmsFlexRequest from a potentially nested servlet request object.
+     *
+     * @param request the request to get the flex request from
+     * @return the flex request, or null if none was found
+     */
+    public static CmsFlexRequest getFlexRequest(ServletRequest request) {
+
+        while ((request != null) && !(request instanceof CmsFlexRequest)) {
+            if (request instanceof HttpServletRequestWrapper) {
+                request = ((HttpServletRequestWrapper)request).getRequest();
+            } else {
+                // container response implementation that's not a wrapper
+                return null;
+            }
+        }
+
+        // works for both cases of the while loop exit condition
+        return (CmsFlexRequest)request;
+    }
+
+    /**
+     * Tries to extract a wrapped CmsFlexResponse from a potentially nested servlet response object.
+     *
+     * @param response the response to get the flex response from
+     * @return the flex response, or null if none was found
+     */
+    public static CmsFlexResponse getFlexResponse(ServletResponse response) {
+
+        while ((response != null) && !(response instanceof CmsFlexResponse)) {
+            if (response instanceof HttpServletResponseWrapper) {
+                response = ((HttpServletResponseWrapper)response).getResponse();
+            } else {
+                // container response implementation that's not a wrapper
+                return null;
+            }
+        }
+
+        // works for both cases of the while loop exit condition
+        return (CmsFlexResponse)response;
     }
 
     /**
@@ -926,8 +972,9 @@ public final class CmsRequestUtil {
         jsp.getResponse().setHeader(HEADER_CONNECTION, "close");
         try {
             HttpServletResponse response = jsp.getResponse();
-            if (response instanceof CmsFlexResponse) {
-                ((CmsFlexResponse)jsp.getResponse()).sendRedirect(target, true);
+            CmsFlexResponse flexRes = CmsRequestUtil.getFlexResponse(response);
+            if (flexRes != null) {
+                flexRes.sendRedirect(target, true);
             } else {
                 response.setHeader("Location", target);
                 response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);

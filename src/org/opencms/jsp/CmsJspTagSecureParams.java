@@ -30,6 +30,7 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -82,8 +83,8 @@ public class CmsJspTagSecureParams extends TagSupport {
         String replaceInvalid,
         String escapeInvalid) {
 
-        if (request instanceof CmsFlexRequest) {
-            CmsFlexRequest flexRequest = (CmsFlexRequest)request;
+        CmsFlexRequest flexRequest = CmsRequestUtil.getFlexRequest(request);
+        if (flexRequest != null) {
             CmsObject cms = CmsFlexController.getCmsObject(flexRequest);
             List<String> exceptions = Collections.emptyList();
             if (allowXml != null) {
