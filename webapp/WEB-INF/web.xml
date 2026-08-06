@@ -79,7 +79,7 @@
     
     <filter>
           <filter-name>CmsEE10CompatibilityFilter</filter-name>
-          <filter-class>org.opencms.CmsEE10CompatibilityFilter</filter-class>
+          <filter-class>org.opencms.main.CmsEE10CompatibilityFilter</filter-class>
     </filter>
 
     <filter>
