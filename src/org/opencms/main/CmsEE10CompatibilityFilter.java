@@ -36,6 +36,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
@@ -65,6 +66,12 @@ public class CmsEE10CompatibilityFilter implements Filter {
             if (wrappedResponse instanceof CmsFlexResponse) {
                 final CmsFlexResponse flexResponse = (CmsFlexResponse)wrappedResponse;
                 filterResponse = new HttpServletResponseWrapper(response) {
+
+                    @Override
+                    public void addCookie(Cookie cookie) {
+
+                        flexResponse.addCookie(cookie);
+                    }
 
                     @Override
                     public void addDateHeader(String name, long date) {
