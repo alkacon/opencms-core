@@ -1304,13 +1304,34 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 break;
             case I_CmsEventListener.EVENT_USER_MODIFIED:
                 String action = (String)event.getData().get(I_CmsEventListener.KEY_USER_ACTION);
-                m_monitor.flushCache(
-                    CacheType.USER,
-                    CacheType.GROUP,
-                    CacheType.ORG_UNIT,
-                    CacheType.ACL,
-                    CacheType.PERMISSION,
-                    CacheType.USER_LIST);
+
+                if (I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER.equals(action)) {
+
+                    // users are written *all the time* during normal editing operations, but we don't usually need to clear
+                    // caches that don't contain any user objects or depend on the user data itself.
+                    // so we handle this case separately.
+
+                    List<CacheType> toClear = new ArrayList<>();
+                    toClear.addAll(Arrays.asList(CacheType.USER, CacheType.USER_LIST));
+                    Object changesObj = event.getData().get(I_CmsEventListener.KEY_USER_CHANGES);
+                    if (changesObj instanceof Integer) {
+                        int changes = ((Integer)changesObj).intValue();
+                        if ((changes & CmsUser.FLAG_CORE_DATA) > 0) {
+                            // core data changes include flags, which may conceivably be used by permission checks, and happen rarely.
+                            toClear.add(CacheType.PERMISSION);
+                        }
+                    }
+                    m_monitor.flushCache(toClear.toArray(new CacheType[] {}));
+                } else {
+                    m_monitor.flushCache(
+                        CacheType.USER,
+                        CacheType.GROUP,
+                        CacheType.ORG_UNIT,
+                        CacheType.ACL,
+                        CacheType.PERMISSION,
+                        CacheType.USER_LIST);
+                }
+
                 if (I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_ADD_USER_TO_GROUP.equals(action)
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP.equals(action)
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU.equals(action)) {
@@ -1342,11 +1363,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if ((resObj != null) && (resObj instanceof CmsResource)) {
                     CmsResource resource = (CmsResource)resObj;
                     if (resource.getRootPath().startsWith(CmsUserDriver.ORGUNIT_BASE_FOLDER)) {
+                        m_monitor.flushCache(CacheType.ORG_UNIT_RESOURCES);
                         m_skipTransferPrincipalResourceCache.invalidateAll();
                     }
                 }
                 break;
             case I_CmsEventListener.EVENT_OU_MODIFIED:
+                m_monitor.flushCache(CacheType.ORG_UNIT_RESOURCES);
                 m_skipTransferPrincipalResourceCache.invalidateAll();
                 break;
             default:
