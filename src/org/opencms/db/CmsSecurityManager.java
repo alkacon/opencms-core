@@ -113,6 +113,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -3350,26 +3351,32 @@ public final class CmsSecurityManager {
             if (hasRole(role.forOrgUnit(null), Collections.singletonList(group))) {
                 // we have the same role, now check the resource if needed
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(givenRole.getOuFqn())) {
-                    try {
-                        CmsOrganizationalUnit orgUnit = m_driverManager.readOrganizationalUnit(
-                            dbc,
-                            givenRole.getOuFqn());
-                        Iterator<CmsResource> itResources = m_driverManager.getResourcesForOrganizationalUnit(
-                            dbc,
-                            orgUnit).iterator();
-                        while (itResources.hasNext()) {
-                            CmsResource givenResource = itResources.next();
-                            if (resource.getRootPath().startsWith(givenResource.getRootPath())) {
+                    List<String> ouResourcePaths = OpenCms.getMemoryMonitor().getCachedOrgUnitResources(
+                        givenRole.getOuFqn());
+                    if (ouResourcePaths == null) {
+                        try {
+                            CmsOrganizationalUnit orgUnit = m_driverManager.readOrganizationalUnit(
+                                dbc,
+                                givenRole.getOuFqn());
+                            List<CmsResource> ouResources = m_driverManager.getResourcesForOrganizationalUnit(
+                                dbc,
+                                orgUnit);
+                            ouResourcePaths = ouResources.stream().map(res -> res.getRootPath()).collect(
+                                Collectors.toList());
+                            OpenCms.getMemoryMonitor().cacheOrgUnitResources(givenRole.getOuFqn(), ouResourcePaths);
+                        } catch (Exception e) {
+                            LOG.error(e);
+                        }
+                    }
+                    if (ouResourcePaths != null) {
+                        for (String ouResource : ouResourcePaths) {
+                            if (resource.getRootPath().startsWith(ouResource)) {
                                 result = Boolean.TRUE;
                                 break;
                             }
                         }
-                    } catch (CmsException e) {
-                        if (LOG.isErrorEnabled()) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                        // ignore
                     }
+
                 } else {
                     result = Boolean.TRUE;
                 }

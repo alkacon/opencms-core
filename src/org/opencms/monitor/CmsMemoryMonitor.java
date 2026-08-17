@@ -122,6 +122,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         MEMORY_OBJECT,
         /** Organizational Unit cache. */
         ORG_UNIT,
+        /** Organizational unit resources. */
+        ORG_UNIT_RESOURCES,
         /** Permission cache. */
         PERMISSION,
         /** Offline Project cache. */
@@ -223,6 +225,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache for role lists. */
     private Map<String, List<CmsRole>> m_cacheRoleLists;
+
+    /** Cache for resource paths assigned to OUs. */
+    private Map<String, List<String>> m_orgUnitResources;
 
     /** Cache for user data. */
     private Map<String, CmsUser> m_cacheUser;
@@ -334,8 +339,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     @SuppressWarnings("unchecked")
     public static <T, V> Map<T, V> createLRUCacheMap(int capacity) {
 
-        CacheBuilder<?, ?> builder = CacheBuilder.newBuilder().concurrencyLevel(CONCURRENCY_LEVEL).maximumSize(
-            capacity);
+        CacheBuilder<?, ?> builder = CacheBuilder.newBuilder().concurrencyLevel(CONCURRENCY_LEVEL);
+        if (capacity >= 0) {
+            builder = builder.maximumSize(capacity);
+        }
         return (Map<T, V>)(builder.build().asMap());
     }
 
@@ -667,6 +674,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches paths of resources assigned to an organizational unit.
+     *
+     * @param ou the OU FQN
+     * @param resources the list of associated resource paths
+     */
+    public void cacheOrgUnitResources(String ou, List<String> resources) {
+
+        m_orgUnitResources.put(ou, Collections.unmodifiableList(new ArrayList<>(resources)));
+    }
+
+    /**
      * Caches the given permission check result under the given cache key.<p>
      *
      * @param key the cache key
@@ -936,6 +954,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushCache(CacheType.PROPERTY_LIST);
         flushCache(CacheType.PROJECT_RESOURCES);
         flushCache(CacheType.PUBLISHED_RESOURCES);
+        flushCache(CacheType.ORG_UNIT_RESOURCES);
     }
 
     /**
@@ -1077,6 +1096,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     break;
                 case ORG_UNIT:
                     m_cacheOrgUnit.clear();
+                    break;
+                case ORG_UNIT_RESOURCES:
+                    m_orgUnitResources.clear();
                     break;
                 case PERMISSION:
                     m_cachePermission.clear();
@@ -1543,6 +1565,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Gets the cached OU resource paths.
+     *
+     * @param ou the FQN of an organizational unit
+     * @return the list of paths of the associated resources
+     */
+    public List<String> getCachedOrgUnitResources(String ou) {
+
+        return m_orgUnitResources.get(ou);
+    }
+
+    /**
      * Returns the permission check result cached with the given cache key or <code>null</code> if not found.<p>
      *
      * @param key the cache key to look for
@@ -1945,6 +1978,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         // organizational unit cache
         m_cacheOrgUnit = createLRUCacheMap(cacheSettings.getOrgUnitCacheSize());
         register(CmsDriverManager.class.getName() + ".orgUnitCache", m_cacheOrgUnit);
+
+        m_orgUnitResources = createLRUCacheMap(-1);
+        register(CmsDriverManager.class.getName() + ".orgUnitResources", m_orgUnitResources);
 
         // user groups list cache
         m_cacheUserGroups = new CmsGroupListCache(cacheSettings.getUserGroupsCacheSize());
