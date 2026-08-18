@@ -119,11 +119,12 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
     public void init(ServletConfig config) throws ServletException {
 
         final LinkedHashMap<String, String> params = new LinkedHashMap<>();
+
+        params.put(AbstractWebdavServlet.INIT_PARAM_CREATE_ABSOLUTE_URI, "false");
+
         for (String name : Collections.list(config.getInitParameterNames())) {
             params.put(name, config.getInitParameter(name));
         }
-        // Force relative URI
-        params.put(AbstractWebdavServlet.INIT_PARAM_CREATE_ABSOLUTE_URI, "false");
         super.init(new ServletConfig() {
 
             public String getInitParameter(String name) {
