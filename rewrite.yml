@@ -35,6 +35,18 @@ recipeList:
       oldPackageName: javax.el
       newPackageName: jakarta.el
       recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.activation
+      newPackageName: jakarta.activation
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.mail
+      newPackageName: jakarta.mail
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: org.apache.commons.mail2.javax
+      newPackageName: org.apache.commons.mail2.jakarta
+      recursive: true
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload
       newFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
@@ -70,6 +82,18 @@ recipeList:
       oldPackageName: jakarta.el
       newPackageName: javax.el
       recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: jakarta.activation
+      newPackageName: javax.activation
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: jakarta.mail
+      newPackageName: javax.mail
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: org.apache.commons.mail2.jakarta
+      newPackageName: org.apache.commons.mail2.javax
+      recursive: true
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
       newFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload
@@ -103,7 +127,6 @@ displayName: Migrate servlet and JSP Jakarta references to javax, also sets eeTa
 recipeList:
   - JakartaToJavax
   - SetEETargetJavax
-
 
 
 
