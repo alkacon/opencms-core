@@ -29,6 +29,9 @@ package org.opencms.jsp.util;
 
 import org.opencms.main.CmsLog;
 
+import java.beans.FeatureDescriptor;
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log;
 
 import jakarta.el.ELContext;
@@ -87,6 +90,20 @@ public class CmsJspElResolver extends ELResolver {
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
 
         return base == null ? String.class : null;
+    }
+
+    /**
+     * Dummy implementation that does nothing.
+     *
+     * (this is only needed for Java EE 8 compatibility - in Java EE 8, it actually overrides a method from the parent class.)
+     *
+     * @param context the EL context
+     * @param base the base object
+     * @return null
+     */
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+
+        return null;
     }
 
     /**
@@ -179,4 +196,5 @@ public class CmsJspElResolver extends ELResolver {
             return null;
         }
     }
+
 }
