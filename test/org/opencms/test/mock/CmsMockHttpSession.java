@@ -29,6 +29,10 @@ package org.opencms.test.mock;
 
 import org.opencms.util.CmsUUID;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -45,9 +49,13 @@ import jakarta.servlet.http.HttpSession;
  * Methods that the OpenCms request flow does not use throw {@link UnsupportedOperationException} so
  * an accidental dependency surfaces instead of returning a silently wrong value.<p>
  *
+ * Use the wrap() method to get an actual object that implements the HttpSession interface!
+ *
  * @see CmsMockHttpServletRequest
  */
-public class CmsMockHttpSession implements HttpSession {
+public class CmsMockHttpSession {
+
+    private HttpSession m_session;
 
     /** The session attributes, insertion ordered for deterministic iteration. */
     private final Map<String, Object> m_attributes = new LinkedHashMap<String, Object>();
@@ -70,7 +78,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getAttribute(java.lang.String)
      */
-    @Override
     public Object getAttribute(String name) {
 
         return m_attributes.get(name);
@@ -79,7 +86,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getAttributeNames()
      */
-    @Override
     public Enumeration<String> getAttributeNames() {
 
         return Collections.enumeration(m_attributes.keySet());
@@ -88,7 +94,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getCreationTime()
      */
-    @Override
     public long getCreationTime() {
 
         return m_creationTime;
@@ -97,7 +102,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getId()
      */
-    @Override
     public String getId() {
 
         return m_id;
@@ -106,7 +110,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getLastAccessedTime()
      */
-    @Override
     public long getLastAccessedTime() {
 
         return m_creationTime;
@@ -115,7 +118,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getMaxInactiveInterval()
      */
-    @Override
     public int getMaxInactiveInterval() {
 
         return m_maxInactiveInterval;
@@ -124,7 +126,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#getServletContext()
      */
-    @Override
     public ServletContext getServletContext() {
 
         throw new UnsupportedOperationException("getServletContext");
@@ -133,7 +134,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#invalidate()
      */
-    @Override
     public void invalidate() {
 
         m_attributes.clear();
@@ -143,7 +143,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#isNew()
      */
-    @Override
     public boolean isNew() {
 
         return m_new;
@@ -162,7 +161,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#removeAttribute(java.lang.String)
      */
-    @Override
     public void removeAttribute(String name) {
 
         m_attributes.remove(name);
@@ -171,7 +169,6 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#setAttribute(java.lang.String, java.lang.Object)
      */
-    @Override
     public void setAttribute(String name, Object value) {
 
         m_new = false;
@@ -185,10 +182,47 @@ public class CmsMockHttpSession implements HttpSession {
     /**
      * @see jakarta.servlet.http.HttpSession#setMaxInactiveInterval(int)
      */
-    @Override
     public void setMaxInactiveInterval(int interval) {
 
         m_maxInactiveInterval = interval;
+    }
+
+    /**
+     * Gets the actual object that implements HttpSession.
+     *
+     * <p> We have to go through weird contortions to make stuff work with both EE8 and EE9 -
+     * We can't just implement the interface directly, because there are deprecated methods
+     *  in the EE 8 interface which reference classes that don't exist anymore in EE9+.
+     *
+     * <p>TODO: Remove this ugly hack after OpenCms 22.
+     *
+     * @return the HttpSession proxy
+     */
+    public HttpSession wrap() {
+
+        if (m_session == null) {
+            m_session = (HttpSession)Proxy.newProxyInstance(
+                CmsMockHttpSession.class.getClassLoader(),
+                new Class[] {HttpSession.class},
+                new InvocationHandler() {
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+                        try {
+                            Method matchingMethod = CmsMockHttpSession.class.getMethod(
+                                method.getName(),
+                                method.getParameterTypes());
+                            return matchingMethod.invoke(CmsMockHttpSession.this, args);
+                        } catch (NoSuchMethodException e) {
+                            return null;
+                        } catch (InvocationTargetException e) {
+                            throw e.getCause();
+                        }
+                    }
+                });
+        }
+        return m_session;
     }
 
     /**

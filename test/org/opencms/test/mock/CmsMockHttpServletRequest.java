@@ -387,11 +387,11 @@ public class CmsMockHttpServletRequest extends HttpServletRequestWrapper {
 
         if ((m_session != null) && m_session.isValid()) {
             m_session.markNotNew();
-            return m_session;
+            return m_session.wrap();
         }
         if (create) {
             m_session = new CmsMockHttpSession();
-            return m_session;
+            return m_session.wrap();
         }
         return null;
     }
