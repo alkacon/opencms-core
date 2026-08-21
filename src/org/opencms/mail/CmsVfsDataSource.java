@@ -38,7 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 /**
  * DataSource wrapper for VFS resources, allows easy sending of VFS resources as email attachments.<p>
@@ -72,7 +72,7 @@ public class CmsVfsDataSource implements DataSource {
     }
 
     /**
-     * @see javax.activation.DataSource#getContentType()
+     * @see jakarta.activation.DataSource#getContentType()
      */
     public String getContentType() {
 
@@ -82,7 +82,7 @@ public class CmsVfsDataSource implements DataSource {
     /**
      * Returns an input stream baded on the file contents.<p>
      *
-     * @see javax.activation.DataSource#getInputStream()
+     * @see jakarta.activation.DataSource#getInputStream()
      */
     public InputStream getInputStream() {
 
@@ -92,7 +92,7 @@ public class CmsVfsDataSource implements DataSource {
     /**
      * Returns the root path of the given resource.<p>
      *
-     * @see javax.activation.DataSource#getName()
+     * @see jakarta.activation.DataSource#getName()
      */
     public String getName() {
 
@@ -104,7 +104,7 @@ public class CmsVfsDataSource implements DataSource {
      *
      * This method will just return a new <code>{@link ByteArrayOutputStream}</code>.<p>
      *
-     * @see javax.activation.DataSource#getOutputStream()
+     * @see jakarta.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() {
 

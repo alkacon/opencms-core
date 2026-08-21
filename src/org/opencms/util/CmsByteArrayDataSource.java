@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 
 /**
  * A DataSource backed by a byte array. The byte array may be passed in directly, or may be initialized from an InputStream or a String.
@@ -66,7 +66,7 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /**
      *
-     * @see javax.activation.DataSource#getContentType()
+     * @see jakarta.activation.DataSource#getContentType()
      */
     public String getContentType() {
 
@@ -75,7 +75,7 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /**
      *
-     * @see javax.activation.DataSource#getInputStream()
+     * @see jakarta.activation.DataSource#getInputStream()
      */
     public InputStream getInputStream() {
 
@@ -84,7 +84,7 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /**
      *
-     * @see javax.activation.DataSource#getName()
+     * @see jakarta.activation.DataSource#getName()
      */
     public String getName() {
 
@@ -93,7 +93,7 @@ public class CmsByteArrayDataSource implements DataSource {
 
     /**
      *
-     * @see javax.activation.DataSource#getOutputStream()
+     * @see jakarta.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() throws IOException {
 

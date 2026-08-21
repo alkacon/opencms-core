@@ -50,10 +50,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.mail.internet.AddressException;
-
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
+
+import jakarta.mail.internet.AddressException;
 
 /**
  * Bean used by the dynamic function JSP for user data requests.<p>

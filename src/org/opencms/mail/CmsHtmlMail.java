@@ -29,7 +29,7 @@ package org.opencms.mail;
 
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail2.jakarta.HtmlEmail;
 
 /**
  * This class is used to send an HTML formatted email with optional attachments.<p>

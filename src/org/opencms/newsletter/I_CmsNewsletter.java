@@ -31,9 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
-import javax.mail.MessagingException;
+import org.apache.commons.mail2.jakarta.Email;
 
-import org.apache.commons.mail.Email;
+import jakarta.mail.MessagingException;
 
 /**
  * Interface for the newsletter.<p>

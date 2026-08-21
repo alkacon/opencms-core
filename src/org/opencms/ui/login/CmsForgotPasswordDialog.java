@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;

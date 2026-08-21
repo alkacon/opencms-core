@@ -46,8 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.jakarta.Email;
 
 /**
  * Basic implementation of the interface {@link I_CmsNewsletter}.

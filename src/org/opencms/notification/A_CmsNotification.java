@@ -48,12 +48,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
 
 import org.htmlparser.util.ParserException;
+
+import jakarta.mail.MessagingException;
 
 /**
  * Abstract class to create a notfication which will be send as a html mail to
@@ -154,7 +154,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     }
 
     /**
-     * @see org.apache.commons.mail.Email#send()
+     * @see org.apache.commons.mail2.jakarta.Email#send()
      */
     @Override
     public String send() throws EmailException {

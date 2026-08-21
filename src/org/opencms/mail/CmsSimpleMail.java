@@ -30,10 +30,10 @@ package org.opencms.mail;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
-import javax.mail.AuthenticationFailedException;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.jakarta.SimpleEmail;
 
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import jakarta.mail.AuthenticationFailedException;
 
 /**
  * This class is used to send simple text internet email messages without
@@ -76,7 +76,7 @@ public class CmsSimpleMail extends SimpleEmail {
     /**
      * Overrides to add a better message for authentication exception.<p>
      *
-     * @see org.apache.commons.mail.Email#send()
+     * @see org.apache.commons.mail2.jakarta.Email#send()
      */
     @Override
     public String send() {
@@ -86,7 +86,7 @@ public class CmsSimpleMail extends SimpleEmail {
             messageID = super.send();
         } catch (EmailException e) {
             // check if original Exception is of type SendFailedException which
-            // should have been thrown by javax.mail.Transport.send()
+            // should have been thrown by jakarta.mail.Transport.send()
             if (e.getCause() instanceof AuthenticationFailedException) {
                 CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
                 // wrong user credentials in opencms-system.xml: mail api does not provide a message for authentication exception

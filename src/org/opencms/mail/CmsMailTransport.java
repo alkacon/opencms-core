@@ -30,8 +30,8 @@ package org.opencms.mail;
 import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.jakarta.Email;
 
 /**
  * Sends an email using a Thread, so that the application can

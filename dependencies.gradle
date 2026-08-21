@@ -86,7 +86,6 @@ dependencies {
     distribution('com.ibm.icu:icu4j:77.1') { transitive = false } //for solr-analysis-extras
     distribution('org.json:json:20240303') { transitive = false }
     distribution('com.lambdaworks:scrypt:1.4.0') { transitive = false }
-    distribution('com.sun.mail:javax.mail:1.6.2') { transitive = false }
     distribution('com.sun.xml.bind:jaxb-impl:2.2.11') { transitive = false }
     distribution('com.sun.xml.bind:jaxb-core:2.2.11') { transitive = false }
     distribution('com.sun.xml.messaging.saaj:saaj-impl:1.3.28') { transitive = false }
@@ -139,7 +138,7 @@ dependencies {
         distribution('org.apache.cxf:cxf-rt-wsdl:3.5.11')
     }
 
-    distribution('org.apache.commons:commons-email:1.5') { transitive = false }
+    distribution('org.apache.commons:commons-email2-core:2.0.0-M1') { transitive = false }
     distribution('org.apache.commons:commons-exec:1.4.0') { transitive = false }
     distribution('org.apache.commons:commons-compress:1.28.0') { transitive = false }
     distribution('org.apache.commons:commons-collections4:4.5.0') { transitive = false }

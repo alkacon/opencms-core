@@ -84,8 +84,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import javax.mail.internet.InternetAddress;
-
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.SynchronizedBuffer;
 import org.apache.commons.collections.map.LRUMap;
@@ -94,6 +92,8 @@ import org.apache.commons.logging.Log;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import jakarta.mail.internet.InternetAddress;
 
 /**
  * Monitors OpenCms memory consumption.<p>

@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 
-import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail2.core.EmailException;
 
 /**
  * Notification class for the workflow 'release' action.<p>
