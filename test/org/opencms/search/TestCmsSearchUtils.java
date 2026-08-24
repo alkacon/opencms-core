@@ -27,9 +27,11 @@
 
 package org.opencms.search;
 
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.test.OpenCmsTestRunner;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -123,5 +125,33 @@ public class TestCmsSearchUtils extends OpenCmsTestRunner {
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
         assertEquals("/ /sites/ /sites/default/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
         assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
+    }
+
+    /**
+     * Test that the search roots computed for a scope carry the trailing slash the
+     * <code>parent-folders</code> index field requires.<p>
+     *
+     * Only the scopes that need no OpenCms context are checked here; the shared-folder scopes
+     * read the configured shared folder from the site manager.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testSearchRootsForScopeAreFolderPaths() throws Exception {
+
+        assertEquals(
+            Arrays.asList("/sites/default/"),
+            CmsSearchUtil.getSearchRootsForScope(CmsGallerySearchScope.site, "/sites/default", null));
+        assertEquals(
+            Arrays.asList("/sites/default/"),
+            CmsSearchUtil.getSearchRootsForScope(CmsGallerySearchScope.site, "/sites/default/", null));
+        assertEquals(
+            Arrays.asList("/sites/default/news/"),
+            CmsSearchUtil.getSearchRootsForScope(CmsGallerySearchScope.subSite, "/sites/default", "/news"));
+        // the root site has an empty site root, which addresses the whole VFS
+        assertEquals(Arrays.asList("/"), CmsSearchUtil.getSearchRootsForScope(CmsGallerySearchScope.site, "", null));
+        assertEquals(
+            Arrays.asList("/"),
+            CmsSearchUtil.getSearchRootsForScope(CmsGallerySearchScope.everything, "/sites/default", null));
     }
 }

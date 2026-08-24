@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 
@@ -51,6 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.common.SolrDocument;
@@ -264,7 +266,11 @@ public final class CmsSearchUtil {
             }
             result.add(CmsSiteManagerImpl.PATH_SYSTEM_SHARED_FOLDER);
         }
-        return result;
+        // the site and sub-site roots arrive without a trailing slash, the shared folders with one;
+        // normalize all of them, since a search root is matched against the parent-folders index
+        // field, which stores every ancestor path with its trailing slash
+        return result.stream().filter(root -> root != null).map(CmsFileUtil::addTrailingSeparator).collect(
+            Collectors.toList());
     }
 
     /**

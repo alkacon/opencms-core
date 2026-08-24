@@ -31,7 +31,6 @@ import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
@@ -421,7 +420,7 @@ public class CmsGallerySearchParameters {
         addFoldersToSearchIn(m_folders);
         addFoldersToSearchIn(m_galleries);
         setSearchFolders(cms);
-        query.addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, new ArrayList<>(m_foldersToSearchIn), false, true);
+        query.setSearchRoots(new ArrayList<>(m_foldersToSearchIn));
 
         if (!m_ignoreSearchExclude) {
             // Reference for the values: CmsGallerySearchIndex.java, field EXCLUDE_PROPERTY_VALUES
@@ -926,13 +925,9 @@ public class CmsGallerySearchParameters {
             return;
         }
 
-        for (String folder : folders) {
-            if (!CmsResource.isFolder(folder)) {
-                folder += "/";
-            }
-
-            m_foldersToSearchIn.add(folder);
-        }
+        // the trailing slash required by the parent-folders index field is added by
+        // CmsSolrQuery#setSearchRoots, through which this list reaches the query
+        m_foldersToSearchIn.addAll(folders);
     }
 
     /**
