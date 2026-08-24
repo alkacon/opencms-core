@@ -2004,11 +2004,17 @@ public class CmsADEConfigData {
                 }
             }
         } else {
+            // a folder configured by name is resolved against the site root of the context, so the
+            // context must be the configuration's own base path: the context this is computed with
+            // belongs to the configuration cache and says nothing about where the configuration lives
+            if (getBasePath() != null) {
+                cms.getRequestContext().setSiteRoot(getBasePath());
+            }
             for (CmsResourceTypeConfig config : getResourceTypes()) {
                 if (!config.isDetailPagesDisabled()) {
                     String typeName = config.getTypeName();
                     if (!config.isPageRelative()) { // elements stored with container pages can not be used as detail contents
-                        String folderPath = config.getFolderPath(getCms(), null);
+                        String folderPath = config.getFolderPath(cms, null);
                         result.put(CmsStringUtil.joinPaths(folderPath, "/"), typeName);
                     }
                 }
