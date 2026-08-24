@@ -869,7 +869,7 @@ public class TestSolrSearch extends OpenCmsTestRunner {
         query.setRows(Integer.valueOf(1000));
         query.setRequestHandler("lucene");
         query.setResourceTypes("article");
-        String ex = "q={!q.op=OR type=lucene qf=text_de}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
+        String ex = "q={!q.op=OR type=lucene qf=\"text_de\"}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
         assertEquals(ex, CmsEncoder.decode(query.toString()));
 
         assertEquals("article", CmsSolrQuery.getResourceType(query.getFilterQueries()));

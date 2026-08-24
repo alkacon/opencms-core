@@ -614,15 +614,9 @@ public class CmsSolrQuery extends SolrQuery {
         if (m_textSearchFields.isEmpty()) {
             m_textSearchFields.add(CmsSearchField.FIELD_TEXT);
         }
-        String q = "{!q.op=OR type=" + getRequestHandler() + " qf=";
-        boolean first = true;
-        for (String textField : m_textSearchFields) {
-            if (!first) {
-                q += " ";
-            }
-            q += textField;
-        }
-        q += "}" + text;
+        String q = "{!q.op=OR type=" + getRequestHandler() + " qf=\"";
+        q += String.join(" ", m_textSearchFields);
+        q += "\"}" + text;
         return q;
     }
 
