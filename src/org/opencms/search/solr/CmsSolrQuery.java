@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.common.params.CommonParams;
@@ -493,8 +495,12 @@ public class CmsSolrQuery extends SolrQuery {
      */
     public void setSearchRoots(List<String> searchRoots) {
 
-        if ((searchRoots != null) && !searchRoots.isEmpty()) {
-            addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots, false, true);
+        if (searchRoots != null) {
+            searchRoots = searchRoots.stream().filter(r -> r != null).map(CmsFileUtil::addTrailingSeparator).collect(
+                Collectors.toList());
+            if (!searchRoots.isEmpty()) {
+                addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoots, false, true);
+            }
         }
     }
 
