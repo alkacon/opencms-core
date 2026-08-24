@@ -27,11 +27,18 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -40,6 +47,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiPredicate;
+
+import org.apache.commons.logging.Log;
 
 /**
  * This is a utility class which provides convenience methods for finding detail page names for resources which include
@@ -50,6 +60,9 @@ import java.util.Locale;
  * @since 8.0.0
  */
 public final class CmsDetailPageUtil {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDetailPageUtil.class);
 
     /**
      * The hidden default constructor.<p>
@@ -136,5 +149,126 @@ public final class CmsDetailPageUtil {
                     org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
                     uri));
         }
+    }
+
+    /**
+     * Resolves a URI to the detail page that renders it and to the detail content it shows.<p>
+     *
+     * This is the resolution {@link CmsDetailPageResourceHandler} performs for a browser request, but
+     * without the servlet request and without any side effect: neither the request context nor any
+     * request attribute is changed, so the same lookup can be used outside the request cycle.<p>
+     *
+     * @param cms the CMS context, initialized with the site root the URI belongs to
+     * @param uri the site relative URI to resolve
+     *
+     * @return the detail resolution, or <code>null</code> if the URI is not a detail page URI
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsDetailResolution resolveDetail(CmsObject cms, String uri) throws CmsException {
+
+        return resolveDetail(
+            cms,
+            uri,
+            (
+                page,
+                detailRes) -> OpenCms.getADEManager().getDetailPageHandler().isValidDetailPage(cms, page, detailRes));
+    }
+
+    /**
+     * Resolves a URI to the detail page that renders it and to the detail content it shows, using the
+     * given check for whether a detail page is valid for a detail content.<p>
+     *
+     * The check is a parameter because {@link CmsDetailPageResourceHandler#isValidDetailPage(CmsObject, CmsResource, CmsResource)}
+     * is an extension point of that handler; use {@link #resolveDetail(CmsObject, String)} to resolve with
+     * the standard check.<p>
+     *
+     * @param cms the CMS context, initialized with the site root the URI belongs to
+     * @param uri the site relative URI to resolve
+     * @param detailPageValidator checks whether a detail page (first argument) is valid for a detail content (second argument)
+     *
+     * @return the detail resolution, or <code>null</code> if the URI is not a detail page URI
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsDetailResolution resolveDetail(
+        CmsObject cms,
+        String uri,
+        BiPredicate<CmsResource, CmsResource> detailPageValidator)
+    throws CmsException {
+
+        String path = CmsFileUtil.removeTrailingSeparator(uri);
+        try {
+            cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+        } catch (CmsSecurityException e) {
+            // It may happen that a path is both an existing VFS path and a valid detail page link.
+            // If this is the case, and the user has insufficient permissions to read the resource at the path,
+            // no resource should be displayed, even if the user would have access to the detail page.
+            return null;
+        } catch (CmsException e) {
+            // ignore
+        }
+        String detailName = CmsResource.getName(path);
+        try {
+            CmsUUID detailId = cms.readIdForUrlName(detailName);
+
+            if (detailId != null) {
+                // check existence / permissions
+                CmsResource detailRes = null;
+                CmsPermissionViolationException permissionDenied = null;
+                try {
+                    detailRes = cms.readResource(detailId, CmsResourceFilter.ignoreExpirationOffline(cms));
+                } catch (CmsPermissionViolationException e) {
+                    // we postpone the decision what to do with a permission violation until later (see below)
+                    permissionDenied = e;
+                }
+                String detailPagePath = CmsResource.getFolderPath(path);
+                CmsResource detailPage = cms.readDefaultFile(detailPagePath);
+                if (permissionDenied != null) {
+                    // If we got a permission violation while reading the detail content, we only want to rethrow it if the rest
+                    // of the URL is actually plausibly a detail page. Otherwise, we return null, which will usually cause a HTTP
+                    // 404 response status. This is to prevent broken links which accidentally end with a restricted detail content's
+                    // mapped URL name from triggering a HTTP 401 status. E.g. https://server.com/nonexistent-page/secret, where
+                    // there is no "nonexistent-page" folder and "secret" is the mapped URL name of a restricted content.
+                    if ((detailPage != null) && OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
+                        throw permissionDenied;
+                    } else {
+                        LOG.debug(
+                            "Swallowing CmsPermissionViolationException for detail content because the page ["
+                                + detailPagePath
+                                + "] is not a detail page.\nDefault file: "
+                                + detailPage
+                                + "\n",
+                            permissionDenied);
+                        return null;
+                    }
+                }
+                // the page may be null when the folder of the URI has no default file; the detail page
+                // check dereferences the page, so this is checked here and reported as "no detail page"
+                if ((detailPage == null) || !detailPageValidator.test(detailPage, detailRes)) {
+                    return null;
+                }
+                return CmsDetailResolution.forContent(detailPage, detailRes, detailName);
+            }
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().addSiteRoot(path));
+            // check if the detail name matches any named function
+            for (CmsFunctionReference ref : configData.getFunctionReferences()) {
+                if (detailName.equals(ref.getName()) && (ref.getFunctionDefaultPageId() != null)) {
+                    CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
+                    if ((detailPage != null) && OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
+                        return CmsDetailResolution.forFunction(
+                            detailPage,
+                            cms.readResource(ref.getFunctionDefaultPageId()),
+                            detailName);
+                    }
+                    return null;
+                }
+            }
+        } catch (CmsVfsResourceNotFoundException e) {
+            return null;
+        }
+        return null;
     }
 }

@@ -27,21 +27,16 @@
 
 package org.opencms.ade.detailpage;
 
-import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -128,89 +123,24 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             // skip in all cases above
             return resource;
         }
-        String path = cms.getRequestContext().getUri();
-        path = CmsFileUtil.removeTrailingSeparator(path);
         try {
-            cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsSecurityException e) {
-            // It may happen that a path is both an existing VFS path and a valid detail page link.
-            // If this is the case, and the user has insufficient permissions to read the resource at the path,
-            // no resource should be displayed, even if the user would have access to the detail page.
-            return null;
-        } catch (CmsException e) {
-            // ignore
-        }
-        String detailName = CmsResource.getName(path);
-        try {
-            CmsUUID detailId = cms.readIdForUrlName(detailName);
-
-            if (detailId != null) {
-                // check existence / permissions
-                CmsResource detailRes = null;
-                CmsPermissionViolationException permissionDenied = null;
-                try {
-                    detailRes = cms.readResource(detailId, CmsResourceFilter.ignoreExpirationOffline(cms));
-                } catch (CmsPermissionViolationException e) {
-                    // we postpone the decision what to do with a permission violation until later (see below)
-                    permissionDenied = e;
-                }
-                String detailPagePath = CmsResource.getFolderPath(path);
-                CmsResource detailPage = cms.readDefaultFile(detailPagePath);
-                if (permissionDenied != null) {
-                    // If we got a permission violation while reading the detail content, we only want to rethrow it if the rest
-                    // of the URL is actually plausibly a detail page. Otherwise, we return null, which will usually cause a HTTP
-                    // 404 response status. This is to prevent broken links which accidentally end with a restricted detail content's
-                    // mapped URL name from triggering a HTTP 401 status. E.g. https://server.com/nonexistent-page/secret, where
-                    // there is no "nonexistent-page" folder and "secret" is the mapped URL name of a restricted content.
-                    if ((detailPage != null) && OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
-                        throw permissionDenied;
-                    } else {
-                        LOG.debug(
-                            "Swallowing CmsPermissionViolationException for detail content because the page ["
-                                + detailPagePath
-                                + "] is not a detail page.\nDefault file: "
-                                + detailPage
-                                + "\n",
-                            permissionDenied);
-                        return null;
-                    }
-                }
-                if (!isValidDetailPage(cms, detailPage, detailRes)) {
-                    return null;
-                }
-                if (res != null) {
-                    // response will be null if this run through the init handler is only for determining the locale
-                    req.setAttribute(ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
-                    cms.getRequestContext().setDetailResource(detailRes);
-                }
-                // set the resource path
-                cms.getRequestContext().setUri(cms.getSitePath(detailPage));
-                return detailPage;
-            } else {
-                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                    cms,
-                    cms.getRequestContext().addSiteRoot(path));
-                // check if the detail name matches any named function
-                for (CmsFunctionReference ref : configData.getFunctionReferences()) {
-                    if (detailName.equals(ref.getName()) && (ref.getFunctionDefaultPageId() != null)) {
-                        CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
-                        if (OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
-                            if (res != null) {
-                                // response will be null if this run through the init handler is only for determining the locale
-                                CmsResource functionDefaultPage = cms.readResource(ref.getFunctionDefaultPageId());
-                                req.setAttribute(ATTR_DETAIL_FUNCTION_PAGE, functionDefaultPage);
-                                cms.getRequestContext().setDetailResource(functionDefaultPage);
-                            }
-                            // set the resource path
-                            cms.getRequestContext().setUri(cms.getSitePath(detailPage));
-                            return detailPage;
-                        } else {
-                            return null;
-                        }
-
-                    }
-                }
+            CmsDetailResolution resolution = CmsDetailPageUtil.resolveDetail(
+                cms,
+                cms.getRequestContext().getUri(),
+                (page, detailRes) -> isValidDetailPage(cms, page, detailRes));
+            if (resolution == null) {
+                return null;
             }
+            if (res != null) {
+                // response will be null if this run through the init handler is only for determining the locale
+                boolean isFunction = resolution.isFunctionDetail();
+                CmsResource detailResource = isFunction ? resolution.getFunctionPage() : resolution.getDetailContent();
+                req.setAttribute(isFunction ? ATTR_DETAIL_FUNCTION_PAGE : ATTR_DETAIL_CONTENT_RESOURCE, detailResource);
+                cms.getRequestContext().setDetailResource(detailResource);
+            }
+            // set the resource path
+            cms.getRequestContext().setUri(cms.getSitePath(resolution.getDetailPage()));
+            return resolution.getDetailPage();
         } catch (CmsPermissionViolationException e) {
             // trigger the permission denied handler
             throw e;
@@ -226,8 +156,6 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
             }
             throw new CmsResourceInitException(msg, e);
         }
-
-        return null;
     }
 
     /**
