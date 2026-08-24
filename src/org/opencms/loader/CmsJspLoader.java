@@ -329,8 +329,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
             CmsJspStandardContextBean standardContext = (CmsJspStandardContextBean)attrs.get(
                 CmsJspStandardContextBean.ATTRIBUTE_NAME);
-            if ((standardContext != null) && (req instanceof CmsFlexRequest)) {
-                standardContext.updateRequestData((CmsFlexRequest)req);
+            CmsFlexRequest flexRequest = CmsRequestUtil.getFlexRequest(req);
+            if ((standardContext != null) && (flexRequest != null)) {
+                standardContext.updateRequestData(flexRequest);
             }
             // remove temporary controller
             CmsFlexController.removeController(req);
