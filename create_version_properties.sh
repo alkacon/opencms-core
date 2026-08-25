@@ -62,7 +62,19 @@ if [ $OPENCMS_GIT_BRANCH == "HEAD" ]; then
 fi
 OPENCMS_GIT_ID="${GIT_COMMIT:0:7}"
 OPENCMS_GIT_BRANCH_SHOWN="${OpenCmsGitBranchShown:-$OPENCMS_GIT_BRANCH}"
-OPENCMS_GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B | cat | tr '\n' ' ')
+#
+# The About dialog prints the Git message in a single table row, so only the
+# commit subject is kept and a long subject is cut at a word boundary. The
+# ellipsis is written as an escape because Java reads version.properties as
+# ISO-8859-1, which would turn a UTF-8 character into mojibake.
+#
+GIT_MESSAGE_MAX_LENGTH=120
+OPENCMS_GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%s | cat | tr '\n' ' ' | sed -e 's/[[:space:]][[:space:]]*/ /g' -e 's/^ //' -e 's/ $//')
+if [ ${#OPENCMS_GIT_COMMIT_MESSAGE} -gt $GIT_MESSAGE_MAX_LENGTH ]; then
+	GIT_MESSAGE_CUT="${OPENCMS_GIT_COMMIT_MESSAGE:0:$GIT_MESSAGE_MAX_LENGTH}"
+	GIT_MESSAGE_CUT="${GIT_MESSAGE_CUT% *}"
+	OPENCMS_GIT_COMMIT_MESSAGE="$(echo "$GIT_MESSAGE_CUT" | sed 's/[[:space:].,;:!?-]*$//')\u2026"
+fi
 
 #
 # The OpenCms version ID.
