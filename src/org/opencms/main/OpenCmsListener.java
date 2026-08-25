@@ -28,7 +28,6 @@
 package org.opencms.main;
 
 import org.opencms.jsp.util.CmsJspElResolver;
-import org.opencms.mail.CmsMailcapCommandMapInitializer;
 
 import java.lang.reflect.Method;
 import java.sql.Driver;
@@ -89,7 +88,6 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
         String basePath = event.getServletContext().getRealPath("/");
         String path = basePath + "/WEB-INF/logs/startup-stacktraces.zip";
         String summaryPath = basePath + "/WEB-INF/logs/startup-summary.xml";
-        CmsMailcapCommandMapInitializer.initialize();
         CmsSingleThreadDumperThread dumpThread = new CmsSingleThreadDumperThread(
             path,
             summaryPath,
