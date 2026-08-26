@@ -468,7 +468,7 @@ public class TestConfig extends OpenCmsTestRunner {
 
         CmsResourceTypeConfig typeConf2 = new CmsResourceTypeConfig("foo", false, null, "patternx_%(number)");
         CmsTestConfigData config2 = new CmsTestConfigData(
-            "/blah",
+            "/sites/default",
             list(typeConf2),
             NO_PROPERTIES,
             NO_DETAILPAGES,

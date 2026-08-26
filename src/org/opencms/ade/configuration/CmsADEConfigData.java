@@ -2161,7 +2161,7 @@ public class CmsADEConfigData {
             for (CmsResourceTypeConfig typeConfig : result) {
                 typeConfig.updateBasePath(basePath, false);
             }
-        } else if (m_data.getBasePath() != null) {
+        } else if ((m_data.getBasePath() != null) && !m_data.isModuleConfig()) {
             String basePath = CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME);
             for (CmsResourceTypeConfig typeConfig : result) {
                 typeConfig.updateBasePath(basePath, true);
