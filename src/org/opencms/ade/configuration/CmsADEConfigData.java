@@ -90,6 +90,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -1985,9 +1986,9 @@ public class CmsADEConfigData {
      *
      * @throws CmsException if something goes wrong
      */
-    protected Map<String, String> getFolderTypes() throws CmsException {
+    protected Multimap<String, String> getFolderTypes() throws CmsException {
 
-        Map<String, String> result = new HashMap<String, String>();
+        Multimap<String, String> result = HashMultimap.create();
         CmsObject cms = OpenCms.initCmsObject(getCms());
         if (m_data.isModuleConfig()) {
             Set<String> siteRoots = OpenCms.getSiteManager().getSiteRoots();
@@ -2004,12 +2005,6 @@ public class CmsADEConfigData {
                 }
             }
         } else {
-            // a folder configured by name is resolved against the site root of the context, so the
-            // context must be the configuration's own base path: the context this is computed with
-            // belongs to the configuration cache and says nothing about where the configuration lives
-            if (getBasePath() != null) {
-                cms.getRequestContext().setSiteRoot(getBasePath());
-            }
             for (CmsResourceTypeConfig config : getResourceTypes()) {
                 if (!config.isDetailPagesDisabled()) {
                     String typeName = config.getTypeName();
@@ -2164,7 +2159,12 @@ public class CmsADEConfigData {
             }
 
             for (CmsResourceTypeConfig typeConfig : result) {
-                typeConfig.updateBasePath(basePath);
+                typeConfig.updateBasePath(basePath, false);
+            }
+        } else if (m_data.getBasePath() != null) {
+            String basePath = CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME);
+            for (CmsResourceTypeConfig typeConfig : result) {
+                typeConfig.updateBasePath(basePath, true);
             }
         }
         if (filterDisabled) {

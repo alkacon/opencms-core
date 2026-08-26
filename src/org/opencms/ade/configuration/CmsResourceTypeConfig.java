@@ -967,15 +967,19 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * Updates the base path for the folder information.<p>
      *
      * @param basePath the new base path
+     * @param initOnly only updates the base path if there wasn't one already
      */
-    protected void updateBasePath(String basePath) {
+    protected void updateBasePath(String basePath, boolean initOnly) {
 
         if (m_folderOrName != null) {
             if (m_folderOrName.isName()) {
-                m_folderOrName = new CmsContentFolderDescriptor(basePath, m_folderOrName.getFolderName());
+                if (!initOnly || (m_folderOrName.getBasePath() == null)) {
+                    m_folderOrName = new CmsContentFolderDescriptor(basePath, m_folderOrName.getFolderName());
+                }
             }
         } else {
             m_folderOrName = new CmsContentFolderDescriptor(basePath, m_typeName);
         }
     }
+
 }

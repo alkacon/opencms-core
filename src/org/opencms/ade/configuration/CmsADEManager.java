@@ -872,18 +872,9 @@ public class CmsADEManager {
         return result;
     }
 
-    /**
-     * Gets the content element type for the given path's parent folder.
-     *
-     * @param online true if we want to use the Online project's configuration
-     * @param rootPath the root path of a content
-     *
-     * @return the parent folder type name, or null if none is defined
-     */
-    public String getParentFolderType(boolean online, String rootPath) {
+    public Set<String> getParentFolderTypes(boolean online, String contentRootPath) {
 
-        return getCacheState(online).getParentFolderType(rootPath);
-
+        return getCacheState(online).getParentFolderTypes(contentRootPath);
     }
 
     /**

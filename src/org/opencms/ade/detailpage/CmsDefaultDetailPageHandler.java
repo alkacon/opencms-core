@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
@@ -235,11 +236,8 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
         String targetDetailPage) {
 
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        String resType = manager.getParentFolderType(online, contentRootPath);
-        // resType may not actually be the resource type of the resource at contentRootPath. We determine
-        // the actual resource type further below, but if getParentFolderType() returns null here, we can stop
-        // without reading any resources.
-        if (resType == null) {
+        Set<String> parentFolderTypes = manager.getParentFolderTypes(online, contentRootPath);
+        if (parentFolderTypes.isEmpty()) {
             return null;
         }
 
@@ -264,6 +262,7 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
             }
         }
 
+        String resType = null;
         try {
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
@@ -273,6 +272,17 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
             LOG.info(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             LOG.warn(e.getLocalizedMessage(), e);
+        }
+        if (resType == null) {
+            if (parentFolderTypes.size() > 1) {
+                LOG.warn(
+                    "Couldn't determine resource type of detail resource "
+                        + contentRootPath
+                        + ", picking arbitrarily from configured parent folder types "
+                        + parentFolderTypes);
+            }
+            resType = parentFolderTypes.iterator().next();
+
         }
         DetailPageConfigData context = lookupDetailPageConfigData(manager, cms, contentRootPath, originPath, resType);
         List<CmsDetailPageInfo> relevantPages = context.getDetailPages();

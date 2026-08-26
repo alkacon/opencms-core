@@ -98,12 +98,14 @@ public class TestFolderTypeIndex extends OpenCmsTestRunner {
             Collections.<CmsProperty> emptyList());
         OpenCms.getADEManager().waitForCacheUpdate(false);
 
-        assertEquals(
-            TYPE,
-            OpenCms.getADEManager().getParentFolderType(false, BASE + "/.content/" + FOLDER_NAME + "/entry.xml"),
+        assertTrue(
+
+            OpenCms.getADEManager().getParentFolderTypes(
+                false,
+                BASE + "/.content/" + FOLDER_NAME + "/entry.xml").contains(TYPE),
             "the type's content folder below the referencing configuration should be indexed");
-        assertNull(
-            OpenCms.getADEManager().getParentFolderType(false, "/.content/" + FOLDER_NAME + "/entry.xml"),
+        assertTrue(
+            OpenCms.getADEManager().getParentFolderTypes(false, "/.content/" + FOLDER_NAME + "/entry.xml").isEmpty(),
             "the folder name must not be indexed relative to the root site");
     }
 
