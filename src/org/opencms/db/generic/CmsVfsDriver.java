@@ -4311,7 +4311,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         params.add(resource.getStructureId().toString());
                     } else {
                         conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_TARGET_PATH"));
-                        params.add(resource.getRootPath() + '%');
+                        params.add(escapeDbWildcard(resource.getRootPath()) + '%');
                     }
                 } else if (filter.isTarget() && !checkSource) {
                     if (!filter.isIncludeSubresources()) {
@@ -4319,7 +4319,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         params.add(resource.getStructureId().toString());
                     } else {
                         conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_PATH"));
-                        params.add(resource.getRootPath() + '%');
+                        params.add(escapeDbWildcard(resource.getRootPath()) + '%');
                     }
                 }
                 conditions.append(END_CONDITION);
@@ -4352,6 +4352,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 }
 
                 String queryPath = filter.getPath();
+                queryPath = escapeDbWildcard(queryPath);
                 if (filter.isIncludeSubresources()) {
                     queryPath += '%';
                 }

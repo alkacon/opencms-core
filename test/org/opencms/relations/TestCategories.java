@@ -1162,6 +1162,35 @@ public class TestCategories extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that underscores are correctly escaped when trying to remove categories with file names containing them.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUnderscoresInCategoriesToBeRemoved() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService service = CmsCategoryService.getInstance();
+
+        CmsCategory hyphenCategory = service.createCategory(cms, null, "foo-bar", "foo-bar", null, null);
+        CmsCategory underscoreCategory = service.createCategory(cms, null, "foo_bar", "foo_bar", null, null);
+        assertNotEquals(hyphenCategory.getId(), underscoreCategory.getId());
+        String resourcePath = "/category-relation-wildcards.txt";
+        cms.createResource(
+            resourcePath,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()));
+        cms.lockResource(resourcePath);
+
+        service.addResourceToCategory(cms, resourcePath, hyphenCategory);
+        service.addResourceToCategory(cms, resourcePath, underscoreCategory);
+        assertCategoryPaths(service.readResourceCategories(cms, resourcePath), "foo-bar/", "foo_bar/");
+
+        service.removeResourceFromCategory(cms, resourcePath, underscoreCategory);
+
+        assertCategoryPaths(service.readResourceCategories(cms, resourcePath), "foo-bar/");
+    }
+
+    /**
      * Simple test for the used category list data structure.
      *
      * @throws Exception
@@ -1180,6 +1209,18 @@ public class TestCategories extends OpenCmsTestCase {
         String json = list.toJson();
         list = CmsUsedCategoriesList.fromJson(json);
         assertEquals(new HashSet<>(Arrays.asList("bar", "qux", "xyzzy")), list.getCategories());
+    }
+
+    /**
+     * Checks the paths of the given categories.
+     *
+     * @param categories the categories
+     * @param expectedPaths the expected paths
+     */
+    private void assertCategoryPaths(List<CmsCategory> categories, String... expectedPaths) {
+
+        Set<String> actualPaths = categories.stream().map(CmsCategory::getPath).collect(Collectors.toSet());
+        assertEquals(Set.of(expectedPaths), actualPaths);
     }
 
 }
