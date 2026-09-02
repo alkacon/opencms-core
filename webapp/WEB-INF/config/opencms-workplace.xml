@@ -236,6 +236,7 @@
 	            <preference name="checkReuseWarning" nice-name="%(key.GUI_PREF_SHOW_REUSE_WARNING_0)" value="true" widget="select" widget-config="false:%(key.GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0)|true:%(key.GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0)" />
                 <preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" value="00000000-0000-0000-0000-000000000000" />
                 <preference name="explorerElementView" nice-name="%(key.GUI_PREF_EXPLORER_ELEMENT_VIEW_0)" value="505c1305-271f-3b09-925f-a33a067c98cf" />
+                <preference name="gallerySearchWordMode" value="plain" nice-name="%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_0)" widget="select" widget-config="plain:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_PLAIN_0)|infix:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_INFIX_0)" />
                 <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
                 <preference name="showElementAvailability" nice-name="%(key.GUI_PREF_SHOW_ELEMENT_AVAILABILITY_0)" widget="checkbox" value="false" />
             </preference-tab>

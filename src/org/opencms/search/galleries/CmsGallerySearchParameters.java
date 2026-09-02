@@ -29,6 +29,8 @@ package org.opencms.search.galleries;
 
 import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+import org.opencms.configuration.preferences.CmsGallerySearchWordModePreference;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
@@ -41,6 +43,7 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsPair;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
@@ -64,6 +67,40 @@ import com.google.common.base.Joiner;
  * @since 8.0.0
  */
 public class CmsGallerySearchParameters {
+
+    /** Modes for the pre-processing of the search words entered by the user. */
+    public enum CmsGallerySearchWordMode {
+
+        /** Search for the words as sub-words, matching anywhere within a word. */
+        infix,
+
+        /** Search for the words as entered, without any pre-processing. */
+        plain;
+
+        /** The default search word mode. */
+        public static final CmsGallerySearchWordMode DEFAULT = plain;
+
+        /**
+         * Returns the search word mode matching the given configuration value.<p>
+         *
+         * In case the value does not match a search word mode, {@link #DEFAULT} is returned.<p>
+         *
+         * @param value the configuration value to look up
+         *
+         * @return the search word mode matching the given configuration value
+         */
+        public static CmsGallerySearchWordMode lookup(String value) {
+
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                try {
+                    return valueOf(value.trim());
+                } catch (IllegalArgumentException e) {
+                    LOG.warn("Invalid gallery search word mode: " + value + ". Using '" + DEFAULT + "' instead.");
+                }
+            }
+            return DEFAULT;
+        }
+    }
 
     /** Sort parameter constants. */
     public enum CmsGallerySortParam {
@@ -199,6 +236,9 @@ public class CmsGallerySearchParameters {
 
     /** Logge instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGallerySearchParameters.class);
+
+    /** The query operators that must not be extended by wildcards. */
+    private static final List<String> QUERY_OPERATORS = List.of("AND", "OR", "NOT");
 
     /** The categories to search in. */
     private List<String> m_categories;
@@ -466,7 +506,7 @@ public class CmsGallerySearchParameters {
 
         // set search words
         if (null != m_words) {
-            query.setQuery(m_words);
+            query.setQuery(prepareSearchWords(m_words, getSearchWordMode(cms)));
         }
 
         // set sort order
@@ -602,6 +642,25 @@ public class CmsGallerySearchParameters {
             return OpenCms.getWorkplaceManager().getGalleryDefaultScope();
         }
         return m_scope;
+    }
+
+    /**
+     * Returns the search word mode to use for the search words pre-processing.<p>
+     *
+     * The mode is taken from the user settings of the current user, with the
+     * system wide default configured in <code>opencms-workplace.xml</code> as fallback.<p>
+     *
+     * @param cms the current OpenCms user context
+     *
+     * @return the search word mode to use for the search words pre-processing
+     */
+    public CmsGallerySearchWordMode getSearchWordMode(CmsObject cms) {
+
+        String value = CmsUserSettings.getAdditionalPreference(
+            cms,
+            CmsGallerySearchWordModePreference.PREFERENCE_NAME,
+            true);
+        return CmsGallerySearchWordMode.lookup(value);
     }
 
     /**
@@ -916,6 +975,33 @@ public class CmsGallerySearchParameters {
     }
 
     /**
+     * Pre-processes the search words entered by the user before they are used as Solr query.<p>
+     *
+     * Depending on the given mode, the individual words are extended by
+     * wildcards to allow a sub-word search.<p>
+     *
+     * @param words the search words as entered by the user
+     * @param mode the search word mode to apply
+     *
+     * @return the search words to use in the Solr query
+     */
+    protected String prepareSearchWords(String words, CmsGallerySearchWordMode mode) {
+
+        // We do not use any modifier when the search itself contains a modifier
+        // Quotes are checked here and not per word, since a phrase can span several words
+        if ((null == words) || words.isBlank() || words.contains("*") || words.contains("\"")) {
+            return words;
+        }
+        switch (mode) {
+            case infix:
+                return addInfixVariants(words);
+            case plain:
+            default:
+                return words;
+        }
+    }
+
+    /**
      * Adds folders to perform the search in.
      * @param folders Folders to search in.
      */
@@ -928,6 +1014,34 @@ public class CmsGallerySearchParameters {
         // the trailing slash required by the parent-folders index field is added by
         // CmsSolrQuery#setSearchRoots, through which this list reaches the query
         m_foldersToSearchIn.addAll(folders);
+    }
+
+    /**
+     * Adds the sub-word variants for an infix search to the given search words.<p>
+     *
+     * Each word is replaced by the group <code>(word OR word* OR *word OR *word*)</code>.
+     * The variants with a leading wildcard are omitted for words that do not
+     * start with a lowercase letter. Words that use a modifier are left alone.<p>
+     *
+     * The variants are grouped and combined with an explicit <code>OR</code> so that the
+     * default operator of the index only applies between the words entered by the user.<p>
+     *
+     * @param words the search words as entered by the user
+     *
+     * @return the search words extended by the sub-word variants
+     */
+    private String addInfixVariants(String words) {
+
+        return Arrays.stream(words.trim().split("\\s+")).map(w -> {
+            if (hasModifier(w)) {
+                return w;
+            }
+            StringBuilder result = new StringBuilder("(").append(w).append(" OR ").append(w).append("*");
+            if (Character.isLowerCase(w.charAt(0))) {
+                result.append(" OR *").append(w).append(" OR *").append(w).append("*");
+            }
+            return result.append(")").toString();
+        }).collect(Collectors.joining(" "));
     }
 
     /**
@@ -1010,6 +1124,29 @@ public class CmsGallerySearchParameters {
             default:
                 return CmsPair.create(sortTitle, ORDER.asc);
         }
+    }
+
+    /**
+     * Checks if the given search word uses a modifier.<p>
+     *
+     * Modifiers like <code>+word</code>, <code>-word</code>, <code>word~</code> or
+     * <code>word^2</code> are placed before or after the word, so only words that do
+     * not start and end with a letter are considered to use a modifier.
+     * Note that a hyphen within a word, as in <code>Lkw-Fahrer</code>, is no modifier.<p>
+     *
+     * A field qualifier like <code>title:word</code> and the query operators
+     * <code>AND</code>, <code>OR</code> and <code>NOT</code> are treated as modifiers, too.<p>
+     *
+     * @param word the search word to check
+     *
+     * @return <code>true</code> if the given search word uses a modifier
+     */
+    private boolean hasModifier(String word) {
+
+        return !Character.isLetter(word.charAt(0))
+            || !Character.isLetter(word.charAt(word.length() - 1))
+            || word.contains(":")
+            || QUERY_OPERATORS.contains(word);
     }
 
     /**

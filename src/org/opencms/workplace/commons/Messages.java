@@ -1085,6 +1085,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SEARCH_WORD_MODE_0 = "GUI_PREF_GALLERY_SEARCH_WORD_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SEARCH_WORD_MODE_INFIX_0 = "GUI_PREF_GALLERY_SEARCH_WORD_MODE_INFIX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SEARCH_WORD_MODE_PLAIN_0 = "GUI_PREF_GALLERY_SEARCH_WORD_MODE_PLAIN_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0 = "GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */

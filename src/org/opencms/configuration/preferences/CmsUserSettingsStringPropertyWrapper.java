@@ -246,6 +246,17 @@ public class CmsUserSettingsStringPropertyWrapper {
     }
 
     /**
+     * Gets the mode used to pre-process the search words entered in a gallery.<p>
+     *
+     * @return the gallery search word mode
+     */
+    @PrefMetadata(type = CmsGallerySearchWordModePreference.class)
+    public String getGallerySearchWordMode() {
+
+        return m_settings.getAdditionalPreference(CmsGallerySearchWordModePreference.PREFERENCE_NAME, false);
+    }
+
+    /**
      * Gets the value of the 'show invalid elements in galleries'.<p>
      *
      * @return the 'show invalid elements in galleries' setting
@@ -825,6 +836,16 @@ public class CmsUserSettingsStringPropertyWrapper {
 
         m_settings.setExplorerFileEntryOptions(s);
 
+    }
+
+    /**
+     * Sets the mode used to pre-process the search words entered in a gallery.<p>
+     *
+     * @param value the value to set
+     */
+    public void setGallerySearchWordMode(String value) {
+
+        m_settings.setAdditionalPreference(CmsGallerySearchWordModePreference.PREFERENCE_NAME, value);
     }
 
     /**
