@@ -27,9 +27,13 @@
 
 package org.opencms.main;
 
+import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -38,6 +42,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
@@ -48,6 +53,10 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  * a CmsFlexResponse. Specifically in the case of Jetty, it adds a wrapper that (for includes) will intercept all calls to methods that send headers and block them before they get to the CmsFlexResponse.
  * This breaks the way headers / redirects are handled by the flex cache. So for those types of requests, we check if the wrapper really wraps a CmsFlexResponse, and if so, pass a servlet response wrapper
  * to the filter chain which wraps the already wrapped response, but forwards all calls to setHeader, sendRedirect, etc. to the CmsFlexResponse, bypassing the servlet container wrapper.
+ *
+ * <p>The same applies to the request: the wrapper Jetty adds around the CmsFlexRequest reads the parameters of the wrapped request only once and then keeps that snapshot,
+ * while OpenCms changes the parameters of the CmsFlexRequest during the request (includes, cms:addparams, forwards). So if the wrapper wraps a CmsFlexRequest, we pass
+ * a request wrapper to the filter chain which forwards all parameter calls to the CmsFlexRequest, so the request seen by a JSP behaves like the CmsFlexRequest itself.
  */
 public class CmsEE10CompatibilityFilter implements Filter {
 
@@ -60,6 +69,38 @@ public class CmsEE10CompatibilityFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)res;
+        HttpServletRequest filterRequest = request;
+        if (!(req instanceof CmsFlexRequest)) {
+            final CmsFlexRequest flexRequest = CmsRequestUtil.getFlexRequest(req);
+            if (flexRequest != null) {
+                filterRequest = new HttpServletRequestWrapper(request) {
+
+                    @Override
+                    public String getParameter(String name) {
+
+                        return flexRequest.getParameter(name);
+                    }
+
+                    @Override
+                    public Map<String, String[]> getParameterMap() {
+
+                        return flexRequest.getParameterMap();
+                    }
+
+                    @Override
+                    public Enumeration<String> getParameterNames() {
+
+                        return flexRequest.getParameterNames();
+                    }
+
+                    @Override
+                    public String[] getParameterValues(String name) {
+
+                        return flexRequest.getParameterValues(name);
+                    }
+                };
+            }
+        }
         HttpServletResponse filterResponse = response;
         if ((res instanceof HttpServletResponseWrapper) && !(res instanceof CmsFlexResponse)) {
             HttpServletResponse wrappedResponse = (HttpServletResponse)((HttpServletResponseWrapper)res).getResponse();
@@ -119,7 +160,7 @@ public class CmsEE10CompatibilityFilter implements Filter {
 
             }
         }
-        chain.doFilter(request, filterResponse);
+        chain.doFilter(filterRequest, filterResponse);
 
     }
 

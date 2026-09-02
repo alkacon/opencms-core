@@ -564,8 +564,8 @@ public final class CmsRequestUtil {
         HttpServletResponse res)
     throws IOException, ServletException {
 
-        // cast the request back to a flex request so the parameter map can be accessed
-        CmsFlexRequest f_req = (CmsFlexRequest)req;
+        // get the flex request (which the servlet container may have wrapped) so the parameter map can be accessed
+        CmsFlexRequest f_req = getFlexRequest(req);
         // set the parameters
         f_req.setParameterMap(params);
         // check for links "into" OpenCms, these may need the webapp name to be removed
