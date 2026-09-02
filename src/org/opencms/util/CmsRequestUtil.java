@@ -757,6 +757,26 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Returns a map with all request parameters.<p>
+     *
+     * If the given request wraps a flex request, the parameters of that flex request are returned:
+     * a request wrapper added by the servlet container does not necessarily report the parameters
+     * of the request it wraps.<p>
+     *
+     * @param req the request
+     *
+     * @return the parameter map
+     */
+    public static Map<String, String[]> getParameterMap(ServletRequest req) {
+
+        CmsFlexRequest flexReq = getFlexRequest(req);
+        if (flexReq != null) {
+            return flexReq.getParameterMap();
+        }
+        return req.getParameterMap();
+    }
+
+    /**
      * Converts the given JSON object into a valid parameter map.<p>
      *
      * @param params the JSON object to convert

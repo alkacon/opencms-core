@@ -39,7 +39,6 @@ import org.opencms.loader.I_CmsResourceStringDumpLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
@@ -224,7 +223,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             && CmsJspTagEditable.startDirectEdit(context, new CmsDirectEditParams(target, element));
 
         // save old parameters from request
-        Map<String, String[]> oldParameterMap = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        // read them from the request the finally block below restores them to, since a request wrapper
+        // added by the servlet container does not necessarily report the parameters of the flex request
+        Map<String, String[]> oldParameterMap = controller.getCurrentRequest().getParameterMap();
         try {
             // each include will have it's unique map of parameters
             Map<String, String[]> parameterMap = (paramMap == null)
