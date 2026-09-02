@@ -37,7 +37,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsParameterEscaper;
 import org.opencms.util.CmsRequestUtil;
 
@@ -139,7 +138,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_elementUri = cms.getSitePath(m_controller.getCmsResource());
         m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
         m_includeCalls = new Vector<String>();
-        m_parameters = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        m_parameters = CmsRequestUtil.getParameterMap(req);
         m_attributes = CmsRequestUtil.getAtrributeMap(req);
         m_isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         String[] params = req.getParameterValues(PARAMETER_FLEX);
@@ -245,7 +244,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_canCache = m_controller.getCurrentRequest().isCacheable();
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();
-        m_parameters = CmsCollectionsGenericWrapper.map(req.getParameterMap());
+        m_parameters = CmsRequestUtil.getParameterMap(req);
         m_attributes = CmsRequestUtil.getAtrributeMap(req);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
