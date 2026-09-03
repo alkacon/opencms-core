@@ -39,7 +39,7 @@ public class CmsGallerySearchWordModePreference extends CmsBuiltinPreference {
     public static final String PREFERENCE_NAME = "gallerySearchWordMode";
 
     /** Widget configuration. */
-    public static final String WIDGET_CONFIG = "plain:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_OFF_0)"
+    public static final String WIDGET_CONFIG = "plain:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_PLAIN_0)"
         + "|infix:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_INFIX_0)";
 
     /** The nice name. */
