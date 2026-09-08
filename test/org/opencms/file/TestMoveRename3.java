@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -36,6 +37,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestRunner;
+import org.opencms.util.CmsUUID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -294,12 +296,59 @@ public class TestMoveRename3 extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests the publish history paths for resources moved out of a deleted folder.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(4)
+    public void testMovedResourcesInDeletedFolderPublishHistoryPaths() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing publish history paths for resources moved out of a deleted folder");
+        String sourceFolder = "/folderOneD";
+        String destinationFolder = "/folderTwoD";
+        String movedFolderName = "moved";
+        String testFileName = "testD.txt";
+        String sourceMovedFolder = sourceFolder + "/" + movedFolderName;
+        String sourceFile = sourceMovedFolder + "/" + testFileName;
+        String destinationMovedFolder = destinationFolder + "/" + movedFolderName;
+
+        cms.createResource(sourceFolder, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(sourceMovedFolder, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(sourceFile, CmsResourceTypePlain.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, sourceFolder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // fileBeforeMove is read in Offline project, but its path and id at this point are the same as in the Online project.
+        CmsResource fileBeforeMove = cms.readResource(sourceFile);
+        cms.createResource(destinationFolder, CmsResourceTypeFolder.getStaticTypeId());
+        cms.lockResource(sourceMovedFolder);
+        cms.moveResource(sourceMovedFolder, destinationMovedFolder);
+        cms.unlockResource(destinationMovedFolder);
+
+        cms.lockResource(sourceFolder);
+        cms.deleteResource(sourceFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(sourceFolder);
+        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishResource(cms, sourceFolder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (CmsPublishedResource publishedResource : cms.readPublishedResources(publishHistoryId)) {
+            if (publishedResource.getStructureId().equals(fileBeforeMove.getStructureId())) {
+                assertEquals(CmsResource.STATE_DELETED, publishedResource.getState());
+                assertEquals(fileBeforeMove.getRootPath(), publishedResource.getRootPath());
+            }
+        }
+    }
+
+    /**
      * Test that renaming a folder fails if a folder with the same name already exists.<p>
      *
      * @throws Exception in case the test fails
      */
     @Test
-    @Order(4)
+    @Order(5)
     public void testRenameToExistingFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -324,7 +373,7 @@ public class TestMoveRename3 extends OpenCmsTestRunner {
      * @throws Exception in case the test fails
      */
     @Test
-    @Order(5)
+    @Order(6)
     public void testRenameToInvalidName() throws Exception {
 
         CmsObject cms = getCmsObject();
