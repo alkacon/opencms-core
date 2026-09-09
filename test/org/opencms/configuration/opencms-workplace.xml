@@ -2,362 +2,363 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-workplace.dtd">
 
 <opencms>
-	<workplace>
-		<defaultlocale>en</defaultlocale>
-		<localizedfolders>
-			<resource uri="/system/workplace/" />
-			<resource uri="/system/login/" />
-		</localizedfolders>
-		<dialoghandlers>
-			<dialoghandler class="org.opencms.workplace.commons.CmsDelete" />
-			<dialoghandler class="org.opencms.workplace.commons.CmsLock" />
-			<dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced">
-				<param name="hideadvanced">true</param>
-				<param name="showgroup">/Users</param>
-				<param name="showgroup">/Test</param>
-			</dialoghandler>
-		</dialoghandlers>
-		<editorhandler class="org.opencms.workplace.editors.CmsEditorHandler" />
-		<editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault" />
-		<editorcsshandlers>
-			<editorcsshandler
-				class="org.opencms.workplace.editors.CmsEditorCssHandlerDefault" />
-		</editorcsshandlers>
-		<editorpreconditions>
-			<editorprecondition name="xmlcontent"
-				class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
-		</editorpreconditions>
-		<editor-max-locale-buttons>5</editor-max-locale-buttons>
-		<content-translation class="org.opencms.ade.contenteditor.CmsDummyTranslator">
-			<param name="exampleParam">foo</param>
-		</content-translation>
-		<directeditprovider
-			class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
-		<exportpoints>
-			<exportpoint uri="/system/workplace/resources/"
-				destination="resources/" />
-		</exportpoints>
-		<autolock>true</autolock>
-		<xmlcontentautocorrection>true</xmlcontentautocorrection>
-		<enableusermanagement>true</enableusermanagement>
-		<defaultpropertiesonstructure>true</defaultpropertiesonstructure>
-		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
-		<display-categories-in-explorer enabled="true" leaves-only="true" with-path="false" />
-		<maxfileuploadsize>-1</maxfileuploadsize>
-		<labeledfolders />
-		<repositoryfolder class="org.opencms.workplace.CmsRepositoryFolderHandler" />
-		<rfsfileviewsettings>
-			<enabled>true</enabled>
-			<fileEncoding>windows-1252</fileEncoding>
-			<isLogfile>true</isLogfile>
-			<windowSize>200</windowSize>
-		</rfsfileviewsettings>
-		<explorertypes>
-			<explorertype name="unknown_folder" key="fileicon.unknown_folder"
-				icon="unknown_folder.png">
-				<newresource creatable="false" order="0" autosetnavigation="false"
-					autosettitle="false" />
-				<accesscontrol>
-					<accessentry principal="DEFAULT" permissions="+r+v" />
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
-					<accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="false"
-						shownavigation="false" />
-				</editoptions>
-			</explorertype>
-			<explorertype name="unknown_file" key="fileicon.unknown_file"
-				icon="unknown_file.png">
-				<newresource creatable="false" order="0" autosetnavigation="false"
-					autosettitle="false" />
-				<accesscontrol>
-					<accessentry principal="DEFAULT" permissions="+r+v" />
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
-					<accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="false"
-						shownavigation="false" />
-				</editoptions>
-			</explorertype>
-			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource creatable="true" order="5"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="extendedfolder" key="fileicon.extendedfolder"
-				icon="gallery.gif" reference="folder">
-				<newresource creatable="true"
-					order="10" autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="structurecontent" key="fileicon.structurecontent"
-				icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource creatable="true"
-					order="15" autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="xmlpage" key="fileicon.xmlpage"
-				icon="page.gif">
-				<newresource creatable="true" order="20"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-						<defaultproperty name="Keywords" />
-						<defaultproperty name="Description" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource creatable="true"
-					order="30" autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-						<defaultproperty name="export" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="image" key="fileicon.image" icon="image.gif">
-				<newresource creatable="false" order="40" autosetnavigation="false"
-					autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="false">
-						<defaultproperty name="Title" />
-						<defaultproperty name="Description" />
+    <workplace>
+        <defaultlocale>en</defaultlocale>
+        <localizedfolders>
+            <resource uri="/system/workplace/" />
+            <resource uri="/system/login/" />
+        </localizedfolders>
+        <dialoghandlers>
+            <dialoghandler class="org.opencms.workplace.commons.CmsDelete" />
+            <dialoghandler class="org.opencms.workplace.commons.CmsLock" />
+            <dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced">
+                <param name="hideadvanced">true</param>
+                <param name="showgroup">/Users</param>
+                <param name="showgroup">/Test</param>
+            </dialoghandler>
+        </dialoghandlers>
+        <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler" />
+        <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault" />
+        <editorcsshandlers>
+            <editorcsshandler
+                class="org.opencms.workplace.editors.CmsEditorCssHandlerDefault" />
+        </editorcsshandlers>
+        <editorpreconditions>
+            <editorprecondition name="xmlcontent"
+                class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
+        </editorpreconditions>
+        <editor-max-locale-buttons>5</editor-max-locale-buttons>
+        <content-translation class="org.opencms.ade.contenteditor.CmsDummyTranslator">
+            <param name="exampleParam">foo</param>
+        </content-translation>
+        <directeditprovider
+            class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
+        <exportpoints>
+            <exportpoint uri="/system/workplace/resources/"
+                destination="resources/" />
+        </exportpoints>
+        <autolock>true</autolock>
+        <xmlcontentautocorrection>true</xmlcontentautocorrection>
+        <enableusermanagement>true</enableusermanagement>
+        <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
+        <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
+        <display-categories-in-explorer enabled="true" leaves-only="true" with-path="false" />
+        <maxfileuploadsize>-1</maxfileuploadsize>
+        <labeledfolders />
+        <repositoryfolder class="org.opencms.workplace.CmsRepositoryFolderHandler" />
+        <rfsfileviewsettings>
+            <enabled>true</enabled>
+            <fileEncoding>windows-1252</fileEncoding>
+            <isLogfile>true</isLogfile>
+            <windowSize>200</windowSize>
+        </rfsfileviewsettings>
+        <explorertypes>
+            <explorertype name="unknown_folder" key="fileicon.unknown_folder"
+                icon="unknown_folder.png">
+                <newresource creatable="false" order="0" autosetnavigation="false"
+                    autosettitle="false" />
+                <accesscontrol>
+                    <accessentry principal="DEFAULT" permissions="+r+v" />
+                    <accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
+                    <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
+                </accesscontrol>
+                <editoptions>
+                    <defaultproperties enabled="false"
+                        shownavigation="false" />
+                </editoptions>
+            </explorertype>
+            <explorertype name="unknown_file" key="fileicon.unknown_file"
+                icon="unknown_file.png">
+                <newresource creatable="false" order="0" autosetnavigation="false"
+                    autosettitle="false" />
+                <accesscontrol>
+                    <accessentry principal="DEFAULT" permissions="+r+v" />
+                    <accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
+                    <accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
+                </accesscontrol>
+                <editoptions>
+                    <defaultproperties enabled="false"
+                        shownavigation="false" />
+                </editoptions>
+            </explorertype>
+            <explorertype name="folder" key="fileicon.folder" icon="folder.gif">
+                <newresource creatable="true" order="5"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="extendedfolder" key="fileicon.extendedfolder"
+                icon="gallery.gif" reference="folder">
+                <newresource creatable="true"
+                    order="10" autosetnavigation="false" autosettitle="false" />
+            </explorertype>
+            <explorertype name="structurecontent" key="fileicon.structurecontent"
+                icon="xmlcontent.gif" reference="xmlcontent">
+                <newresource creatable="true"
+                    order="15" autosetnavigation="false" autosettitle="false" />
+            </explorertype>
+            <explorertype name="xmlpage" key="fileicon.xmlpage"
+                icon="page.gif">
+                <newresource creatable="true" order="20"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                        <defaultproperty name="Keywords" />
+                        <defaultproperty name="Description" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="plain" key="fileicon.plain" icon="plain.gif">
+                <newresource creatable="true"
+                    order="30" autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                        <defaultproperty name="export" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="image" key="fileicon.image" icon="image.gif">
+                <newresource creatable="false" order="40" autosetnavigation="false"
+                    autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="false">
+                        <defaultproperty name="Title" />
+                        <defaultproperty name="Description" />
                         <defaultproperty name="Copyright" requiredOnUpload="true" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource creatable="true"
-					order="50" autosetnavigation="false" autosettitle="false" />
-				<accesscontrol>
-					<accessentry principal="DEFAULT" permissions="+r+v" />
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
-					<accessentry principal="ROLE.RoleDevelopers"
-						permissions="+r+v+w+c" />
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="false">
-						<defaultproperty name="Title" />
-						<defaultproperty name="cache" />
-						<defaultproperty name="content-encoding" />
-						<defaultproperty name="export" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
-				<newresource creatable="false" order="60" autosetnavigation="false"
-					autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="false">
-						<defaultproperty name="Title" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="pointer" key="fileicon.pointer"
-				icon="pointer.gif">
-				<newresource creatable="true" order="70"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="link" key="fileicon.link" icon="link.gif">
-				<newresource creatable="true" order="90"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
-				<newresource creatable="true" order="100"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="imagegallery" key="fileicon.imagegallery"
-				icon="imagegallery.gif">
-				<newresource creatable="true" order="10"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="downloadgallery" key="fileicon.downloadgallery"
-				icon="downloadgallery.gif">
-				<newresource creatable="true" order="20"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<explorertype name="linkgallery" key="fileicon.linkgallery"
-				icon="linkgallery.gif" reference="downloadgallery">
-				<newresource creatable="true" order="30"
-					autosetnavigation="false" autosettitle="false" />
-			</explorertype>
-			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
-				icon="xmlcontent.gif">
-				<newresource creatable="true" order="500"
-					autosetnavigation="false" autosettitle="false" />
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<defaultproperty name="Title" />
-						<defaultproperty name="Keywords" />
-						<defaultproperty name="Description" />
-					</defaultproperties>
-				</editoptions>
-			</explorertype>
-			<defaultaccesscontrol>
-				<accesscontrol>
-					<accessentry principal="DEFAULT" permissions="+r+v" />
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
-					<accessentry principal="ROLE.RoleWorkplaceUsers"
-						permissions="+r+v+w+c" />
-				</accesscontrol>
-			</defaultaccesscontrol>
-		</explorertypes>
-		<default-preferences>
-			<preference-tab name="basic">
-				<preference name="locale" value="en"
-					nice-name="%(key.GUI_LABEL_LANGUAGE_0)" />
-				<preference name="startProject" value="Offline"
-					nice-name="%(key.GUI_PREF_STARTUP_PROJECT_0)" />
-				<preference name="startSite" value="/sites/default/"
-					nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
-				<preference name="startFolder" value="/"
-					nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
-				<preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
-				<preference name="explorerElementView" nice-name="%(key.GUI_PREF_EXPLORER_ELEMENT_VIEW_0)" value="505c1305-271f-3b09-925f-a33a067c98cf" />
-				<preference name="timeWarp" value="0"
-					nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
+                <newresource creatable="true"
+                    order="50" autosetnavigation="false" autosettitle="false" />
+                <accesscontrol>
+                    <accessentry principal="DEFAULT" permissions="+r+v" />
+                    <accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
+                    <accessentry principal="ROLE.RoleDevelopers"
+                        permissions="+r+v+w+c" />
+                </accesscontrol>
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="false">
+                        <defaultproperty name="Title" />
+                        <defaultproperty name="cache" />
+                        <defaultproperty name="content-encoding" />
+                        <defaultproperty name="export" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="binary" key="fileicon.binary" icon="binary.gif">
+                <newresource creatable="false" order="60" autosetnavigation="false"
+                    autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="false">
+                        <defaultproperty name="Title" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="pointer" key="fileicon.pointer"
+                icon="pointer.gif">
+                <newresource creatable="true" order="70"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="link" key="fileicon.link" icon="link.gif">
+                <newresource creatable="true" order="90"
+                    autosetnavigation="false" autosettitle="false" />
+            </explorertype>
+            <explorertype name="upload" key="fileicon.upload" icon="upload.png">
+                <newresource creatable="true" order="100"
+                    autosetnavigation="false" autosettitle="false" />
+            </explorertype>
+            <explorertype name="imagegallery" key="fileicon.imagegallery"
+                icon="imagegallery.gif">
+                <newresource creatable="true" order="10"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="downloadgallery" key="fileicon.downloadgallery"
+                icon="downloadgallery.gif">
+                <newresource creatable="true" order="20"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <explorertype name="linkgallery" key="fileicon.linkgallery"
+                icon="linkgallery.gif" reference="downloadgallery">
+                <newresource creatable="true" order="30"
+                    autosetnavigation="false" autosettitle="false" />
+            </explorertype>
+            <explorertype name="xmlcontent" key="fileicon.xmlcontent"
+                icon="xmlcontent.gif">
+                <newresource creatable="true" order="500"
+                    autosetnavigation="false" autosettitle="false" />
+                <editoptions>
+                    <defaultproperties enabled="true" shownavigation="true">
+                        <defaultproperty name="Title" />
+                        <defaultproperty name="Keywords" />
+                        <defaultproperty name="Description" />
+                    </defaultproperties>
+                </editoptions>
+            </explorertype>
+            <defaultaccesscontrol>
+                <accesscontrol>
+                    <accessentry principal="DEFAULT" permissions="+r+v" />
+                    <accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
+                    <accessentry principal="ROLE.RoleWorkplaceUsers"
+                        permissions="+r+v+w+c" />
+                </accesscontrol>
+            </defaultaccesscontrol>
+        </explorertypes>
+        <default-preferences>
+            <preference-tab name="basic">
+                <preference name="locale" value="en"
+                    nice-name="%(key.GUI_LABEL_LANGUAGE_0)" />
+                <preference name="startProject" value="Offline"
+                    nice-name="%(key.GUI_PREF_STARTUP_PROJECT_0)" />
+                <preference name="startSite" value="/sites/default/"
+                    nice-name="%(key.GUI_PREF_STARTUP_SITE_0)" />
+                <preference name="startFolder" value="/"
+                    nice-name="%(key.GUI_PREF_STARTUP_FOLDER_0)" />
+                <preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" />
+                <preference name="explorerElementView" nice-name="%(key.GUI_PREF_EXPLORER_ELEMENT_VIEW_0)" value="505c1305-271f-3b09-925f-a33a067c98cf" />
+                <preference name="gallerySearchWordMode" value="plain" nice-name="%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_0)" widget="select_notnull" widget-config="plain:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_PLAIN_0)|infix:%(key.GUI_PREF_GALLERY_SEARCH_WORD_MODE_INFIX_0)"/>
+                <preference name="timeWarp" value="0"
+                    nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
                 <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
-			</preference-tab>
-			<preference-tab name="extended">
-	 		   <preference name="workplaceMode" value="new" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)" 
-                	widget="select" widget-config="old:%(key.GUI_PREF_WORKPLACE_MODE_OLD_0)|new:%(key.GUI_PREF_WORKPLACE_MODE_NEW_0)" /> 
-				<preference name="allowBrokenRelations" value="false"
-					widget="checkbox" />
-				<preference name="dialogCopyFileMode" value="createresource"
-					widget="select"
-					widget-config="createresource:%(key.GUI_COPY_AS_NEW_0)|createsibling:%(key.GUI_PREF_COPY_AS_SIBLING_0)" />
-				<preference name="dialogCopyFolderMode" value="preservesiblings"
-					widget="select"
-					widget-config="createsibling:%(key.GUI_PREF_COPY_AS_SIBLINGS_0)|preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0)|createresource:%(key.GUI_PREF_COPY_AS_NEW_0)" />
-				<preference name="dialogDeleteFileMode" value="preservesiblings"
-					widget="select"
-					widget-config="preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_0)|deletesiblings:%(key.GUI_PREF_DELETE_SIBLINGS_0)" />
-				<preference name="dialogExpandInheritedPermissions"
-					value="true" widget="checkbox" />
-				<preference name="dialogExpandUserPermissions" value="false"
-					widget="checkbox" />
-				<preference name="dialogPermissionsInheritOnFolder"
-					value="false" widget="checkbox" />
-				<preference name="dialogPublishSiblings" value="onlyresource" />
-				<preference name="dialogShowExportSettings" value="true"
-					widget="checkbox" />
-				<preference name="dialogShowLock" value="false" widget="checkbox" />
-				<preference name="explorerFileEntries" value="50" widget="combo"
-					widget-config="50:50|100:100|200:20|300:300|400:400|500:500|2147483647:%(key.GUI_LABEL_UNLIMITED_0)" />
-				<preference name="listAllProjects" value="false" widget="checkbox" />
-				<preference name="newFolderCreateIndexPage" value="true"
-					widget="checkbox" />
-				<preference name="newFolderEditProperties" value="true"
-					widget="checkbox" />
-				<preference name="publishButtonAppearance" value="always" />
-				<preference name="restrictExplorerView" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileDateCreated" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileDateExpired" value="true"
-					widget="checkbox" />
-				<preference name="showExplorerFileDateLastModified"
-					value="true" widget="checkbox" />
-				<preference name="showExplorerFileDateReleased" value="true"
-					widget="checkbox" />
-				<preference name="showExplorerFileLockedBy" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileNavText" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFilePermissions" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileSize" value="true"
-					widget="checkbox" />
-				<preference name="showExplorerFileState" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileTitle" value="true"
-					widget="checkbox" />
-				<preference name="showExplorerFileType" value="true"
-					widget="checkbox" />
-				<preference name="showExplorerFileUserCreated" value="false"
-					widget="checkbox" />
-				<preference name="showExplorerFileUserLastModified"
-					value="false" widget="checkbox" />
-				<preference name="showFileUploadButton" value="true"
-					widget="checkbox" />
-				<preference name="showPublishNotification" value="false"
-					widget="checkbox" />
-				<preference name="showUploadTypeDialog" value="true"
-					widget="checkbox" />
-				<preference name="startView"
-					value="/system/workplace/views/explorer/directEdit.jsp" nice-name="%(key.GUI_PREF_STARTUP_VIEW_0)" />
-				<preference name="uploadVariant" value="gwt" widget="select"
-					widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
-				<preference name="workplaceReportType" value="extended" />
-				<preference name="workplaceSearchIndexName" value="Offline project EN (VFS)" />
-				<preference name="workplaceSearchViewStyle" value="explorer" />
-				<preference name="editor.plain" value="bestavailable" />
-				<preference name="editor.xmlcontent" value="bestavailable" />
-				<preference name="editor.xmlpage" value="bestavailable" />
-				<preference name="gallery.linkgallery" />
-				<preference name="gallery.imagegallery" />
-				<preference name="gallery.downloadgallery" />
-			</preference-tab>
-			<preference-tab name="hidden">
-				<preference name="workplaceButtonStyle" value="textimage" />
-				<preference name="directEditButtonStyle" value="image" />
-				<preference name="editorButtonStyle" value="image" />
-				<preference name="explorerButtonStyle" value="textimage" />
-				<preference name="subsitemapCreationMode" value="convert" />
-				<preference name="publishRelatedResourcesMode" value="true" />
-				<preference name="explorerFileEntryOptions" value="50,100,200,300,400,500" />
-				<preference name="uploadAppletClientFolder" value="" />
-			</preference-tab>
-		</default-preferences>
-		<tool-manager>
-			<roots>
-				<root>
-					<key>admin</key>
-					<uri>/system/workplace/admin/</uri>
-					<name>${key.GUI_ADMIN_VIEW_ROOT_NAME_0}</name>
-					<helptext>${key.GUI_ADMIN_VIEW_ROOT_HELP_0}</helptext>
-				</root>
-				<root>
-					<key>explorer</key>
-					<uri>/system/workplace/explorer/</uri>
-					<name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
-					<helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
-				</root>
-			</roots>
-		</tool-manager>
-		<additional-log-folders />
-		<use-formatter-keys-for-new-sites>true</use-formatter-keys-for-new-sites>
-		<upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
+            </preference-tab>
+            <preference-tab name="extended">
+                <preference name="workplaceMode" value="new" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)"
+                    widget="select" widget-config="old:%(key.GUI_PREF_WORKPLACE_MODE_OLD_0)|new:%(key.GUI_PREF_WORKPLACE_MODE_NEW_0)" />
+                <preference name="allowBrokenRelations" value="false"
+                    widget="checkbox" />
+                <preference name="dialogCopyFileMode" value="createresource"
+                    widget="select"
+                    widget-config="createresource:%(key.GUI_COPY_AS_NEW_0)|createsibling:%(key.GUI_PREF_COPY_AS_SIBLING_0)" />
+                <preference name="dialogCopyFolderMode" value="preservesiblings"
+                    widget="select"
+                    widget-config="createsibling:%(key.GUI_PREF_COPY_AS_SIBLINGS_0)|preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0)|createresource:%(key.GUI_PREF_COPY_AS_NEW_0)" />
+                <preference name="dialogDeleteFileMode" value="preservesiblings"
+                    widget="select"
+                    widget-config="preservesiblings:%(key.GUI_PREF_PRESERVE_SIBLINGS_0)|deletesiblings:%(key.GUI_PREF_DELETE_SIBLINGS_0)" />
+                <preference name="dialogExpandInheritedPermissions"
+                    value="true" widget="checkbox" />
+                <preference name="dialogExpandUserPermissions" value="false"
+                    widget="checkbox" />
+                <preference name="dialogPermissionsInheritOnFolder"
+                    value="false" widget="checkbox" />
+                <preference name="dialogPublishSiblings" value="onlyresource" />
+                <preference name="dialogShowExportSettings" value="true"
+                    widget="checkbox" />
+                <preference name="dialogShowLock" value="false" widget="checkbox" />
+                <preference name="explorerFileEntries" value="50" widget="combo"
+                    widget-config="50:50|100:100|200:20|300:300|400:400|500:500|2147483647:%(key.GUI_LABEL_UNLIMITED_0)" />
+                <preference name="listAllProjects" value="false" widget="checkbox" />
+                <preference name="newFolderCreateIndexPage" value="true"
+                    widget="checkbox" />
+                <preference name="newFolderEditProperties" value="true"
+                    widget="checkbox" />
+                <preference name="publishButtonAppearance" value="always" />
+                <preference name="restrictExplorerView" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateCreated" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateExpired" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileDateLastModified"
+                    value="true" widget="checkbox" />
+                <preference name="showExplorerFileDateReleased" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileLockedBy" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileNavText" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFilePermissions" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileSize" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileState" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileTitle" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileType" value="true"
+                    widget="checkbox" />
+                <preference name="showExplorerFileUserCreated" value="false"
+                    widget="checkbox" />
+                <preference name="showExplorerFileUserLastModified"
+                    value="false" widget="checkbox" />
+                <preference name="showFileUploadButton" value="true"
+                    widget="checkbox" />
+                <preference name="showPublishNotification" value="false"
+                    widget="checkbox" />
+                <preference name="showUploadTypeDialog" value="true"
+                    widget="checkbox" />
+                <preference name="startView"
+                    value="/system/workplace/views/explorer/directEdit.jsp" nice-name="%(key.GUI_PREF_STARTUP_VIEW_0)" />
+                <preference name="uploadVariant" value="gwt" widget="select"
+                    widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
+                <preference name="workplaceReportType" value="extended" />
+                <preference name="workplaceSearchIndexName" value="Offline project EN (VFS)" />
+                <preference name="workplaceSearchViewStyle" value="explorer" />
+                <preference name="editor.plain" value="bestavailable" />
+                <preference name="editor.xmlcontent" value="bestavailable" />
+                <preference name="editor.xmlpage" value="bestavailable" />
+                <preference name="gallery.linkgallery" />
+                <preference name="gallery.imagegallery" />
+                <preference name="gallery.downloadgallery" />
+            </preference-tab>
+            <preference-tab name="hidden">
+                <preference name="workplaceButtonStyle" value="textimage" />
+                <preference name="directEditButtonStyle" value="image" />
+                <preference name="editorButtonStyle" value="image" />
+                <preference name="explorerButtonStyle" value="textimage" />
+                <preference name="subsitemapCreationMode" value="convert" />
+                <preference name="publishRelatedResourcesMode" value="true" />
+                <preference name="explorerFileEntryOptions" value="50,100,200,300,400,500" />
+                <preference name="uploadAppletClientFolder" value="" />
+            </preference-tab>
+        </default-preferences>
+        <tool-manager>
+            <roots>
+                <root>
+                    <key>admin</key>
+                    <uri>/system/workplace/admin/</uri>
+                    <name>${key.GUI_ADMIN_VIEW_ROOT_NAME_0}</name>
+                    <helptext>${key.GUI_ADMIN_VIEW_ROOT_HELP_0}</helptext>
+                </root>
+                <root>
+                    <key>explorer</key>
+                    <uri>/system/workplace/explorer/</uri>
+                    <name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
+                    <helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
+                </root>
+            </roots>
+        </tool-manager>
+        <additional-log-folders />
+        <use-formatter-keys-for-new-sites>true</use-formatter-keys-for-new-sites>
+        <upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
             <param name="/">enabled:true|types:pdf,doc,png,jpg</param>
         </upload-restriction>
         <virus-scanner class="org.opencms.configuration.CmsTestDummyVirusScanner" enabled="true">
-        	<param name="key1">value1</param>
-        	<param name="key2">value2</param>
+            <param name="key1">value1</param>
+            <param name="key2">value2</param>
         </virus-scanner>
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
         <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
         <sitemap-editor-detail-page-management-role>DEVELOPER</sitemap-editor-detail-page-management-role>
-	</workplace>
+    </workplace>
 </opencms>
