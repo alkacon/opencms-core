@@ -894,6 +894,7 @@ tasks.register('gwtJar', Jar) {
     from (sourceSets.main.java.srcDirs){
         include '**/shared/**'
         include '**/gwt/CmsRpcException.java'
+        include '**/gwt/CmsRpcException_CustomFieldSerializer.java'
         include '**/ade/detailpage/CmsDetailPageInfo.java'
         include '**/db/CmsResourceState.java'
         include '**/jsp/CmsContainerJsonKeys.java'
@@ -991,6 +992,7 @@ tasks.register('sourcesJarGwt', Jar) {
     from (sourceSets.main.java.srcDirs){
         include '**/shared/**'
         include '**/gwt/CmsRpcException.java'
+        include '**/gwt/CmsRpcException_CustomFieldSerializer.java'
         include '**/ade/detailpage/CmsDetailPageInfo.java'
         include '**/db/CmsResourceState.java'
         include '**/jsp/CmsContainerJsonKeys.java'

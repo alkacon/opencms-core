@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -75,6 +76,21 @@ public class CmsRpcException extends Exception implements IsSerializable {
         setOriginalClassName(t.getClass().getName());
         if (t.getCause() != null) {
             setOriginalCauseMessage(t.getCause().getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Override to make the method return something readable on the client side as well (because of its custom serializer).
+     *
+     * @see java.lang.Throwable#getMessage()
+     */
+    @Override
+    public String getMessage() {
+
+        if (GWT.isClient()) {
+            return getOriginalMessage();
+        } else {
+            return super.getMessage();
         }
     }
 
