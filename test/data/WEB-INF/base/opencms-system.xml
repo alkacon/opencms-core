@@ -38,7 +38,6 @@
 		</resourceinit>
 		<requesthandlers>
 			<requesthandler class="org.opencms.main.CmsStaticResourceHandler"/>
-			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
 		</requesthandlers>
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
