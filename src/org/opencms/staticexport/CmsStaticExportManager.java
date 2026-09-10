@@ -86,6 +86,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.logging.Log;
@@ -141,6 +142,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Time given (in seconds) to the static export handler to finish a publish task. */
     public static final int HANDLER_FINISH_TIME = 60;
+
+    /** Pattern to find '..' as a path component. */
+    public static final Pattern PATTERN_PARENT_PATH_COMPONENT = Pattern.compile("(^|[/\\\\])\\.\\.([/\\\\]|$)");
 
     /**
      * If the property 'secure' is set to this value,
@@ -259,20 +263,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Temporary variable for reading the xml config file. */
     private CmsStaticExportRfsRule m_rfsTmpRule;
 
+    /** The shared cache configuration. */
+    private CmsSharedCacheConfiguration m_sharedCacheConfiguration = new CmsSharedCacheConfiguration();
+
     /** The number of backups stored for the export folder. */
     private Integer m_staticExportBackups;
 
     /** Indicates if the static export is enabled or disabled. */
     private boolean m_staticExportEnabled;
-
-    /** The shared cache configuration. */
-    private CmsSharedCacheConfiguration m_sharedCacheConfiguration = new CmsSharedCacheConfiguration();
-
-    /** The stored content delivery configuration. */
-    private CmsStoredContentDeliveryConfiguration m_storedContentDeliveryConfiguration = new CmsStoredContentDeliveryConfiguration();
-
-    /** Support for stored content delivery during static export. */
-    private CmsStoredContentDeliverySupport m_storedContentDeliverySupport = new CmsStoredContentDeliverySupport();
 
     /** The path to where the static export will be written. */
     private String m_staticExportPath;
@@ -285,6 +283,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** The path to where the static export will be written during the static export process without the complete rfs path. */
     private String m_staticExportWorkPathConfigured;
+
+    /** The stored content delivery configuration. */
+    private CmsStoredContentDeliveryConfiguration m_storedContentDeliveryConfiguration = new CmsStoredContentDeliveryConfiguration();
+
+    /** Support for stored content delivery during static export. */
+    private CmsStoredContentDeliverySupport m_storedContentDeliverySupport = new CmsStoredContentDeliverySupport();
 
     /** Vfs Name of a resource used to do a "static export required" test. */
     private String m_testResource;
@@ -2888,40 +2892,39 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 rfsName = cms.getRequestContext().addSiteRoot(rfsName);
             } else {
                 // "exportname" property is set
-                String exportname = exportNameProperty.getValue();
-                if (exportname.charAt(0) != '/') {
-                    exportname = '/' + exportname;
-                }
-                if (exportname.charAt(exportname.length() - 1) != '/') {
-                    exportname = exportname + '/';
-                }
-                String value = null;
-                boolean cont;
-                String resourceName = rfsName; // resourceName can be the detail page URI
-                do {
-                    // find out where the export name was set, to replace these parent folders in the RFS name
-                    try {
-                        CmsProperty prop = cms.readPropertyObject(
-                            resourceName,
-                            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                            false);
-                        if (prop.isIdentical(exportNameProperty)) {
-                            // look for the right position in path
-                            value = prop.getValue();
+                String exportname = normalizeExportName(exportNameProperty.getValue(), propertyReadPath);
+                if (exportname == null) {
+                    // revert to the default behavior
+                    rfsName = cms.getRequestContext().addSiteRoot(rfsName);
+                } else {
+                    String value = null;
+                    boolean cont;
+                    String resourceName = rfsName; // resourceName can be the detail page URI
+                    do {
+                        // find out where the export name was set, to replace these parent folders in the RFS name
+                        try {
+                            CmsProperty prop = cms.readPropertyObject(
+                                resourceName,
+                                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                                false);
+                            if (prop.isIdentical(exportNameProperty)) {
+                                // look for the right position in path
+                                value = prop.getValue();
+                            }
+                            cont = (value == null) && (resourceName.length() > 1);
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            // this is for publishing deleted resources
+                            cont = (resourceName.length() > 1);
+                        } catch (CmsSecurityException se) {
+                            // a security exception (probably no read permission) we return the current result
+                            cont = false;
                         }
-                        cont = (value == null) && (resourceName.length() > 1);
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        // this is for publishing deleted resources
-                        cont = (resourceName.length() > 1);
-                    } catch (CmsSecurityException se) {
-                        // a security exception (probably no read permission) we return the current result
-                        cont = false;
-                    }
-                    if (cont) {
-                        resourceName = CmsResource.getParentFolder(resourceName);
-                    }
-                } while (cont);
-                rfsName = exportname + rfsName.substring(resourceName.length());
+                        if (cont) {
+                            resourceName = CmsResource.getParentFolder(resourceName);
+                        }
+                    } while (cont);
+                    rfsName = exportname + rfsName.substring(resourceName.length());
+                }
             }
         } catch (CmsException e) {
             if (LOG.isDebugEnabled()) {
@@ -3353,13 +3356,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                             CmsPropertyDefinition.PROPERTY_EXPORTNAME,
                             false).getValue();
                         CmsSite site = sm.getSiteForRootPath(foldername);
+                        exportname = normalizeExportName(exportname, foldername);
                         if (exportname != null) {
-                            if (exportname.charAt(exportname.length() - 1) != '/') {
-                                exportname = exportname + "/";
-                            }
-                            if (exportname.charAt(0) != '/') {
-                                exportname = "/" + exportname;
-                            }
                             // export name has to be system-wide unique
                             // the folder name is a root path
                             exportnameResources.put(new CmsExportname(exportname, site), foldername);
@@ -3438,6 +3436,33 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.info(
                 Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, resource.getRootPath(), exportFileName));
         }
+    }
+
+    /**
+     * Normalizes and validates an export name.<p>
+     *
+     * @param exportName the export name
+     * @param resourcePath the path of the resource on which the export name is defined
+     *
+     * @return the normalized export name, or <code>null</code> if the export name is invalid
+     */
+    private String normalizeExportName(String exportName, String resourcePath) {
+
+        if (CmsStringUtil.isEmpty(exportName)) {
+            LOG.warn("Invalid export name '" + exportName + "' at " + resourcePath);
+            return null;
+        }
+        if (exportName.charAt(0) != '/') {
+            exportName = '/' + exportName;
+        }
+        if (exportName.charAt(exportName.length() - 1) != '/') {
+            exportName = exportName + '/';
+        }
+        if (PATTERN_PARENT_PATH_COMPONENT.matcher(exportName).find()) {
+            LOG.warn("Invalid export name '" + exportName + "' at " + resourcePath);
+            return null;
+        }
+        return exportName;
     }
 
     /**

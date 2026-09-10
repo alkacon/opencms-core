@@ -215,12 +215,61 @@ public class TestCmsStaticExportManager extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that an export name can not escape from the export directory.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Order(3)
+    public void testExportNameCanNotEscapeExportDirectory() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
+        String folder = "/folder1/subfolder12/";
+        String vfsName = folder + "page1.html";
+        String rootFolder = cms.getRequestContext().addSiteRoot(folder);
+        String expected = manager.getRfsPrefix(rootFolder) + cms.getRequestContext().getSiteRoot() + vfsName;
+
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        try {
+            String[] invalidExportNames = {"safe/../../outside", "safe\\..\\..\\outside"};
+            for (String invalidExportName : invalidExportNames) {
+                cms.lockResource(folder);
+                cms.writePropertyObject(
+                    folder,
+                    new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, invalidExportName, null));
+                cms.unlockResource(folder);
+
+                assertEquals(expected, manager.getRfsName(cms, vfsName));
+            }
+
+            OpenCms.getPublishManager().publishProject(cms);
+            OpenCms.getPublishManager().waitWhileRunning();
+            cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+            assertFalse(manager.getExportnames().containsValue(rootFolder));
+        } finally {
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+            cms.lockResource(folder);
+            cms.writePropertyObject(
+                folder,
+                new CmsProperty(
+                    CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                    CmsProperty.DELETE_VALUE,
+                    CmsProperty.DELETE_VALUE));
+            cms.unlockResource(folder);
+            OpenCms.getPublishManager().publishProject(cms);
+            OpenCms.getPublishManager().waitWhileRunning();
+            cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+        }
+    }
+
+    /**
      * Tests that a full RFS export can not be started in shared-cache mode.<p>
      *
      * @throws Exception if the test fails
      */
     @Test
-    @Order(4)
+    @Order(5)
     public void testFullStaticExportIsRejectedInSharedCacheMode() throws Exception {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
@@ -244,7 +293,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestRunner {
      * @throws Exception if something goes wrong
      */
     @Test
-    @Order(3)
+    @Order(4)
     public void testSiteExport() throws Exception {
 
         CmsObject cms = getCmsObject();
