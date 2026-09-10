@@ -73,6 +73,34 @@ public class TestLocaleGroups extends OpenCmsTestRunner {
     }
 
     @Test
+    public void testDetachLocaleGroup() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        int index = NAME_COUNTER++;
+        String basepath = "/test_detach_" + index + "_";
+        CmsResource r1 = makeResource(basepath + "1", Locale.ENGLISH);
+        CmsResource r2 = makeResource(basepath + "2", Locale.GERMAN);
+        CmsResource r3 = makeResource(basepath + "3", Locale.FRENCH);
+        CmsLocaleGroupService service = new CmsLocaleGroupService(cms);
+        service.attachLocaleGroup(r1, r3);
+        service.attachLocaleGroup(r2, r3);
+
+        service.detachLocaleGroup(r3, r1);
+
+        CmsLocaleGroup detachedGroup = service.readLocaleGroup(r1);
+        assertFalse(detachedGroup.isRealGroup());
+        assertEquals(r1, detachedGroup.getPrimaryResource());
+        CmsLocaleGroup remainingGroup = service.readLocaleGroup(r3);
+        assertEquals(r3, remainingGroup.getPrimaryResource());
+        assertEquals(Sets.newHashSet(r2), remainingGroup.getSecondaryResources());
+
+        service.detachLocaleGroup(r2, r3);
+
+        assertFalse(service.readLocaleGroup(r2).isRealGroup());
+        assertFalse(service.readLocaleGroup(r3).isRealGroup());
+    }
+
+    @Test
     public void testFailWhenAddingResourceFromExistingGroup() throws Exception {
 
         CmsObject cms = getCmsObject();
