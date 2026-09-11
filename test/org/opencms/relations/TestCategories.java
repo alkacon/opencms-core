@@ -1162,6 +1162,110 @@ public class TestCategories extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that removing a category from a resource also removes its subcategories from that resource.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testRemovingCategoryAlsoRemovesSubcategories() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService service = CmsCategoryService.getInstance();
+
+        CmsCategory parent = service.createCategory(
+            cms,
+            null,
+            "relation-delete-parent",
+            "relation-delete-parent",
+            null,
+            null);
+        CmsCategory child = service.createCategory(cms, parent, "child", "relation-delete-child", null, null);
+        String resourcePath = "/category-subcategory-relation-delete-scope.txt";
+        cms.createResource(resourcePath, CmsResourceTypePlain.getStaticTypeId());
+        cms.lockResource(resourcePath);
+
+        service.addResourceToCategory(cms, resourcePath, child);
+        assertCategoryPaths(service.readResourceCategories(cms, resourcePath), parent.getPath(), child.getPath());
+
+        service.removeResourceFromCategory(cms, resourcePath, parent);
+
+        assertCategoryPaths(service.readResourceCategories(cms, resourcePath));
+    }
+
+    /**
+     * Tests that removing a category from a folder does not remove it from resources below that folder.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testRemovingCategoryDoesNotAffectChildResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService service = CmsCategoryService.getInstance();
+
+        CmsCategory category = service.createCategory(
+            cms,
+            null,
+            "relation-delete-scope",
+            "relation-delete-scope",
+            null,
+            null);
+        String folderPath = "/category-relation-delete-scope/";
+        String childPath = folderPath + "child.txt";
+        cms.createResource(folderPath, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(childPath, CmsResourceTypePlain.getStaticTypeId());
+        cms.lockResource(folderPath);
+        cms.lockResource(childPath);
+
+        service.addResourceToCategory(cms, folderPath, category);
+        service.addResourceToCategory(cms, childPath, category);
+        assertCategoryPaths(service.readResourceCategories(cms, folderPath), category.getPath());
+        assertCategoryPaths(service.readResourceCategories(cms, childPath), category.getPath());
+
+        service.removeResourceFromCategory(cms, folderPath, category);
+
+        assertCategoryPaths(service.readResourceCategories(cms, folderPath));
+        assertCategoryPaths(service.readResourceCategories(cms, childPath), category.getPath());
+    }
+
+    /**
+     * Tests that removing a category does not remove categories whose paths merely have the same string prefix.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testRemovingCategoryDoesNotAffectPrefixSibling() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsCategoryService service = CmsCategoryService.getInstance();
+
+        CmsCategory root = service.createCategory(
+            cms,
+            null,
+            "relation-prefix-root",
+            "relation-prefix-root",
+            null,
+            null);
+        CmsCategory category = service.createCategory(cms, root, "bar", "bar", null, null);
+        CmsCategory prefixSibling = service.createCategory(cms, root, "bar-x", "bar-x", null, null);
+        String resourcePath = "/category-prefix-relation-delete-scope.txt";
+        cms.createResource(resourcePath, CmsResourceTypePlain.getStaticTypeId());
+        cms.lockResource(resourcePath);
+
+        service.addResourceToCategory(cms, resourcePath, category);
+        service.addResourceToCategory(cms, resourcePath, prefixSibling);
+        assertCategoryPaths(
+            service.readResourceCategories(cms, resourcePath),
+            root.getPath(),
+            category.getPath(),
+            prefixSibling.getPath());
+
+        service.removeResourceFromCategory(cms, resourcePath, category);
+
+        assertCategoryPaths(service.readResourceCategories(cms, resourcePath), root.getPath(), prefixSibling.getPath());
+    }
+
+    /**
      * Tests that underscores are correctly escaped when trying to remove categories with file names containing them.
      *
      * @throws Exception
