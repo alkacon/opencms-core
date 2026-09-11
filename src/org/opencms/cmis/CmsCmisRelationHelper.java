@@ -291,7 +291,7 @@ public class CmsCmisRelationHelper implements I_CmsCmisObjectHelper {
             CmsResource sourceResource = cms.readResource(sourceId);
             boolean wasLocked = CmsCmisUtil.ensureLock(cms, sourceResource);
             try {
-                CmsRelationFilter relFilter = CmsRelationFilter.ALL.filterType(
+                CmsRelationFilter relFilter = CmsRelationFilter.TARGETS.filterType(
                     getRelationType(rk.getRelType())).filterStructureId(rk.getTargetId());
                 cms.deleteRelationsFromResource(sourceResource.getRootPath(), relFilter);
             } finally {

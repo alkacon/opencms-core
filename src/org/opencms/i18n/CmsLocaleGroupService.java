@@ -194,7 +194,7 @@ public class CmsLocaleGroupService {
         try {
             m_cms.deleteRelationsFromResource(
                 secondaryPage,
-                CmsRelationFilter.ALL.filterType(CmsRelationType.LOCALE_VARIANT));
+                CmsRelationFilter.TARGETS.filterType(CmsRelationType.LOCALE_VARIANT));
             m_cms.addRelationToResource(
                 secondaryPage,
                 targetGroup.getPrimaryResource(),
@@ -367,7 +367,9 @@ public class CmsLocaleGroupService {
             if (resourceToModify != null) {
                 CmsLockActionRecord record = CmsLockUtil.ensureLock(m_cms, resourceToModify);
                 try {
-                    m_cms.deleteRelationsFromResource(resourceToModify, typeFilter);
+                    m_cms.deleteRelationsFromResource(
+                        resourceToModify,
+                        CmsRelationFilter.TARGETS.filterType(CmsRelationType.LOCALE_VARIANT));
                 } finally {
                     if (record.getChange() == LockChange.locked) {
                         m_cms.unlockResource(resourceToModify);
