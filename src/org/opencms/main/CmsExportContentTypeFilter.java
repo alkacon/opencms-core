@@ -32,12 +32,17 @@ import java.net.URI;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.net.HttpHeaders;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Servlet filter to set the Content-Type response header based on the request path, according to the rules configured in opencms-vfs.xml.
@@ -49,6 +54,12 @@ public class CmsExportContentTypeFilter implements Filter {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExportContentTypeFilter.class);
 
+    /** Parameter to disable/enable wrapping of responses. */
+    private static final String PARAM_WRAP_RESPONSES = "wrapResponses";
+
+    /** True if responses should be wrapped. */
+    private boolean m_wrapResponses = true;
+
     /**
      * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, jakarta.servlet.FilterChain)
      */
@@ -56,15 +67,85 @@ public class CmsExportContentTypeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
 
+        ServletResponse filterResponse = response;
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest)request;
+            HttpServletResponse httpResponse = (HttpServletResponse)response;
+
             String mimeType = getMimeType(httpRequest);
+
             if (mimeType != null) {
                 response.setContentType(mimeType);
+                if (m_wrapResponses) {
+                    // Jetty's servlet for serving static resources overrides the content type,
+                    // but it does that by first removing them and then re-applying them based on its own mime type lookup table.
+                    // The problem is, this table is incomplete and e.g. doesn't contain the mime type for .docx.
+                    // So (unless wrapping is disabled) we wrap the response in a wrapper that prevents the clearing of the content type.
+                    // It also tries to prevent duplication of the content type header.
+
+                    filterResponse = new HttpServletResponseWrapper(httpResponse) {
+
+                        @Override
+                        public void addHeader(String name, String value) {
+
+                            if (value != null) {
+                                if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)) {
+                                    LOG.debug("Content-Type header was added with value: " + value);
+                                    super.setHeader(name, value);
+                                } else {
+                                    super.addHeader(name, value);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void setContentType(String type) {
+
+                            if (type == null) {
+                                LOG.debug(
+                                    "setContentType was called with null value, ignoring it - OpenCmsContentType is "
+                                        + mimeType
+                                        + " [url: "
+                                        + httpRequest.getRequestURL()
+                                        + "]");
+                            } else {
+                                LOG.debug("setContentType was called with value: " + type);
+                                super.setContentType(type);
+                            }
+                        }
+
+                        @Override
+                        public void setHeader(String name, String value) {
+
+                            if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name) && (value == null)) {
+                                LOG.debug(
+                                    "Ignoring clearing of content type by servlet container - OpenCms content type is "
+                                        + mimeType
+                                        + " [url: "
+                                        + httpRequest.getRequestURL()
+                                        + "]");
+                            } else {
+                                super.setHeader(name, value);
+                            }
+                        }
+                    };
+                }
             }
         }
-        chain.doFilter(request, response);
+        chain.doFilter(request, filterResponse);
 
+    }
+
+    /**
+     * @see jakarta.servlet.Filter#init(jakarta.servlet.FilterConfig)
+     */
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+        String wrapResponsesStr = filterConfig.getInitParameter(PARAM_WRAP_RESPONSES);
+        if (wrapResponsesStr != null) {
+            m_wrapResponses = Boolean.parseBoolean(wrapResponsesStr);
+        }
     }
 
     /**
