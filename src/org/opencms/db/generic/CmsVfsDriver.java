@@ -105,6 +105,16 @@ import org.apache.commons.logging.Log;
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
+    /**
+     * Used to distinguish the different contexts in which relation conditions are assembled.
+     */
+    protected static enum RelationConditionMode {
+        /** For reading relations. */
+        read,
+        /** For deleting relations. */
+        delete
+    }
+
     /** Contains the macro replacement value for the offline project. */
     protected static final String OFFLINE = "OFFLINE";
 
@@ -1193,7 +1203,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, true));
+                queryBuf.append(
+                    prepareRelationConditions(RelationConditionMode.delete, projectId, filter, resource, params, true));
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
@@ -1211,7 +1222,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_DELETE_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, false));
+                queryBuf.append(
+                    prepareRelationConditions(
+                        RelationConditionMode.delete,
+                        projectId,
+                        filter,
+                        resource,
+                        params,
+                        false));
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
@@ -2364,7 +2382,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, true));
+                queryBuf.append(
+                    prepareRelationConditions(RelationConditionMode.read, projectId, filter, resource, params, true));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(queryBuf.toString());
                 }
@@ -2389,7 +2408,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 StringBuffer queryBuf = new StringBuffer(256);
                 queryBuf.append(m_sqlManager.readQuery(projectId, "C_READ_RELATIONS"));
-                queryBuf.append(prepareRelationConditions(projectId, filter, resource, params, false));
+                queryBuf.append(
+                    prepareRelationConditions(RelationConditionMode.read, projectId, filter, resource, params, false));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(queryBuf.toString());
                 }
@@ -4369,6 +4389,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * Build the whole WHERE sql statement part for the given relation filter.<p>
      *
+     * @param mode the relation condition mode - indicates what the conditions will be used for
      * @param projectId the current project id
      * @param filter the filter
      * @param resource the resource (may be null, if you want to delete all relations for the resource in the filter)
@@ -4378,6 +4399,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @return the WHERE sql statement part string
      */
     protected String prepareRelationConditions(
+        RelationConditionMode mode,
         CmsUUID projectId,
         CmsRelationFilter filter,
         CmsResource resource,
@@ -4401,7 +4423,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         params.add(escapeDbWildcard(resource.getRootPath()) + '%');
                     }
                 } else if (filter.isTarget() && !checkSource) {
-                    if (!filter.isIncludeSubresources()) {
+                    if (!filter.isIncludeSubresources() || (mode == RelationConditionMode.delete)) {
+                        // the mode check above is there to *not* silently remove categories for everything below the passed in resource!
                         conditions.append(m_sqlManager.readQuery(projectId, "C_RELATION_FILTER_SOURCE_ID"));
                         params.add(resource.getStructureId().toString());
                     } else {
