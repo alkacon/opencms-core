@@ -30,20 +30,31 @@ package org.opencms.db.storage;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.opencms.configuration.CmsImageCacheConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.storage.s3.CmsS3ClientConfiguration;
 import org.opencms.loader.CmsImageCacheFactory;
 import org.opencms.loader.CmsS3ImageCache;
 import org.opencms.loader.I_CmsImageCache;
+import org.opencms.loader.imagecache.CmsImageCacheAccessRenewal;
+import org.opencms.loader.imagecache.CmsImageCacheEntry;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceRequest;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceResult;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceService;
+import org.opencms.loader.imagecache.CmsS3ImageCacheMaintenance;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -241,6 +252,54 @@ public class TestCmsS3StorageIntegration {
         return (value == null) || (value.trim().length() == 0);
     }
 
+    /** Tests access-triggered renewal against the configured S3-compatible backend. */
+    @Test
+    public void testImageCacheAccessTriggeredRenewal() throws Exception {
+
+        String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
+        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
+        String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
+        boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
+        ensureBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
+        CmsS3ClientConfiguration s3Configuration = CmsS3ClientConfiguration.createDefault(
+            endpoint,
+            bucket,
+            accessKey,
+            secretKey,
+            pathStyle);
+        CmsS3ImageCache cache = new CmsS3ImageCache(
+            s3Configuration,
+            ".opencms-test/access-renewal/" + UUID.randomUUID().toString());
+        try {
+            cache.write("image.jpg", new byte[] {1, 2, 3});
+            CmsImageCacheMaintenanceService service = CmsImageCacheMaintenanceService.create(cache);
+            CmsImageCacheEntry before = service.getEntry("image.jpg");
+            Thread.sleep(100L);
+            CmsImageCacheConfiguration policy = new CmsImageCacheConfiguration();
+            policy.setRetention("renew-on-use", "PT0.02S", "PT0.01S", "PT0S");
+            policy.validate();
+
+            try (CmsImageCacheAccessRenewal renewal = CmsImageCacheAccessRenewal.create(cache, policy)) {
+                cache.writeTo("image.jpg", new ByteArrayOutputStream());
+                renewal.recordAccess("image.jpg");
+                long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+                CmsImageCacheEntry current = service.getEntry("image.jpg");
+                while (!current.getLastModified().isAfter(before.getLastModified()) && (System.nanoTime() < deadline)) {
+                    Thread.sleep(20L);
+                    current = service.getEntry("image.jpg");
+                }
+                assertTrue(current.getLastModified().isAfter(before.getLastModified()));
+            }
+        } finally {
+            try {
+                cache.clear();
+            } finally {
+                cache.close();
+            }
+        }
+    }
+
     /**
      * Tests selecting and validating an independent S3 image cache backend.<p>
      *
@@ -271,6 +330,100 @@ public class TestCmsS3StorageIntegration {
 
         try (I_CmsImageCache imageCache = CmsImageCacheFactory.create(configuration)) {
             assertInstanceOf(CmsS3ImageCache.class, imageCache);
+        }
+    }
+
+    /**
+     * Tests prefix metadata scanning and multi-object image cache deletion across listing pages.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testImageCacheMaintenanceScanAndBatchDelete() throws Exception {
+
+        String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
+        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
+        String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
+        boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
+        ensureBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
+        CmsS3ClientConfiguration configuration = CmsS3ClientConfiguration.createDefault(
+            endpoint,
+            bucket,
+            accessKey,
+            secretKey,
+            pathStyle);
+        String testId = UUID.randomUUID().toString();
+        CmsS3ImageCache cache = new CmsS3ImageCache(configuration, ".opencms-test/maintenance/" + testId);
+        CmsS3ImageCache siblingCache = new CmsS3ImageCache(
+            configuration,
+            ".opencms-test/maintenance-sibling/" + testId);
+        int objectCount = Integer.parseInt(getConfig(PROP_LISTING_COUNT, ENV_LISTING_COUNT, "1005"));
+        try {
+            for (int i = 0; i < objectCount; i++) {
+                cache.write("folder/image-" + i + ".jpg", new byte[] {(byte)i});
+            }
+            siblingCache.write("must-survive.jpg", new byte[] {42});
+            CmsImageCacheMaintenanceService service = new CmsImageCacheMaintenanceService(
+                new CmsS3ImageCacheMaintenance(cache, 200, 3));
+            List<CmsImageCacheEntry> entries = new ArrayList<CmsImageCacheEntry>();
+
+            service.visitEntries(entries::add);
+
+            assertEquals(objectCount, entries.size());
+            assertTrue(entries.stream().allMatch(entry -> entry.getLastModified() != null));
+            assertNotNull(entries.get(0).getRevision());
+
+            CmsImageCacheEntry renewalEntry = entries.get(0);
+            assertNotNull(service.getEntry(renewalEntry.getKey()));
+            CmsImageCacheEntry staleRenewalEntry = new CmsImageCacheEntry(
+                renewalEntry.getKey(),
+                renewalEntry.getLength(),
+                renewalEntry.getLastModified(),
+                "stale-revision");
+            CmsImageCacheMaintenanceResult staleRenewalResult = service.execute(
+                CmsImageCacheMaintenanceRequest.renew(
+                    java.util.Collections.singletonList(staleRenewalEntry),
+                    Instant.now()));
+            assertEquals(1, staleRenewalResult.getSkipped());
+
+            Thread.sleep(25L);
+            CmsImageCacheMaintenanceResult renewalResult = service.execute(
+                CmsImageCacheMaintenanceRequest.renew(
+                    java.util.Collections.singletonList(renewalEntry),
+                    Instant.now()));
+            assertEquals(1, renewalResult.getSucceeded());
+            List<CmsImageCacheEntry> renewedEntries = new ArrayList<CmsImageCacheEntry>();
+            service.visitEntries(renewedEntries::add);
+            CmsImageCacheEntry renewedEntry = renewedEntries.stream().filter(
+                entry -> entry.getKey().equals(renewalEntry.getKey())).findFirst().orElseThrow(
+                    () -> new AssertionError("Renewed S3 image cache entry is missing."));
+            assertTrue(renewedEntry.getLastModified().isAfter(renewalEntry.getLastModified()));
+
+            int selectedDeleteCount = Math.min(405, entries.size());
+            CmsImageCacheMaintenanceResult result = service.execute(
+                CmsImageCacheMaintenanceRequest.delete(
+                    new ArrayList<CmsImageCacheEntry>(entries.subList(0, selectedDeleteCount))));
+
+            assertTrue(result.isSuccessful());
+            assertEquals(selectedDeleteCount, result.getSucceeded());
+            CmsImageCacheMaintenanceResult clearResult = service.execute(CmsImageCacheMaintenanceRequest.clear());
+            assertTrue(clearResult.isSuccessful());
+            List<CmsImageCacheEntry> remaining = new ArrayList<CmsImageCacheEntry>();
+            service.visitEntries(remaining::add);
+            assertTrue(remaining.isEmpty());
+            assertTrue(siblingCache.exists("must-survive.jpg"));
+        } finally {
+            try {
+                cache.clear();
+            } finally {
+                cache.close();
+            }
+            try {
+                siblingCache.clear();
+            } finally {
+                siblingCache.close();
+            }
         }
     }
 

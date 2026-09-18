@@ -60,6 +60,9 @@ public class CmsImageVariationsTable extends Table {
     /**The length property. */
     protected static final String PROP_LENGTH = "length";
 
+    /** The last modification time property. */
+    protected static final String PROP_LAST_MODIFIED = "lastModified";
+
     /**Indexed container.*/
     private IndexedContainer m_container;
 
@@ -80,6 +83,7 @@ public class CmsImageVariationsTable extends Table {
         m_container.addContainerProperty(PROP_NAME, String.class, "");
         m_container.addContainerProperty(PROP_DIMENSION, String.class, "");
         m_container.addContainerProperty(PROP_LENGTH, String.class, "");
+        m_container.addContainerProperty(PROP_LAST_MODIFIED, String.class, "");
 
         List<CmsVariationBean> variations = CmsImageCacheTable.HELPER.getVariations(resource);
         for (CmsVariationBean var : variations) {
@@ -87,6 +91,7 @@ public class CmsImageVariationsTable extends Table {
             item.getItemProperty(PROP_NAME).setValue(var.getName());
             item.getItemProperty(PROP_DIMENSION).setValue(var.getDimensions());
             item.getItemProperty(PROP_LENGTH).setValue(var.getLength());
+            item.getItemProperty(PROP_LAST_MODIFIED).setValue(var.getDateLastModified());
         }
 
         setContainerDataSource(m_container);
@@ -95,12 +100,15 @@ public class CmsImageVariationsTable extends Table {
         setColumnHeader(PROP_DIMENSION, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_SIZE_0));
         setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0));
         setColumnHeader(PROP_LENGTH, CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0));
+        setColumnHeader(
+            PROP_LAST_MODIFIED,
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LIST_COLS_LAST_MODIFIED_0));
 
         setItemIconPropertyId(PROP_ICON);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
         setWidth("100%");
         setHeight("500px");
-        setVisibleColumns(PROP_NAME, PROP_DIMENSION, PROP_LENGTH);
+        setVisibleColumns(PROP_NAME, PROP_DIMENSION, PROP_LENGTH, PROP_LAST_MODIFIED);
 
     }
 }

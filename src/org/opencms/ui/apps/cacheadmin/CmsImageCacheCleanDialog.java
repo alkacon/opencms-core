@@ -27,18 +27,17 @@
 
 package org.opencms.ui.apps.cacheadmin;
 
-import org.opencms.loader.CmsImageLoader;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.cacheadmin.CmsFlushCache.I_CloseableDialog;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
+import org.opencms.ui.report.CmsReportDialog;
 
+import java.time.Instant;
 import java.util.Calendar;
-import java.util.Collections;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -94,9 +93,6 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
 
                 flushCache();
                 m_closeRunnable.run();
-                if (m_okRunnable != null) {
-                    m_okRunnable.run();
-                }
             }
         });
         m_cancelButton.addClickListener(new ClickListener() {
@@ -133,10 +129,11 @@ public class CmsImageCacheCleanDialog extends CmsBasicDialog implements I_Closea
      */
     void flushCache() {
 
-        float age = (System.currentTimeMillis() - m_dateField.getDate().getTime()) / (60f * 60f * 1000f);
-        OpenCms.fireCmsEvent(
-            new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                Collections.<String, Object> singletonMap(CmsImageLoader.PARAM_CLEAR_IMAGES_CACHE, "" + age)));
+        Instant cutoff = m_dateField.getDate().toInstant();
+        CmsImageCacheClearThread thread = new CmsImageCacheClearThread(A_CmsUI.getCmsObject(), cutoff);
+        CmsReportDialog.showReportDialog(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_CLEAR_REPORT_TITLE_0),
+            thread,
+            m_okRunnable);
     }
 }

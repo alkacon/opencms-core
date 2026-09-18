@@ -28,6 +28,7 @@
 	defaultcontentencoding,
 	memorymonitor?,
 	flexcache,
+	imagecache?,
 	http-authentication,
 	resultcache,
 	storedcontentinfocache?,
@@ -329,6 +330,48 @@
 -->
 <!ELEMENT device-selector EMPTY>
 <!ATTLIST device-selector class CDATA #REQUIRED>
+
+
+<!--
+# Image cache retention and maintenance configuration.
+#
+# If this optional element is absent, the legacy RFS image cache behavior applies.
+# FS and S3 image caches require this element. Durations use the ISO-8601
+# duration format, for example P60D, PT1H or PT5M. Max age is required for
+# modes fixed and renew-on-use. Renewal window and jitter are additionally
+# required for mode renew-on-use. All three time values must be absent for
+# mode external, which delegates retention completely to another system.
+-->
+<!ELEMENT imagecache (retention, cleanup?, rfs?, fs?, s3?)>
+
+<!ELEMENT retention EMPTY>
+<!ATTLIST retention
+	mode (external|fixed|renew-on-use) #REQUIRED
+	max-age CDATA #IMPLIED
+	renewal-window CDATA #IMPLIED
+	renewal-jitter CDATA #IMPLIED>
+
+<!ELEMENT cleanup EMPTY>
+<!ATTLIST cleanup
+	max-deletes-per-run CDATA #IMPLIED
+	max-runtime CDATA #IMPLIED>
+
+<!ELEMENT rfs EMPTY>
+<!ATTLIST rfs
+	touch-minimum-interval CDATA #IMPLIED>
+
+<!ELEMENT fs EMPTY>
+<!ATTLIST fs
+	touch-enabled (TRUE|true|FALSE|false) #IMPLIED
+	touch-concurrency CDATA #IMPLIED>
+
+<!ELEMENT s3 EMPTY>
+<!ATTLIST s3
+	delete-batch-size CDATA #IMPLIED
+	delete-concurrency CDATA #IMPLIED
+	copy-concurrency CDATA #IMPLIED
+	max-copies-per-second CDATA #IMPLIED
+	renewal-queue-capacity CDATA #IMPLIED>
 
 
 <!--

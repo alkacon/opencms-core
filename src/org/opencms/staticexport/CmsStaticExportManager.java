@@ -263,14 +263,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Temporary variable for reading the xml config file. */
     private CmsStaticExportRfsRule m_rfsTmpRule;
 
-    /** The shared cache configuration. */
-    private CmsSharedCacheConfiguration m_sharedCacheConfiguration = new CmsSharedCacheConfiguration();
-
     /** The number of backups stored for the export folder. */
     private Integer m_staticExportBackups;
 
     /** Indicates if the static export is enabled or disabled. */
     private boolean m_staticExportEnabled;
+
+    /** The shared cache configuration. */
+    private CmsSharedCacheConfiguration m_sharedCacheConfiguration = new CmsSharedCacheConfiguration();
 
     /** The path to where the static export will be written. */
     private String m_staticExportPath;

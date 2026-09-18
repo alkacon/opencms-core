@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsImageCacheConfiguration;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
@@ -752,6 +753,18 @@ public final class OpenCmsCore {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Returns the central image cache retention and maintenance configuration.<p>
+     *
+     * @return the image cache configuration
+     */
+    protected CmsImageCacheConfiguration getImageCacheConfiguration() {
+
+        CmsSystemConfiguration systemConfig = (CmsSystemConfiguration)m_configurationManager.getConfiguration(
+            CmsSystemConfiguration.class);
+        return systemConfig.getImageCacheConfiguration();
     }
 
     /**

@@ -50,6 +50,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_IMAGE_CACHE_CLEANUP_COUNT_1 = "LOG_IMAGE_CACHE_CLEANUP_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_CACHE_CLEANUP_EXTERNAL_RESULT_8 = "LOG_IMAGE_CACHE_CLEANUP_EXTERNAL_RESULT_8";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_CACHE_CLEANUP_EXTERNALLY_MANAGED_0 = "LOG_IMAGE_CACHE_CLEANUP_EXTERNALLY_MANAGED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1 = "LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1";
 
     /** Message constant for key in the resource bundle. */

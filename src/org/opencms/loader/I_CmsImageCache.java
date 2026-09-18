@@ -35,6 +35,31 @@ import java.io.OutputStream;
 public interface I_CmsImageCache extends AutoCloseable {
 
     /**
+     * Visitor for image cache entries.<p>
+     */
+    interface I_CmsImageCacheEntryVisitor {
+
+        /**
+         * Visits an image cache entry.<p>
+         *
+         * @param key the image cache key
+         * @param length the image cache entry length
+         * @throws Exception if visiting fails
+         */
+        void visit(String key, long length) throws Exception;
+    }
+
+    /**
+     * Clears all image cache entries.<p>
+     *
+     * @throws Exception if clearing fails
+     */
+    default void clear() throws Exception {
+
+        throw new UnsupportedOperationException("Clearing this image cache is not supported.");
+    }
+
+    /**
      * Closes the image cache and releases associated resources.<p>
      *
      * @throws Exception if closing fails
@@ -54,6 +79,22 @@ public interface I_CmsImageCache extends AutoCloseable {
     boolean exists(String key) throws Exception;
 
     /**
+     * Performs an authoritative existence check which does not rely on locally cached positive metadata.<p>
+     *
+     * This is used for requests which do not read the cache entry body and can therefore not detect a stale positive
+     * existence result while streaming. Implementations without a positive metadata cache can use the default
+     * implementation.<p>
+     *
+     * @param key the image cache key
+     * @return <code>true</code> if the image cache entry exists in the backing store
+     * @throws Exception if the store access fails
+     */
+    default boolean existsAuthoritatively(String key) throws Exception {
+
+        return exists(key);
+    }
+
+    /**
      * Returns the image cache entry length.<p>
      *
      * @param key the image cache key
@@ -68,6 +109,45 @@ public interface I_CmsImageCache extends AutoCloseable {
      * @return <code>true</code> if ranges can be streamed
      */
     boolean supportsRangeDelivery();
+
+    /**
+     * Visits all image cache entries.<p>
+     *
+     * @param visitor the image cache entry visitor
+     * @throws Exception if listing fails
+     */
+    default void visitEntries(I_CmsImageCacheEntryVisitor visitor) throws Exception {
+
+        throw new UnsupportedOperationException("Listing this image cache is not supported.");
+    }
+
+    /**
+     * Visits image cache entries whose normalized keys start with the given prefix.<p>
+     *
+     * Implementations with a prefix-aware storage backend should override this method to apply the prefix while
+     * listing. The default implementation filters the result of {@link #visitEntries(I_CmsImageCacheEntryVisitor)}.
+     *
+     * @param prefix the image cache key prefix, or an empty string for all entries
+     * @param visitor the image cache entry visitor
+     * @throws Exception if listing fails
+     */
+    default void visitEntries(String prefix, I_CmsImageCacheEntryVisitor visitor) throws Exception {
+
+        String normalizedPrefix = prefix == null ? "" : prefix;
+        while (normalizedPrefix.startsWith("/")) {
+            normalizedPrefix = normalizedPrefix.substring(1);
+        }
+        final String keyPrefix = normalizedPrefix;
+        visitEntries((key, length) -> {
+            String normalizedKey = key;
+            while (normalizedKey.startsWith("/")) {
+                normalizedKey = normalizedKey.substring(1);
+            }
+            if (normalizedKey.startsWith(keyPrefix)) {
+                visitor.visit(key, length);
+            }
+        });
+    }
 
     /**
      * Writes an image cache entry.<p>

@@ -27,12 +27,20 @@
 
 package org.opencms.scheduler.jobs;
 
+import org.opencms.configuration.CmsImageCacheConfiguration;
+import org.opencms.configuration.CmsImageCacheConfiguration.RetentionMode;
 import org.opencms.file.CmsObject;
 import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.CmsS3ImageCache;
+import org.opencms.loader.I_CmsImageCache;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceCleaner;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceService;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -45,12 +53,17 @@ import org.apache.commons.logging.Log;
  * <dt><code>maxage={time in hours}</code></dt>
  * <dd>Specifies the maximum age (in hours) images can be unused before they are removed from the cache.
  * Any image in the image cache folder that has a RFS date of last modification older than this time is considered
- * expired and is therefore deleted.</dd>
+ * expired and is therefore deleted. This parameter is only used by the classic RFS image cache. Shared-FS and S3
+ * use the retention and cleanup settings from {@code opencms-system.xml}. Cleanup is skipped when the retention mode
+ * is {@code external}.</dd>
  * </dl>
  *
  * @since 6.2.0
  */
 public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
+
+    /** Number of Shared-FS entries passed to one delete request. */
+    private static final int FS_DELETE_BATCH_SIZE = 1000;
 
     /** Unlock parameter. */
     public static final String PARAM_MAXAGE = "maxage";
@@ -69,11 +82,57 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
      */
     public static int cleanImageCache(float maxAge) {
 
+        String repositoryPath = CmsImageLoader.getImageRepositoryPath();
+        if ((CmsImageLoader.getImageCache() != null) || (repositoryPath == null)) {
+            return 0;
+        }
         // calculate oldest possible date for the cache files
         long expireDate = System.currentTimeMillis() - (long)(maxAge * 60f * 60f * 1000f);
-        File basedir = new File(CmsImageLoader.getImageRepositoryPath());
+        File basedir = new File(repositoryPath);
         // perform the cache cleanup
         return cleanImageCache(expireDate, basedir);
+    }
+
+    /**
+     * Cleans an external image cache according to the central XML configuration.<p>
+     *
+     * @param imageCache the external image cache
+     * @param configuration the image cache configuration
+     * @param now the time used to calculate the retention cutoff
+     * @param listener the optional progress listener
+     * @return the cleanup result
+     * @throws Exception if cleanup fails
+     */
+    static CmsImageCacheMaintenanceCleaner.Result cleanExternalImageCache(
+        I_CmsImageCache imageCache,
+        CmsImageCacheConfiguration configuration,
+        Instant now,
+        CmsImageCacheMaintenanceCleaner.I_ProgressListener listener)
+    throws Exception {
+
+        if ((configuration == null) || !configuration.isConfigured()) {
+            throw new IllegalArgumentException("External image cache cleanup requires an imagecache configuration.");
+        }
+        if (configuration.getRetentionMode() == RetentionMode.external) {
+            return new CmsImageCacheMaintenanceCleaner.Result();
+        }
+        CmsImageCacheMaintenanceService service = CmsImageCacheMaintenanceService.create(imageCache, configuration);
+        int deleteBatchSize = Math.min(FS_DELETE_BATCH_SIZE, configuration.getCleanupMaxDeletesPerRun());
+        if (imageCache instanceof CmsS3ImageCache) {
+            long concurrentBatchSize = (long)configuration.getS3DeleteBatchSize()
+                * configuration.getS3DeleteConcurrency();
+            deleteBatchSize = (int)Math.min(
+                configuration.getCleanupMaxDeletesPerRun(),
+                Math.min(Integer.MAX_VALUE, concurrentBatchSize));
+        }
+        Instant cutoff = now.minus(configuration.getMaxAge());
+        return CmsImageCacheMaintenanceCleaner.delete(
+            service,
+            cutoff,
+            deleteBatchSize,
+            configuration.getCleanupMaxDeletesPerRun(),
+            configuration.getCleanupMaxRuntime(),
+            listener);
     }
 
     /**
@@ -128,9 +187,43 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
      */
     public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
-        if (!CmsImageLoader.isEnabled() || (CmsImageLoader.getImageRepositoryPath() == null)) {
+        if (!CmsImageLoader.isEnabled()) {
             // scaling functions are not available
             return Messages.get().getBundle().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
+        }
+        I_CmsImageCache imageCache = CmsImageLoader.getImageCache();
+        if (imageCache != null) {
+            CmsImageCacheConfiguration configuration = OpenCms.getImageCacheConfiguration();
+            if (configuration.getRetentionMode() == RetentionMode.external) {
+                return Messages.get().getBundle().key(Messages.LOG_IMAGE_CACHE_CLEANUP_EXTERNALLY_MANAGED_0);
+            }
+            CmsImageCacheMaintenanceCleaner.Result result = cleanExternalImageCache(
+                imageCache,
+                configuration,
+                Instant.now(),
+                (progress, batch) -> {
+                    for (Map.Entry<String, Exception> failure : batch.getFailures().entrySet()) {
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
+                                failure.getKey()),
+                            failure.getValue());
+                    }
+                });
+            return Messages.get().getBundle().key(
+                Messages.LOG_IMAGE_CACHE_CLEANUP_EXTERNAL_RESULT_8,
+                new Object[] {
+                    imageCache instanceof CmsS3ImageCache ? "s3" : "shared-fs",
+                    Long.valueOf(result.getScanned()),
+                    Long.valueOf(result.getMatched()),
+                    Long.valueOf(result.getSucceeded()),
+                    Long.valueOf(result.getSkipped()),
+                    Long.valueOf(result.getFailed()),
+                    Boolean.valueOf(result.isDeleteLimitReached()),
+                    Boolean.valueOf(result.isRuntimeLimitReached())});
+        }
+        if (CmsImageLoader.getImageRepositoryPath() == null) {
+            throw new IllegalStateException("The RFS image cache repository is not initialized.");
         }
 
         String maxAgeStr = parameters.get(PARAM_MAXAGE);

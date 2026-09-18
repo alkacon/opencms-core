@@ -53,6 +53,18 @@ public class CmsReportDialog extends CmsBasicDialog {
      */
     public CmsReportDialog(A_CmsReportThread thread, final Window window) {
 
+        this(thread, window, null);
+    }
+
+    /**
+     * Public constructor with an optional close action.<p>
+     *
+     * @param thread to be run
+     * @param window holds the dialog
+     * @param closeAction the action to run after closing the dialog, or {@code null}
+     */
+    public CmsReportDialog(A_CmsReportThread thread, final Window window, final Runnable closeAction) {
+
         Button close = createButtonClose();
         close.addClickListener(new ClickListener() {
 
@@ -61,6 +73,9 @@ public class CmsReportDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 window.close();
+                if (closeAction != null) {
+                    closeAction.run();
+                }
             }
 
         });
@@ -85,10 +100,22 @@ public class CmsReportDialog extends CmsBasicDialog {
      */
     public static void showReportDialog(String title, A_CmsReportThread thread) {
 
+        showReportDialog(title, thread, null);
+    }
+
+    /**
+     * Creates a new window and displays the given report thread's output in it.<p>
+     *
+     * @param title the title for the window
+     * @param thread the thread whose report should be displayed
+     * @param closeAction the action to run after closing the report, or {@code null}
+     */
+    public static void showReportDialog(String title, A_CmsReportThread thread, Runnable closeAction) {
+
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
         window.setCaption(title);
         window.setHeight("500px");
-        window.setContent(new CmsReportDialog(thread, window));
+        window.setContent(new CmsReportDialog(thread, window, closeAction));
         A_CmsUI.get().addWindow(window);
         thread.start();
     }

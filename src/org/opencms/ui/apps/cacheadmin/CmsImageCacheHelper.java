@@ -34,12 +34,14 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.I_CmsImageCache;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -203,6 +205,41 @@ public class CmsImageCacheHelper {
     }
 
     /**
+     * Finds the original VFS image resource for a cache entry name.<p>
+     *
+     * @param cms the CMS context
+     * @param imageName the image cache entry name
+     * @return the original resource, or <code>null</code>
+     */
+    private CmsResource findOriginalResource(CmsObject cms, String imageName) {
+
+        String candidate = imageName;
+        boolean found = false;
+        while (!found) {
+            String path = CmsResource.getParentFolder(candidate);
+            String name = candidate.substring(path.length());
+            String ext = CmsFileUtil.getExtension(candidate);
+            String nameWoExt = name.substring(0, name.length() - ext.length());
+            int pos = nameWoExt.lastIndexOf("_");
+            String newName = path;
+            found = (pos < 0);
+            if (!found) {
+                newName += nameWoExt.substring(0, pos);
+            } else {
+                newName += nameWoExt;
+            }
+            newName += ext;
+            try {
+                return cms.readResource(newName, CmsResourceFilter.ALL);
+            } catch (Exception e) {
+                // it could be a variation
+            }
+            candidate = newName;
+        }
+        return null;
+    }
+
+    /**
      * Clones a CmsObject.<p>
      *
      * @param cms the CmsObject to be cloned.
@@ -218,6 +255,25 @@ public class CmsImageCacheHelper {
         clonedCms.getRequestContext().setSiteRoot("");
 
         return clonedCms;
+    }
+
+    /**
+     * Reads image dimensions from an external image cache entry.<p>
+     *
+     * @param imageCache the external image cache
+     * @param key the image cache key
+     * @return the formatted image dimensions, or an empty string
+     */
+    private String getImageDimensions(I_CmsImageCache imageCache, String key) {
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            imageCache.writeTo(key, out);
+            BufferedImage image = Simapi.read(out.toByteArray());
+            return "" + image.getWidth() + " x " + image.getHeight() + "px";
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     /**
@@ -247,11 +303,19 @@ public class CmsImageCacheHelper {
      */
     private void init(CmsObject cms, boolean withVariations, boolean showSize, boolean statsOnly) {
 
-        File basedir = new File(CmsImageLoader.getImageRepositoryPath());
+        String repositoryPath = CmsImageLoader.getImageRepositoryPath();
         try {
             CmsObject clonedCms = getClonedCmsObject(cms);
-            visitImages(clonedCms, basedir, withVariations, showSize, statsOnly);
-        } catch (CmsException e) {
+            I_CmsImageCache imageCache = CmsImageLoader.getImageCache();
+            if (imageCache != null) {
+                imageCache.visitEntries(
+                    (
+                        key,
+                        length) -> visitImage(clonedCms, imageCache, key, length, withVariations, showSize, statsOnly));
+            } else if (repositoryPath != null) {
+                visitImages(clonedCms, new File(repositoryPath), withVariations, showSize, statsOnly);
+            }
+        } catch (Exception e) {
             // should never happen
         }
         m_variations = Collections.unmodifiableMap(m_variations);
@@ -277,31 +341,7 @@ public class CmsImageCacheHelper {
         if (!oName.startsWith("/")) {
             oName = "/" + oName;
         }
-        String imgName = oName;
-        CmsResource res = null;
-        boolean found = false;
-        while (!found) {
-            String path = CmsResource.getParentFolder(imgName);
-            String name = imgName.substring(path.length());
-            String ext = CmsFileUtil.getExtension(imgName);
-            String nameWoExt = name.substring(0, name.length() - ext.length());
-            int pos = nameWoExt.lastIndexOf("_");
-            String newName = path;
-            found = (pos < 0);
-            if (!found) {
-                newName += nameWoExt.substring(0, pos);
-            } else {
-                newName += nameWoExt;
-            }
-            newName += ext;
-            try {
-                res = cms.readResource(newName, CmsResourceFilter.ALL);
-                found = true;
-            } catch (Exception e) {
-                // it could be a variation
-            }
-            imgName = newName;
-        }
+        CmsResource res = findOriginalResource(cms, oName);
 
         if (res != null) {
             oName = res.getRootPath();
@@ -345,6 +385,68 @@ public class CmsImageCacheHelper {
         }
         oName += f.length() + " Bytes)";
         variations.add(oName);
+    }
+
+    /**
+     * Visits a single image in an external image cache.<p>
+     *
+     * @param cms the CMS context
+     * @param imageCache the external image cache
+     * @param key the image cache key
+     * @param length the image cache entry length
+     * @param withVariations whether variations should be collected
+     * @param showSize whether image dimensions should be read
+     * @param statsOnly whether only statistics should be collected
+     */
+    private void visitImage(
+        CmsObject cms,
+        I_CmsImageCache imageCache,
+        String key,
+        long length,
+        boolean withVariations,
+        boolean showSize,
+        boolean statsOnly) {
+
+        m_variationsCount++;
+        m_variationsSize += length;
+        String cacheName = CmsStringUtil.substitute(key, "\\", "/");
+        if (!cacheName.startsWith("/")) {
+            cacheName = "/" + cacheName;
+        }
+        CmsResource res = findOriginalResource(cms, cacheName);
+        String imageName = (res != null) ? res.getRootPath() : cacheName;
+        m_filePaths.put(imageName, key);
+        List variations = (List)m_variations.get(imageName);
+        if (variations == null) {
+            variations = new ArrayList();
+            m_variations.put(imageName, variations);
+            if (statsOnly) {
+                return;
+            }
+            if (res != null) {
+                m_lengths.put(imageName, "" + res.getLength() + " Bytes");
+                if (showSize) {
+                    m_sizes.put(imageName, getSingleSize(cms, res));
+                }
+            } else {
+                m_lengths.put(imageName, "" + length + " Bytes");
+                if (showSize) {
+                    m_sizes.put(imageName, getImageDimensions(imageCache, key));
+                }
+            }
+        }
+        if (!withVariations) {
+            return;
+        }
+        StringBuilder variation = new StringBuilder(imageName).append(" (");
+        if (showSize) {
+            String dimensions = getImageDimensions(imageCache, key);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(dimensions)) {
+                variation.append(dimensions).append(" - ");
+            }
+        }
+        variation.append(length).append(" Bytes)");
+        variations.add(variation.toString());
     }
 
     /**

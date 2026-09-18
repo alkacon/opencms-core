@@ -27,14 +27,17 @@
 
 package org.opencms.loader;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -49,6 +52,19 @@ import com.google.common.cache.CacheBuilder;
  * File system based storage for generated image cache entries.<p>
  */
 public class CmsFsImageCache extends CmsRfsImageCache {
+
+    /** Exception wrapper used to transport visitor exceptions through the file visitor API. */
+    private static final class EntryVisitorException extends IOException {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** Creates an exception wrapper. */
+        EntryVisitorException(Exception cause) {
+
+            super(cause);
+        }
+    }
 
     /** Maximum number of file lengths kept locally. */
     private static final int LENGTH_CACHE_MAX_SIZE = 10000;
@@ -71,6 +87,40 @@ public class CmsFsImageCache extends CmsRfsImageCache {
 
         super(path);
         validateAvailable();
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#clear()
+     */
+    @Override
+    public void clear() throws Exception {
+
+        try {
+            Path repository = getRepository();
+            Files.walkFileTree(repository, new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path directory, IOException exception) throws IOException {
+
+                    if (exception != null) {
+                        throw exception;
+                    }
+                    if (!repository.equals(directory)) {
+                        Files.deleteIfExists(directory);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+
+                    Files.deleteIfExists(path);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } finally {
+            m_lengthCache.invalidateAll();
+        }
     }
 
     /**
@@ -117,9 +167,77 @@ public class CmsFsImageCache extends CmsRfsImageCache {
         if (cachedLength != null) {
             return cachedLength.longValue();
         }
-        long length = Files.size(path);
-        m_lengthCache.put(path, Long.valueOf(length));
-        return length;
+        try {
+            long length = Files.size(path);
+            m_lengthCache.put(path, Long.valueOf(length));
+            return length;
+        } catch (NoSuchFileException e) {
+            m_lengthCache.invalidate(path);
+            throw new CmsImageCacheEntryNotFoundException(key, e);
+        }
+    }
+
+    /**
+     * Invalidates locally cached metadata for an image cache entry.<p>
+     *
+     * This is used after maintenance operations which modify the shared file system outside the regular cache
+     * access path.<p>
+     *
+     * @param key the image cache key
+     */
+    public void invalidateLocalMetadata(String key) {
+
+        m_lengthCache.invalidate(getPath(key));
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#visitEntries(org.opencms.loader.I_CmsImageCache.I_CmsImageCacheEntryVisitor)
+     */
+    @Override
+    public void visitEntries(I_CmsImageCacheEntryVisitor visitor) throws Exception {
+
+        visitEntries("", visitor);
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#visitEntries(java.lang.String, org.opencms.loader.I_CmsImageCache.I_CmsImageCacheEntryVisitor)
+     */
+    @Override
+    public void visitEntries(String prefix, I_CmsImageCacheEntryVisitor visitor) throws Exception {
+
+        String normalizedPrefix = prefix == null ? "" : prefix;
+        while (normalizedPrefix.startsWith("/")) {
+            normalizedPrefix = normalizedPrefix.substring(1);
+        }
+        int lastSlash = normalizedPrefix.lastIndexOf('/');
+        String directoryPrefix = lastSlash < 0 ? "" : normalizedPrefix.substring(0, lastSlash + 1);
+        Path scanRoot = directoryPrefix.isEmpty() ? getRepository() : getPath(directoryPrefix);
+        if (!Files.isDirectory(scanRoot, LinkOption.NOFOLLOW_LINKS)) {
+            return;
+        }
+        final String keyPrefix = normalizedPrefix;
+        try {
+            Files.walkFileTree(scanRoot, new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) throws IOException {
+
+                    if (attributes.isRegularFile()) {
+                        String key = toKey(path);
+                        if (key.startsWith(keyPrefix)) {
+                            try {
+                                visitor.visit(key, attributes.size());
+                            } catch (Exception e) {
+                                throw new EntryVisitorException(e);
+                            }
+                        }
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (EntryVisitorException e) {
+            throw (Exception)e.getCause();
+        }
     }
 
     /**
@@ -164,6 +282,9 @@ public class CmsFsImageCache extends CmsRfsImageCache {
                 out.write(buffer, 0, read);
                 remaining -= read;
             }
+        } catch (NoSuchFileException e) {
+            m_lengthCache.invalidate(path);
+            throw new CmsImageCacheEntryNotFoundException(key, e);
         } catch (Exception e) {
             m_lengthCache.invalidate(path);
             throw e;
@@ -179,6 +300,9 @@ public class CmsFsImageCache extends CmsRfsImageCache {
         Path path = getPath(key);
         try {
             Files.copy(path, out);
+        } catch (NoSuchFileException e) {
+            m_lengthCache.invalidate(path);
+            throw new CmsImageCacheEntryNotFoundException(key, e);
         } catch (Exception e) {
             m_lengthCache.invalidate(path);
             throw e;
@@ -203,6 +327,12 @@ public class CmsFsImageCache extends CmsRfsImageCache {
             throw new IllegalArgumentException("Image cache key outside repository: " + key);
         }
         return result;
+    }
+
+    /** Returns a portable cache key for a repository path. */
+    private String toKey(Path path) {
+
+        return getRepository().relativize(path).toString().replace(path.getFileSystem().getSeparator(), "/");
     }
 
     /**

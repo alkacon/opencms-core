@@ -31,6 +31,11 @@ import org.opencms.file.I_CmsFileContentStreamHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for S3 storage operations.<p>
@@ -54,6 +59,34 @@ public interface I_CmsS3Client extends AutoCloseable {
         void visit(String key) throws Exception;
     }
 
+    /** Visitor for S3 object metadata. */
+    @FunctionalInterface
+    interface I_CmsS3ObjectMetadataVisitor {
+
+        /**
+         * Visits S3 object metadata.<p>
+         *
+         * @param metadata the object metadata
+         * @throws Exception if the visitor fails
+         */
+        void visit(CmsS3ObjectMetadata metadata) throws Exception;
+    }
+
+    /**
+     * Visitor for S3 objects.<p>
+     */
+    interface I_CmsS3ObjectVisitor {
+
+        /**
+         * Visits an S3 object.<p>
+         *
+         * @param key the object key
+         * @param length the object length
+         * @throws Exception if the visitor fails
+         */
+        void visit(String key, long length) throws Exception;
+    }
+
     /**
      * Closes the client and releases associated resources.<p>
      *
@@ -71,6 +104,30 @@ public interface I_CmsS3Client extends AutoCloseable {
      * @throws Exception if the deletion fails
      */
     void deleteObject(String key) throws Exception;
+
+    /**
+     * Deletes multiple objects.<p>
+     *
+     * The optimized S3 implementation supports at most 1000 keys per call.
+     * This default implementation preserves compatibility for other clients.<p>
+     *
+     * @param keys the object keys
+     * @return the per-object delete result
+     * @throws Exception if the complete request fails
+     */
+    default CmsS3DeleteResult deleteObjects(List<String> keys) throws Exception {
+
+        List<String> requestedKeys = new ArrayList<String>(keys);
+        Map<String, Exception> failures = new LinkedHashMap<String, Exception>();
+        for (String key : requestedKeys) {
+            try {
+                deleteObject(key);
+            } catch (Exception e) {
+                failures.put(key, e);
+            }
+        }
+        return new CmsS3DeleteResult(requestedKeys, failures);
+    }
 
     /**
      * Checks if an object exists in the specified bucket.<p>
@@ -115,6 +172,18 @@ public interface I_CmsS3Client extends AutoCloseable {
     }
 
     /**
+     * Returns an object's metadata.<p>
+     *
+     * @param key the identifier for the object
+     * @return the object metadata
+     * @throws Exception if the object can not be accessed
+     */
+    default CmsS3ObjectMetadata getObjectMetadata(String key) throws Exception {
+
+        return new CmsS3ObjectMetadata(key, getObjectLength(key), null, null);
+    }
+
+    /**
      * Uploads an object to the specified bucket.<p>
      *
      * @param key the unique identifier (path) for the object
@@ -138,6 +207,24 @@ public interface I_CmsS3Client extends AutoCloseable {
     }
 
     /**
+     * Renews an object by conditionally copying it onto itself.<p>
+     *
+     * The copy must only be applied when the source still has the expected revision. A missing object or revision
+     * mismatch is not an error and is reported by returning {@code false}. The S3 last-modified time is always
+     * assigned by the storage server.<p>
+     *
+     * @param key the object key
+     * @param expectedRevision the expected source revision
+     * @param renewalTime the requested renewal time
+     * @return {@code true} if the object was renewed, or {@code false} if it no longer matched
+     * @throws Exception if the copy fails
+     */
+    default boolean renewObject(String key, String expectedRevision, Instant renewalTime) throws Exception {
+
+        throw new UnsupportedOperationException("S3 object renewal is not supported by this client.");
+    }
+
+    /**
      * Validates that the configured bucket is accessible.<p>
      *
      * @throws Exception if the bucket can not be accessed
@@ -156,6 +243,36 @@ public interface I_CmsS3Client extends AutoCloseable {
     default void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
 
         throw new UnsupportedOperationException("S3 object listing is not supported by this client.");
+    }
+
+    /**
+     * Visits all objects in the configured bucket.<p>
+     *
+     * @param visitor the object visitor
+     * @throws Exception if listing fails
+     */
+    default void visitObjects(I_CmsS3ObjectVisitor visitor) throws Exception {
+
+        visitObjectKeys(key -> visitor.visit(key, getObjectLength(key)));
+    }
+
+    /**
+     * Visits object metadata for objects matching an optional prefix.<p>
+     *
+     * This compatibility implementation filters client-side and can not provide
+     * timestamps or revisions. Optimized clients should override it.<p>
+     *
+     * @param prefix the object key prefix, or {@code null}
+     * @param visitor the metadata visitor
+     * @throws Exception if listing fails
+     */
+    default void visitObjects(String prefix, I_CmsS3ObjectMetadataVisitor visitor) throws Exception {
+
+        visitObjects((key, length) -> {
+            if ((prefix == null) || key.startsWith(prefix)) {
+                visitor.visit(new CmsS3ObjectMetadata(key, length, null, null));
+            }
+        });
     }
 
     /**
@@ -182,6 +299,26 @@ public interface I_CmsS3Client extends AutoCloseable {
     }
 
     /**
+     * Writes an object byte range and returns the metadata received with the object response.<p>
+     *
+     * Optimized clients should override this method so that no additional metadata request is needed. The default
+     * implementation preserves compatibility by reading the range first and loading the metadata afterwards.<p>
+     *
+     * @param key the identifier for the object
+     * @param start the first byte to write
+     * @param length the number of bytes to write
+     * @param out the output stream to write to
+     * @return the object metadata
+     * @throws Exception if the object cannot be retrieved or written
+     */
+    default CmsS3ObjectMetadata writeObjectRangeToWithMetadata(String key, long start, long length, OutputStream out)
+    throws Exception {
+
+        writeObjectRangeTo(key, start, length, out);
+        return getObjectMetadata(key);
+    }
+
+    /**
      * Writes an object's content from the specified bucket to the given output stream.<p>
      *
      * @param key the identifier for the object
@@ -191,5 +328,22 @@ public interface I_CmsS3Client extends AutoCloseable {
     default void writeObjectTo(String key, OutputStream out) throws Exception {
 
         out.write(getObject(key));
+    }
+
+    /**
+     * Writes an object's content and returns the metadata received with the object response.<p>
+     *
+     * Optimized clients should override this method so that no additional metadata request is needed. The default
+     * implementation preserves compatibility by reading the object first and loading the metadata afterwards.<p>
+     *
+     * @param key the identifier for the object
+     * @param out the output stream to write to
+     * @return the object metadata
+     * @throws Exception if the object cannot be retrieved or written
+     */
+    default CmsS3ObjectMetadata writeObjectToWithMetadata(String key, OutputStream out) throws Exception {
+
+        writeObjectTo(key, out);
+        return getObjectMetadata(key);
     }
 }

@@ -27,11 +27,17 @@
 
 package org.opencms.staticexport;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.opencms.configuration.CmsImageCacheConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.loader.CmsFsImageCache;
+import org.opencms.loader.CmsImageCacheEntryNotFoundException;
 import org.opencms.loader.CmsImageLoader;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.I_CmsImageCache;
+import org.opencms.loader.imagecache.CmsImageCacheAccessRenewal;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
@@ -46,10 +52,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -312,12 +324,44 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
         /** Number of complete read calls. */
         private int m_readCalls;
 
+        /** Number of write calls. */
+        private int m_writeCalls;
+
+        /** Number of authoritative existence checks. */
+        private int m_authoritativeExistsCalls;
+
+        /** Number of complete reads which should report a missing entry. */
+        private int m_missingReadFailures;
+
+        /** Number of complete reads which should report a generic I/O failure. */
+        private int m_readFailures;
+
+        /** Number of range reads which should report a missing entry. */
+        private int m_missingRangeReadFailures;
+
+        /** Whether the next authoritative existence check should report a missing entry. */
+        private boolean m_missingAuthoritativeCheck;
+
         /**
          * @see org.opencms.loader.I_CmsImageCache#exists(java.lang.String)
          */
         public boolean exists(String key) {
 
             m_existsCalls++;
+            return m_content.containsKey(key);
+        }
+
+        /**
+         * @see org.opencms.loader.I_CmsImageCache#existsAuthoritatively(java.lang.String)
+         */
+        @Override
+        public boolean existsAuthoritatively(String key) {
+
+            m_authoritativeExistsCalls++;
+            if (m_missingAuthoritativeCheck) {
+                m_missingAuthoritativeCheck = false;
+                return false;
+            }
             return m_content.containsKey(key);
         }
 
@@ -343,6 +387,7 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
          */
         public void write(String key, byte[] content) {
 
+            m_writeCalls++;
             m_content.put(key, content);
         }
 
@@ -352,6 +397,10 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
         public void writeRangeTo(String key, long start, long length, OutputStream out) throws IOException {
 
             m_rangeReadCalls++;
+            if (m_missingRangeReadFailures > 0) {
+                m_missingRangeReadFailures--;
+                throw new CmsImageCacheEntryNotFoundException(key);
+            }
             out.write(m_content.get(key), (int)start, (int)length);
         }
 
@@ -361,6 +410,14 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
         public void writeTo(String key, OutputStream out) throws IOException {
 
             m_readCalls++;
+            if (m_missingReadFailures > 0) {
+                m_missingReadFailures--;
+                throw new CmsImageCacheEntryNotFoundException(key);
+            }
+            if (m_readFailures > 0) {
+                m_readFailures--;
+                throw new IOException("Simulated image cache read failure");
+            }
             out.write(m_content.get(key));
         }
 
@@ -384,6 +441,102 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
     public void $openCmsSetUp(TestInfo testInfo) {
 
         setupOpenCms(testInfo, "simpletest", "/", "../org/opencms/staticexport/");
+    }
+
+    /**
+     * Tests that an early image cache 304 response counts as an access for renewal.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    public void testEarlyImageCacheNotModifiedRenewsSharedFsEntry() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing access renewal after an early image-cache 304 response");
+
+        String resourcename = "/folder1/image1.gif";
+        String scaleParams = "cx:5,cy:5,ch:10,cw:10,t:0,h:40,w:40,transparent";
+        CmsFile imageFile = cms.readFile(resourcename);
+        String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
+        CmsImageLoader loader = (CmsImageLoader)OpenCms.getResourceManager().getLoader(imageFile);
+        Field storeField = CmsImageLoader.class.getDeclaredField("m_imageCache");
+        storeField.setAccessible(true);
+        Object originalStore = storeField.get(loader);
+        Field renewalField = CmsImageLoader.class.getDeclaredField("m_imageCacheAccessRenewal");
+        renewalField.setAccessible(true);
+        Object originalRenewal = renewalField.get(null);
+        Path repository = Files.createTempDirectory("opencms-image-cache-304-renewal");
+        CmsImageCacheAccessRenewal renewal = null;
+        try (AutoCloseable directDelivery = configureStoredContentDirectDelivery(true, ".gif")) {
+            CmsFsImageCache store = new CmsFsImageCache(repository.toString());
+            storeField.set(loader, store);
+            renewalField.set(null, null);
+            CmsStaticExportData data = new CmsStaticExportData(
+                rootPath,
+                rootPath,
+                imageFile,
+                CmsImageScaler.PARAM_SCALE + "=" + scaleParams);
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            ResponseRecorder initialResponse = new ResponseRecorder();
+
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(initialResponse),
+                    exportCms,
+                    data));
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_OK), Integer.valueOf(initialResponse.getStatus()));
+
+            Path cacheFile;
+            try (Stream<Path> paths = Files.walk(repository)) {
+                cacheFile = paths.filter(Files::isRegularFile).findFirst().orElseThrow(AssertionError::new);
+            }
+            Instant oldTime = Instant.now().minusSeconds(10);
+            Files.setLastModifiedTime(cacheFile, FileTime.from(oldTime));
+            CmsImageCacheConfiguration configuration = new CmsImageCacheConfiguration();
+            configuration.setRetention("renew-on-use", "PT2S", "PT1S", "PT0S");
+            configuration.setFs("true", "1");
+            configuration.validate();
+            renewal = CmsImageCacheAccessRenewal.create(store, configuration);
+            renewalField.set(null, renewal);
+
+            RequestRecorder revalidationRequest = new RequestRecorder(scaleParams);
+            revalidationRequest.setHeader(
+                CmsRequestUtil.HEADER_IF_NONE_MATCH,
+                initialResponse.getHeader(CmsRequestUtil.HEADER_ETAG));
+            ResponseRecorder revalidationResponse = new ResponseRecorder();
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(revalidationRequest),
+                    createResponse(revalidationResponse),
+                    exportCms,
+                    data));
+            assertEquals(
+                Integer.valueOf(HttpServletResponse.SC_NOT_MODIFIED),
+                Integer.valueOf(revalidationResponse.getStatus()));
+
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while ((System.nanoTime() < deadline)
+                && !Files.getLastModifiedTime(cacheFile).toInstant().isAfter(oldTime)) {
+                Thread.sleep(10);
+            }
+            assertTrue(Files.getLastModifiedTime(cacheFile).toInstant().isAfter(oldTime));
+        } finally {
+            if (renewal != null) {
+                renewal.close();
+            }
+            renewalField.set(null, originalRenewal);
+            storeField.set(loader, originalStore);
+            try (Stream<Path> paths = Files.walk(repository)) {
+                paths.sorted(Comparator.reverseOrder()).forEach(path -> {
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }
     }
 
     /**
@@ -1019,6 +1172,145 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
             assertEquals(
                 "public, max-age=60, s-maxage=86400, stale-if-error=604800",
                 responseRecorder.getHeader(CmsRequestUtil.HEADER_CACHE_CONTROL));
+        } finally {
+            storeField.set(loader, originalStore);
+        }
+    }
+
+    /** Tests self-healing after an external image cache entry disappears before GET or range delivery. */
+    @Test
+    public void testExternalImageCacheSelfHealingForGetAndRange() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String resourcename = "/folder1/image1.gif";
+        String scaleParams = "cx:5,cy:5,ch:10,cw:10,t:0,h:40,w:40,transparent";
+        CmsFile imageFile = cms.readFile(resourcename);
+        String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
+        CmsImageLoader loader = (CmsImageLoader)OpenCms.getResourceManager().getLoader(imageFile);
+        Field storeField = CmsImageLoader.class.getDeclaredField("m_imageCache");
+        storeField.setAccessible(true);
+        Object originalStore = storeField.get(loader);
+        TestImageCache store = new TestImageCache();
+        try (AutoCloseable directDelivery = configureStoredContentDirectDelivery(true, ".gif")) {
+            storeField.set(loader, store);
+            CmsStaticExportData data = new CmsStaticExportData(
+                rootPath,
+                rootPath,
+                imageFile,
+                CmsImageScaler.PARAM_SCALE + "=" + scaleParams);
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(new ResponseRecorder()),
+                    exportCms,
+                    data));
+            byte[] expectedContent = (new CmsImageScaler(scaleParams)).scaleImage(cms.readFile(resourcename));
+
+            store.resetReadCounters();
+            store.m_missingReadFailures = 1;
+            ResponseRecorder getResponse = new ResponseRecorder();
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(getResponse),
+                    exportCms,
+                    data));
+            assertEquals(Arrays.toString(expectedContent), Arrays.toString(getResponse.getBody()));
+            assertEquals(Integer.valueOf(2), Integer.valueOf(store.m_readCalls));
+            assertEquals(Integer.valueOf(2), Integer.valueOf(store.m_writeCalls));
+
+            store.resetReadCounters();
+            store.m_missingRangeReadFailures = 1;
+            RequestRecorder rangeRequest = new RequestRecorder(scaleParams);
+            rangeRequest.setHeader(CmsRequestUtil.HEADER_RANGE, "bytes=3-12");
+            ResponseRecorder rangeResponse = new ResponseRecorder();
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(rangeRequest),
+                    createResponse(rangeResponse),
+                    exportCms,
+                    data));
+            assertEquals(
+                Arrays.toString(Arrays.copyOfRange(expectedContent, 3, 13)),
+                Arrays.toString(rangeResponse.getBody()));
+            assertEquals(Integer.valueOf(2), Integer.valueOf(store.m_rangeReadCalls));
+            assertEquals(Integer.valueOf(3), Integer.valueOf(store.m_writeCalls));
+
+            store.resetReadCounters();
+            store.m_missingReadFailures = 2;
+            int writeCallsBeforeRetry = store.m_writeCalls;
+            assertThrows(
+                CmsImageCacheEntryNotFoundException.class,
+                () -> OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(new ResponseRecorder()),
+                    exportCms,
+                    data));
+            assertEquals(Integer.valueOf(2), Integer.valueOf(store.m_readCalls));
+            assertEquals(Integer.valueOf(writeCallsBeforeRetry + 1), Integer.valueOf(store.m_writeCalls));
+
+            store.resetReadCounters();
+            store.m_readFailures = 1;
+            int writeCallsBeforeFailure = store.m_writeCalls;
+            assertThrows(
+                IOException.class,
+                () -> OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(new ResponseRecorder()),
+                    exportCms,
+                    data));
+            assertEquals(Integer.valueOf(1), Integer.valueOf(store.m_readCalls));
+            assertEquals(Integer.valueOf(writeCallsBeforeFailure), Integer.valueOf(store.m_writeCalls));
+        } finally {
+            storeField.set(loader, originalStore);
+        }
+    }
+
+    /** Tests that HEAD revalidates cached positive metadata and regenerates a missing derivative. */
+    @Test
+    public void testExternalImageCacheSelfHealingForHead() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String resourcename = "/folder1/image1.gif";
+        String scaleParams = "cx:5,cy:5,ch:10,cw:10,t:0,h:40,w:40,transparent";
+        CmsFile imageFile = cms.readFile(resourcename);
+        String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
+        CmsImageLoader loader = (CmsImageLoader)OpenCms.getResourceManager().getLoader(imageFile);
+        Field storeField = CmsImageLoader.class.getDeclaredField("m_imageCache");
+        storeField.setAccessible(true);
+        Object originalStore = storeField.get(loader);
+        TestImageCache store = new TestImageCache();
+        try (AutoCloseable directDelivery = configureStoredContentDirectDelivery(true, ".gif")) {
+            storeField.set(loader, store);
+            CmsStaticExportData data = new CmsStaticExportData(
+                rootPath,
+                rootPath,
+                imageFile,
+                CmsImageScaler.PARAM_SCALE + "=" + scaleParams);
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(new RequestRecorder(scaleParams)),
+                    createResponse(new ResponseRecorder()),
+                    exportCms,
+                    data));
+
+            store.m_missingAuthoritativeCheck = true;
+            RequestRecorder headRequest = new RequestRecorder(scaleParams);
+            headRequest.setMethod("HEAD");
+            ResponseRecorder headResponse = new ResponseRecorder();
+            assertTrue(
+                OpenCms.getStaticExportManager().tryExportImageCache(
+                    createRequest(headRequest),
+                    createResponse(headResponse),
+                    exportCms,
+                    data));
+
+            assertEquals(Integer.valueOf(HttpServletResponse.SC_OK), Integer.valueOf(headResponse.getStatus()));
+            assertEquals(Integer.valueOf(0), Integer.valueOf(headResponse.getBody().length));
+            assertEquals(Integer.valueOf(1), Integer.valueOf(store.m_authoritativeExistsCalls));
+            assertEquals(Integer.valueOf(2), Integer.valueOf(store.m_writeCalls));
         } finally {
             storeField.set(loader, originalStore);
         }

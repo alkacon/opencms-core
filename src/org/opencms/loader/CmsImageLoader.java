@@ -30,10 +30,14 @@ package org.opencms.loader;
 import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.cache.CmsVfsNameBasedDiskCache;
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsImageCacheConfiguration;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.loader.imagecache.CmsImageCacheAccessRenewal;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceCleaner;
+import org.opencms.loader.imagecache.CmsImageCacheMaintenanceService;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -51,6 +55,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Instant;
 import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -118,14 +123,20 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     /** The disk cache to use for saving scaled image versions. */
     protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
 
+    /** The image cache repository path, or <code>null</code> for image caches without file system access. */
+    protected static String m_imageRepositoryPath;
+
+    /** The optional external image cache. */
+    protected static I_CmsImageCache m_imageCache;
+
+    /** Asynchronous access-triggered renewal for the configured external image cache. */
+    protected static CmsImageCacheAccessRenewal m_imageCacheAccessRenewal;
+
     /** The name of the configured image cache repository. */
     protected String m_imageRepositoryFolder;
 
     /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
     protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
-
-    /** The optional image cache. */
-    protected I_CmsImageCache m_imageCache;
 
     /**
      * Creates a new image loader.<p>
@@ -149,14 +160,28 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
-     * Returns the path of the image cache repository folder in the RFS,
-     * which is set with the {@link #CONFIGURATION_IMAGE_FOLDER} configuration option.<p>
+     * Returns the configured external image cache.<p>
      *
-     * @return the path of the image cache repository folder in the RFS
+     * The classic RFS image cache is not represented by an {@link I_CmsImageCache} instance, so this method returns
+     * <code>null</code> for it.<p>
+     *
+     * @return the configured external image cache, or <code>null</code> for the classic RFS image cache
+     */
+    public static I_CmsImageCache getImageCache() {
+
+        return m_imageCache;
+    }
+
+    /**
+     * Returns the path of the image cache repository folder in the RFS.<p>
+     *
+     * For image cache backends without file system access, this returns <code>null</code>.<p>
+     *
+     * @return the path of the image cache repository folder in the RFS, or <code>null</code>
      */
     public static String getImageRepositoryPath() {
 
-        return m_vfsDiskCache.getRepositoryPath();
+        return m_imageRepositoryPath;
     }
 
     /**
@@ -190,6 +215,34 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     public static boolean isEnabled() {
 
         return m_enabled;
+    }
+
+    /**
+     * Validates the system configuration for an external image cache.<p>
+     *
+     * The cache is closed before a configuration exception is thrown.<p>
+     *
+     * @param imageCache the external image cache
+     * @param configuration the image cache system configuration
+     * @throws CmsConfigurationException if no explicit image cache configuration is present
+     */
+    static void validateExternalImageCacheConfiguration(
+        I_CmsImageCache imageCache,
+        CmsImageCacheConfiguration configuration)
+    throws CmsConfigurationException {
+
+        if (!configuration.isConfigured()) {
+            CmsConfigurationException configurationException = new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_IMAGE_CACHE_CONFIG_POLICY_REQUIRED_1,
+                    imageCache.getClass().getName()));
+            try {
+                imageCache.close();
+            } catch (Exception e) {
+                configurationException.addSuppressed(e);
+            }
+            throw configurationException;
+        }
     }
 
     /**
@@ -253,11 +306,37 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         if (param == null) {
             return;
         }
+        if (m_imageCache != null) {
+            try {
+                float age = param instanceof Number
+                ? ((Number)param).floatValue()
+                : Float.valueOf(String.valueOf(param)).floatValue();
+                Instant cutoff = Instant.ofEpochMilli(System.currentTimeMillis() - (long)(age * 60f * 60f * 1000f));
+                CmsImageCacheMaintenanceService service = CmsImageCacheMaintenanceService.create(m_imageCache);
+                int batchSize = 1000;
+                CmsImageCacheMaintenanceCleaner.Result result = CmsImageCacheMaintenanceCleaner.delete(
+                    service,
+                    cutoff,
+                    batchSize,
+                    null);
+                if (result.getFailed() > 0) {
+                    LOG.warn(
+                        "Unable to delete "
+                            + result.getFailed()
+                            + " configured image cache entries during time-based cleanup.");
+                }
+            } catch (Exception e) {
+                LOG.error("Unable to clean the configured image cache by timestamp.", e);
+            }
+            return;
+        }
         float age = -1;
         if (param instanceof String) {
             age = Float.valueOf((String)param).floatValue();
         } else if (param instanceof Number) {
             age = ((Number)param).floatValue();
+        } else {
+            return;
         }
         CmsImageCacheCleanupJob.cleanImageCache(age);
     }
@@ -270,6 +349,11 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
         m_enabled = false;
         m_vfsDiskCache = null;
+        m_imageRepositoryPath = null;
+        if (m_imageCacheAccessRenewal != null) {
+            m_imageCacheAccessRenewal.close();
+            m_imageCacheAccessRenewal = null;
+        }
         if (m_imageCache != null) {
             try {
                 m_imageCache.close();
@@ -292,13 +376,13 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             if (scaler.isValid()) {
                 if (m_imageCache != null) {
-                    String key = ensureImageCacheEntry(cms, resource, scaler);
+                    String key = ensureImageCacheEntry(cms, resource, scaler, isHeadImageCacheRequest(req));
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    writeImageCacheEntryTo(key, out);
+                    writeImageCacheEntryTo(cms, resource, scaler, key, out);
                     CmsFile file = (resource instanceof CmsFile) ? (CmsFile)resource : new CmsFile(resource);
                     file.setContents(out.toByteArray());
                     if (res != null) {
-                        loadImageCacheEntry(resource, key, req, res);
+                        loadImageCacheEntry(cms, resource, scaler, key, req, res);
                     }
                     return file.getContents();
                 }
@@ -328,10 +412,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             if (scaler.isValid()) {
                 if (m_imageCache != null) {
-                    String key = ensureImageCacheEntry(cms, resource, scaler);
-                    writeImageCacheEntryTo(key, exportOut);
+                    String key = ensureImageCacheEntry(cms, resource, scaler, isHeadImageCacheRequest(req));
+                    writeImageCacheEntryTo(cms, resource, scaler, key, exportOut);
                     if (res != null) {
-                        loadImageCacheEntry(resource, key, req, res);
+                        loadImageCacheEntry(cms, resource, scaler, key, req, res);
                     }
                     return;
                 }
@@ -403,8 +487,8 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
         }
         m_imageCache = null;
+        m_imageRepositoryPath = null;
         m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", m_imageRepositoryFolder);
-        // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
@@ -415,40 +499,15 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
      * Initializes the image cache after the complete OpenCms runtime configuration is available.<p>
      *
      * @param propertyConfiguration the OpenCms properties
-     *
      * @throws CmsConfigurationException if the image cache can not be initialized
      */
     public void initializeImageCache(CmsParameterConfiguration propertyConfiguration) throws CmsConfigurationException {
 
-        try {
-            I_CmsImageCache imageCache = CmsImageCacheFactory.create(propertyConfiguration);
-            if (imageCache == null) {
-                initDefaultImageCache();
-            } else if (imageCache instanceof CmsS3ImageCache) {
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
-                m_imageCache = imageCache;
-            } else if (imageCache instanceof CmsFsImageCache) {
-                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", ((CmsFsImageCache)imageCache).getRepositoryPath());
-                m_imageCache = imageCache;
-            } else {
-                throw new CmsConfigurationException(
-                    Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, imageCache.getClass().getName()));
-            }
-        } catch (CmsConfigurationException e) {
-            m_imageCache = null;
-            throw e;
-        } catch (Exception e) {
-            m_imageCache = null;
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
-                e);
-        }
+        initImageCache(propertyConfiguration);
         OpenCms.addCmsEventListener(this);
-        if (CmsLog.INIT.isInfoEnabled()) {
+        if (CmsLog.INIT.isInfoEnabled() && (m_imageRepositoryPath != null)) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(
-                    Messages.INIT_IMAGE_REPOSITORY_PATH_1,
-                    m_vfsDiskCache.getRepositoryPath()));
+                Messages.get().getBundle().key(Messages.INIT_IMAGE_REPOSITORY_PATH_1, m_imageRepositoryPath));
         }
     }
 
@@ -485,10 +544,11 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
                     String key = getImageCacheKey(resource, scaler);
                     String etag = getImageCacheETag(key);
                     if (trySendImageCacheNotModified(resource, req, res, etag)) {
+                        recordImageCacheAccess(key);
                         return;
                     }
-                    key = ensureImageCacheEntry(cms, resource, scaler);
-                    loadImageCacheEntry(resource, key, req, res, etag);
+                    key = ensureImageCacheEntry(cms, resource, scaler, isHeadImageCacheRequest(req));
+                    loadImageCacheEntry(cms, resource, scaler, key, req, res, etag);
                     return;
                 }
                 if (canSendLastModifiedHeader(resource, req, res)) {
@@ -555,14 +615,46 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
         if (res != null) {
             etag = getImageCacheETag(key);
             if (trySendImageCacheNotModified(resource, req, res, etag)) {
+                recordImageCacheAccess(key);
                 return true;
             }
         }
-        key = ensureImageCacheEntry(cms, resource, scaler);
+        key = ensureImageCacheEntry(cms, resource, scaler, isHeadImageCacheRequest(req));
         if (res != null) {
-            loadImageCacheEntry(resource, key, req, res, etag);
+            loadImageCacheEntry(cms, resource, scaler, key, req, res, etag);
         }
         return true;
+    }
+
+    /**
+     * Creates an image cache entry without checking whether it already exists.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the image resource
+     * @param scaler the image scaler
+     * @param key the image cache key
+     * @throws IOException in case scaling fails
+     * @throws CmsException in case VFS or cache access fails
+     */
+    protected void createImageCacheEntry(CmsObject cms, CmsResource resource, CmsImageScaler scaler, String key)
+    throws IOException, CmsException {
+
+        try {
+            if (scaler.getType() == 8) {
+                // only need the focal point for mode 8
+                scaler.setFocalPoint(CmsPreviewService.readFocalPoint(cms, resource));
+            }
+            CmsFile file = cms.readFile(resource);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            scaler.scaleImageTo(file.getContents(), null, resource.getRootPath(), out);
+            m_imageCache.write(key, out.toByteArray());
+        } catch (IOException | CmsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CmsException(
+                Messages.get().container(Messages.ERR_STORED_CONTENT_DELIVERY_2, "image-cache", key),
+                e);
+        }
     }
 
     /**
@@ -580,26 +672,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     protected String ensureImageCacheEntry(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
     throws IOException, CmsException {
 
-        String key = getImageCacheKey(resource, scaler);
-        try {
-            if (!m_imageCache.exists(key)) {
-                if (scaler.getType() == 8) {
-                    // only need the focal point for mode 8
-                    scaler.setFocalPoint(CmsPreviewService.readFocalPoint(cms, resource));
-                }
-                CmsFile file = cms.readFile(resource);
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                scaler.scaleImageTo(file.getContents(), null, resource.getRootPath(), out);
-                m_imageCache.write(key, out.toByteArray());
-            }
-            return key;
-        } catch (IOException | CmsException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CmsException(
-                Messages.get().container(Messages.ERR_STORED_CONTENT_DELIVERY_2, "image-cache", key),
-                e);
-        }
+        return ensureImageCacheEntry(cms, resource, scaler, false);
     }
 
     /**
@@ -701,9 +774,55 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
         }
         m_imageCache = null;
+        m_imageCacheAccessRenewal = null;
         m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
             OpenCms.getSystemInfo().getWebApplicationRfsPath(),
             m_imageRepositoryFolder);
+        m_imageRepositoryPath = m_vfsDiskCache.getRepositoryPath();
+    }
+
+    /**
+     * Initializes the optional image cache.<p>
+     */
+    protected void initImageCache(CmsParameterConfiguration propertyConfiguration) throws CmsConfigurationException {
+
+        m_imageRepositoryPath = null;
+        if (m_imageCacheAccessRenewal != null) {
+            m_imageCacheAccessRenewal.close();
+            m_imageCacheAccessRenewal = null;
+        }
+        try {
+            I_CmsImageCache imageCache = CmsImageCacheFactory.create(propertyConfiguration);
+            if (imageCache == null) {
+                initDefaultImageCache();
+                return;
+            }
+            validateExternalImageCacheConfiguration(imageCache, OpenCms.getImageCacheConfiguration());
+            if (imageCache instanceof CmsS3ImageCache) {
+                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", "");
+                m_imageRepositoryPath = null;
+            } else if (imageCache instanceof CmsFsImageCache) {
+                m_vfsDiskCache = new CmsVfsNameBasedDiskCache("", ((CmsFsImageCache)imageCache).getRepositoryPath());
+                m_imageRepositoryPath = m_vfsDiskCache.getRepositoryPath();
+            } else {
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, imageCache.getClass().getName()));
+            }
+            m_imageCache = imageCache;
+            m_imageCacheAccessRenewal = CmsImageCacheAccessRenewal.create(
+                imageCache,
+                OpenCms.getImageCacheConfiguration());
+        } catch (CmsConfigurationException e) {
+            m_imageCache = null;
+            m_imageRepositoryPath = null;
+            throw e;
+        } catch (Exception e) {
+            m_imageCache = null;
+            m_imageRepositoryPath = null;
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, "opencms.properties"),
+                e);
+        }
     }
 
     /**
@@ -726,9 +845,44 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
         String etag = getImageCacheETag(key);
         if (trySendImageCacheNotModified(resource, req, res, etag)) {
+            recordImageCacheAccess(key);
             return;
         }
         loadImageCacheEntry(resource, key, req, res, etag);
+    }
+
+    /**
+     * Ensures that an image cache entry exists, optionally bypassing locally cached positive metadata.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the image resource
+     * @param scaler the image scaler
+     * @param authoritative whether to perform an authoritative existence check
+     * @return the image cache key
+     * @throws IOException in case scaling fails
+     * @throws CmsException in case VFS or cache access fails
+     */
+    private String ensureImageCacheEntry(
+        CmsObject cms,
+        CmsResource resource,
+        CmsImageScaler scaler,
+        boolean authoritative)
+    throws IOException, CmsException {
+
+        String key = getImageCacheKey(resource, scaler);
+        try {
+            boolean exists = authoritative ? m_imageCache.existsAuthoritatively(key) : m_imageCache.exists(key);
+            if (!exists) {
+                createImageCacheEntry(cms, resource, scaler, key);
+            }
+            return key;
+        } catch (IOException | CmsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CmsException(
+                Messages.get().container(Messages.ERR_STORED_CONTENT_DELIVERY_2, "image-cache", key),
+                e);
+        }
     }
 
     /**
@@ -752,6 +906,12 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
         String tag = value.trim();
         return tag.startsWith("\"") || tag.startsWith(WEAK_ETAG_PREFIX + "\"");
+    }
+
+    /** Returns whether the request uses the HEAD method. */
+    private boolean isHeadImageCacheRequest(HttpServletRequest req) {
+
+        return "HEAD".equalsIgnoreCase(req.getMethod());
     }
 
     /**
@@ -784,6 +944,73 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             }
         }
         return false;
+    }
+
+    /**
+     * Loads an image cache entry and regenerates it once if an external cache reports that it disappeared.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the original resource
+     * @param scaler the image scaler
+     * @param key the image cache key
+     * @param req the request
+     * @param res the response
+     * @throws IOException in case writing fails
+     * @throws CmsException in case VFS or cache access fails
+     */
+    private void loadImageCacheEntry(
+        CmsObject cms,
+        CmsResource resource,
+        CmsImageScaler scaler,
+        String key,
+        HttpServletRequest req,
+        HttpServletResponse res)
+    throws IOException, CmsException {
+
+        String etag = getImageCacheETag(key);
+        if (trySendImageCacheNotModified(resource, req, res, etag)) {
+            recordImageCacheAccess(key);
+            return;
+        }
+        loadImageCacheEntry(cms, resource, scaler, key, req, res, etag);
+    }
+
+    /**
+     * Loads an image cache entry after conditional request handling and retries once after regeneration.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the original resource
+     * @param scaler the image scaler
+     * @param key the image cache key
+     * @param req the request
+     * @param res the response
+     * @param etag the image cache entry ETag
+     * @throws IOException in case writing fails
+     * @throws CmsException in case VFS or cache access fails
+     */
+    private void loadImageCacheEntry(
+        CmsObject cms,
+        CmsResource resource,
+        CmsImageScaler scaler,
+        String key,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String etag)
+    throws IOException, CmsException {
+
+        try {
+            loadImageCacheEntry(resource, key, req, res, etag);
+        } catch (CmsImageCacheEntryNotFoundException e) {
+            if (res.isCommitted()) {
+                throw e;
+            }
+            res.resetBuffer();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Regenerating missing image cache entry '" + key + "'.");
+            }
+            createImageCacheEntry(cms, resource, scaler, key);
+            loadImageCacheEntry(resource, key, req, res, etag);
+        }
     }
 
     /**
@@ -836,6 +1063,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
                     setImageCacheHeaders(resource, req, res, etag);
                     if (!"HEAD".equalsIgnoreCase(req.getMethod())) {
                         m_imageCache.writeRangeTo(key, range.m_start, range.m_length, res.getOutputStream());
+                        recordImageCacheAccess(key);
                     }
                     return;
                 }
@@ -901,6 +1129,15 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
             return (ifRangeDate >= 0) && ((resource.getDateLastModified() / 1000) * 1000 == ifRangeDate);
         } catch (IllegalArgumentException e) {
             return false;
+        }
+    }
+
+    /** Records a successful external image cache access without delaying the response. */
+    private void recordImageCacheAccess(String key) {
+
+        CmsImageCacheAccessRenewal accessRenewal = m_imageCacheAccessRenewal;
+        if (accessRenewal != null) {
+            accessRenewal.recordAccess(key);
         }
     }
 
@@ -994,6 +1231,36 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
     }
 
     /**
+     * Writes an image cache entry and regenerates it once if it disappeared from an external cache.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the original resource
+     * @param scaler the image scaler
+     * @param key the image cache key
+     * @param out the output stream
+     * @throws IOException in case writing fails
+     * @throws CmsException in case VFS or cache access fails
+     */
+    private void writeImageCacheEntryTo(
+        CmsObject cms,
+        CmsResource resource,
+        CmsImageScaler scaler,
+        String key,
+        OutputStream out)
+    throws IOException, CmsException {
+
+        try {
+            writeImageCacheEntryTo(key, out);
+        } catch (CmsImageCacheEntryNotFoundException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Regenerating missing image cache entry '" + key + "'.");
+            }
+            createImageCacheEntry(cms, resource, scaler, key);
+            writeImageCacheEntryTo(key, out);
+        }
+    }
+
+    /**
      * Writes an image cache entry to an output stream.<p>
      *
      * @param key the image cache key
@@ -1006,6 +1273,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener,
 
         try {
             m_imageCache.writeTo(key, out);
+            recordImageCacheAccess(key);
         } catch (IOException | CmsException e) {
             throw e;
         } catch (Exception e) {

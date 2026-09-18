@@ -209,6 +209,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0 = "GUI_CACHE_IMAGECACHE_CLEAN_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_CLEAR_REPORT_TITLE_0 = "GUI_CACHE_IMAGECACHE_CLEAR_REPORT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_IMAGE_NAME_0 = "GUI_CACHE_IMAGECACHE_IMAGE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -221,6 +224,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_LENGTH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_LAST_MODIFIED_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_LAST_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0 = "GUI_CACHE_IMAGECACHE_LIST_COLS_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -231,6 +237,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_0 = "GUI_CACHE_JAVA_HEAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMAGECACHE_CLEAR_BEGIN_0 = "RPT_IMAGECACHE_CLEAR_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMAGECACHE_CLEAR_END_3 = "RPT_IMAGECACHE_CLEAR_END_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMAGECACHE_CLEAR_PROGRESS_3 = "RPT_IMAGECACHE_CLEAR_PROGRESS_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CACHE_JAVA_HEAP_FREE_0 = "GUI_CACHE_JAVA_HEAP_FREE_0";

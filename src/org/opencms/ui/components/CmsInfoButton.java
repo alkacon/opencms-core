@@ -33,6 +33,7 @@ import org.opencms.ui.FontOpenCms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -113,6 +114,9 @@ public class CmsInfoButton extends Button {
     /**Clicklistener for the button. */
     private ClickListener m_clickListener;
 
+    /** Optional provider for information which should only be calculated when the button is first clicked. */
+    private Supplier<Map<String, String>> m_infoSupplier;
+
     /**
      * public constructor.<p>
      */
@@ -144,6 +148,19 @@ public class CmsInfoButton extends Button {
         super(ICON);
 
         ini(getHtmlLines(infos));
+    }
+
+    /**
+     * Creates an info button whose data is calculated when the button is first clicked.<p>
+     *
+     * @param infoSupplier the information supplier
+     * @return the lazily initialized info button
+     */
+    public static CmsInfoButton createLazy(Supplier<Map<String, String>> infoSupplier) {
+
+        CmsInfoButton result = new CmsInfoButton();
+        result.m_infoSupplier = infoSupplier;
+        return result;
     }
 
     /**
@@ -257,6 +274,10 @@ public class CmsInfoButton extends Button {
 
             public void buttonClick(ClickEvent event) {
 
+                if (m_infoSupplier != null) {
+                    m_htmlLines = getHtmlLines(m_infoSupplier.get());
+                    m_infoSupplier = null;
+                }
                 final Window window = CmsBasicDialog.prepareWindow(CmsBasicDialog.DialogWidth.content);
                 window.setCaption(
                     m_windowCaption == null
@@ -267,7 +288,7 @@ public class CmsInfoButton extends Button {
                 if (m_addButton != null) {
                     dialog.addButton(m_addButton, false);
                 }
-                VerticalLayout layout = getLayout(htmlLines, additionalElements);
+                VerticalLayout layout = getLayout(m_htmlLines, additionalElements);
                 dialog.setContent(layout);
 
                 Button button = new Button(CmsVaadinUtils.messageClose());
@@ -324,6 +345,7 @@ public class CmsInfoButton extends Button {
      */
     private void ini(final List<String> htmlLines) {
 
+        m_htmlLines = htmlLines;
         addStyleName(ValoTheme.BUTTON_BORDERLESS);
         addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
 

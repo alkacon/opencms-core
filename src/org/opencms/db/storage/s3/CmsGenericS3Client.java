@@ -39,6 +39,11 @@ import org.opencms.util.CmsFileUtil;
 import java.io.OutputStream;
 import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -50,15 +55,23 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
+import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.MetadataDirective;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Error;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
@@ -68,6 +81,9 @@ import software.amazon.awssdk.services.s3.model.S3Object;
  * Should work with most products such as SeaweedFS, MinIO, Garage, Ceph.<p>
  */
 public class CmsGenericS3Client implements I_CmsS3Client {
+
+    /** Maximum number of keys accepted by the S3 DeleteObjects API. */
+    public static final int MAX_DELETE_OBJECTS = 1000;
 
     /** Default complete API call timeout in milliseconds. */
     public static final int DEFAULT_API_CALL_TIMEOUT = CmsS3ClientConfiguration.DEFAULT_API_CALL_TIMEOUT;
@@ -262,6 +278,52 @@ public class CmsGenericS3Client implements I_CmsS3Client {
         }
     }
 
+    /**
+     * @see org.opencms.db.storage.s3.I_CmsS3Client#deleteObjects(java.util.List)
+     */
+    @Override
+    public CmsS3DeleteResult deleteObjects(List<String> keys) throws Exception {
+
+        if (keys.isEmpty()) {
+            return new CmsS3DeleteResult(keys, java.util.Collections.emptyMap());
+        }
+        if (keys.size() > MAX_DELETE_OBJECTS) {
+            throw new IllegalArgumentException(
+                "S3 multi-object delete supports at most " + MAX_DELETE_OBJECTS + " keys per request.");
+        }
+        List<ObjectIdentifier> objectIdentifiers = new ArrayList<ObjectIdentifier>(keys.size());
+        for (String key : keys) {
+            objectIdentifiers.add(ObjectIdentifier.builder().key(key).build());
+        }
+        try {
+            Delete delete = Delete.builder().objects(objectIdentifiers).quiet(Boolean.FALSE).build();
+            DeleteObjectsRequest request = DeleteObjectsRequest.builder().bucket(
+                m_configuration.getBucketName()).delete(delete).build();
+            DeleteObjectsResponse response = m_s3Client.deleteObjects(request);
+            Map<String, Exception> failures = new LinkedHashMap<String, Exception>();
+            for (S3Error error : response.errors()) {
+                failures.put(
+                    error.key(),
+                    new CmsStorageException(
+                        "S3 multi-object delete failed. operation=DELETE_OBJECTS, endpoint="
+                            + m_configuration.getEndpoint()
+                            + ", bucket="
+                            + m_configuration.getBucketName()
+                            + ", key="
+                            + error.key()
+                            + ", errorCode="
+                            + error.code()
+                            + ", message="
+                            + error.message()));
+            }
+            return new CmsS3DeleteResult(keys, failures);
+        } catch (S3Exception e) {
+            throw createStorageException("DELETE_OBJECTS", null, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("DELETE_OBJECTS", null, e);
+        }
+    }
+
     @Override
     public boolean exists(String key) throws Exception {
 
@@ -340,6 +402,29 @@ public class CmsGenericS3Client implements I_CmsS3Client {
         }
     }
 
+    /**
+     * @see org.opencms.db.storage.s3.I_CmsS3Client#getObjectMetadata(java.lang.String)
+     */
+    @Override
+    public CmsS3ObjectMetadata getObjectMetadata(String key) throws Exception {
+
+        try {
+            HeadObjectRequest request = HeadObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
+                key).build();
+            HeadObjectResponse response = m_s3Client.headObject(request);
+            return new CmsS3ObjectMetadata(key, response.contentLength(), response.lastModified(), response.eTag());
+        } catch (NoSuchKeyException e) {
+            throw new CmsStorageBlobNotFoundException(key, e);
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                throw new CmsStorageBlobNotFoundException(key, e);
+            }
+            throw createStorageException("HEAD", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("HEAD", key, e);
+        }
+    }
+
     @Override
     public void putObject(String key, byte[] content) throws Exception {
 
@@ -378,6 +463,32 @@ public class CmsGenericS3Client implements I_CmsS3Client {
         }
     }
 
+    /**
+     * @see org.opencms.db.storage.s3.I_CmsS3Client#renewObject(java.lang.String, java.lang.String, java.time.Instant)
+     */
+    @Override
+    public boolean renewObject(String key, String expectedRevision, Instant renewalTime) throws Exception {
+
+        try {
+            // S3 requires REPLACE when copying an object onto itself; image cache writes no custom metadata.
+            CopyObjectRequest request = CopyObjectRequest.builder().sourceBucket(
+                m_configuration.getBucketName()).sourceKey(key).destinationBucket(
+                    m_configuration.getBucketName()).destinationKey(key).copySourceIfMatch(
+                        expectedRevision).metadataDirective(MetadataDirective.REPLACE).build();
+            m_s3Client.copyObject(request);
+            return true;
+        } catch (NoSuchKeyException e) {
+            return false;
+        } catch (S3Exception e) {
+            if ((e.statusCode() == 404) || (e.statusCode() == 412)) {
+                return false;
+            }
+            throw createStorageException("RENEW", key, e);
+        } catch (RuntimeException e) {
+            throw createStorageException("RENEW", key, e);
+        }
+    }
+
     @Override
     public void validateBucketAccess() throws Exception {
 
@@ -394,12 +505,32 @@ public class CmsGenericS3Client implements I_CmsS3Client {
     @Override
     public void visitObjectKeys(I_CmsS3ObjectKeyVisitor visitor) throws Exception {
 
+        visitObjects(null, metadata -> visitor.visit(metadata.getKey()));
+    }
+
+    @Override
+    public void visitObjects(I_CmsS3ObjectVisitor visitor) throws Exception {
+
+        visitObjects(null, metadata -> visitor.visit(metadata.getKey(), metadata.getLength()));
+    }
+
+    /**
+     * @see org.opencms.db.storage.s3.I_CmsS3Client#visitObjects(java.lang.String, org.opencms.db.storage.s3.I_CmsS3Client.I_CmsS3ObjectMetadataVisitor)
+     */
+    @Override
+    public void visitObjects(String prefix, I_CmsS3ObjectMetadataVisitor visitor) throws Exception {
+
         try {
-            ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(
-                m_configuration.getBucketName()).build();
+            ListObjectsV2Request.Builder requestBuilder = ListObjectsV2Request.builder().bucket(
+                m_configuration.getBucketName());
+            if (prefix != null) {
+                requestBuilder.prefix(prefix);
+            }
+            ListObjectsV2Request request = requestBuilder.build();
             for (ListObjectsV2Response page : m_s3Client.listObjectsV2Paginator(request)) {
                 for (S3Object object : page.contents()) {
-                    visitor.visit(object.key());
+                    visitor.visit(
+                        new CmsS3ObjectMetadata(object.key(), object.size(), object.lastModified(), object.eTag()));
                 }
             }
         } catch (S3Exception e) {
@@ -415,6 +546,16 @@ public class CmsGenericS3Client implements I_CmsS3Client {
     @Override
     public void writeObjectRangeTo(String key, long start, long length, OutputStream out) throws Exception {
 
+        writeObjectRangeToWithMetadata(key, start, length, out);
+    }
+
+    /**
+     * @see I_CmsS3Client#writeObjectRangeToWithMetadata(String, long, long, OutputStream)
+     */
+    @Override
+    public CmsS3ObjectMetadata writeObjectRangeToWithMetadata(String key, long start, long length, OutputStream out)
+    throws Exception {
+
         if ((start < 0) || (length < 1) || ((Long.MAX_VALUE - start) < length)) {
             throw new IllegalArgumentException("Invalid byte range: start=" + start + ", length=" + length);
         }
@@ -424,6 +565,8 @@ public class CmsGenericS3Client implements I_CmsS3Client {
                 key).range("bytes=" + start + "-" + end).build();
             try (ResponseInputStream<GetObjectResponse> in = m_s3Client.getObject(request)) {
                 CmsFileUtil.copy(in, out);
+                GetObjectResponse response = in.response();
+                return new CmsS3ObjectMetadata(key, response.contentLength(), response.lastModified(), response.eTag());
             }
         } catch (NoSuchKeyException e) {
             throw createBlobNotFoundException("GET", key, e);
@@ -440,11 +583,22 @@ public class CmsGenericS3Client implements I_CmsS3Client {
     @Override
     public void writeObjectTo(String key, OutputStream out) throws Exception {
 
+        writeObjectToWithMetadata(key, out);
+    }
+
+    /**
+     * @see I_CmsS3Client#writeObjectToWithMetadata(String, OutputStream)
+     */
+    @Override
+    public CmsS3ObjectMetadata writeObjectToWithMetadata(String key, OutputStream out) throws Exception {
+
         try {
             GetObjectRequest request = GetObjectRequest.builder().bucket(m_configuration.getBucketName()).key(
                 key).build();
             try (ResponseInputStream<GetObjectResponse> in = m_s3Client.getObject(request)) {
                 CmsFileUtil.copy(in, out);
+                GetObjectResponse response = in.response();
+                return new CmsS3ObjectMetadata(key, response.contentLength(), response.lastModified(), response.eTag());
             }
         } catch (NoSuchKeyException e) {
             throw createBlobNotFoundException("GET", key, e);

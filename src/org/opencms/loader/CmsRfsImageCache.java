@@ -33,6 +33,10 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * RFS based storage for generated image cache entries.<p>
@@ -52,6 +56,23 @@ public class CmsRfsImageCache implements I_CmsImageCache {
     throws Exception {
 
         initRepository(Paths.get(repository).toAbsolutePath().normalize());
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#clear()
+     */
+    @Override
+    public void clear() throws Exception {
+
+        Path repository = getRepository();
+        List<Path> paths;
+        try (Stream<Path> stream = Files.walk(repository)) {
+            paths = stream.filter(path -> !repository.equals(path)).sorted(Comparator.reverseOrder()).collect(
+                Collectors.toList());
+        }
+        for (Path path : paths) {
+            Files.deleteIfExists(path);
+        }
     }
 
     /**
@@ -89,6 +110,24 @@ public class CmsRfsImageCache implements I_CmsImageCache {
     public boolean supportsRangeDelivery() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsImageCache#visitEntries(org.opencms.loader.I_CmsImageCache.I_CmsImageCacheEntryVisitor)
+     */
+    @Override
+    public void visitEntries(I_CmsImageCacheEntryVisitor visitor) throws Exception {
+
+        Path repository = getRepository();
+        try (Stream<Path> paths = Files.walk(repository)) {
+            java.util.Iterator<Path> iterator = paths.filter(
+                candidate -> Files.isRegularFile(candidate, LinkOption.NOFOLLOW_LINKS)).iterator();
+            while (iterator.hasNext()) {
+                Path path = iterator.next();
+                String key = repository.relativize(path).toString().replace(path.getFileSystem().getSeparator(), "/");
+                visitor.visit(key, Files.size(path));
+            }
+        }
     }
 
     /**

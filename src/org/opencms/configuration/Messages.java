@@ -116,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_HISTORY_SETTINGS_3 = "INIT_HISTORY_SETTINGS_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_IMAGECACHE_CONFIG_2 = "INIT_IMAGECACHE_CONFIG_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_CONFIG_FINISHED_0 = "INIT_IMPORT_CONFIG_FINISHED_0";
 
     /** Message constant for key in the resource bundle. */

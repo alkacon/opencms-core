@@ -103,6 +103,13 @@
 			<maxentrybytes>400000</maxentrybytes>
 			<maxkeys>2000</maxkeys>
 		</flexcache>
+		<imagecache>
+			<retention mode="renew-on-use" max-age="P60D" renewal-window="P30D" renewal-jitter="P14D" />
+			<cleanup max-deletes-per-run="10000" max-runtime="PT5M" />
+			<rfs touch-minimum-interval="PT1H" />
+			<fs touch-enabled="true" touch-concurrency="1" />
+			<s3 delete-batch-size="1000" delete-concurrency="1" copy-concurrency="2" max-copies-per-second="20" renewal-queue-capacity="10000" />
+		</imagecache>
 		<http-authentication>
 			<browser-based>true</browser-based>
 			<form-based>/system/login/index.html</form-based>

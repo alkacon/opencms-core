@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
+import org.opencms.configuration.CmsImageCacheConfiguration;
 import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDefaultUsers;
@@ -346,6 +347,16 @@ public final class OpenCms {
     public static CmsFolderSizeTracker getFolderSizeTracker(boolean online) {
 
         return OpenCmsCore.getInstance().getFolderSizeTracker(online);
+    }
+
+    /**
+     * Returns the central image cache retention and maintenance configuration.<p>
+     *
+     * @return the image cache configuration
+     */
+    public static CmsImageCacheConfiguration getImageCacheConfiguration() {
+
+        return OpenCmsCore.getInstance().getImageCacheConfiguration();
     }
 
     /**

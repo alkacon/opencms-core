@@ -68,7 +68,7 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestRunner {
     @Test
     public void testSystemConfigPosition() throws Exception {
 
-        String[] elements = {"internationalization", "mail", "memorymonitor", "flexcache", "userdata"};
+        String[] elements = {"internationalization", "mail", "memorymonitor", "flexcache", "imagecache", "userdata"};
         int prev = -1;
         for (String elem : elements) {
             int pos = CmsXmlConfigUpdater.getSystemConfigPosition(elem);

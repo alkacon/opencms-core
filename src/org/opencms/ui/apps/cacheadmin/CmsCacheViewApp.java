@@ -30,6 +30,8 @@ package org.opencms.ui.apps.cacheadmin;
 import org.opencms.cache.CmsLruCache;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.I_CmsImageCache;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryStatus;
 import org.opencms.ui.A_CmsUI;
@@ -48,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
 
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Component;
@@ -76,6 +79,9 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
         /**Shows ImageCache.*/
         ImageCache;
     }
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCacheViewApp.class);
 
     /**Mode.*/
     private Mode m_mode;
@@ -220,22 +226,42 @@ public class CmsCacheViewApp extends A_CmsWorkplaceApp {
      */
     protected static CmsInfoButton getImageStatisticButton() {
 
-        long size = 0L;
-        if (new File(CmsImageLoader.getImageRepositoryPath()).exists()) {
-            size = FileUtils.sizeOfDirectory(new File(CmsImageLoader.getImageRepositoryPath()));
+        String repositoryPath = CmsImageLoader.getImageRepositoryPath();
+        I_CmsImageCache imageCache = CmsImageLoader.getImageCache();
+        CmsInfoButton info;
+        if (imageCache != null) {
+            // Listing a remote cache can be expensive and should not delay opening the cache app.
+            info = CmsInfoButton.createLazy(() -> getImageCacheStatistics(imageCache, null));
+        } else {
+            info = new CmsInfoButton(getImageCacheStatistics(null, repositoryPath));
         }
-
-        Map<String, String> infoMap = new LinkedHashMap<String, String>();
-
-        infoMap.put(
-            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
-            CmsFileUtil.formatFilesize(size, A_CmsUI.getCmsObject().getRequestContext().getLocale()));
-
-        CmsInfoButton info = new CmsInfoButton(infoMap);
 
         info.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
         info.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGE_0));
         return info;
+    }
+
+    /** Calculates image cache statistics. */
+    private static Map<String, String> getImageCacheStatistics(I_CmsImageCache imageCache, String repositoryPath) {
+
+        final long[] size = new long[] {0L};
+        Map<String, String> infoMap = new LinkedHashMap<String, String>();
+        if (imageCache != null) {
+            try {
+                imageCache.visitEntries((key, length) -> size[0] += length);
+            } catch (Exception e) {
+                LOG.warn("Unable to calculate image cache statistics.", e);
+            }
+        } else if (repositoryPath != null) {
+            File repository = new File(repositoryPath);
+            if (repository.exists()) {
+                size[0] = FileUtils.sizeOfDirectory(repository);
+            }
+        }
+        infoMap.put(
+            CmsVaadinUtils.getMessageText(Messages.GUI_CACHE_IMAGECACHE_LABEL_MEMORY_BLOCK_0),
+            CmsFileUtil.formatFilesize(size[0], A_CmsUI.getCmsObject().getRequestContext().getLocale()));
+        return infoMap;
     }
 
     /**

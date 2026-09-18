@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMAGE_CACHE_CONFIG_FS_PATH_2 = "ERR_IMAGE_CACHE_CONFIG_FS_PATH_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_CACHE_CONFIG_POLICY_REQUIRED_1 = "ERR_IMAGE_CACHE_CONFIG_POLICY_REQUIRED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1 = "ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1";
 
     /** Message constant for key in the resource bundle. */

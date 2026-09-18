@@ -61,7 +61,7 @@ public final class CmsImageCacheFactory {
 
         String backendId = CmsStorageManager.getImageCacheStorageId(configuration);
         if (backendId == null) {
-            validatePrefixAbsent(configuration, "RFS");
+            validatePrefixAbsent(configuration, "the classic RFS image cache");
             return null;
         }
         String type = CmsStorageManager.getStorageType(configuration, backendId);
@@ -94,7 +94,7 @@ public final class CmsImageCacheFactory {
     private static I_CmsImageCache createFsImageCache(CmsParameterConfiguration configuration, String backendId)
     throws Exception {
 
-        validatePrefixAbsent(configuration, backendId);
+        validatePrefixAbsent(configuration, "FS image cache backend " + backendId);
         Path imageCachePath = normalizePath(CmsStorageManager.getFileSystemStoragePath(configuration, backendId));
         for (String dataStorageId : CmsStorageManager.getDataStorageIds(configuration)) {
             if (!CmsFsStorage.STORAGE_TYPE.equals(CmsStorageManager.getStorageType(configuration, dataStorageId))) {

@@ -38,7 +38,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -116,6 +118,88 @@ public class TestCmsFsImageCache {
             }
         } finally {
             executor.shutdownNow();
+            deleteDirectory(repository);
+        }
+    }
+
+    /**
+     * Tests listing and clearing all cache entries.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testListAndClear() throws Exception {
+
+        Path repository = Files.createTempDirectory("opencms-fs-image-cache");
+        try {
+            CmsFsImageCache cache = new CmsFsImageCache(repository.toString());
+            byte[] first = "first".getBytes(StandardCharsets.UTF_8);
+            byte[] second = "second entry".getBytes(StandardCharsets.UTF_8);
+            cache.write("/sites/default/first.jpg_1.jpg", first);
+            cache.write("/sites/default/folder/second.jpg_2.jpg", second);
+
+            Map<String, Long> entries = new HashMap<>();
+            cache.visitEntries((key, length) -> entries.put(key, Long.valueOf(length)));
+
+            assertEquals(2, entries.size());
+            assertEquals(Long.valueOf(first.length), entries.get("sites/default/first.jpg_1.jpg"));
+            assertEquals(Long.valueOf(second.length), entries.get("sites/default/folder/second.jpg_2.jpg"));
+
+            cache.clear();
+
+            assertTrue(Files.isDirectory(repository));
+            assertFalse(cache.exists("/sites/default/first.jpg_1.jpg"));
+            assertFalse(cache.exists("/sites/default/folder/second.jpg_2.jpg"));
+            Map<String, Long> emptyEntries = new HashMap<>();
+            cache.visitEntries((key, length) -> emptyEntries.put(key, Long.valueOf(length)));
+            assertTrue(emptyEntries.isEmpty());
+        } finally {
+            deleteDirectory(repository);
+        }
+    }
+
+    /** Tests that a vanished entry is reported as a recoverable image cache miss. */
+    @Test
+    public void testMissingEntryIsReportedForSelfHealing() throws Exception {
+
+        Path repository = Files.createTempDirectory("opencms-fs-image-cache");
+        try {
+            CmsFsImageCache cache = new CmsFsImageCache(repository.toString());
+            String key = "sites/default/image.jpg";
+            cache.write(key, new byte[] {1, 2, 3});
+            assertEquals(3, cache.getLength(key));
+            Files.delete(cache.getPath(key));
+
+            assertThrows(
+                CmsImageCacheEntryNotFoundException.class,
+                () -> cache.writeTo(key, new ByteArrayOutputStream()));
+            assertFalse(cache.existsAuthoritatively(key));
+        } finally {
+            deleteDirectory(repository);
+        }
+    }
+
+    /**
+     * Tests that prefix listing returns only entries below the selected cache path.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void testPrefixListing() throws Exception {
+
+        Path repository = Files.createTempDirectory("opencms-fs-image-cache");
+        try {
+            CmsFsImageCache cache = new CmsFsImageCache(repository.toString());
+            cache.write("sites/default/folder/first.jpg", new byte[] {1});
+            cache.write("sites/default/other/second.jpg", new byte[] {2});
+            cache.write("sites/other/third.jpg", new byte[] {3});
+            Map<String, Long> entries = new HashMap<String, Long>();
+
+            cache.visitEntries("/sites/default/folder/", (key, length) -> entries.put(key, Long.valueOf(length)));
+
+            assertEquals(1, entries.size());
+            assertEquals(Long.valueOf(1), entries.get("sites/default/folder/first.jpg"));
+        } finally {
             deleteDirectory(repository);
         }
     }

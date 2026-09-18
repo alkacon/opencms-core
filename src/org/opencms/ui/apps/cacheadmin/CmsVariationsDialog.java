@@ -104,6 +104,7 @@ public class CmsVariationsDialog extends CmsBasicDialog {
                 m_layout.addComponent(new Label(variationsIterator.next()));
             }
         } else {
+            m_outerlayout.removeComponent(m_layout);
             m_outerlayout.addComponent(new CmsImageVariationsTable(resource));
         }
 
