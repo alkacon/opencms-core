@@ -31,18 +31,21 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsDefaultPasswordHandler;
 import org.opencms.security.CmsDefaultValidationHandler;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests CSV user import parsing.<p>
  */
-public class TestCmsCsvImportUtils extends TestCase {
+public class TestCmsCsvImportUtils extends OpenCmsTestRunner {
 
     /** Default password for parser tests. */
     private static final String DEFAULT_PASSWORD = "generated";
@@ -63,9 +66,27 @@ public class TestCmsCsvImportUtils extends TestCase {
         field.set(target, value);
     }
 
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        super.$openCmsSetUp(testInfo);
+        try {
+            Method getInstance = OpenCmsCore.class.getDeclaredMethod("getInstance");
+            getInstance.setAccessible(true);
+            Object core = getInstance.invoke(null);
+            setField(core, "m_validationHandler", new CmsDefaultValidationHandler());
+            setField(core, "m_passwordHandler", new CmsDefaultPasswordHandler());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     /**
      * Tests empty user name rejection.<p>
      */
+    @Test
     public void testEmptyUserName() {
 
         IllegalArgumentException exception = expectIllegalArgument("name;firstname;lastname\n;Ana;López", true);
@@ -76,6 +97,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests missing name column rejection.<p>
      */
+    @Test
     public void testMissingNameColumn() {
 
         IllegalArgumentException exception = expectIllegalArgument(
@@ -88,6 +110,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests token normalization.<p>
      */
+    @Test
     public void testNormalizeToken() {
 
         assertNull(CmsCsvImportUtils.normalizeToken(null));
@@ -99,6 +122,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests password import handling.<p>
      */
+    @Test
     public void testPasswordImportHandling() {
 
         CmsUser importedPassword = readOne("name;password\nuser1;csvPassword", true);
@@ -111,6 +135,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests additional CSV columns.<p>
      */
+    @Test
     public void testReadAdditionalColumn() {
 
         CmsUser user = readOne("name;firstname;customField\nuser1;Ana;customValue");
@@ -122,6 +147,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests UTF-8 CSV with BOM and unquoted headers.<p>
      */
+    @Test
     public void testReadBomWithoutQuotedHeader() {
 
         CmsUser user = readOne("\ufeffname;firstname;lastname;email;password\nuser1;Ana;López;ana@example.com;");
@@ -133,6 +159,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests UTF-8 CSV with BOM and quoted headers.<p>
      */
+    @Test
     public void testReadBomWithQuotedHeader() {
 
         CmsUser user = readOne(
@@ -145,6 +172,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests incomplete CSV rows.<p>
      */
+    @Test
     public void testReadIncompleteRow() {
 
         CmsUser user = readOne("name;firstname;lastname;email\nuser1;Ana");
@@ -158,6 +186,7 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests UTF-8 CSV without BOM.<p>
      */
+    @Test
     public void testReadUtf8WithoutBom() {
 
         CmsUser user = readOne("name;firstname;lastname;email;password\nuser1;Ana;López;ana@example.com;");
@@ -172,27 +201,12 @@ public class TestCmsCsvImportUtils extends TestCase {
     /**
      * Tests CSV without password column.<p>
      */
+    @Test
     public void testReadWithoutPasswordColumn() {
 
         CmsUser user = readOne("name;firstname;lastname;email\nuser1;Ana;López;ana@example.com");
 
         assertEquals(DEFAULT_PASSWORD, user.getPassword());
-    }
-
-    /**
-     * Installs the minimal OpenCms handlers needed by CmsUser setters.<p>
-     *
-     * @throws Exception if handler setup fails
-     */
-    @Override
-    protected void setUp() throws Exception {
-
-        super.setUp();
-        Method getInstance = OpenCmsCore.class.getDeclaredMethod("getInstance");
-        getInstance.setAccessible(true);
-        Object core = getInstance.invoke(null);
-        setField(core, "m_validationHandler", new CmsDefaultValidationHandler());
-        setField(core, "m_passwordHandler", new CmsDefaultPasswordHandler());
     }
 
     /**

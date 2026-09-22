@@ -78,38 +78,98 @@ import com.vaadin.ui.Window;
 public final class CmsImportExportUserDialog extends A_CmsImportExportUserDialog
 implements Receiver, I_CmsPasswordFetcher {
 
+    /**The dialog height. */
     public static final String DIALOG_HEIGHT = "650px";
 
+    /** Log instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsImportExportUserDialog.class);
 
+    /**vaadin serial id. */
     private static final long serialVersionUID = -2055302491540892101L;
 
+    /**Label to show uploaded file. */
     protected Label m_uploadname;
+
+    /**Start import button. */
     Button m_startImport;
+
+    /**Vaadin Component. */
     private Panel m_includeTechnicalFieldsPanel;
+
+    /**Vaadin Component. */
     private CheckBox m_includeTechnicalFields;
+
+    /**Cancel button. */
     private Button m_cancel;
+
+    /**CmsObject. */
     private CmsObject m_cms;
+
+    /**Download button for export. */
     private Button m_download;
+
+    /**Layout for groups. */
     private VerticalLayout m_exportGroups;
+
+    /**Groups. */
     private CmsEditableGroup m_exportGroupsGroup;
+
+    /**Layout for roles. */
     private VerticalLayout m_exportRoles;
+
+    /**Roles. */
     private CmsEditableGroup m_exportRolesGroup;
+
+    /**Generate password button. */
     private Button m_generateButton;
+
+    /**Should the group field be editable? */
     private boolean m_groupEditable = true;
+
+    /**ID of group. */
     private CmsUUID m_groupID;
+
+    /**Stream for upload file. */
     private ByteArrayOutputStream m_importFileStream;
+
+    /**Layout for groups.*/
     private VerticalLayout m_importGroups;
+
+    /**Groups. */
     private CmsEditableGroup m_importGroupsGroup;
+
+    /**Should password be imported? */
     private CheckBox m_importPasswords;
+
+    /**Layout for roles. */
     private VerticalLayout m_importRoles;
+
+    /**Roles. */
     private CmsEditableGroup m_importRolesGroup;
+
+    /**Password for imported user. */
     private TextField m_password;
+
+    /**List of user to import. */
     List<CmsUser> m_userImportList;
+
+    /**Should the user get an email? */
     private CheckBox m_sendMail;
+
+    /**Tab with import and export sheet. */
     private TabSheet m_tab;
+
+    /**Upload for import. */
     private Upload m_upload;
 
+    /**
+     * public constructor.<p>
+     *
+     * @param ou ou name
+     * @param groupID id of group
+     * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
+     */
     private CmsImportExportUserDialog(
         final String ou,
         CmsUUID groupID,
@@ -174,6 +234,7 @@ implements Receiver, I_CmsPasswordFetcher {
                     m_startImport.setEnabled(!m_userImportList.isEmpty());
                     m_uploadname.setValue(event.getFilename());
                 } catch (RuntimeException e) {
+                    //wrong csv columns
                     LOG.error("Invalid CSV user import file '" + event.getFilename() + "'.", e);
                     m_startImport.setEnabled(false);
                     m_uploadname.setValue("");
@@ -232,6 +293,14 @@ implements Receiver, I_CmsPasswordFetcher {
         super.init(ou, window);
     }
 
+    /**
+     * Returns a map with the users to export added.<p>
+     * @param cms CmsObject
+     * @param ou ou name
+     * @param exportUsers the map to add the users
+     * @return a map with the users to export added
+     * @throws CmsException if getting users failed
+     */
     public static Map<CmsUUID, CmsUser> addExportAllUsers(CmsObject cms, String ou, Map<CmsUUID, CmsUser> exportUsers)
     throws CmsException {
 
@@ -246,6 +315,16 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
+    /**
+     * Returns a map with the users to export added.<p>
+     * @param cms CmsObject
+     * @param groups the selected groups
+     * @param exportUsers the map to add the users
+     *
+     * @return a map with the users to export added
+     *
+     * @throws CmsException if getting groups or users of group failed
+     */
     public static Map<CmsUUID, CmsUser> addExportUsersFromGroups(
         CmsObject cms,
         List<String> groups,
@@ -264,6 +343,18 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
+    /**
+     * Returns a map with the users to export added.<p>
+     * @param cms CmsObject
+     * @param ou ou name
+     *
+     * @param roles the selected roles
+     * @param exportUsers the map to add the users
+     *
+     * @return a map with the users to export added
+     *
+     * @throws CmsException if getting roles or users of role failed
+     */
     public static Map<CmsUUID, CmsUser> addExportUsersFromRoles(
         CmsObject cms,
         String ou,
@@ -279,6 +370,7 @@ implements Receiver, I_CmsPasswordFetcher {
                     true,
                     false);
                 for (CmsUser user : roleUsers) {
+                    // contains
                     if (!exportUsers.containsKey(user.getId())) {
                         exportUsers.put(user.getId(), user);
                     }
@@ -288,6 +380,15 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
+    /**
+     * Gets an dialog instance for fixed group.<p>
+     *
+     * @param groupID id
+     * @param ou ou name
+     * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
+     * @return an instance of this class
+         */
     public static CmsImportExportUserDialog getExportUserDialogForGroup(
         CmsUUID groupID,
         String ou,
@@ -297,6 +398,14 @@ implements Receiver, I_CmsPasswordFetcher {
         return new CmsImportExportUserDialog(ou, groupID, window, allowTechnicalFieldsExport);
     }
 
+    /**
+     * Gets an dialog instance for fixed group.<p>
+     *
+     * @param ou ou name
+     * @param window window
+     * @param allowTechnicalFieldsExport flag indicates if technical field export option should be available
+     * @return an instance of this class
+     */
     public static CmsImportExportUserDialog getExportUserDialogForOU(
         String ou,
         Window window,
@@ -305,17 +414,31 @@ implements Receiver, I_CmsPasswordFetcher {
         return new CmsImportExportUserDialog(ou, null, window, allowTechnicalFieldsExport);
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.I_CmsPasswordFetcher#fetchPassword(java.lang.String)
+     */
     public void fetchPassword(String password) {
 
         m_password.setValue(password);
     }
 
+    /**
+     * @see com.vaadin.ui.Upload.Receiver#receiveUpload(java.lang.String, java.lang.String)
+     */
     public OutputStream receiveUpload(String filename, String mimeType) {
 
         m_importFileStream = new ByteArrayOutputStream();
         return m_importFileStream;
     }
 
+    /**
+     * Get a principle select for choosing groups.<p>
+     *
+     * @param ou name
+     * @param enabled enabled?
+     * @param groupID default value
+     * @return CmsPrinicpalSelect
+     */
     protected CmsPrincipalSelect getGroupSelect(String ou, boolean enabled, CmsUUID groupID) {
 
         CmsPrincipalSelect select = new CmsPrincipalSelect();
@@ -331,9 +454,16 @@ implements Receiver, I_CmsPasswordFetcher {
                 LOG.error("Unable to read group", e);
             }
         }
+        //OU Change enabled because ou-user can be part of other ou-groups
         return select;
     }
 
+    /**
+     * Get ComboBox for selecting roles.<p>
+     *
+     * @param ou name
+     * @return ComboBox
+     */
     protected ComboBox<CmsRole> getRoleComboBox(String ou) {
 
         ComboBox<CmsRole> box = new ComboBox<CmsRole>();
@@ -342,6 +472,11 @@ implements Receiver, I_CmsPasswordFetcher {
         return box;
     }
 
+    /**
+     * Reads user from import file.<p>
+     *
+     * @return List of user (with passwords)
+     */
     protected List<CmsUser> getUsersFromFile() {
 
         if (m_importFileStream == null) {
@@ -354,6 +489,9 @@ implements Receiver, I_CmsPasswordFetcher {
             m_importPasswords.getValue().booleanValue());
     }
 
+    /**
+     * Import user from file.
+     */
     protected void importUserFromFile() {
 
         CmsImportUserThread thread = new CmsImportUserThread(
@@ -374,21 +512,31 @@ implements Receiver, I_CmsPasswordFetcher {
         m_window.setContent(dialog);
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getCloseButton()
+     */
     @Override
     Button getCloseButton() {
 
         return m_cancel;
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getDownloadButton()
+     */
     @Override
     Button getDownloadButton() {
 
         return m_download;
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#getUserToExport()
+     */
     @Override
     Map<CmsUUID, CmsUser> getUserToExport() {
 
+        // get the data object from session
         List<String> groups = getGroupsList(m_exportGroups, false);
         Iterator<I_CmsEditableGroupRow> it = m_exportRolesGroup.getRows().iterator();
         List<String> roles = new ArrayList<String>();
@@ -410,12 +558,22 @@ implements Receiver, I_CmsPasswordFetcher {
         return exportUsers;
     }
 
+    /**
+     * @see org.opencms.ui.apps.user.A_CmsImportExportUserDialog#isExportWithTechnicalFields()
+     */
     @Override
     boolean isExportWithTechnicalFields() {
 
         return m_includeTechnicalFields.getValue().booleanValue();
     }
 
+    /**
+     * Gets selected groups in List.<p>
+     *
+     * @param parent layout
+     * @param importCase boolean
+     * @return List of group names
+     */
     private List<String> getGroupsList(VerticalLayout parent, boolean importCase) {
 
         List<String> result = new ArrayList<String>();
@@ -442,6 +600,13 @@ implements Receiver, I_CmsPasswordFetcher {
         return result;
     }
 
+    /**
+     * Get selected roles list.<p>
+     *
+     * @param parent layout
+     * @param importCase boolean
+     * @return List of roles
+     */
     private List<CmsRole> getRolesList(VerticalLayout parent, boolean importCase) {
 
         List<CmsRole> result = new ArrayList<CmsRole>();
@@ -452,6 +617,11 @@ implements Receiver, I_CmsPasswordFetcher {
         return result;
     }
 
+    /**
+     * Set the visibility of the buttons.<p>
+     *
+     * @param tab which is selected.
+     */
     private void setButtonVisibility(int tab) {
 
         m_download.setVisible(tab == 1);
