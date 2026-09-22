@@ -693,6 +693,29 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         boolean newUser,
         boolean changePassword) {
 
+        sendMail(cms, password, user, ou, newUser, changePassword, false);
+    }
+
+    /**
+     * Sends an email to the user.<p>
+     *
+     * @param cms CmsObject
+     * @param password of the user
+     * @param user user to send mail to
+     * @param ou name
+     * @param newUser flag indicates if user is new
+     * @param changePassword has the user to change password?
+     * @param throwOnError if the mail error should be propagated
+     */
+    protected static void sendMail(
+        CmsObject cms,
+        String password,
+        CmsUser user,
+        String ou,
+        boolean newUser,
+        boolean changePassword,
+        boolean throwOnError) {
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(user.getEmail())) {
             return;
         }
@@ -708,6 +731,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             notification.send();
         } catch (EmailException e) {
             LOG.error("Unable to send email with password", e);
+            if (throwOnError) {
+                throw new IllegalStateException("Unable to send email with password.", e);
+            }
         }
 
     }
