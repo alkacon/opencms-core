@@ -43,7 +43,6 @@ import org.opencms.security.I_CmsCredentialsResolver;
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -350,28 +349,6 @@ public class TestCmsS3Storage {
         assertEquals("resolved-secret", resolved.getSecretKey());
         assertEquals("http://localhost:9000", resolved.getEndpoint());
         assertEquals("bucket", resolved.getBucketName());
-    }
-
-    /**
-     * Tests that S3 enumeration can ignore non-content prefixes.<p>
-     *
-     * @throws Exception if something goes wrong
-     */
-    @Test
-    public void testS3EnumerationIgnoresConfiguredPrefixes() throws Exception {
-
-        TestS3Client client = new TestS3Client();
-        CmsS3Storage storage = new CmsS3Storage("s3test", "bucket", true, client);
-        String hash = createHash("abcdef", '1');
-        String imageCacheHashLikeName = createHash("123456", '2');
-        client.m_objects.put("ab/cd/ef/" + hash, new byte[] {1});
-        client.m_objects.put("imagecache/12/34/56/" + imageCacheHashLikeName, new byte[] {2});
-        List<String> hashes = new ArrayList<String>();
-
-        storage.visitContentHashes(null, Arrays.asList("imagecache/"), hashes::add);
-
-        assertEquals(1, hashes.size());
-        assertEquals(hash, hashes.get(0));
     }
 
     /**

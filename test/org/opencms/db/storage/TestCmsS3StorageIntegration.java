@@ -175,6 +175,19 @@ public class TestCmsS3StorageIntegration {
         return new CmsS3Storage("integration", endpoint, bucket, accessKey, secretKey, pathStyle);
     }
 
+    /** Removes an empty temporary image cache bucket after an integration test. */
+    private static void deleteTestBucket(
+        String endpoint,
+        String bucket,
+        String accessKey,
+        String secretKey,
+        boolean pathStyle) {
+
+        try (S3Client client = createS3Client(endpoint, accessKey, secretKey, pathStyle)) {
+            client.deleteBucket(request -> request.bucket(bucket));
+        }
+    }
+
     /**
      * Ensures that the configured test bucket exists.<p>
      *
@@ -257,7 +270,7 @@ public class TestCmsS3StorageIntegration {
     public void testImageCacheAccessTriggeredRenewal() throws Exception {
 
         String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
-        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String bucket = "opencms-cache-test-" + UUID.randomUUID().toString();
         String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
         String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
         boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
@@ -268,9 +281,7 @@ public class TestCmsS3StorageIntegration {
             accessKey,
             secretKey,
             pathStyle);
-        CmsS3ImageCache cache = new CmsS3ImageCache(
-            s3Configuration,
-            ".opencms-test/access-renewal/" + UUID.randomUUID().toString());
+        CmsS3ImageCache cache = new CmsS3ImageCache(s3Configuration);
         try {
             cache.write("image.jpg", new byte[] {1, 2, 3});
             CmsImageCacheMaintenanceService service = CmsImageCacheMaintenanceService.create(cache);
@@ -296,6 +307,7 @@ public class TestCmsS3StorageIntegration {
                 cache.clear();
             } finally {
                 cache.close();
+                deleteTestBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
             }
         }
     }
@@ -309,7 +321,7 @@ public class TestCmsS3StorageIntegration {
     public void testImageCacheFactoryAgainstConfiguredS3Backend() throws Exception {
 
         String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
-        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String bucket = "opencms-cache-test-" + UUID.randomUUID().toString();
         String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
         String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
         boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
@@ -317,24 +329,25 @@ public class TestCmsS3StorageIntegration {
 
         CmsParameterConfiguration configuration = new CmsParameterConfiguration();
         configuration.add(CmsStorageManager.PARAM_STORAGE_ACTIVE, I_CmsDbStorage.STORAGE_TYPE);
-        configuration.add(CmsStorageManager.PARAM_STORAGE_IMAGE_CACHE, "images");
-        configuration.add("storage.backend.images.type", CmsS3Storage.STORAGE_TYPE);
-        configuration.add("storage.backend.images.endpoint", endpoint);
-        configuration.add("storage.backend.images.bucket", bucket);
-        configuration.add("storage.backend.images.accessKey", accessKey);
-        configuration.add("storage.backend.images.secretKey", secretKey);
-        configuration.add("storage.backend.images.pathStyle", Boolean.toString(pathStyle));
+        configuration.add("storage.imagecache.type", CmsS3Storage.STORAGE_TYPE);
+        configuration.add("storage.imagecache.endpoint", endpoint);
+        configuration.add("storage.imagecache.bucket", bucket);
+        configuration.add("storage.imagecache.accessKey", accessKey);
+        configuration.add("storage.imagecache.secretKey", secretKey);
+        configuration.add("storage.imagecache.pathStyle", Boolean.toString(pathStyle));
         configuration.add(
-            "storage.backend.images.region",
+            "storage.imagecache.region",
             getConfig(PROP_REGION, ENV_REGION, CmsS3ClientConfiguration.DEFAULT_REGION));
 
         try (I_CmsImageCache imageCache = CmsImageCacheFactory.create(configuration)) {
             assertInstanceOf(CmsS3ImageCache.class, imageCache);
+        } finally {
+            deleteTestBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
         }
     }
 
     /**
-     * Tests prefix metadata scanning and multi-object image cache deletion across listing pages.<p>
+     * Tests bucket metadata scanning and multi-object image cache deletion across listing pages.<p>
      *
      * @throws Exception if something goes wrong
      */
@@ -342,7 +355,7 @@ public class TestCmsS3StorageIntegration {
     public void testImageCacheMaintenanceScanAndBatchDelete() throws Exception {
 
         String endpoint = getRequiredConfig(PROP_ENDPOINT, ENV_ENDPOINT);
-        String bucket = getRequiredConfig(PROP_BUCKET, ENV_BUCKET);
+        String bucket = "opencms-cache-test-" + UUID.randomUUID().toString();
         String accessKey = getRequiredConfig(PROP_ACCESS_KEY, ENV_ACCESS_KEY);
         String secretKey = getRequiredConfig(PROP_SECRET_KEY, ENV_SECRET_KEY);
         boolean pathStyle = Boolean.parseBoolean(getConfig(PROP_PATH_STYLE, ENV_PATH_STYLE, "true"));
@@ -353,11 +366,11 @@ public class TestCmsS3StorageIntegration {
             accessKey,
             secretKey,
             pathStyle);
-        String testId = UUID.randomUUID().toString();
-        CmsS3ImageCache cache = new CmsS3ImageCache(configuration, ".opencms-test/maintenance/" + testId);
+        CmsS3ImageCache cache = new CmsS3ImageCache(configuration);
+        String siblingBucket = "opencms-cache-test-" + UUID.randomUUID().toString();
+        ensureBucket(endpoint, siblingBucket, accessKey, secretKey, pathStyle);
         CmsS3ImageCache siblingCache = new CmsS3ImageCache(
-            configuration,
-            ".opencms-test/maintenance-sibling/" + testId);
+            CmsS3ClientConfiguration.createDefault(endpoint, siblingBucket, accessKey, secretKey, pathStyle));
         int objectCount = Integer.parseInt(getConfig(PROP_LISTING_COUNT, ENV_LISTING_COUNT, "1005"));
         try {
             for (int i = 0; i < objectCount; i++) {
@@ -418,11 +431,13 @@ public class TestCmsS3StorageIntegration {
                 cache.clear();
             } finally {
                 cache.close();
+                deleteTestBucket(endpoint, bucket, accessKey, secretKey, pathStyle);
             }
             try {
                 siblingCache.clear();
             } finally {
                 siblingCache.close();
+                deleteTestBucket(endpoint, siblingBucket, accessKey, secretKey, pathStyle);
             }
         }
     }

@@ -37,6 +37,7 @@ import org.opencms.db.storage.CmsStorageManager.StorageResult;
 import org.opencms.db.storage.policy.CmsStoragePolicyContext;
 import org.opencms.db.storage.policy.I_CmsStoragePolicy;
 import org.opencms.file.CmsResource;
+import org.opencms.loader.CmsImageCacheFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -1022,6 +1023,7 @@ public final class CmsStorageMigrationTool {
 
                 CmsParameterConfiguration properties = new CmsParameterConfiguration(
                     commandLine.m_propertiesPath.toString());
+                CmsImageCacheFactory.validateConfiguration(properties);
                 commandLine.m_activeStorageId = properties.getString("storage.active", "db").trim();
                 CmsStoragePolicyConfiguration policyConfiguration = readStoragePolicyConfiguration(
                     commandLine.m_vfsConfigPath);

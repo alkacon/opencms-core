@@ -36,7 +36,6 @@ import org.opencms.file.I_CmsFileContentStreamHandler;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -394,37 +393,17 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
     }
 
     /**
-     * Visits all content hashes stored by this backend, ignoring matching object key prefixes.<p>
-     *
-     * @param dbc the database context
-     * @param ignoredObjectKeyPrefixes object key prefixes to ignore
-     * @param visitor the content hash visitor
-     * @throws Exception if enumeration fails
-     */
-    public void visitContentHashes(
-        CmsDbContext dbc,
-        Collection<String> ignoredObjectKeyPrefixes,
-        I_CmsContentHashVisitor visitor)
-    throws Exception {
-
-        m_s3Client.visitObjectKeys(key -> {
-            if (isIgnoredObjectKey(key, ignoredObjectKeyPrefixes)) {
-                return;
-            }
-            String hash = getHashFromObjectKey(key);
-            if (hash != null) {
-                visitor.visit(hash);
-            }
-        });
-    }
-
-    /**
      * @see org.opencms.db.storage.I_CmsEnumerableStorage#visitContentHashes(org.opencms.db.CmsDbContext, org.opencms.db.storage.I_CmsEnumerableStorage.I_CmsContentHashVisitor)
      */
     @Override
     public void visitContentHashes(CmsDbContext dbc, I_CmsContentHashVisitor visitor) throws Exception {
 
-        visitContentHashes(dbc, null, visitor);
+        m_s3Client.visitObjectKeys(key -> {
+            String hash = getHashFromObjectKey(key);
+            if (hash != null) {
+                visitor.visit(hash);
+            }
+        });
     }
 
     /**
@@ -551,23 +530,4 @@ public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage
         }
     }
 
-    /**
-     * Returns if an object key should be ignored during maintenance enumeration.<p>
-     *
-     * @param key the object key
-     * @param ignoredObjectKeyPrefixes the ignored prefixes
-     * @return <code>true</code> if the key should be ignored
-     */
-    private boolean isIgnoredObjectKey(String key, Collection<String> ignoredObjectKeyPrefixes) {
-
-        if ((key == null) || (ignoredObjectKeyPrefixes == null) || ignoredObjectKeyPrefixes.isEmpty()) {
-            return false;
-        }
-        for (String prefix : ignoredObjectKeyPrefixes) {
-            if ((prefix != null) && key.startsWith(prefix)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

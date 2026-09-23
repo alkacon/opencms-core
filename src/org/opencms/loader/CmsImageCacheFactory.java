@@ -44,6 +44,12 @@ import java.nio.file.Paths;
  */
 public final class CmsImageCacheFactory {
 
+    /** Prefix for the direct image cache configuration. */
+    public static final String PARAM_IMAGE_CACHE_PREFIX = "storage.imagecache.";
+
+    /** Property selecting the image cache type. */
+    public static final String PARAM_IMAGE_CACHE_TYPE = PARAM_IMAGE_CACHE_PREFIX + "type";
+
     /** Hidden constructor. */
     private CmsImageCacheFactory() {
 
@@ -59,43 +65,90 @@ public final class CmsImageCacheFactory {
      */
     public static I_CmsImageCache create(CmsParameterConfiguration configuration) throws CmsConfigurationException {
 
-        String backendId = CmsStorageManager.getImageCacheStorageId(configuration);
-        if (backendId == null) {
-            validatePrefixAbsent(configuration, "the classic RFS image cache");
-            return null;
-        }
-        String type = CmsStorageManager.getStorageType(configuration, backendId);
+        validateConfiguration(configuration);
+        String type = getType(configuration);
         try {
             if (CmsS3Storage.STORAGE_TYPE.equals(type)) {
-                return createS3ImageCache(configuration, backendId);
+                return new CmsS3ImageCache(
+                    CmsStorageManager.createS3ClientConfiguration(configuration, PARAM_IMAGE_CACHE_PREFIX));
             }
             if (CmsFsStorage.STORAGE_TYPE.equals(type)) {
-                return createFsImageCache(configuration, backendId);
+                return new CmsFsImageCache(getFileSystemPath(configuration).toString());
             }
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_TYPE_2, type, backendId));
-        } catch (CmsConfigurationException e) {
-            throw e;
+            return null;
         } catch (Exception e) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, backendId),
-                e);
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, type), e);
         }
     }
 
     /**
-     * Creates a file system image cache.<p>
+     * Validates the image cache settings and separation from active and legacy data storage.<p>
+     *
+     * This does not open a cache or access S3, so offline maintenance tools can use the same validation.
      *
      * @param configuration the runtime property configuration
-     * @param backendId the image cache backend id
-     * @return the image cache
-     * @throws Exception if configuration or initialization fails
+     * @throws CmsConfigurationException if the configuration is invalid
      */
-    private static I_CmsImageCache createFsImageCache(CmsParameterConfiguration configuration, String backendId)
-    throws Exception {
+    public static void validateConfiguration(CmsParameterConfiguration configuration) throws CmsConfigurationException {
 
-        validatePrefixAbsent(configuration, "FS image cache backend " + backendId);
-        Path imageCachePath = normalizePath(CmsStorageManager.getFileSystemStoragePath(configuration, backendId));
+        String type = getType(configuration);
+        if (type == null) {
+            return;
+        }
+        try {
+            if (CmsS3Storage.STORAGE_TYPE.equals(type)) {
+                validateS3Configuration(configuration);
+            } else if (CmsFsStorage.STORAGE_TYPE.equals(type)) {
+                validateFileSystemConfiguration(configuration);
+            } else {
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_TYPE_2, type, PARAM_IMAGE_CACHE_TYPE));
+            }
+        } catch (CmsConfigurationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_IMAGE_CACHE_INIT_1, type), e);
+        }
+    }
+
+    /** Returns the required image cache root path. */
+    private static Path getFileSystemPath(CmsParameterConfiguration configuration) {
+
+        String path = configuration.getString(PARAM_IMAGE_CACHE_PREFIX + "path", null);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            throw new IllegalArgumentException("Missing required configuration property: storage.imagecache.path");
+        }
+        return normalizePath(path.trim());
+    }
+
+    /** Returns the external cache type, or null for the classic local cache. */
+    private static String getType(CmsParameterConfiguration configuration) {
+
+        String type = configuration.getString(PARAM_IMAGE_CACHE_TYPE, null);
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(type) ? null : type.trim();
+    }
+
+    /** Normalizes an S3 endpoint for comparisons. */
+    private static String normalizeEndpoint(String endpoint) {
+
+        String result = URI.create(endpoint.trim()).normalize().toString();
+        while (result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result.toLowerCase(java.util.Locale.ROOT);
+    }
+
+    /** Normalizes a file system path. */
+    private static Path normalizePath(String path) {
+
+        return Paths.get(path).toAbsolutePath().normalize();
+    }
+
+    /** Ensures the FS cache does not overlap any data storage repository. */
+    private static void validateFileSystemConfiguration(CmsParameterConfiguration configuration)
+    throws CmsConfigurationException {
+
+        Path imageCachePath = getFileSystemPath(configuration);
         for (String dataStorageId : CmsStorageManager.getDataStorageIds(configuration)) {
             if (!CmsFsStorage.STORAGE_TYPE.equals(CmsStorageManager.getStorageType(configuration, dataStorageId))) {
                 continue;
@@ -110,132 +163,28 @@ public final class CmsImageCacheFactory {
                         dataStoragePath));
             }
         }
-        return new CmsFsImageCache(imageCachePath.toString());
     }
 
-    /**
-     * Creates an S3 image cache.<p>
-     *
-     * @param configuration the runtime property configuration
-     * @param backendId the image cache backend id
-     * @return the image cache
-     * @throws Exception if configuration or initialization fails
-     */
-    private static I_CmsImageCache createS3ImageCache(CmsParameterConfiguration configuration, String backendId)
-    throws Exception {
+    /** Ensures the S3 cache has its own bucket, separate from all data storage buckets. */
+    private static void validateS3Configuration(CmsParameterConfiguration configuration)
+    throws CmsConfigurationException {
 
-        CmsS3ClientConfiguration imageCacheConfiguration = CmsStorageManager.createS3ClientConfiguration(
+        CmsS3ClientConfiguration imageCache = CmsStorageManager.createS3ClientConfiguration(
             configuration,
-            backendId,
-            null);
-        boolean sharesDataBucket = false;
+            PARAM_IMAGE_CACHE_PREFIX);
         for (String dataStorageId : CmsStorageManager.getDataStorageIds(configuration)) {
             if (!CmsS3Storage.STORAGE_TYPE.equals(CmsStorageManager.getStorageType(configuration, dataStorageId))) {
                 continue;
             }
-            CmsS3ClientConfiguration dataConfiguration = CmsStorageManager.createS3ClientConfiguration(
+            CmsS3ClientConfiguration data = CmsStorageManager.createS3ClientConfiguration(
                 configuration,
                 dataStorageId,
                 null);
-            if (isSameS3Bucket(imageCacheConfiguration, dataConfiguration)) {
-                sharesDataBucket = true;
-                break;
+            if (normalizeEndpoint(imageCache.getEndpoint()).equals(normalizeEndpoint(data.getEndpoint()))
+                && imageCache.getBucketName().equals(data.getBucketName())) {
+                throw new CmsConfigurationException(
+                    Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_S3_BUCKET_1, imageCache.getBucketName()));
             }
-        }
-        String prefix = normalizePrefix(
-            configuration.getString(CmsStorageManager.PARAM_STORAGE_IMAGE_CACHE_PREFIX, null));
-        if (sharesDataBucket && (prefix == null)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(
-                    Messages.ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_REQUIRED_1,
-                    imageCacheConfiguration.getBucketName()));
-        }
-        if (!sharesDataBucket && (prefix != null)) {
-            throw new CmsConfigurationException(
-                Messages.get().container(
-                    Messages.ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_FORBIDDEN_1,
-                    imageCacheConfiguration.getBucketName()));
-        }
-        return new CmsS3ImageCache(imageCacheConfiguration, prefix);
-    }
-
-    /**
-     * Returns whether two configurations address the same physical S3 bucket.<p>
-     *
-     * @param first the first configuration
-     * @param second the second configuration
-     * @return whether endpoint and bucket match
-     */
-    private static boolean isSameS3Bucket(CmsS3ClientConfiguration first, CmsS3ClientConfiguration second) {
-
-        return normalizeEndpoint(first.getEndpoint()).equals(normalizeEndpoint(second.getEndpoint()))
-            && first.getBucketName().equals(second.getBucketName());
-    }
-
-    /**
-     * Normalizes an S3 endpoint for comparisons.<p>
-     *
-     * @param endpoint the endpoint
-     * @return the normalized endpoint
-     */
-    private static String normalizeEndpoint(String endpoint) {
-
-        String result = URI.create(endpoint.trim()).normalize().toString();
-        while (result.endsWith("/")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        return result.toLowerCase(java.util.Locale.ROOT);
-    }
-
-    /**
-     * Normalizes a file system path.<p>
-     *
-     * @param path the path
-     * @return the absolute normalized path
-     */
-    private static Path normalizePath(String path) {
-
-        return Paths.get(path).toAbsolutePath().normalize();
-    }
-
-    /**
-     * Normalizes an image cache prefix.<p>
-     *
-     * @param prefix the raw prefix
-     * @return the normalized prefix, or <code>null</code>
-     */
-    private static String normalizePrefix(String prefix) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
-            return null;
-        }
-        String result = prefix.trim();
-        while (result.startsWith("/")) {
-            result = result.substring(1);
-        }
-        while (result.endsWith("/")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result) || result.contains("..")) {
-            throw new IllegalArgumentException("Invalid image cache prefix: " + prefix);
-        }
-        return result + "/";
-    }
-
-    /**
-     * Ensures no image cache prefix is configured.<p>
-     *
-     * @param configuration the runtime property configuration
-     * @param target the configured cache description
-     * @throws CmsConfigurationException if a prefix is configured
-     */
-    private static void validatePrefixAbsent(CmsParameterConfiguration configuration, String target)
-    throws CmsConfigurationException {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
-            configuration.getString(CmsStorageManager.PARAM_STORAGE_IMAGE_CACHE_PREFIX, null))) {
-            throw new CmsConfigurationException(
-                Messages.get().container(Messages.ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1, target));
         }
     }
 }

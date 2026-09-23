@@ -81,7 +81,7 @@ The image cache storage can be selected independently of the active storage back
 | ----------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Local RFS   | One cache per node | Default, if no special image cache is configured. Requires sufficient local disk space on every node.                                                                                  |
 | Shared FS   | Shared by nodes    | Requires a reliable shared file system supporting atomic file moves and consistent file visibility across all nodes. NFSv4 is the recommended baseline. |
-| S3          | Shared by nodes    | Requires an S3-compatible object store with acceptable access latency.                                      |
+| S3          | Shared by nodes    | Requires a dedicated bucket in an S3-compatible object store with acceptable access latency.                                      |
 
 The detailed configuration options for RFS, S3 and file system image cache storage are described below.
 
@@ -250,51 +250,32 @@ storage.backend.s3main.maxRetries=2
 
 ### Image Cache Configuration
 
-The image cache backend is selected in `WEB-INF/config/opencms.properties`. Retention, renewal and maintenance are configured separately with the optional `<imagecache>` element in `WEB-INF/config/opencms-system.xml`. This element is optional for the classic RFS image cache, which keeps its legacy behavior when the element is absent, but it is required when `storage.imagecache` selects an FS or S3 backend. OpenCms aborts startup if an external image cache is configured without it.
+The image cache backend is selected in `WEB-INF/config/opencms.properties`. Retention, renewal and maintenance are configured separately with the optional `<imagecache>` element in `WEB-INF/config/opencms-system.xml`. This element is optional for the classic RFS image cache, which keeps its legacy behavior when the element is absent, but it is required when `storage.imagecache.type` selects an FS or S3 backend. OpenCms aborts startup if an external image cache is configured without it.
 
-If `storage.imagecache` is omitted, OpenCms uses the classic local RFS image cache. Its location is still controlled by the `image.folder` loader parameter in `opencms-vfs.xml`; the default is `WEB-INF/imagecache/`.
+If `storage.imagecache.type` is omitted, OpenCms uses the classic local RFS image cache. Its location is still controlled by the `image.folder` loader parameter in `opencms-vfs.xml`; the default is `WEB-INF/imagecache/`.
 
-To use a separate S3 image cache, reference a dedicated S3 backend:
-
-```properties
-storage.imagecache=s3images
-
-storage.backend.s3images.type=s3
-storage.backend.s3images.endpoint=http://localhost:9000
-storage.backend.s3images.bucket=opencms-imagecache
-storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
-storage.backend.s3images.secretKey=YOUR_SECRET_KEY
-storage.backend.s3images.pathStyle=true
-storage.backend.s3images.region=aws-global
-```
-
-The S3 image cache backend is independent of `storage.active`: data storage can use database, FS or another S3 backend. Connection pool, timeout and retry properties have the same meaning and defaults as for every other S3 backend.
-
-For smaller installations, it can be useful to use the same S3 endpoint—and, if the data bucket is also non-versioned and has a compatible lifecycle policy, even the same S3 bucket—for data storage AND for the image cache. In this specific case, a prefix must be specified for the image cache with the `storage.imagecache.prefix` parameter so that the image derivatives are stored in S3 separately from the original data. A dedicated image-cache bucket is recommended for production use.
-
-However, the `storage.imagecache.prefix` parameter must be configured only for an S3 image cache, and not for a file system image cache, and only if the S3 image cache uses the same bucket as the active storage. A prefix is rejected for a separate S3 endpoint or bucket.
+To use an S3 image cache, configure its connection directly:
 
 ```properties
-storage.active=s3main
-storage.imagecache=s3main
-storage.imagecache.prefix=imagecache/
-
-storage.backend.s3main.type=s3
-storage.backend.s3main.endpoint=http://localhost:9000
-storage.backend.s3main.bucket=opencms-data
-# credentials and remaining S3 settings omitted
+storage.imagecache.type=s3
+storage.imagecache.endpoint=http://localhost:9000
+storage.imagecache.bucket=opencms-imagecache
+storage.imagecache.accessKey=YOUR_ACCESS_KEY
+storage.imagecache.secretKey=YOUR_SECRET_KEY
+storage.imagecache.pathStyle=true
+storage.imagecache.region=aws-global
 ```
 
-To use a file system image cache, reference an FS backend whose path is the image cache root:
+No backend key or `storage.backend.<key>.*` entry is needed for the image cache. The S3 image cache is independent of `storage.active`: data storage can use database, FS or another S3 backend. Connection pool, timeout and retry properties have the same meaning and defaults as for every other S3 backend.
+
+The S3 image cache requires a dedicated bucket. OpenCms rejects a cache bucket that is also configured for active or legacy data storage on the same S3 endpoint. Image derivatives are stored at the bucket root; no cache-wide object key prefix is configured. Data storage and image cache may use the same S3 endpoint with different buckets.
+
+To use a file system image cache, configure its root path directly:
 
 ```properties
-storage.imagecache=fsimages
-
-storage.backend.fsimages.type=fs
-storage.backend.fsimages.path=/mnt/opencms/imagecache
+storage.imagecache.type=fs
+storage.imagecache.path=/mnt/opencms/imagecache
 ```
-
-FS image caches do not support `storage.imagecache.prefix`.
 
 The configured file system must support atomic moves within one directory. OpenCms writes a derivative to a uniquely named temporary file beside its final location and atomically moves the completed file into place. Readers therefore see either no cache entry or one complete cache entry, even when several cluster nodes generate the same derivative concurrently. The startup validation includes this atomic write path and aborts startup when the configured file system does not support it.
 
@@ -368,13 +349,13 @@ In a cluster, configure this cleanup job on exactly one node, for example the Wo
 
 Do not enable object versioning for the S3 image-cache bucket. Image derivatives are disposable cache objects: regeneration and `renew-on-use` replace objects, while cleanup deletes only the current object keys. With S3 versioning enabled, self-copies create additional object versions and deletes create delete markers while retaining older versions. Storage usage and cost can therefore continue to grow even though the cache appears to have been cleared.
 
-Use a dedicated, non-versioned bucket for the S3 image cache. If the normal data-storage bucket requires versioning or another retention policy, do not share that bucket with the image cache; configure a separate backend and bucket through `storage.imagecache`.
+The S3 image cache requires a dedicated, non-versioned bucket, configured through `storage.imagecache.*`. This keeps its lifecycle and retention policy independent of data storage.
 
 ### Stored Content Delivery Configuration
 
 Stored content delivery is controlled by the `storedcontentdelivery` configuration in `WEB-INF/config/opencms-importexport.xml`. When it is enabled and the active storage backend is S3 or file system storage, OpenCms can use direct delivery for externally stored resources.
 
-The optional `enabledsuffixes` list can be used to decide which resources are delivered directly and which continue to use the classic static export path. This list is an additional storage delivery filter; it does not replace the normal `<staticexport>` configuration. For unchanged original files, matching suffixes enable delivery from the configured storage backend. For scaled image requests, matching suffixes enable delivery from the image cache selected by `storage.imagecache` without writing an additional `/export` copy.
+The optional `enabledsuffixes` list can be used to decide which resources are delivered directly and which continue to use the classic static export path. This list is an additional storage delivery filter; it does not replace the normal `<staticexport>` configuration. For unchanged original files, matching suffixes enable delivery from the configured storage backend. For scaled image requests, matching suffixes enable delivery from the image cache selected by `storage.imagecache.type` without writing an additional `/export` copy.
 
 The normal static export rules still decide whether a resource is exportable at all. If an exportable resource is stored externally and its suffix is listed under `storedcontentdelivery/enabledsuffixes`, the storage delivery path wins and no `/export` copy is written for that resource.
 
@@ -392,7 +373,7 @@ Example for enabling stored content delivery for PDF, MP3 and MP4 files:
 </storedcontentdelivery>
 ```
 
-The image cache is configured independently with `storage.imagecache` in `opencms.properties`. It controls where generated image derivatives are stored and is not required to enable direct delivery for unchanged original files.
+The image cache is configured independently with `storage.imagecache.*` in `opencms.properties`. It controls where generated image derivatives are stored and is not required to enable direct delivery for unchanged original files.
 
 ### Shared Cache Configuration
 
@@ -688,7 +669,7 @@ By default, `delete-orphans` deletes at most 1000 blobs per run. Use `--delete-l
 
 The tool checks references again immediately before deleting a blob. It can enumerate file system and S3 storage backends, and scans the database backend through `CMS_STORAGE`. For S3, the backend must allow bucket listing in addition to object read/write/delete permissions.
 
-When an S3 image cache shares an active or legacy S3 data storage bucket, the maintenance tool reads `storage.imagecache` and `storage.imagecache.prefix` from `opencms.properties` and ignores objects below that prefix during orphan scans and orphan deletion. A backend used exclusively as image cache is not part of data-storage orphan scanning.
+The maintenance and migration tools validate the direct `storage.imagecache.*` configuration before accessing storage. They reject an image cache bucket shared with any active or legacy S3 data backend, just like OpenCms startup does. Image cache buckets are separate from data storage and are not included in data-storage orphan scans or deletion.
 
 ## Step-by-Step: Switch To S3 Storage
 
@@ -740,20 +721,16 @@ storage.backend.s3main.apiCallTimeout=60000
 storage.backend.s3main.maxRetries=2
 ```
 
-1. Optional: configure a separate S3 image cache backend in `opencms.properties`:
+1. Optional: configure a dedicated S3 image cache in `opencms.properties`:
 
 ```properties
-storage.imagecache=s3images
-
-storage.backend.s3images.type=s3
-storage.backend.s3images.endpoint=http://localhost:9000
-storage.backend.s3images.bucket=opencms-imagecache
-storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
-storage.backend.s3images.secretKey=YOUR_SECRET_KEY
-storage.backend.s3images.pathStyle=true
+storage.imagecache.type=s3
+storage.imagecache.endpoint=http://localhost:9000
+storage.imagecache.bucket=opencms-imagecache
+storage.imagecache.accessKey=YOUR_ACCESS_KEY
+storage.imagecache.secretKey=YOUR_SECRET_KEY
+storage.imagecache.pathStyle=true
 ```
-
-If the image cache intentionally shares `s3main`, set `storage.imagecache=s3main` and configure `storage.imagecache.prefix=imagecache/` instead. Do not configure a prefix for a separate bucket.
 
 1. Configure an offloading storage policy in `WEB-INF/config/opencms-vfs.xml`. Make sure the policy includes the media resource types which should use direct delivery. The default `resourceTypeIds` value `2,3` includes binary and image resources:
 
@@ -793,8 +770,6 @@ db.history.sqlmanager=org.opencms.db.mysql.CmsSqlManager
 
 storage.active=s3main
 storage.legacy=db
-storage.imagecache=s3images
-
 storage.backend.s3main.type=s3
 storage.backend.s3main.endpoint=http://localhost:9000
 storage.backend.s3main.bucket=opencms-test
@@ -802,12 +777,12 @@ storage.backend.s3main.accessKey=YOUR_ACCESS_KEY
 storage.backend.s3main.secretKey=YOUR_SECRET_KEY
 storage.backend.s3main.pathStyle=true
 
-storage.backend.s3images.type=s3
-storage.backend.s3images.endpoint=http://localhost:9000
-storage.backend.s3images.bucket=opencms-imagecache
-storage.backend.s3images.accessKey=YOUR_ACCESS_KEY
-storage.backend.s3images.secretKey=YOUR_SECRET_KEY
-storage.backend.s3images.pathStyle=true
+storage.imagecache.type=s3
+storage.imagecache.endpoint=http://localhost:9000
+storage.imagecache.bucket=opencms-imagecache
+storage.imagecache.accessKey=YOUR_ACCESS_KEY
+storage.imagecache.secretKey=YOUR_SECRET_KEY
+storage.imagecache.pathStyle=true
 
 storage.backend.s3main.region=aws-global
 storage.backend.s3main.connectionTimeout=5000

@@ -327,17 +327,17 @@ public class TestCmsS3ImageCache {
     public void testAccessTriggeredRenewalLoadsMetadataFor304() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("image.jpg", new byte[] {1, 2, 3});
         Instant oldTime = Instant.now().minusSeconds(120);
-        client.m_lastModified.put("imagecache/image.jpg", oldTime);
+        client.m_lastModified.put("image.jpg", oldTime);
         CmsImageCacheConfiguration configuration = new CmsImageCacheConfiguration();
         configuration.setRetention("renew-on-use", "PT3M", "PT2M", "PT0S");
         configuration.validate();
 
         try (CmsImageCacheAccessRenewal renewal = CmsImageCacheAccessRenewal.create(cache, configuration)) {
             renewal.recordAccess("image.jpg");
-            await(() -> client.m_lastModified.get("imagecache/image.jpg").isAfter(oldTime));
+            await(() -> client.m_lastModified.get("image.jpg").isAfter(oldTime));
         }
 
         assertEquals(1, client.m_metadataDetailReads);
@@ -348,10 +348,10 @@ public class TestCmsS3ImageCache {
     public void testAccessTriggeredRenewalUsesGetMetadata() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("image.jpg", new byte[] {1, 2, 3});
         Instant oldTime = Instant.now().minusSeconds(120);
-        client.m_lastModified.put("imagecache/image.jpg", oldTime);
+        client.m_lastModified.put("image.jpg", oldTime);
         cache.writeTo("image.jpg", new ByteArrayOutputStream());
         CmsImageCacheConfiguration configuration = new CmsImageCacheConfiguration();
         configuration.setRetention("renew-on-use", "PT3M", "PT2M", "PT0S");
@@ -359,7 +359,7 @@ public class TestCmsS3ImageCache {
 
         try (CmsImageCacheAccessRenewal renewal = CmsImageCacheAccessRenewal.create(cache, configuration)) {
             renewal.recordAccess("image.jpg");
-            await(() -> client.m_lastModified.get("imagecache/image.jpg").isAfter(oldTime));
+            await(() -> client.m_lastModified.get("image.jpg").isAfter(oldTime));
         }
 
         assertEquals(0, client.m_metadataDetailReads);
@@ -378,6 +378,34 @@ public class TestCmsS3ImageCache {
         assertTrue(cache.exists("image.jpg"));
         assertFalse(cache.existsAuthoritatively("image.jpg"));
         assertFalse(cache.exists("image.jpg"));
+    }
+
+    /**
+     * Tests that cache keys are stored at the bucket root and leading slashes are normalized.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testCacheKeysAreStoredAtBucketRoot() throws Exception {
+
+        TestS3Client client = new TestS3Client();
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
+        byte[] content = "scaled image".getBytes("UTF-8");
+
+        cache.write("/export/sites/default/image.jpg_123.jpg", content);
+
+        assertTrue(client.m_validated);
+        assertTrue(client.m_objects.containsKey("export/sites/default/image.jpg_123.jpg"));
+        assertTrue(cache.exists("export/sites/default/image.jpg_123.jpg"));
+        assertEquals(content.length, cache.getLength("export/sites/default/image.jpg_123.jpg"));
+
+        ByteArrayOutputStream full = new ByteArrayOutputStream();
+        cache.writeTo("export/sites/default/image.jpg_123.jpg", full);
+        assertArrayEquals(content, full.toByteArray());
+
+        ByteArrayOutputStream range = new ByteArrayOutputStream();
+        cache.writeRangeTo("export/sites/default/image.jpg_123.jpg", 7, 5, range);
+        assertEquals("image", range.toString("UTF-8"));
     }
 
     /**
@@ -461,23 +489,23 @@ public class TestCmsS3ImageCache {
 
         TestS3Client client = new TestS3Client();
 
-        new CmsS3ImageCache(client, "imagecache/");
+        new CmsS3ImageCache(client);
 
         assertTrue(client.m_validated);
         assertTrue(client.m_objects.isEmpty());
     }
 
     /**
-     * Tests that listing and clearing are limited to the configured image cache prefix.<p>
+     * Tests that listing and clearing cover the entire dedicated image cache bucket.<p>
      *
      * @throws Exception if the test fails
      */
     @Test
-    public void testListAndClearRespectPrefix() throws Exception {
+    public void testListAndClearCoverBucket() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        client.m_objects.put("other-storage/content", new byte[] {9});
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        client.m_objects.put("another-entry.jpg", new byte[] {9});
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         byte[] first = "first".getBytes("UTF-8");
         byte[] second = "second entry".getBytes("UTF-8");
         cache.write("/sites/default/first.jpg_1.jpg", first);
@@ -486,15 +514,15 @@ public class TestCmsS3ImageCache {
         Map<String, Long> entries = new HashMap<>();
         cache.visitEntries((key, length) -> entries.put(key, Long.valueOf(length)));
 
-        assertEquals(2, entries.size());
+        assertEquals(3, entries.size());
         assertEquals(Long.valueOf(first.length), entries.get("sites/default/first.jpg_1.jpg"));
         assertEquals(Long.valueOf(second.length), entries.get("sites/default/folder/second.jpg_2.jpg"));
 
         cache.clear();
 
-        assertFalse(client.m_objects.containsKey("imagecache/sites/default/first.jpg_1.jpg"));
-        assertFalse(client.m_objects.containsKey("imagecache/sites/default/folder/second.jpg_2.jpg"));
-        assertTrue(client.m_objects.containsKey("other-storage/content"));
+        assertFalse(client.m_objects.containsKey("sites/default/first.jpg_1.jpg"));
+        assertFalse(client.m_objects.containsKey("sites/default/folder/second.jpg_2.jpg"));
+        assertTrue(client.m_objects.isEmpty());
         assertFalse(cache.exists("sites/default/first.jpg_1.jpg"));
     }
 
@@ -503,14 +531,14 @@ public class TestCmsS3ImageCache {
     public void testListingUsesCacheKeyPrefix() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("sites/default/first.jpg", new byte[] {1});
         cache.write("sites/other/second.jpg", new byte[] {2});
         Map<String, Long> entries = new HashMap<String, Long>();
 
         cache.visitEntries("/sites/default/", (key, length) -> entries.put(key, Long.valueOf(length)));
 
-        assertEquals("imagecache/sites/default/", client.m_lastListingPrefix);
+        assertEquals("sites/default/", client.m_lastListingPrefix);
         assertEquals(1, entries.size());
         assertEquals(Long.valueOf(1), entries.get("sites/default/first.jpg"));
     }
@@ -520,7 +548,7 @@ public class TestCmsS3ImageCache {
     public void testMaintenanceAdapter() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("first.jpg", new byte[] {1, 2});
         cache.write("second.jpg", new byte[] {3});
         CmsImageCacheMaintenanceService service = new CmsImageCacheMaintenanceService(
@@ -534,7 +562,7 @@ public class TestCmsS3ImageCache {
         assertTrue(service.getCapabilities().supports(Capability.ENTRY_TIMESTAMPS));
         assertTrue(service.getCapabilities().supports(Capability.RENEW_ENTRIES));
         assertTrue(entries.stream().allMatch(entry -> entry.getLastModified() != null));
-        assertEquals("imagecache/", client.m_lastListingPrefix);
+        assertEquals("", client.m_lastListingPrefix);
         assertEquals(0, client.m_metadataDetailReads);
 
         assertTrue(service.getEntry(entries.get(0).getKey()) != null);
@@ -550,7 +578,7 @@ public class TestCmsS3ImageCache {
             CmsImageCacheMaintenanceRequest.renew(Arrays.asList(entries.get(0), staleEntry), renewalTime));
         assertEquals(1, renewalResult.getSucceeded());
         assertEquals(1, renewalResult.getSkipped());
-        assertEquals(renewalTime, client.m_lastModified.get("imagecache/" + entries.get(0).getKey()));
+        assertEquals(renewalTime, client.m_lastModified.get(entries.get(0).getKey()));
 
         CmsImageCacheMaintenanceResult deleteResult = service.execute(CmsImageCacheMaintenanceRequest.delete(entries));
         assertEquals(2, deleteResult.getSucceeded());
@@ -568,10 +596,10 @@ public class TestCmsS3ImageCache {
     public void testMaintenanceBatchDeletePartialFailure() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("first.jpg", new byte[] {1});
         cache.write("second.jpg", new byte[] {2});
-        client.m_failedBatchDeleteKeys.add("imagecache/second.jpg");
+        client.m_failedBatchDeleteKeys.add("second.jpg");
         CmsImageCacheMaintenanceService service = new CmsImageCacheMaintenanceService(
             new CmsS3ImageCacheMaintenance(cache, 1000, 1));
         List<CmsImageCacheEntry> entries = new ArrayList<CmsImageCacheEntry>();
@@ -582,7 +610,7 @@ public class TestCmsS3ImageCache {
         assertEquals(2, result.getRequested());
         assertEquals(1, result.getSucceeded());
         assertEquals(1, result.getFailed());
-        assertTrue(client.m_objects.containsKey("imagecache/second.jpg"));
+        assertTrue(client.m_objects.containsKey("second.jpg"));
     }
 
     /** Tests that per-object S3 renewal failures are retained in maintenance metrics. */
@@ -590,10 +618,10 @@ public class TestCmsS3ImageCache {
     public void testMaintenanceRenewalFailure() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("first.jpg", new byte[] {1});
         cache.write("second.jpg", new byte[] {2});
-        client.m_failedRenewalKeys.add("imagecache/second.jpg");
+        client.m_failedRenewalKeys.add("second.jpg");
         CmsImageCacheMaintenanceService service = new CmsImageCacheMaintenanceService(
             new CmsS3ImageCacheMaintenance(cache, 1000, 1, 2, 1000000, 1));
         List<CmsImageCacheEntry> entries = new ArrayList<CmsImageCacheEntry>();
@@ -613,11 +641,11 @@ public class TestCmsS3ImageCache {
     public void testMaintenanceTimeBasedCleanup() throws Exception {
 
         TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "imagecache");
+        CmsS3ImageCache cache = new CmsS3ImageCache(client);
         cache.write("old.jpg", new byte[] {1});
         cache.write("recent.jpg", new byte[] {2});
-        client.m_lastModified.put("imagecache/old.jpg", Instant.parse("2026-01-01T00:00:00Z"));
-        client.m_lastModified.put("imagecache/recent.jpg", Instant.parse("2026-03-01T00:00:00Z"));
+        client.m_lastModified.put("old.jpg", Instant.parse("2026-01-01T00:00:00Z"));
+        client.m_lastModified.put("recent.jpg", Instant.parse("2026-03-01T00:00:00Z"));
         CmsImageCacheMaintenanceService service = new CmsImageCacheMaintenanceService(
             new CmsS3ImageCacheMaintenance(cache, 1, 1));
 
@@ -651,34 +679,6 @@ public class TestCmsS3ImageCache {
     }
 
     /**
-     * Tests that the configured prefix is prepended to object keys.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    @Test
-    public void testPrefixIsAppliedToObjectKeys() throws Exception {
-
-        TestS3Client client = new TestS3Client();
-        CmsS3ImageCache cache = new CmsS3ImageCache(client, "/imagecache//");
-        byte[] content = "scaled image".getBytes("UTF-8");
-
-        cache.write("/export/sites/default/image.jpg_123.jpg", content);
-
-        assertTrue(client.m_validated);
-        assertTrue(client.m_objects.containsKey("imagecache/export/sites/default/image.jpg_123.jpg"));
-        assertTrue(cache.exists("export/sites/default/image.jpg_123.jpg"));
-        assertEquals(content.length, cache.getLength("export/sites/default/image.jpg_123.jpg"));
-
-        ByteArrayOutputStream full = new ByteArrayOutputStream();
-        cache.writeTo("export/sites/default/image.jpg_123.jpg", full);
-        assertArrayEquals(content, full.toByteArray());
-
-        ByteArrayOutputStream range = new ByteArrayOutputStream();
-        cache.writeRangeTo("export/sites/default/image.jpg_123.jpg", 7, 5, range);
-        assertEquals("image", range.toString("UTF-8"));
-    }
-
-    /**
      * Tests that replacing the S3 client closes the previous client.<p>
      *
      * @throws Exception if the test fails
@@ -690,7 +690,7 @@ public class TestCmsS3ImageCache {
         TestS3Client secondClient = new TestS3Client();
         CmsS3ImageCache cache = new CmsS3ImageCache(firstClient);
 
-        cache.initClient(secondClient, null);
+        cache.initClient(secondClient);
 
         assertTrue(firstClient.m_closed);
         assertTrue(secondClient.m_validated);

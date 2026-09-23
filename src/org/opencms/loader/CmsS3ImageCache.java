@@ -79,9 +79,6 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
     /** The S3 client. */
     private I_CmsS3Client m_s3Client;
 
-    /** The object key prefix. */
-    private String m_prefix = "";
-
     /**
      * Creates a new image cache.<p>
      *
@@ -91,20 +88,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
     public CmsS3ImageCache(CmsS3ClientConfiguration configuration)
     throws Exception {
 
-        this(configuration, null);
-    }
-
-    /**
-     * Creates a new image cache.<p>
-     *
-     * @param configuration the S3 configuration
-     * @param prefix the object key prefix
-     * @throws Exception if the configured bucket can not be accessed
-     */
-    public CmsS3ImageCache(CmsS3ClientConfiguration configuration, String prefix)
-    throws Exception {
-
-        initClient(new CmsGenericS3Client(configuration), prefix);
+        initClient(new CmsGenericS3Client(configuration));
     }
 
     /**
@@ -116,20 +100,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
     CmsS3ImageCache(I_CmsS3Client s3Client)
     throws Exception {
 
-        this(s3Client, null);
-    }
-
-    /**
-     * Creates a new image cache with a custom client.<p>
-     *
-     * @param s3Client the S3 client
-     * @param prefix the object key prefix
-     * @throws Exception if the configured bucket can not be accessed
-     */
-    CmsS3ImageCache(I_CmsS3Client s3Client, String prefix)
-    throws Exception {
-
-        initClient(s3Client, prefix);
+        initClient(s3Client);
     }
 
     /**
@@ -157,7 +128,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
         List<String> batch = new ArrayList<String>(deleteBatchSize);
         List<Exception> failures = new ArrayList<Exception>();
         try {
-            m_s3Client.visitObjects(m_prefix, metadata -> {
+            m_s3Client.visitObjects("", metadata -> {
                 if (isImageCacheObjectKey(metadata.getKey())) {
                     batch.add(metadata.getKey());
                     if (batch.size() == deleteBatchSize) {
@@ -234,7 +205,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
             if (!uniqueKeys.add(normalizedKey)) {
                 throw new IllegalArgumentException("Duplicate normalized image cache key: " + normalizedKey);
             }
-            String objectKey = m_prefix + normalizedKey;
+            String objectKey = normalizedKey;
             normalizedKeys.add(normalizedKey);
             objectKeys.add(objectKey);
             objectToCacheKey.put(objectKey, normalizedKey);
@@ -422,11 +393,11 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
     throws Exception {
 
         ensureInitialized();
-        String objectPrefix = m_prefix + normalizeKey(prefix == null ? "" : prefix);
+        String objectPrefix = normalizeKey(prefix == null ? "" : prefix);
         m_s3Client.visitObjects(objectPrefix, metadata -> {
             String objectKey = metadata.getKey();
             if (isImageCacheObjectKey(objectKey)) {
-                String key = objectKey.substring(m_prefix.length());
+                String key = objectKey;
                 m_lengthCache.put(objectKey, Long.valueOf(metadata.getLength()));
                 visitor.visit(
                     new CmsS3ObjectMetadata(
@@ -507,13 +478,11 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
      * Initializes the S3 client.<p>
      *
      * @param s3Client the S3 client
-     * @param prefix the object key prefix
      * @throws Exception if the configured bucket can not be accessed
      */
-    protected void initClient(I_CmsS3Client s3Client, String prefix) throws Exception {
+    protected void initClient(I_CmsS3Client s3Client) throws Exception {
 
-        String normalizedPrefix = normalizePrefix(prefix);
-        String healthCheckKey = normalizedPrefix + ".opencms-healthcheck/" + UUID.randomUUID().toString();
+        String healthCheckKey = ".opencms-healthcheck/" + UUID.randomUUID().toString();
         byte[] healthCheckContent = "OpenCms image cache health check".getBytes(StandardCharsets.UTF_8);
         boolean healthCheckStored = false;
         Exception failure = null;
@@ -553,7 +522,6 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
         if ((m_s3Client != null) && (m_s3Client != s3Client)) {
             m_s3Client.close();
         }
-        m_prefix = normalizedPrefix;
         m_s3Client = s3Client;
         m_lengthCache.invalidateAll();
     }
@@ -589,7 +557,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
      */
     private String getObjectKey(String key) {
 
-        return m_prefix + normalizeKey(key);
+        return normalizeKey(key);
     }
 
     /**
@@ -600,7 +568,7 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
      */
     private boolean isImageCacheObjectKey(String objectKey) {
 
-        return objectKey.startsWith(m_prefix) && (objectKey.length() > m_prefix.length());
+        return !objectKey.isEmpty();
     }
 
     /** Normalizes an image cache key. */
@@ -611,30 +579,6 @@ public class CmsS3ImageCache implements I_CmsImageCache, I_CmsImageCacheAccessMe
             normalizedKey = normalizedKey.substring(1);
         }
         return normalizedKey;
-    }
-
-    /**
-     * Normalizes an S3 object key prefix.<p>
-     *
-     * @param prefix the raw prefix
-     * @return the normalized prefix
-     */
-    private String normalizePrefix(String prefix) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(prefix)) {
-            return "";
-        }
-        String result = prefix.trim();
-        while (result.startsWith("/")) {
-            result = result.substring(1);
-        }
-        while (result.endsWith("/")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
-            return "";
-        }
-        return result + "/";
     }
 
     /** Stores S3 response metadata for access-triggered renewal. */

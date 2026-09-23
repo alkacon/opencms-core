@@ -156,12 +156,6 @@ public class CmsStorageManager implements AutoCloseable {
     /** Prefix for storage properties. */
     public static final String PARAM_STORAGE_ACTIVE = "storage.active";
 
-    /** Property selecting the image cache backend. */
-    public static final String PARAM_STORAGE_IMAGE_CACHE = "storage.imagecache";
-
-    /** Property defining the image cache object key prefix. */
-    public static final String PARAM_STORAGE_IMAGE_CACHE_PREFIX = "storage.imagecache.prefix";
-
     /** Prefix for the legacy storage list. */
     public static final String PARAM_STORAGE_LEGACY = "storage.legacy";
 
@@ -263,6 +257,20 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
+     * Creates an S3 client configuration from properties below the given prefix.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @param prefix the property prefix, including its trailing dot
+     * @return the S3 client configuration
+     */
+    public static CmsS3ClientConfiguration createS3ClientConfiguration(
+        CmsParameterConfiguration configuration,
+        String prefix) {
+
+        return parseS3ClientConfiguration(configuration, prefix, null);
+    }
+
+    /**
      * Creates an S3 client configuration from a configured storage backend.<p>
      *
      * @param configuration the runtime property configuration
@@ -285,49 +293,7 @@ public class CmsStorageManager implements AutoCloseable {
             throw new IllegalArgumentException(
                 Messages.get().getBundle().key(Messages.ERR_STORAGE_UNSUPPORTED_TYPE_2, type, storageId));
         }
-        String endpoint = requireConfigValue(configuration, prefix + PARAM_ENDPOINT, storageId);
-        String bucket = CmsStringUtil.isNotEmptyOrWhitespaceOnly(bucketOverride)
-        ? bucketOverride.trim()
-        : requireConfigValue(configuration, prefix + PARAM_BUCKET, storageId);
-        String accessKey = requireConfigValue(configuration, prefix + PARAM_ACCESS_KEY, storageId);
-        String secretKey = requireConfigValue(configuration, prefix + PARAM_SECRET_KEY, storageId);
-        boolean pathStyle = configuration.getBoolean(prefix + PARAM_PATH_STYLE, true);
-        int connectionTimeout = configuration.getInteger(
-            prefix + PARAM_CONNECTION_TIMEOUT,
-            CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
-        int connectionAcquisitionTimeout = configuration.getInteger(
-            prefix + PARAM_CONNECTION_ACQUISITION_TIMEOUT,
-            CmsS3ClientConfiguration.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT);
-        int socketTimeout = configuration.getInteger(
-            prefix + PARAM_SOCKET_TIMEOUT,
-            CmsS3ClientConfiguration.DEFAULT_SOCKET_TIMEOUT);
-        int apiCallAttemptTimeout = configuration.getInteger(
-            prefix + PARAM_API_CALL_ATTEMPT_TIMEOUT,
-            CmsS3ClientConfiguration.DEFAULT_API_CALL_ATTEMPT_TIMEOUT);
-        int apiCallTimeout = configuration.getInteger(
-            prefix + PARAM_API_CALL_TIMEOUT,
-            CmsS3ClientConfiguration.DEFAULT_API_CALL_TIMEOUT);
-        int maxRetries = configuration.getInteger(
-            prefix + PARAM_MAX_RETRIES,
-            CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES);
-        int maxConnections = configuration.getInteger(
-            prefix + PARAM_MAX_CONNECTIONS,
-            CmsS3ClientConfiguration.DEFAULT_MAX_CONNECTIONS);
-        String region = configuration.getString(prefix + PARAM_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
-        return new CmsS3ClientConfiguration(
-            endpoint,
-            bucket,
-            accessKey,
-            secretKey,
-            pathStyle,
-            region,
-            connectionTimeout,
-            socketTimeout,
-            apiCallAttemptTimeout,
-            apiCallTimeout,
-            maxRetries,
-            maxConnections,
-            connectionAcquisitionTimeout);
+        return parseS3ClientConfiguration(configuration, prefix, bucketOverride);
     }
 
     /**
@@ -392,18 +358,6 @@ public class CmsStorageManager implements AutoCloseable {
     }
 
     /**
-     * Returns the configured image cache backend id, or <code>null</code> for the classic RFS cache.<p>
-     *
-     * @param configuration the runtime property configuration
-     * @return the image cache backend id, or <code>null</code>
-     */
-    public static String getImageCacheStorageId(CmsParameterConfiguration configuration) {
-
-        String result = configuration.getString(PARAM_STORAGE_IMAGE_CACHE, null);
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(result) ? null : result.trim();
-    }
-
-    /**
      * Returns the type for a configured storage backend.<p>
      *
      * @param configuration the runtime property configuration
@@ -438,6 +392,65 @@ public class CmsStorageManager implements AutoCloseable {
             }
         }
         return result;
+    }
+
+    /**
+     * Reads the shared S3 connection settings.<p>
+     *
+     * @param configuration the runtime property configuration
+     * @param prefix the property prefix, including its trailing dot
+     * @param bucketOverride an optional bucket override
+     * @return the S3 client configuration
+     */
+    private static CmsS3ClientConfiguration parseS3ClientConfiguration(
+        CmsParameterConfiguration configuration,
+        String prefix,
+        String bucketOverride) {
+
+        String configurationName = prefix.substring(0, prefix.length() - 1);
+        String endpoint = requireConfigValue(configuration, prefix + PARAM_ENDPOINT, configurationName);
+        String bucket = CmsStringUtil.isNotEmptyOrWhitespaceOnly(bucketOverride)
+        ? bucketOverride.trim()
+        : requireConfigValue(configuration, prefix + PARAM_BUCKET, configurationName);
+        String accessKey = requireConfigValue(configuration, prefix + PARAM_ACCESS_KEY, configurationName);
+        String secretKey = requireConfigValue(configuration, prefix + PARAM_SECRET_KEY, configurationName);
+        boolean pathStyle = configuration.getBoolean(prefix + PARAM_PATH_STYLE, true);
+        int connectionTimeout = configuration.getInteger(
+            prefix + PARAM_CONNECTION_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_CONNECTION_TIMEOUT);
+        int connectionAcquisitionTimeout = configuration.getInteger(
+            prefix + PARAM_CONNECTION_ACQUISITION_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_CONNECTION_ACQUISITION_TIMEOUT);
+        int socketTimeout = configuration.getInteger(
+            prefix + PARAM_SOCKET_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_SOCKET_TIMEOUT);
+        int apiCallAttemptTimeout = configuration.getInteger(
+            prefix + PARAM_API_CALL_ATTEMPT_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_API_CALL_ATTEMPT_TIMEOUT);
+        int apiCallTimeout = configuration.getInteger(
+            prefix + PARAM_API_CALL_TIMEOUT,
+            CmsS3ClientConfiguration.DEFAULT_API_CALL_TIMEOUT);
+        int maxRetries = configuration.getInteger(
+            prefix + PARAM_MAX_RETRIES,
+            CmsS3ClientConfiguration.DEFAULT_MAX_RETRIES);
+        int maxConnections = configuration.getInteger(
+            prefix + PARAM_MAX_CONNECTIONS,
+            CmsS3ClientConfiguration.DEFAULT_MAX_CONNECTIONS);
+        String region = configuration.getString(prefix + PARAM_REGION, CmsS3ClientConfiguration.DEFAULT_REGION);
+        return new CmsS3ClientConfiguration(
+            endpoint,
+            bucket,
+            accessKey,
+            secretKey,
+            pathStyle,
+            region,
+            connectionTimeout,
+            socketTimeout,
+            apiCallAttemptTimeout,
+            apiCallTimeout,
+            maxRetries,
+            maxConnections,
+            connectionAcquisitionTimeout);
     }
 
     /**

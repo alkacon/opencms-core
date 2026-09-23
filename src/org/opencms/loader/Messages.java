@@ -59,13 +59,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_IMAGE_CACHE_CONFIG_POLICY_REQUIRED_1 = "ERR_IMAGE_CACHE_CONFIG_POLICY_REQUIRED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1 = "ERR_IMAGE_CACHE_CONFIG_PREFIX_FORBIDDEN_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_FORBIDDEN_1 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_FORBIDDEN_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_REQUIRED_1 = "ERR_IMAGE_CACHE_CONFIG_S3_PREFIX_REQUIRED_1";
+    public static final String ERR_IMAGE_CACHE_CONFIG_S3_BUCKET_1 = "ERR_IMAGE_CACHE_CONFIG_S3_BUCKET_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMAGE_CACHE_CONFIG_TYPE_2 = "ERR_IMAGE_CACHE_CONFIG_TYPE_2";
