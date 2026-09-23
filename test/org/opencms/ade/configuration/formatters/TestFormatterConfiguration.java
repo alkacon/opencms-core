@@ -30,6 +30,7 @@ package org.opencms.ade.configuration.formatters;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsTestConfigData;
 import org.opencms.ade.configuration.TestConfig;
+import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -39,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -383,6 +385,42 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
         } finally {
             delete("/system/include-name-test");
         }
+    }
+
+    /**
+     * Tests formatter availability for a resource type without a configured schema.<p>
+     *
+     * @throws CmsException if something goes wrong
+     */
+    @Test
+    public void testHasFormattersWithoutContentDefinition() throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType("plain");
+        assertNull(CmsXmlContentDefinition.getContentDefinitionForType(cms, type.getTypeName()));
+        CmsContainer container = new CmsContainer(
+            "main",
+            "foo",
+            null,
+            500,
+            10,
+            false,
+            false,
+            true,
+            Collections.emptyList(),
+            null,
+            null,
+            Collections.emptyMap());
+        List<CmsContainer> containers = Collections.singletonList(container);
+
+        assertFalse(
+            createConfig("/").hasFormatters(cms, type, containers),
+            "A type without a schema or configured formatters should have no matching formatters");
+
+        I_CmsFormatterBean formatter = createFormatter(type.getTypeName(), "plain-formatter", 1000, true);
+        assertTrue(
+            createConfig("/", formatter).hasFormatters(cms, type, containers),
+            "A matching configured formatter should be available even without a content definition");
     }
 
     /**

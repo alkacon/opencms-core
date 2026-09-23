@@ -1725,7 +1725,10 @@ public class CmsADEConfigData {
             CmsXmlContentDefinition def = CmsXmlContentDefinition.getContentDefinitionForType(
                 cms,
                 resType.getTypeName());
-            CmsFormatterConfiguration schemaFormatters = def.getContentHandler().getFormatterConfiguration(cms, null);
+            CmsFormatterConfiguration schemaFormatters = null;
+            if (def != null) {
+                schemaFormatters = def.getContentHandler().getFormatterConfiguration(cms, null);
+            }
             CmsFormatterConfiguration formatters = getFormatters(cms, resType, schemaFormatters);
             for (CmsContainer cont : containers) {
                 if (cont.isEditable()
