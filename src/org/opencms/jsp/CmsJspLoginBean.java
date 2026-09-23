@@ -365,7 +365,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         if (m_loginException == null) {
             try {
                 URI uriObj = new URI(redirectUri);
-                if (uriObj.getScheme() != null) {
+                if ((uriObj.getScheme() != null) || redirectUri.trim().startsWith("//")) {
                     LOG.warn("Absolute URL not allowed as redirect URI: " + redirectUri);
                     return;
                 }
