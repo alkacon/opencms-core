@@ -291,8 +291,8 @@
                 <mimetype extension=".swf" type="application/x-shockwave-flash" />
                 <mimetype extension=".sit" type="application/x-stuffit" />
                 <mimetype extension=".tar" type="application/x-tar" />
-                <mimetype extension=".tcl" type="application/x-tcl " />
-                <mimetype extension=".tk" type="application/x-tcl " />
+                <mimetype extension=".tcl" type="application/x-tcl" />
+                <mimetype extension=".tk" type="application/x-tcl" />
                 <mimetype extension=".tgz" type="application/x-tgz" />
                 <mimetype extension=".tar.gz" type="application/x-tgz" />
                 <mimetype extension=".crt" type="application/x-x509-ca-cert" />
@@ -366,7 +366,7 @@
                 <mimetype extension=".odf" type="application/vnd.oasis.opendocument.formula" />
                 <mimetype extension=".odi" type="application/vnd.oasis.opendocument.image" />
                 <mimetype extension=".odm" type="application/vnd.oasis.opendocument.text-master" />
-                <mimetype extension=".ott" type="application/vnd.oasis.opendocument.text-template ott" />
+                <mimetype extension=".ott" type="application/vnd.oasis.opendocument.text-template" />
                 <mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
                 <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
                 <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
