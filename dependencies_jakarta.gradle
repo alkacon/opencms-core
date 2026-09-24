@@ -31,5 +31,19 @@ dependencies {
       distribution('org.eclipse.angus:angus-mail:2.0.5')
       distribution('org.eclipse.angus:angus-activation:2.0.3')
   }
+  
+  constraints {
+        distribution('org.apache.cxf:cxf-core:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-bindings-soap:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-bindings-xml:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-databinding-jaxb:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-frontend-jaxws:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-frontend-simple:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-transports-http:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-ws-addr:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-ws-policy:4.1.7')
+        distribution('org.apache.cxf:cxf-rt-wsdl:4.1.7')
+    }
+  
     
 }

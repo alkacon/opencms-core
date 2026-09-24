@@ -122,19 +122,7 @@ dependencies {
     distribution('org.antlr:antlr-runtime:3.5.2') { transitive = false }
     distribution('org.antlr:stringtemplate:3.2.1') { transitive = false }
     distribution('org.antlr:ST4:4.0.8') { transitive = false }
-    constraints {
-        distribution('org.apache.cxf:cxf-core:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-bindings-soap:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-bindings-xml:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-databinding-jaxb:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-frontend-jaxws:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-frontend-simple:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-transports-http:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-ws-addr:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-ws-policy:3.5.11')
-        distribution('org.apache.cxf:cxf-rt-wsdl:3.5.11')
-    }
-
+    
     distribution('org.apache.commons:commons-email2-core:2.0.0-M1') { transitive = false }
     distribution('org.apache.commons:commons-exec:1.4.0') { transitive = false }
     distribution('org.apache.commons:commons-compress:1.28.0') { transitive = false }

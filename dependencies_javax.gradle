@@ -28,7 +28,19 @@ dependencies {
     distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0') {
         exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
     }
-    
+
+	constraints {
+        distribution('org.apache.cxf:cxf-core:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-bindings-soap:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-bindings-xml:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-databinding-jaxb:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-frontend-jaxws:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-frontend-simple:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-transports-http:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-ws-addr:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-ws-policy:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-wsdl:3.5.11')
+    }
 
     
 }
