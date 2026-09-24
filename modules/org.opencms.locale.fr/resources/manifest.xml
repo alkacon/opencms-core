@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>21.0</opencms_version>
-		<createdate>Thu, 02 Apr 2026 11:18:57 GMT</createdate>
+		<opencms_version>22.0</opencms_version>
+		<createdate>Thu, 24 Sep 2026 14:09:27 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>10</export_version>
 	</info>
@@ -36,10 +36,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>2ddceb04-9291-11ee-88a0-f09e4a37616c</uuidstructure>
-			<datelastmodified>Mon, 04 Dec 2023 10:37:53 GMT</datelastmodified>
+			<uuidstructure>40f70996-b0ef-11f1-9258-0242ac11002b</uuidstructure>
+			<datelastmodified>Tue, 15 Sep 2026 10:21:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Dec 2023 10:37:53 GMT</datecreated>
+			<datecreated>Tue, 15 Sep 2026 10:21:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -58,10 +58,10 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<uuidstructure>46f57b24-9291-11ee-88a0-f09e4a37616c</uuidstructure>
-			<datelastmodified>Mon, 04 Dec 2023 10:38:44 GMT</datelastmodified>
+			<uuidstructure>47bae996-b0ef-11f1-9258-0242ac11002b</uuidstructure>
+			<datelastmodified>Tue, 15 Sep 2026 10:22:06 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Dec 2023 10:38:35 GMT</datecreated>
+			<datecreated>Tue, 15 Sep 2026 10:21:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -581,6 +581,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>80c43617-b821-11f1-a020-0242ac11002b</uuidstructure>
+			<uuidresource>80c43618-b821-11f1-a020-0242ac11002b</uuidresource>
+			<datelastmodified>Thu, 24 Sep 2026 14:09:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2026 14:09:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/fr/messages/org/opencms/ai</destination>
 			<type>folder</type>
 			<uuidstructure>8154c8c6-2e73-11f1-a567-0242ac11002b</uuidstructure>
@@ -808,6 +823,34 @@
 					<value><![CDATA[messages_fr]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/storage</destination>
+			<type>folder</type>
+			<uuidstructure>27055b66-b821-11f1-a020-0242ac11002b</uuidstructure>
+			<datelastmodified>Thu, 24 Sep 2026 14:06:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2026 14:06:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/db/storage/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/storage/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2db1e23b-b821-11f1-a020-0242ac11002b</uuidstructure>
+			<uuidresource>2db1e23c-b821-11f1-a020-0242ac11002b</uuidresource>
+			<datelastmodified>Thu, 24 Sep 2026 14:07:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2026 14:06:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
