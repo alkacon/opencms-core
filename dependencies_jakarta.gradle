@@ -14,7 +14,7 @@ dependencies {
     distribution('org.apache.commons:commons-fileupload2-jakarta-servlet5:2.0.0-M5') { transitive = false }
     distribution('jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2') { transitive = false }
     distribution('org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1') { transitive = false }
-    distribution('org.apache.logging.log4j:log4j-jakarta-web:2.25.3') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-jakarta-web:2.25.5') { transitive = false }
     distribution('org.apache.commons:commons-email2-jakarta:2.0.0-M1') { transitive = false }
     distribution('jakarta.mail:jakarta.mail-api:2.1.5') { transitive = false }
     distribution('org.eclipse.angus:angus-mail:2.0.5') { transitive = false }
