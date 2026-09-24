@@ -111,7 +111,6 @@ public class TestCmsImageCacheConfiguration {
         assertEquals(Duration.ofDays(30), configuration.getRenewalWindow());
         assertEquals(Duration.ofDays(14), configuration.getRenewalJitter());
         assertEquals(Duration.ofMinutes(5), configuration.getCleanupMaxRuntime());
-        assertTrue(configuration.isFsTouchEnabled());
         assertEquals(1000, configuration.getS3DeleteBatchSize());
     }
 
@@ -176,7 +175,7 @@ public class TestCmsImageCacheConfiguration {
             + "renewal-jitter=\"P14D\" />"
             + "<cleanup max-deletes-per-run=\"5000\" max-runtime=\"PT3M\" />"
             + "<rfs touch-minimum-interval=\"PT1H\" />"
-            + "<fs touch-enabled=\"true\" touch-concurrency=\"2\" />"
+            + "<fs touch-concurrency=\"2\" />"
             + "<s3 delete-batch-size=\"500\" delete-concurrency=\"2\" copy-concurrency=\"3\" "
             + "max-copies-per-second=\"25\" renewal-queue-capacity=\"20000\" />"
             + "</imagecache></system></opencms>";
@@ -200,6 +199,7 @@ public class TestCmsImageCacheConfiguration {
         assertEquals("P30D", imageCacheElement.element("retention").attributeValue("renewal-window"));
         assertEquals("P14D", imageCacheElement.element("retention").attributeValue("renewal-jitter"));
         assertEquals("5000", imageCacheElement.element("cleanup").attributeValue("max-deletes-per-run"));
+        assertEquals("2", imageCacheElement.element("fs").attributeValue("touch-concurrency"));
         assertEquals("500", imageCacheElement.element("s3").attributeValue("delete-batch-size"));
     }
 
@@ -214,7 +214,7 @@ public class TestCmsImageCacheConfiguration {
         result.setRetention("renew-on-use", "P60D", "P30D", "P14D");
         result.setCleanup("10000", "PT5M");
         result.setRfs("PT1H");
-        result.setFs("true", "1");
+        result.setFs("1");
         result.setS3("1000", "1", "2", "20", "10000");
         return result;
     }

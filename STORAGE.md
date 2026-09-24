@@ -285,7 +285,7 @@ When an external image cache is configured, OpenCms validates it during startup.
 
 #### Image Cache Retention and Maintenance
 
-The following example shows all FS and S3 maintenance settings. Only the backend-specific element for the selected image cache needs to be present. Durations use the ISO-8601 format, for example `P60D` for 60 days or `PT5M` for five minutes.
+The following example shows all FS and S3 maintenance settings. In an actual configuration, include only the backend-specific element for the selected image cache and omit it when the defaults are sufficient. Durations use the ISO-8601 format, for example `P60D` for 60 days or `PT5M` for five minutes.
 
 ```xml
 <imagecache>
@@ -298,7 +298,6 @@ The following example shows all FS and S3 maintenance settings. Only the backend
         max-deletes-per-run="10000"
         max-runtime="PT5M" />
     <fs
-        touch-enabled="true"
         touch-concurrency="1" />
     <s3
         delete-batch-size="1000"
@@ -314,7 +313,7 @@ The retention modes are:
 | Mode | Required time attributes | Behavior |
 | ---- | ------------------------ | -------- |
 | `fixed` | `max-age` | Entries are not renewed on access. Cleanup treats the backend `Last-Modified` timestamp as the beginning of the retention period. |
-| `renew-on-use` | `max-age`, `renewal-window`, `renewal-jitter` | Successful use can renew an entry before it expires. FS renews by touching the file when `touch-enabled` is `true`; S3 renews by conditionally copying the object onto itself. |
+| `renew-on-use` | `max-age`, `renewal-window`, `renewal-jitter` | Successful use can renew an entry before it expires. FS renews by touching the file; S3 renews by conditionally copying the object onto itself. |
 | `external` | none | OpenCms does not perform automatic retention cleanup or access-triggered renewal. Retention is delegated to an external lifecycle or cache-management system. |
 
 There are no implicit defaults for the retention mode or its time attributes. They must be configured explicitly according to the selected mode. The cleanup and backend-tuning attributes are optional and use the defaults listed below.
@@ -329,7 +328,6 @@ The optional maintenance settings have these defaults:
 | ------------------- | ------- | ------- |
 | `cleanup/@max-deletes-per-run` | `10000` | Maximum number of entries deleted by one scheduled cleanup-job run. |
 | `cleanup/@max-runtime` | `PT5M` | Soft maximum runtime for one scheduled cleanup-job run. The current backend batch is allowed to finish. |
-| `fs/@touch-enabled` | `false` | Enables access-triggered renewal for Shared FS. Without touching, `renew-on-use` does not change FS timestamps. |
 | `fs/@touch-concurrency` | `1` | Maximum number of concurrent FS touch operations. |
 | `s3/@delete-batch-size` | `1000` | Maximum keys in one S3 multi-object delete request; values above 1000 are rejected. |
 | `s3/@delete-concurrency` | `1` | Number of concurrent S3 delete batches. |

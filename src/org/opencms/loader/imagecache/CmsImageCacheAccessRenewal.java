@@ -136,7 +136,7 @@ public final class CmsImageCacheAccessRenewal implements AutoCloseable {
                 configuration.getS3CopyConcurrency(),
                 configuration.getS3RenewalQueueCapacity());
         }
-        if ((cache instanceof CmsFsImageCache) && configuration.isFsTouchEnabled()) {
+        if (cache instanceof CmsFsImageCache) {
             return new CmsImageCacheAccessRenewal(
                 cache,
                 configuration,

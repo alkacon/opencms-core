@@ -362,7 +362,6 @@
 
 <!ELEMENT fs EMPTY>
 <!ATTLIST fs
-	touch-enabled (TRUE|true|FALSE|false) #IMPLIED
 	touch-concurrency CDATA #IMPLIED>
 
 <!ELEMENT s3 EMPTY>

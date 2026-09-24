@@ -28,6 +28,7 @@
 package org.opencms.loader.imagecache;
 
 import org.opencms.configuration.CmsImageCacheConfiguration;
+import org.opencms.configuration.CmsImageCacheConfiguration.RetentionMode;
 import org.opencms.loader.CmsFsImageCache;
 import org.opencms.loader.CmsImageLoader;
 import org.opencms.loader.CmsRfsImageCache;
@@ -94,7 +95,7 @@ public final class CmsImageCacheMaintenanceService {
             return new CmsImageCacheMaintenanceService(
                 new CmsFsImageCacheMaintenance(
                     (CmsFsImageCache)cache,
-                    configuration.isFsTouchEnabled(),
+                    configuration.getRetentionMode() == RetentionMode.renewOnUse,
                     configuration.getFsTouchConcurrency()));
         }
         if (cache instanceof CmsS3ImageCache) {

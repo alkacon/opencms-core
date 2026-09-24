@@ -172,7 +172,7 @@ public class TestCmsImageCacheMaintenanceService {
             cache.write("second.jpg", new byte[] {4, 5, 6});
             CmsImageCacheConfiguration configuration = new CmsImageCacheConfiguration();
             configuration.setRetention("renew-on-use", "P60D", "P30D", "P14D");
-            configuration.setFs("true", "2");
+            configuration.setFs("2");
             configuration.validate();
             CmsImageCacheMaintenanceService service = CmsImageCacheMaintenanceService.create(cache, configuration);
             List<CmsImageCacheEntry> entries = new ArrayList<CmsImageCacheEntry>();
@@ -191,6 +191,14 @@ public class TestCmsImageCacheMaintenanceService {
             assertEquals(1, result.getSkipped());
             assertEquals(renewalTime, Files.getLastModifiedTime(repository.resolve("first.jpg")).toInstant());
             assertEquals(replacementTime, Files.getLastModifiedTime(repository.resolve("second.jpg")).toInstant());
+
+            CmsImageCacheConfiguration fixedConfiguration = new CmsImageCacheConfiguration();
+            fixedConfiguration.setRetention("fixed", "P60D", null, null);
+            fixedConfiguration.validate();
+            CmsImageCacheMaintenanceService fixedService = CmsImageCacheMaintenanceService.create(
+                cache,
+                fixedConfiguration);
+            assertFalse(fixedService.getCapabilities().supports(Capability.RENEW_ENTRIES));
         } finally {
             deleteDirectory(repository);
         }

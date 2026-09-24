@@ -274,9 +274,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The touch concurrency attribute. */
     public static final String A_TOUCH_CONCURRENCY = "touch-concurrency";
 
-    /** The touch enabled attribute. */
-    public static final String A_TOUCH_ENABLED = "touch-enabled";
-
     /** The minimum touch interval attribute. */
     public static final String A_TOUCH_MINIMUM_INTERVAL = "touch-minimum-interval";
 
@@ -1266,9 +1263,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam(imageCachePath + "/" + N_CLEANUP, 1, A_MAX_RUNTIME);
         digester.addCallMethod(imageCachePath + "/" + N_RFS, "setRfs", 1);
         digester.addCallParam(imageCachePath + "/" + N_RFS, 0, A_TOUCH_MINIMUM_INTERVAL);
-        digester.addCallMethod(imageCachePath + "/" + N_FS, "setFs", 2);
-        digester.addCallParam(imageCachePath + "/" + N_FS, 0, A_TOUCH_ENABLED);
-        digester.addCallParam(imageCachePath + "/" + N_FS, 1, A_TOUCH_CONCURRENCY);
+        digester.addCallMethod(imageCachePath + "/" + N_FS, "setFs", 1);
+        digester.addCallParam(imageCachePath + "/" + N_FS, 0, A_TOUCH_CONCURRENCY);
         digester.addCallMethod(imageCachePath + "/" + N_S3, "setS3", 5);
         digester.addCallParam(imageCachePath + "/" + N_S3, 0, A_DELETE_BATCH_SIZE);
         digester.addCallParam(imageCachePath + "/" + N_S3, 1, A_DELETE_CONCURRENCY);

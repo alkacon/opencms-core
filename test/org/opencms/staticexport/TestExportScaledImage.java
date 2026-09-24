@@ -495,7 +495,7 @@ public class TestExportScaledImage extends OpenCmsTestRunner {
             Files.setLastModifiedTime(cacheFile, FileTime.from(oldTime));
             CmsImageCacheConfiguration configuration = new CmsImageCacheConfiguration();
             configuration.setRetention("renew-on-use", "PT2S", "PT1S", "PT0S");
-            configuration.setFs("true", "1");
+            configuration.setFs("1");
             configuration.validate();
             renewal = CmsImageCacheAccessRenewal.create(store, configuration);
             renewalField.set(null, renewal);

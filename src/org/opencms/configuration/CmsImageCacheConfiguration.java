@@ -136,9 +136,6 @@ public class CmsImageCacheConfiguration {
     /** Indicates whether the image cache configuration element was present. */
     private boolean m_configured;
 
-    /** Indicates whether FS touch is enabled. */
-    private boolean m_fsTouchEnabled;
-
     /** The FS touch concurrency. */
     private int m_fsTouchConcurrency = DEFAULT_FS_TOUCH_CONCURRENCY;
 
@@ -219,25 +216,6 @@ public class CmsImageCacheConfiguration {
     public static CmsImageCacheConfiguration createLegacyConfiguration() {
 
         return new CmsImageCacheConfiguration(false);
-    }
-
-    /**
-     * Parses a strict boolean value.<p>
-     *
-     * @param name the value name
-     * @param value the value
-     * @return the parsed value
-     */
-    private static boolean parseBoolean(String name, String value) {
-
-        String normalizedValue = value.trim();
-        if ("true".equalsIgnoreCase(normalizedValue)) {
-            return true;
-        }
-        if ("false".equalsIgnoreCase(normalizedValue)) {
-            return false;
-        }
-        throw new IllegalArgumentException(name + " must be either true or false: " + value);
     }
 
     /**
@@ -334,10 +312,8 @@ public class CmsImageCacheConfiguration {
         }
         if (m_fsConfigured) {
             imageCacheElement.addElement(CmsSystemConfiguration.N_FS).addAttribute(
-                CmsSystemConfiguration.A_TOUCH_ENABLED,
-                Boolean.toString(isFsTouchEnabled())).addAttribute(
-                    CmsSystemConfiguration.A_TOUCH_CONCURRENCY,
-                    Integer.toString(getFsTouchConcurrency()));
+                CmsSystemConfiguration.A_TOUCH_CONCURRENCY,
+                Integer.toString(getFsTouchConcurrency()));
         }
         if (m_s3Configured) {
             imageCacheElement.addElement(CmsSystemConfiguration.N_S3).addAttribute(
@@ -438,8 +414,6 @@ public class CmsImageCacheConfiguration {
                 + m_cleanupMaxRuntimeValue
                 + "|"
                 + m_rfsTouchMinimumIntervalValue
-                + "|"
-                + m_fsTouchEnabled
                 + "|"
                 + m_fsTouchConcurrency
                 + "|"
@@ -585,16 +559,6 @@ public class CmsImageCacheConfiguration {
     }
 
     /**
-     * Returns whether FS touch is enabled.<p>
-     *
-     * @return whether FS touch is enabled
-     */
-    public boolean isFsTouchEnabled() {
-
-        return m_fsTouchEnabled;
-    }
-
-    /**
      * Sets the cleanup configuration.<p>
      *
      * @param maxDeletesPerRun the maximum number of deletes per maintenance run
@@ -615,15 +579,11 @@ public class CmsImageCacheConfiguration {
     /**
      * Sets the FS configuration.<p>
      *
-     * @param touchEnabled whether touch is enabled
      * @param touchConcurrency the touch concurrency
      */
-    public void setFs(String touchEnabled, String touchConcurrency) {
+    public void setFs(String touchConcurrency) {
 
         m_fsConfigured = true;
-        if (touchEnabled != null) {
-            m_fsTouchEnabled = parseBoolean("fs touch-enabled", touchEnabled);
-        }
         if (touchConcurrency != null) {
             m_fsTouchConcurrency = parsePositiveInt("fs touch-concurrency", touchConcurrency);
         }
