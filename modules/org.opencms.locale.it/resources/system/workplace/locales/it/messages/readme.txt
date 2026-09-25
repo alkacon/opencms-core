@@ -1,218 +1,204 @@
-Italian localization of OpenCms
-Version 9.5.0
-February 10, 2015
+Italian localization for OpenCms
+Version 21.0.0
+September 2026
 
-Provided by: Coranto Informatica di Antonio Cordeddu
+Provided and maintained by Coranto Informatica
 
 
-1. Module overview
-To make translation Coranto followed the guidelines of "Free Translation Project - Sezione Italiana" (http://tp.linux.it). 
-The most important reference documents are the followings:
-- http://tp.linux.it/glossario.html
-- http://tp.linux.it/buona_traduzione.html
+1. Overview
 
-The messages with the prefix LOG and INIT have not been translated.
+This module contains the Italian localization files for the OpenCms workplace.
 
-The quotation mark  character (") was replaced by the correspondent Unicode format (\u201C for left double quotation mark and
-\u201D for right double quotation mark) to avoid issues in some circumstances (e.g.: messages involved in JavaScript). 
+The translation is maintained with the following priorities:
+- clear and natural Italian for workplace users;
+- consistent terminology across all message bundles;
+- meaning-based translation of OpenCms concepts, instead of literal translation when that would sound unnatural or misleading;
+- alignment with the Italian section of the Free Translation Project.
 
-The apostrophe character (') was replaced by the correspondent Unicode format \u2019 to avoid issues in some circumstances (e.g.: messages in table 
-heading). 
+Reference documents:
+- https://tp.linux.it/glossario.html
+- https://tp.linux.it/buona_traduzione.html
+
+Messages with the LOG and INIT prefixes are intentionally left untranslated.
+
+Double quotation marks are written with the Unicode escapes “ and ” where needed, instead of raw Unicode characters, to keep a single consistent encoding across all bundles regardless of the tool used to edit them.
+
+Apostrophes are written with the Unicode escape ’ where needed, instead of a raw ASCII apostrophe. This avoids conflicts with the java.text.MessageFormat quoting syntax: an unescaped ASCII apostrophe in a value that also contains a placeholder such as {0} is treated as a quoting character and can silently break the placeholder substitution.
+
+All message bundles use CRLF line endings, consistent with the rest of the module.
 
 
 2. Compatibility
-The module is compatible with OpenCms versions 9.5.0, 9.0.x, 8.5.x, 8.0.x, 7.5.x and 7.0.x.  
+
+This version targets OpenCms 21.0.0.
 
 
-3. Module manufacturer and maintainer
+3. Maintainer
 
-Coranto informatica di Antonio Cordeddu
+Coranto Informatica
 Via Torricelli, 9
 I-09047 Selargius (CA), Italy
-http://www.coranto.it
+https://www.coranto.it
 
 
-4. History of changes
+4. Change history
 
 1.0.0 - November 2, 2011
-- First public release
+- First public release.
 
 9.5.0 - January 23, 2015
-- Improvement for version 8.5.x, 9.0.x, 9.5
-- Added bundle messages:
-	/org/opencms/ade/contenteditor/clientmessages_it.properties	
-	/org/opencms/ade/postupload/clientmessages_it.properties	
-	/org/opencms/ade/sitemap/messages_it.properties
-	/org/opencms/ade/upload/clientmessages_it.properties	
-	/org/opencms/gwt/messages_it.properties
-	/org/opencms/gwt/seo/clientmessages_it.properties
-	/org/opencms/ugc/messages_it.properties
-	/org/opencms/workflow/messages_it.properties
-	/org/opencms/workplace/editors/directedit/messages_it.properties
-	/org/opencms/workplace/tools/sites/messages_it.properties
-	/org/opencms/xml/adeconfig/xmlvfsbundle_messages_it.properties	
-- Updated bundle messages
-	/org/opencms/ade/config/workplace_it.properties
-	/org/opencms/ade/containerpage/clientmessages_it.properties
-	/org/opencms/ade/galleries/clientmessages_it.properties
-	/org/opencms/ade/galleries/messages_it.properties
-	/org/opencms/ade/publish/clientmessages_it.properties
-	/org/opencms/ade/publish/messages_it.properties
-	/org/opencms/ade/sitemap/Clientmessages_it.properties
-	/org/opencms/ade/upload/messages_it.properties
-	/org/opencms/db/messages_it.properties
-	/org/opencms/db/generic/messages_it.properties
-	/org/opencms/file/messages_it.properties
-	/org/opencms/file/collectors/messages_it.properties
-	/org/opencms/flex/messages_it.properties
-	/org/opencms/gwt/Clientmessages_it.properties
-	/org/opencms/importexport/messages_it.properties
-	/org/opencms/jsp/messages_it.properties
-	/org/opencms/loader/messages_it.properties
-	/org/opencms/main/messages_it.properties
-	/org/opencms/module/messages_it.properties
-	/org/opencms/notification/messages_it.properties
-	/org/opencms/report/messages_it.properties
-	/org/opencms/search/messages_it.properties
-	/org/opencms/security/messages_it.properties
-	/org/opencms/site/messages_it.properties
-	/org/opencms/widgets/messages_it.properties
-	/org/opencms/workplace/messages_it.properties
-	/org/opencms/workplace/commons/messages_it.properties
-	/org/opencms/workplace/explorer/messages_it.properties
-	/org/opencms/workplace/explorer/menu/messages_it.properties
-	/org/opencms/workplace/tools/accounts/messages_it.properties
-	/org/opencms/workplace/tools/content/messages_it.properties
-	/org/opencms/workplace/tools/content/languagecopy/messages_it.properties
-	/org/opencms/workplace/tools/content/propertyviewer/messages_it.properties
-	/org/opencms/workplace/tools/database/messages_it.properties
-	/org/opencms/workplace/tools/modules/messages_it.properties
-	/org/opencms/workplace/tools/scheduler/messages_it.properties
-	/org/opencms/workplace/tools/searchindex/sourcessearch/messages_it.properties
-	/org/opencms/workplace/tools/workplace/messages_it.properties
-	/org/opencms/workplace/tools/workplace/broadcast/messages_it.properties
-	/org/opencms/xml/containerpage/messages_it.properties
-	/org/opencms/xml/content/messages_it.properties	
-	
+- Updated the module for OpenCms 8.5.x, 9.0.x, and 9.5.
+- Added and updated workplace, ADE, GWT, UGC, workflow, XML content, and administration tool bundles.
 
-5. Glossary
+21.0.0 - September 2026
+- Updated the Italian localization module for OpenCms 21.0.0.
+- Completed a full systematic review of all 124 message bundles, comparing every key against the English source and the German localization.
+- Added missing Italian message bundles and message keys where needed.
+- Fixed a resource bundle located at an incorrect VFS/package path, which prevented its translations from being loaded by the Java resource bundle loader.
+- Fixed the content-encoding property, incorrectly set to ISO-8859-1 for all message bundles despite their actual UTF-8 encoding.
+- Updated terminology according to the Italian Free Translation Project guidelines.
+- Standardized the OpenCms "sibling" concept as "risorsa collegata".
+- Standardized "workplace" as an untranslated term throughout the module.
+- Standardized the delete/cancel terminology: "eliminare" for distinct resources and objects, "cancellare" for history, logs, cache, and registry entries.
+- Replaced literal calques such as "fallito" with the more natural "non riuscito" across error and report messages.
+- Fixed several mistranslations, duplicate button labels, gender/number agreement errors, and punctuation inconsistencies.
 
-In this section you can find the selected translation for some technical term.
+
+5. Translation notes
+
+The translation prefers concise action labels and natural confirmation questions. For example, UI confirmations may use infinitive forms such as "Eliminare la risorsa?" or "Pubblicare le risorse selezionate?" where this is clearer than a literal "Do you want to..." construction.
+
+OpenCms-specific concepts are translated by meaning. In particular, "sibling" is translated as "risorsa collegata", because in OpenCms it refers to another linked resource entry for the same content, not to a family relationship.
+
+"Workplace" is kept as an untranslated term throughout the module.
+
+"Delete" is translated as "eliminare" for distinct resources or objects (files, folders, users, groups, and similar), and as "cancellare" for history, logs, cache, and registry entries, following the distinction already used in natural Italian ("la cronologia si cancella", not "si elimina").
+
+Some established technical terms are kept in English when they are clearer for OpenCms administrators or common in Italian technical usage, for example "cache", "plugin", "workflow", and "widget".
+
+
+6. Glossary
+
+This section lists the preferred Italian translation for selected technical terms. Where a term can be rendered in more than one way depending on context, the applicable context is noted after a comma.
+
 about: informazioni su OpenCms
-account: invariato 
+account: account
+admin view root: vista amministratore principale
 authentication: autenticazione
-bean: componente 
-boost (to): aumentare rilevanza
-broadcast: invariato 
+bean: componente
+boost (to): aumentare la rilevanza
+broadcast: broadcast
 browse (to): scorrere
 bundle: raggruppamento
-button: tasto
-cache: invariato
+button: pulsante
+cache: cache
 cancel (to): annullare
-check (to): spuntare
-clear (to): cancellare
+check (to): selezionare, spuntare
+clear (to): cancellare, svuotare, depending on context
 clipboard: area degli appunti
 container: contenitore
 container page: pagina contenitore
 core: principale
-cron: invariato
-decline (to): declinare
-default: predefinito 
-delete (to): eliminare
-digest: invariato 
+cron: cron
+decline (to): rifiutare
+default: predefinito
+delete (to): eliminare, for distinct resources/objects; cancellare, for history, logs, cache, and registry entries
+digest: digest
 direct edit: modifica diretta
-directory: invariato 
+directory: cartella, directory, in technical contexts
 display: visualizzazione
-download: invariato, 
+download: scaricamento, file scaricabile, depending on context
 download (to): scaricare
 edit (to): modificare
-editor: editor 
+editor: editor
 email: e-mail
-entry: voce 
-enum: invariato
+entry: voce
+enum: enumerazione
 explorer: esplorazione
 erase (to): cancellare
-favourite: preferito
-file system: invariato 
+favorite: preferito
+file system: file system
 flag: indicatore
-flush (to): svuotare 
+flush (to): svuotare
+folder: cartella
 form: modulo
 formatter: formattatore
-handle: gestore, 
+handle: gestore
 handle (to): gestire
-history: cronologia  
-id: ID
-illegal: illecito 
+history: cronologia
+ID: ID
+illegal: non valido, illecito, in security contexts
 instantiation: creazione di un'istanza
 institution: organizzazione
 item: elemento
 job: processo
+label: etichetta
 link: collegamento
-live: in esecuzione
+live: in esecuzione, online, in project names
 lock: blocco
-log: registro 
-login: accesso 
-logout: uscita,
+log: registro
+login: accesso
+logout: uscita
 logout (to): uscire
-lost+found: invariato
-null: nullo, se puntatore null
-ok, o.k. Ok: OK
+lost+found: lost+found
+null: null, nullo, when describing a value
+OK: OK
 optional: facoltativo
-overview: veduta d'insieme
-package: invariato
-parent: genitore
-parse (to): analizzare sintatticamente (o validare sintatticamente a seconda del contesto)
-pattern: modello 
+overview: riepilogo, panoramica
+package: pacchetto
+parent: principale, superiore, depending on context
+parse (to): analizzare, validare sintatticamente, where needed
+pattern: modello
 permission: autorizzazione
-plugin: invariato
+plugin: plugin
 pool: pool
-pop-up: invariato
-principal: identità nel contesto di utente o gruppo
-process (to): processare
-progress: stato d'avanzamento
+pop-up: finestra a comparsa
+principal: identità, for user or group security principals
+process (to): elaborare
+progress: avanzamento
 query: interrogazione
 redo (to): ripetere
-regular expression: espressione regolare 
-render (to): presentare
+regular expression: espressione regolare
+render (to): presentare, generare, depending on context
 report: report
-reset (to): annullare o reimpostare a seconda del contesto
+reset (to): reimpostare, annullare, in specific contexts
+resource: risorsa
 restore (to): ripristinare
-root: 
-	root administrator: amministratore del sistema
-	root organizational unit: unità organizzativa base
-	root site: radice del sito
-	admin view root: vista amministratore principale
+root administrator: amministratore del sistema
+root organizational unit: unità organizzativa radice
+root site: sito radice
 scale (to): ridimensionare
 schedule (to): pianificare
 scheduled: pianificato
-scheduler: invariato 
+scheduler: scheduler
+search (to): cercare
 set (to): impostare
-sibling: fratello
+sibling: risorsa collegata
 sitemap: mappa del sito
 skipping: saltato
 source: origine
 steal: acquisire
 store (to): memorizzare
-stream: flusso, 
-stream socket: invariato 
+stream: flusso
+stream socket: stream socket
 stylesheet: foglio di stile
 subfolder: sottocartella
+subresource: sottorisorsa
 support (to): supportare
-tag: invariato se riferito a html
-tag: etichetta (es.: publish tag)
+tag: tag, for HTML, etichetta, in publishing contexts
 target: destinazione
-template: template
+template: modello, template, where established in OpenCms UI
 thread: unità di elaborazione
-timestamp: orario 
-touch (to): toccare
-undo (to): annullare 
+timestamp: data e ora
+touch (to): aggiornare
+undo (to): annullare
 unzip: estrazione del contenuto
 update (to): aggiornare
-upload: invariato, 
+upload: caricamento
 upload (to): caricare
-warnings: messaggi di avvertimento o avvertimenti a seconda del contesto
-webuser: come unità organizzativa utenti web
-widget: invariato
-workflow: processo
-workplace: area di lavoro
-wrapper: invariato
+warning: avviso
+webuser: web user, when used as organizational unit name
+widget: widget
+workflow: workflow
+workplace: workplace
+wrapper: wrapper
