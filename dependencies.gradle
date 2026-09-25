@@ -152,9 +152,9 @@ dependencies {
     distribution('org.apache.pdfbox:jempbox:1.8.17') { transitive = false }
     distribution('org.apache.pdfbox:pdfbox:2.0.32') { transitive = false }
     distribution('org.apache.pdfbox:pdfbox-tools:2.0.32') { transitive = false }
-    distribution('org.apache.tika:tika-core:3.2.3')
-    distribution('org.apache.tika:tika-parser-microsoft-module:3.2.3')
-    distribution('org.apache.tika:tika-parser-pdf-module:3.2.3')
+    distribution('org.apache.tika:tika-core:3.3.2')
+    distribution('org.apache.tika:tika-parser-microsoft-module:3.3.2')
+    distribution('org.apache.tika:tika-parser-pdf-module:3.3.2')
     distribution('org.apache.xbean:xbean-asm5-shaded:4.5') { transitive = false }
     distribution('org.apache.xmlbeans:xmlbeans:5.1.1') { transitive = false }
     distribution('org.apache.xmlgraphics:batik-constants:1.16') { transitive = false }
