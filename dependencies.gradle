@@ -140,14 +140,28 @@ dependencies {
     distribution('org.apache.logging.log4j:log4j-core:2.25.5') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-slf4j2-impl:2.25.5') { transitive = false }
     distribution('org.apache.logging.log4j:log4j-jcl:2.25.5') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-jul:2.25.5') { transitive = false }
 //    distribution('org.apache.lucene:lucene-analysis-common:10.3.2')
     distribution('org.apache.lucene:lucene-core:10.3.2')
     distribution('org.apache.lucene:lucene-highlighter:10.3.2')
     distribution('org.apache.lucene:lucene-queryparser:10.3.2')
-    distribution('org.apache.solr:solr-analysis-extras:10.0.0')
-    distribution('org.apache.solr:solr-core:10.0.0')
-    distribution('org.apache.solr:solr-solrj:10.0.0')
-    distribution('org.apache.solr:solr-solrj-jetty:10.0.0') // for solr http client
+    // Solr's logging bridges must not determine the OpenCms logging route.
+    distribution('org.apache.solr:solr-analysis-extras:10.0.0') {
+        exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    }
+    distribution('org.apache.solr:solr-core:10.0.0') {
+        exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    }
+    distribution('org.apache.solr:solr-solrj:10.0.0') {
+        exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    }
+    distribution('org.apache.solr:solr-solrj-jetty:10.0.0') { // for solr http client
+        exclude group: 'org.slf4j', module: 'jcl-over-slf4j'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j2-impl'
+    }
     distribution('org.apache.pdfbox:fontbox:2.0.32') { transitive = false }
     distribution('org.apache.pdfbox:jempbox:1.8.17') { transitive = false }
     distribution('org.apache.pdfbox:pdfbox:2.0.32') { transitive = false }
@@ -183,7 +197,6 @@ dependencies {
     distribution('org.restlet.jee:org.restlet:2.3.12') { transitive = false }
     distribution('org.rrd4j:rrd4j:3.7') { transitive = false }
     distribution('org.slf4j:slf4j-api:2.0.13') { transitive = false }
-    distribution('org.slf4j:jul-to-slf4j:2.0.13') { transitive = false }
     distribution('org.tepi.filtertable:filteringtable:1.0.1.v8') { transitive = false }
     distribution('org.vaadin.addons:popupbutton:3.0.0') { transitive = false }
     distribution('org.xhtmlrenderer:flying-saucer-core:9.1.20') { transitive = false }

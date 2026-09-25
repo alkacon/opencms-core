@@ -165,9 +165,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.CloseableThreadContext;
+import org.apache.logging.log4j.jul.Log4jBridgeHandler;
 
 import org.antlr.stringtemplate.StringTemplate;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -205,8 +205,7 @@ import jakarta.servlet.http.HttpSession;
 public final class OpenCmsCore {
 
     static {
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+        Log4jBridgeHandler.install(true, null, true);
     }
 
     /** Parameter to control whether generated links should always include the host. */
