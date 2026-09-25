@@ -15,6 +15,72 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
+OpenCms 22.0.0 - October ??, 2026
+
+! Support for Jakarta EE with Tomcat 10 / 11 and Jetty 12, a legacy Java EE 8 variant for Tomcat 9 is also available
+! New storage layer with SHA-512 based deduplication of binary and image content, optionally stored in S3-compatible object storage
+! Display of release and expiration dates for time-controlled elements in the page editor
+! Placeholder texts for widgets and settings in the XML content editor
+! Improved selection of global and local categories
+! Search for partial words in galleries
+! Redirects in navigations can optionally be opened in a new window
+
+- Workplace: Date fields accept 24:00 as midnight of the following day
+- Workplace: The link gallery widget no longer uses an iframe
+- Workplace: Optional client label in the request context and the session table
+- Workplace: Cache app supports time-based cleanup of the image cache with progress reporting
+- Workplace: The "About" dialog shows the Java EE version and a shortened Git message
+- Workplace: More robust CSV user import with better error handling
+- Core API: Detail page resolution without a servlet request
+- Core API: Methods to find out where an ADE configuration value is defined
+- Core API: Configurable element marker handler for container pages
+- Core API: The publish history uses the online path for files moved out of deleted folders
+- Core API: Fewer permission cache flushes and cached OU lookups for role checks
+- Core API: Custom EL resolver for better JSP performance on Jetty
+- Core API: Content extraction policy API for formatters
+- Solr: Basic auth credentials for external Solr servers
+- Solr: Exclude containers from indexing by name or type via sitemap attributes
+- Solr: Option to skip metadata extraction for PDF, RTF and MS Office documents
+- Solr: Content fields keep the order of the XML content
+- Solr: More reliable clients with fixed timeouts, HTTP/1.1 and proper shutdown
+- Solr: Improved normalization of folder values in search queries
+- Solr: Search results of an unknown resource type are now permission checked
+- WebDAV: All init parameters of the Jackrabbit WebDAV servlet can be configured
+- Shell: New commands to add a bookmark with a title and to remove a user from a role
+- Gradle build: Updated to Gradle 9.4 with Java 25 support
+- Gradle build: Tests migrated to JUnit 6
+- Gradle build: Source formatting enforced with Spotless
+- Gradle build: New opencms_variant property to add a suffix to generated Maven artifacts
+- Libraries: Migrated to commons-fileupload2, commons-email2 and Jakarta Mail
+- Libraries: Updated GWT
+
+- Pull request #849 fixes the CSV user import with UTF-8 BOM and improves its error handling, provided by rgaviras (https://github.com/alkacon/opencms-core/pull/849)
+- Pull request #848 fixes silently swallowed Solr core initialization failures, provided by gallardo (https://github.com/alkacon/opencms-core/pull/848)
+- Pull request #846 reports a NullPointerException in CmsADEConfigData.hasFormatters() for resource types without a schema, provided by gallardo, not merged but fixed independently (https://github.com/alkacon/opencms-core/pull/846)
+- Pull request #845 adds the missing HttpOnly flag in CmsFlexResponse#addCookie, provided by Thyodas (https://github.com/alkacon/opencms-core/pull/845)
+- Pull request #844 fixes typos in the German localization, provided by Rainer559 (https://github.com/alkacon/opencms-core/pull/844)
+
+* Security: Fixed remote code execution through static export of .jspx files
+* Security: Fixed deserialization vulnerability in the database import
+* Security: Fixed XXE vulnerability in OpenOffice document indexing
+* Security: Fixed unauthenticated Solr aggregation leak by removing the OpenCmsSolrHandler
+* Security: Fixed path traversal through the "exportname" property, reported by pig-tail (https://github.com/pig-tail)
+* Security: Fixed issue #843 login bean accepting protocol-relative redirect URIs, reported by Fushuling (https://github.com/alkacon/opencms-core/issues/843)
+* Security: Fixed missing HttpOnly flag in CmsFlexResponse#addCookie, see pull request #845
+
+* Fixed category selection when overlapping categories are displayed by repository
+* Fixed removing a category from a folder also removing it from all resources in that folder
+* Fixed accidental relation removal caused by missing escaping of underscores
+* Fixed nested setting includes not being resolved from the ADE configuration
+* Fixed content folder type index for types configured in a master configuration
+* Fixed inconsistent handling of formatters for types with a missing content definition, also reported in pull request #846
+* Fixed default path prefixes in OpenCmsUrlServletFilter also matching longer names, for example "/services" blocking "/services_page"
+* Fixed GWT RPC exception messages not reaching the client
+* Fixed CmsSolrQuery#createTextQuery for multiple text search fields
+* Fixed CmsContainerBean#getSimpleName()
+* Fixed MIME types for .ott, .tcl and .tk in opencms-vfs.xml
+* Fixed Jetty components pulled in by Solr conflicting with container libraries
+
 OpenCms 21.0.0 - April 14, 2026
 
 ! AI/LLM based translation added to the XML content editor
