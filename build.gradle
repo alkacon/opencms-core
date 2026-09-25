@@ -48,7 +48,7 @@ nexusPublishing {
 
 rewrite {
 	
-    configFile = file("rewrite.yml")
+    configFile = file("assets/openrewrite/rewrite.yml")
     exportDatatables = true
     exclusion("src-gwt/**")
     exclusion("modules/**")
@@ -159,8 +159,8 @@ sourceSets{
         resources.srcDirs=['src-setup']
     }
     tools {
-        java.srcDirs=['tools/storage/src']
-        resources.srcDirs=['tools/storage/src']
+        java.srcDirs=['assets/storage/src']
+        resources.srcDirs=['assets/storage/src']
         compileClasspath += sourceSets.main.output
         runtimeClasspath += output + compileClasspath
     }
@@ -854,7 +854,7 @@ javadoc {
     classpath += sourceSets.gwt.compileClasspath
     doLast {
         copy {
-            from  "${projectDir}/doc/javadoc/logos"
+            from  "${projectDir}/assets/javadoc/logos"
             into layout.buildDirectory.dir("docs/javadoc/logos")
         }
     }
@@ -921,7 +921,7 @@ tasks.register('javadocModules', Javadoc) {
     dependsOn jar
     doLast {
         copy {
-            from  "${projectDir}/doc/javadoc/logos"
+            from  "${projectDir}/assets/javadoc/logos"
             into layout.buildDirectory.dir("docs/javadocModules/logos")
         }
     }
@@ -959,7 +959,7 @@ tasks.register('javadocGwt', Javadoc) {
     dependsOn jar
     doLast {
         copy {
-            from  "${projectDir}/doc/javadoc/logos"
+            from  "${projectDir}/assets/javadoc/logos"
             into layout.buildDirectory.dir("docs/javadocGwt/logos")
         }
     }
@@ -1290,7 +1290,7 @@ tasks.register('javadocSetup', Javadoc) {
     destinationDir = layout.buildDirectory.dir("docs/javadocSetup").get().asFile
     doLast {
         copy {
-            from  "${projectDir}/doc/javadoc/logos"
+            from  "${projectDir}/assets/javadoc/logos"
             into layout.buildDirectory.dir("docs/javadocSetup/logos")
         }
     }
@@ -1737,11 +1737,18 @@ tasks.register('bindist', Zip) {
     dependsOn war, storageMigrationJar, storageMaintenanceJar
     archiveBaseName = 'opencms'
     from layout.buildDirectory.file("distributions/opencms.war").get().asFile
-    from(projectDir) {
+    from('assets/docs') {
         include 'INSTALL.md'
+        filter(ReplaceTokens, tokens: [
+            OPENCMS_VERSION_NUMBER: project.version,
+            OPENCMS_VERSION: product_name+' '+ project.version
+        ])
+    }
+    from(projectDir) {
         include 'LICENSE'
         include 'README.md'
         include 'history.txt'
+        include 'assets/opencms-logo.svg'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: project.version,
             OPENCMS_VERSION: product_name+' '+ project.version

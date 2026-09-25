@@ -109,6 +109,6 @@
     <property name="allowLegacy" value="true"/>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="${project_loc}/CheckStyle_OpenCms_Suppression.xml"/>
+    <property name="file" value="${project_loc}/assets/checkstyle/CheckStyle_OpenCms_Suppression.xml"/>
   </module>
 </module>

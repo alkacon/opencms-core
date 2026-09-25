@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://opencms.org/" alt="OpenCms">
-    <img src="https://www.alkacon.com/export/shared/web/logos/opencms-logo.svg" alt="OpenCms logo" width="340" height="84">
+    <img src="assets/opencms-logo.svg" alt="OpenCms logo" width="340" height="84">
   </a>
 </p>
 
@@ -18,7 +18,9 @@
 - [Community](#community)
 - [Compatibility](#compatibility)
 - [Installing OpenCms](#installing-opencms)
+- [Source branches](#source-branches)
 - [Bugs and feature requests](#bugs-and-feature-requests)
+- [Contributing](#contributing)
 - [Security issues](#security-issues)
 - [Creators](#creators)
 - [Copyright and license](#copyright-and-license)
@@ -77,7 +79,14 @@ Receive updates about the OpenCms development and get in touch with the core dev
 
 OpenCms is compatible with Java 21 and 25.
 
-OpenCms requires a Java Servlet 4.0 compatible web container. We have tested this release using Jetty and Tomcat. It works "out of the box" with Jetty 12 or Tomcat 9. Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
+OpenCms 22 is available in two variants:
+
+- The **Jakarta EE variant** requires a Jakarta Servlet 6.0 compatible web container. It works "out of the box" with Tomcat 10.1, Tomcat 11 or Jetty 12. This is the default variant and the recommended choice for new installations.
+- The **legacy Java(x) EE variant** requires a Java Servlet 4.0 web container such as Tomcat 9 or Jetty 12 in EE 8 mode. This is for existing installations that still depend on `javax.*` code. *Please note: OpenCms 23 will be Jakarta-only.*
+
+See the article [OpenCms goes Jakarta](https://www.opencms.org/en/article/OpenCms-goes-Jakarta) for the background of the Jakarta change and the upgrade path.
+
+Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
 
 On the database side, we provide support for MySQL, MariaDB, Oracle, PostgreSQL, MS SQL Server, DB2 and HSQLDB.
 
@@ -86,11 +95,22 @@ On the database side, we provide support for MySQL, MariaDB, Oracle, PostgreSQL,
 
 ### Docker based installation
 
-The easiest way to install OpenCms is to use our official docker image. See [alkacon/opencms-docker](https://hub.docker.com/r/alkacon/opencms-docker/) on Docker hub for full information about running the OpenCms docker image.
+The easiest way to install OpenCms is to use our official docker image. See [alkacon/opencms-docker](https://hub.docker.com/r/alkacon/opencms-docker/) on Docker hub for full information about running the OpenCms docker image. Images are available for both variants: `alkacon/opencms-docker:22.0` for the Jakarta EE variant and `alkacon/opencms-docker:22.0-javax` for the legacy Java(x) EE variant.
+
 
 ### Manual installation
 
-You can install OpenCms "from scratch" manually on your server as well. See [the OpenCms installation guide](https://github.com/alkacon/opencms-core/blob/master/INSTALL.md) for full information about manually installing OpenCms.
+You can install OpenCms "from scratch" manually on your server as well. See [the OpenCms installation guide](https://github.com/alkacon/opencms-core/blob/main/assets/docs/INSTALL.md) for full information about manually installing OpenCms.
+
+
+## Source branches
+
+The OpenCms sources are maintained in two branches:
+
+- `main` contains the Jakarta EE variant. All active development happens here.
+- `master` contains the legacy Java(x) EE variant. It is generated from `main` for the release by converting the sources back to the `javax.*` namespace, so pull requests should always target `main`.
+
+Which variant a build produces is controlled by the `eeTarget` property in `gradle.properties` (`jakarta` or `javax`), which also selects the matching dependency set.
 
 
 ## Bugs and feature requests
@@ -115,4 +135,4 @@ OpenCms is developed by [Alkacon Software](https://www.alkacon.com) with the hel
 
 ## Copyright and license
 
-OpenCms is copyright by [Alkacon Software GmbH & Co. KG](https://www.alkacon.com). The OpenCms source code is released under the [GNU LGPL](https://github.com/alkacon/opencms-core/blob/master/LICENSE).
+OpenCms is copyright by [Alkacon Software GmbH & Co. KG](https://www.alkacon.com). The OpenCms source code is released under the [GNU LGPL](https://github.com/alkacon/opencms-core/blob/main/LICENSE).

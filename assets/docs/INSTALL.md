@@ -14,8 +14,8 @@ The following guide provides step-by-step instructions on how to manually instal
 
 - [Install Java](#install-java)
 - [Install Tomcat](#install-tomcat)
-- [Install MariaDB/MySQL](#install-mariadb-mysql)
-- [Download and deploy the opencms.war file](#download-and-deploy-the-opencms-war-file)
+- [Install MariaDB/MySQL](#install-mariadbmysql)
+- [Download and deploy the opencms.war file](#download-and-deploy-opencms)
 - [Follow the setup wizard](#follow-the-setup-wizard)
 - [Login to the OpenCms workplace](#login-to-the-opencms-workplace)
 - [Security settings](#security-settings)

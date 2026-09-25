@@ -40,7 +40,7 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="bin/tools" path="tools/storage/src">
+	<classpathentry kind="src" output="bin/tools" path="assets/storage/src">
 		<attributes>
 			<attribute name="gradle_scope" value="tools"/>
 			<attribute name="gradle_used_by_scope" value="test,tools"/>

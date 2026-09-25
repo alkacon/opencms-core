@@ -523,7 +523,7 @@ Before starting OpenCms with the storage-aware VFS driver, the storage-aware sch
 
 The storage schema migration only prepares the database for storage-aware content handling. It does not move existing binary content. Existing rows in `CMS_CONTENTS` and `CMS_OFFLINE_CONTENTS` remain in their current storage location until they are rewritten by OpenCms or migrated explicitly.
 
-For planned downtime migrations, OpenCms provides a standalone storage migration tool. The tool is built from `tools/storage/src` and can be packaged with:
+For planned downtime migrations, OpenCms provides a standalone storage migration tool. The tool is built from `assets/storage/src` and can be packaged with:
 
 ```bash
 ./gradlew storageMigrationJar
@@ -619,7 +619,7 @@ For very large installations, run a dry-run first and check database load and ex
 
 ## Storage Maintenance Tool
 
-The storage maintenance tool performs operational checks for configured storage backends. It is also built from `tools/storage/src`:
+The storage maintenance tool performs operational checks for configured storage backends. It is also built from `assets/storage/src`:
 
 ```bash
 ./gradlew storageMaintenanceJar
