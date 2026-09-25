@@ -7,9 +7,14 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.it</name>
-		<nicename><![CDATA[OpenCms 10 Italian localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms Italian localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
+		<import-script><![CDATA[
+# sets access control entries and properties on folders not exclusively belonging to this module
+writeProperty '/system/workplace/locales/it/' 'content-encoding' 'UTF-8'
+writeProperty '/system/workplace/locales/it/' 'locale' 'it'
+		]]></import-script>
 		<export-mode name="reduced"/>
 		<description><![CDATA[<p>This module contains the Italian language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Italian version of the OpenCms Workplace.</p>
@@ -104,29 +109,46 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/locales/it/messages/org/opencms/ade/config</destination>
+			<destination>system/workplace/locales/it/messages/org/opencms/base</destination>
 			<type>folder</type>
-			<uuidstructure>d7614036-f3e5-11e0-b401-3bdc289b56ab</uuidstructure>
-			<datecreated>Tue, 11 Oct 2011 08:48:50 GMT</datecreated>
+			<uuidstructure>96fb5f9c-f182-4300-bd0a-6b26fdb6fcea</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/it/messages/org/opencms/ade/config/workplace_it.properties</source>
-			<destination>system/workplace/locales/it/messages/org/opencms/ade/config/workplace_it.properties</destination>
+			<source>system/workplace/locales/it/messages/org/opencms/base/workplace_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/base/workplace_it.properties</destination>
 			<type>plain</type>
-			<uuidstructure>d76d2718-f3e5-11e0-b401-3bdc289b56ab</uuidstructure>
-			<uuidresource>d76d2719-f3e5-11e0-b401-3bdc289b56ab</uuidresource>
-			<datecreated>Tue, 11 Oct 2011 08:48:50 GMT</datecreated>
+			<uuidstructure>c4c81a74-caa6-45d7-8575-32da18c37067</uuidstructure>
+			<uuidresource>2609ee12-8e29-4646-ac80-b50ba40f423d</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/configuration</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3513-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ade/configuration/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/configuration/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3514-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3515-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -148,12 +170,19 @@
 			<uuidresource>db031f1c-f3e5-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:48:56 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ade/containerpage/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/containerpage/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3491-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3492-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -175,12 +204,41 @@
 			<uuidresource>74ae840a-9c23-11e4-9c8b-74d02bc54b39</uuidresource>
 			<datecreated>Wed, 14 Jan 2015 19:28:02 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ade/contenteditor/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/contenteditor/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3500-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3501-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/contenteditor/client</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3516-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ade/contenteditor/client/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/contenteditor/client/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3517-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3518-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -202,12 +260,7 @@
 			<uuidresource>0d830099-a623-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 09:50:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -229,12 +282,7 @@
 			<uuidresource>e4403bdf-f3e5-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:49:12 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -246,12 +294,7 @@
 			<uuidresource>12c68d1b-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:36:11 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -273,12 +316,19 @@
 			<uuidresource>f1d59a3b-9cec-11e4-83c2-74d02bc54b39</uuidresource>
 			<datecreated>Thu, 15 Jan 2015 19:30:21 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ade/postupload/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ade/postupload/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3519-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3520-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -300,12 +350,7 @@
 			<uuidresource>f1159a92-f3e5-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:49:33 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -317,12 +362,7 @@
 			<uuidresource>1e19b8a0-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:36:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -344,12 +384,7 @@
 			<uuidresource>7311054c-d7e6-11e0-be99-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 05 Sep 2011 17:42:39 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -361,12 +396,7 @@
 			<uuidresource>efd1f903-9d74-11e4-8f8a-74d02bc54b39</uuidresource>
 			<datecreated>Fri, 16 Jan 2015 11:43:49 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -388,12 +418,7 @@
 			<uuidresource>db7c5dec-9d76-11e4-8f8a-74d02bc54b39</uuidresource>
 			<datecreated>Fri, 16 Jan 2015 11:57:34 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -405,12 +430,7 @@
 			<uuidresource>20d6b5c5-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:36:35 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -437,11 +457,29 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ai</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3521-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ai/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ai/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3522-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3523-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -463,12 +501,7 @@
 			<uuidresource>381c4e73-a623-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 09:51:41 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -494,10 +527,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -526,10 +555,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -552,12 +577,29 @@
 			<uuidresource>3f477b60-a648-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:16:45 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/db/storage</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3488-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/db/storage/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/db/storage/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3489-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3490-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -566,6 +608,28 @@
 			<type>folder</type>
 			<uuidstructure>d2e4e238-77df-11dc-b123-91bf46278b31</uuidstructure>
 			<datecreated>Thu, 11 Oct 2007 09:53:31 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/editors/codemirror</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3505-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/editors/codemirror/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/editors/codemirror/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3506-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3507-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
@@ -594,10 +658,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -620,12 +680,7 @@
 			<uuidresource>c5d8a2cd-a648-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:20:30 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -647,12 +702,7 @@
 			<uuidresource>9f36f4fa-a648-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:19:26 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -674,12 +724,7 @@
 			<uuidresource>cf8ceb62-a648-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:20:47 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -701,12 +746,7 @@
 			<uuidresource>7f5fe7e7-a649-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:25:42 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -728,12 +768,7 @@
 			<uuidresource>8a647e3c-a649-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:26:00 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -755,12 +790,7 @@
 			<uuidresource>7a8b8a81-d7e6-11e0-be99-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 05 Sep 2011 17:42:51 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -772,12 +802,7 @@
 			<uuidresource>0f0b8b8d-9dba-11e4-9132-74d02bc54b39</uuidresource>
 			<datecreated>Fri, 16 Jan 2015 19:58:36 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -799,12 +824,7 @@
 			<uuidresource>f58f53a1-9fb7-11e4-a974-74d02bc54b39</uuidresource>
 			<datecreated>Mon, 19 Jan 2015 08:48:37 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -830,10 +850,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -862,10 +878,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -893,11 +905,127 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/userdata</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3493-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/jsp/userdata/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/userdata/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3494-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3495-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3466-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/jsp/search/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3467-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3468-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/config</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3496-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3497-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3498-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3499-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser/simplesearch</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3524-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser/simplesearch/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/config/parser/simplesearch/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3525-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3526-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/result</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3527-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/jsp/search/result/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/jsp/search/result/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3528-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3529-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -923,10 +1051,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -955,10 +1079,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -985,10 +1105,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1017,10 +1133,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1047,10 +1159,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1079,10 +1187,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1109,10 +1213,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1141,10 +1241,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1171,10 +1267,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1203,10 +1295,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1233,10 +1321,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1265,10 +1349,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1295,10 +1375,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1327,10 +1403,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1357,10 +1429,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1389,10 +1457,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1420,10 +1484,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1446,12 +1506,29 @@
 			<uuidresource>82f2a4b3-a64c-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 14:47:16 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/search/solr</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3485-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/search/solr/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/search/solr/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3486-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3487-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1473,12 +1550,7 @@
 			<uuidresource>9b36113f-2467-11e3-ade6-000c297c001d</uuidresource>
 			<datecreated>Mon, 23 Sep 2013 15:48:35 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1504,10 +1576,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1536,10 +1604,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1566,10 +1630,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1598,10 +1658,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1628,10 +1684,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1660,10 +1712,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1691,11 +1739,183 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3460-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3464-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3465-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/apps</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3461-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/apps/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/apps/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3462-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3463-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/apps/git</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3482-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/apps/git/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/apps/git/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3483-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3484-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/dialogs</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3469-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/dialogs/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/dialogs/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3470-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3471-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/contextmenu</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3502-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/contextmenu/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/contextmenu/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3503-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3504-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/components</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3476-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/components/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/components/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3477-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3478-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/editors</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3472-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/editors/messagebundle</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3473-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/editors/messagebundle/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/editors/messagebundle/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3474-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3475-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/ui/editors/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/ui/editors/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3508-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3509-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1722,11 +1942,29 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/widgets/serialdate</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3510-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/widgets/serialdate/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/widgets/serialdate/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3511-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3512-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -1752,10 +1990,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1784,10 +2018,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1815,10 +2045,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1845,10 +2071,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
 					<name>enable-notification</name>
@@ -1885,10 +2107,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1915,10 +2133,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1947,10 +2161,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -1978,10 +2188,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2004,12 +2210,7 @@
 			<uuidresource>2ac1dd24-a64f-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 15:06:17 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2035,10 +2236,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2067,10 +2264,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2098,10 +2291,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2124,12 +2313,7 @@
 			<uuidresource>08d0066b-a650-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 15:12:29 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2155,10 +2339,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2187,10 +2367,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2217,10 +2393,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2249,10 +2421,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2279,10 +2447,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2311,10 +2475,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2337,12 +2497,7 @@
 			<uuidresource>35fad99a-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:37:10 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2364,12 +2519,7 @@
 			<uuidresource>3eb99e9f-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:37:25 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2391,12 +2541,7 @@
 			<uuidresource>ab3dee27-d7e5-11e0-be99-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 05 Sep 2011 17:37:04 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2418,12 +2563,7 @@
 			<uuidresource>4815b514-f3e4-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:37:40 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2449,10 +2589,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2481,10 +2617,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2511,10 +2643,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2543,10 +2671,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2573,10 +2697,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2605,10 +2725,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2635,10 +2751,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2667,10 +2779,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2698,10 +2806,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2724,12 +2828,7 @@
 			<uuidresource>3bbd3cba-f3e6-11e0-b401-3bdc289b56ab</uuidresource>
 			<datecreated>Tue, 11 Oct 2011 08:51:39 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2755,10 +2854,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2787,11 +2882,29 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/it/messages/org/opencms/workplace/tools/workplace/logging</destination>
+			<type>folder</type>
+			<uuidstructure>1e6f3479-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/it/messages/org/opencms/workplace/tools/workplace/logging/messages_it.properties</source>
+			<destination>system/workplace/locales/it/messages/org/opencms/workplace/tools/workplace/logging/messages_it.properties</destination>
+			<type>plain</type>
+			<uuidstructure>1e6f3480-9180-11f1-9d3f-000c29a9d7f0</uuidstructure>
+			<uuidresource>1e6f3481-9180-11f1-9d3f-000c29a9d7f0</uuidresource>
+			<datecreated>Mon, 14 Sep 2026 00:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2817,10 +2930,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2876,10 +2985,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2907,10 +3012,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -2933,12 +3034,7 @@
 			<uuidresource>9d27d519-a651-11e0-9af7-bd0e963009c0</uuidresource>
 			<datecreated>Mon, 04 Jul 2011 15:23:48 GMT</datecreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2964,10 +3060,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2996,10 +3088,6 @@
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
 				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
@@ -3026,10 +3114,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[messages_it]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 			</properties>
 			<relations/>
