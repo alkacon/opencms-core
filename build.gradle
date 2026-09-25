@@ -1602,9 +1602,9 @@ tasks.register('updater', Zip) {
     ext.preserveLibModules = preserveLibModules
 
     // adds empty JAR files for all deprecated or updated libs
-    Properties buildProps = new Properties()
-    buildProps.load(new FileInputStream("${projectDir}/build-default.properties"))
-    buildProps['updater.jars.remove'].split(',').each{ jar ->
+    def jarListFile = file("updater-jars-remove_${eeTarget}.txt")
+    inputs.file(jarListFile)
+    jarListFile.readLines('UTF-8').collect { it.trim() }.findAll { it && !it.startsWith('#') }.each { jar ->
         from("${projectDir}/webapp/WEB-INF/updatedata/empty.jar"){
             into '/WEB-INF/lib'
             rename('empty\\.jar', jar)
