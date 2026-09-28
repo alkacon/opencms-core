@@ -53,7 +53,9 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             {"Apache Tomcat/7", null},
             {"Apache Tomcat/8", null},
             {"Apache Tomcat/9", null},
+            {"Apache Tomcat/10", null},
             {"WebLogic Server 9", null},
+            {"jetty/12", null},
             {
                 "Resin/3",
                 "Please be sure that during the Setup Wizard, the web application auto-redeployment feature is deactivated. One way to achieve this, is to set the '<code>dependency-check-interval</code>' option in your <code>resin.conf</code> configuration file to <code>-1</code> or something big like <code>2000s</code>."},
