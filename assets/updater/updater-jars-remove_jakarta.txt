@@ -58,6 +58,7 @@ bcpkix-jdk15on-1.67.jar
 bcpkix-jdk18on-1.77.jar
 bcpkix-jdk18on-1.78.1.jar
 bcpkix-jdk18on-1.81.1.jar
+bcpkix-jdk18on-1.81.jar
 bcprov-jdk15-1.46.jar
 bcprov-jdk15-146.jar
 bcprov-jdk15on-1.58.jar
@@ -66,9 +67,11 @@ bcprov-jdk15on-1.67.jar
 bcprov-jdk18on-1.77.jar
 bcprov-jdk18on-1.78.1.jar
 bcprov-jdk18on-1.81.1.jar
+bcprov-jdk18on-1.81.jar
 bcutil-jdk18on-1.77.jar
 bcutil-jdk18on-1.78.1.jar
 bcutil-jdk18on-1.81.1.jar
+bcutil-jdk18on-1.81.jar
 caffeine-2.8.5.jar
 caffeine-3.1.8.jar
 calcite-core-1.25.0.jar
