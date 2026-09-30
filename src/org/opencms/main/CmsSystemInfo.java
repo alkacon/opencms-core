@@ -791,6 +791,33 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Overrides the configured Java EE version using the servlet container version.<p>
+     *
+     * @param major the servlet major version
+     * @param minor the servlet minor version
+     */
+    protected void initJavaEeVersion(int major, int minor) {
+
+        final BuildInfoItem item = m_buildInfo.get("javaee");
+        if (item != null) {
+            // Temporary correction of the configured build information from the running container.
+            final String version = switch (major + "." + minor) {
+                case "3.0" -> "6 (javax)";
+                case "3.1" -> "7 (javax)";
+                case "4.0" -> "8 (javax)";
+                case "5.0" -> "9 (jakarta)";
+                case "6.0" -> "10 (jakarta)";
+                case "6.1" -> "11 (jakarta)";
+                case "6.2" -> "12 (jakarta)";
+                default -> null;
+            };
+            if (version != null) {
+                item.m_value = version;
+            }
+        }
+    }
+
+    /**
      * Sets the default encoding, called after the configuration files have been read.<p>
      *
      * @param encoding the default encoding to set

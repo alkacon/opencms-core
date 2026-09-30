@@ -1999,6 +1999,7 @@ public final class OpenCmsCore {
         // automatic servlet container recognition and specific behavior:
         CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
         getSystemInfo().init(servletContainerSettings);
+        getSystemInfo().initJavaEeVersion(context.getMajorVersion(), context.getMinorVersion());
 
         // Collect the configurations
         CmsParameterConfiguration configuration;
