@@ -32,7 +32,13 @@ import org.opencms.db.CmsDbContext;
 import java.io.OutputStream;
 
 /**
- * Optional capability for storage backends which can be used for HTTP delivery.<p>
+ * Optional HTTP delivery capability for backends of the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * This capability provides content streaming and optional byte-range delivery.
+ * A backend can support DMSE content storage and deduplication without implementing
+ * this delivery interface.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public interface I_CmsStorageDelivery {
 

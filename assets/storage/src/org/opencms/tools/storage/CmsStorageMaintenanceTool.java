@@ -55,7 +55,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Command line entry point for OpenCms storage maintenance checks.<p>
+ * Command line entry point for maintenance of the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public final class CmsStorageMaintenanceTool {
 

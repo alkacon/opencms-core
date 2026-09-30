@@ -30,7 +30,10 @@ package org.opencms.db.postgresql;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * PostgreSQL database storage implementation.<p>
+ * PostgreSQL database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsDbStorage
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage extends org.opencms.db.generic.CmsDbStorage {
 

@@ -28,7 +28,10 @@
 package org.opencms.db.storage.policy;
 
 /**
- * Defines the strategy for deciding the storage location of binary content.
+ * Defines which resource contents the OpenCms deduplicating media storage engine (DMSE)
+ * stores in a backend instead of the regular VFS content columns.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public interface I_CmsStoragePolicy {
 

@@ -65,6 +65,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Integrates the OpenCms deduplicating media storage engine (DMSE) with VFS content operations.<p>
+ *
+ * This driver reads and writes storage identifiers and content hashes alongside
+ * VFS content rows. It delegates backend access to the storage manager and
+ * supports content in both the regular VFS content columns and storage backends.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
+ */
 public class CmsStorageVfsDriver extends CmsVfsDriver {
 
     /**

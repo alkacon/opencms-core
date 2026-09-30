@@ -28,12 +28,16 @@
 package org.opencms.db.storage.policy;
 
 /**
- * Storage policy which keeps all content in the VFS content tables.<p>
+ * Compatibility policy for the OpenCms deduplicating media storage engine (DMSE)
+ * which keeps newly written content in the regular VFS content columns.<p>
  *
  * This policy can be used with the storage-aware VFS driver when the storage
  * schema should be installed, but binary content should remain in
- * CMS_CONTENTS and CMS_OFFLINE_CONTENTS for compatibility or migration
- * purposes.<p>
+ * {@code CMS_CONTENTS} and {@code CMS_OFFLINE_CONTENTS} for compatibility or
+ * migration purposes. It does not move previously stored blobs back to those
+ * columns; they remain readable through their configured backends.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsNoExternalStoragePolicy implements I_CmsStoragePolicy {
 

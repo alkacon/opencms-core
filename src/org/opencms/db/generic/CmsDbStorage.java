@@ -42,11 +42,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Database-based storage implementation.<p>
+ * Database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
  *
  * This implementation stores binary content in a specialized table (CMS_STORAGE),
  * using a unique hash for deduplication. It ensures that identical files are only
  * stored once physically.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage implements I_CmsDbStorage {
 

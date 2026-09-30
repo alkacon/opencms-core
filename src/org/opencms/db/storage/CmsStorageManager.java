@@ -60,11 +60,15 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Manager class to coordinate binary content storage between database tables
- * and external storage providers.<p>
+ * Central coordinator of the OpenCms deduplicating media storage engine (DMSE).<p>
  *
- * It evaluates storage policies, handles deduplication via SHA-512 hashing, and
- * ensures referential integrity before deleting content from external storage.<p>
+ * The DMSE stores binary resource content in database, file system or
+ * S3-compatible backends, using SHA-512 content hashes for deduplication.
+ * Storage policies determine which contents remain in the regular VFS
+ * content columns and which are stored in a backend.<p>
+ *
+ * This manager evaluates policies, coordinates backend access and checks
+ * content references before deleting stored blobs.<p>
  */
 public class CmsStorageManager implements AutoCloseable {
 

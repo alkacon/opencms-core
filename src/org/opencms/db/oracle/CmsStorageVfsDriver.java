@@ -50,7 +50,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Oracle implementation of the storage VFS driver methods.<p>
+ * Oracle VFS driver for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsStorageVfsDriver
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
 

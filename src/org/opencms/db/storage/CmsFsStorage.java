@@ -49,11 +49,13 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * File system based storage implementation.<p>
+ * File system backend for the OpenCms deduplicating media storage engine (DMSE).<p>
  *
  * This implementation stores binary content as files in the local file system.
  * It uses a 3-level directory structure based on the content hash to avoid
  * having too many files in a single directory.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsFsStorage extends A_CmsStorage implements I_CmsEnumerableStorage, I_CmsStorageDelivery {
 

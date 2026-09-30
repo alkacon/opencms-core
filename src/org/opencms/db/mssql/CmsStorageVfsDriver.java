@@ -30,7 +30,10 @@ package org.opencms.db.mssql;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * MS SQL implementation of the storage VFS driver methods.<p>
+ * MS SQL VFS driver for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsStorageVfsDriver
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
 

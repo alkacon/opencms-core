@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 /**
- * S3 content storage implementation (e.g., RustFS).<p>
+ * S3-compatible object storage backend for the OpenCms deduplicating media storage engine (DMSE).<p>
  *
  * This implementation stores binary content in an S3-compatible object storage.
  * To ensure high performance for read and write operations, it is highly recommended
@@ -49,6 +49,8 @@ import java.util.UUID;
  *
  * Content is addressed by its unique hash to support deduplication across
  * different resources.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsS3Storage extends A_CmsStorage implements I_CmsEnumerableStorage, I_CmsStorageDelivery {
 

@@ -69,7 +69,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * Command line entry point for the OpenCms storage migration tool.<p>
+ * Command line entry point for content migration in the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public final class CmsStorageMigrationTool {
 

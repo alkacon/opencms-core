@@ -42,7 +42,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Oracle database storage implementation.<p>
+ * Oracle database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsDbStorage
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage extends org.opencms.db.generic.CmsDbStorage {
 

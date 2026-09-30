@@ -30,7 +30,10 @@ package org.opencms.db.hsqldb;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * HSQLDB implementation of the storage VFS driver methods.<p>
+ * HSQLDB VFS driver for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsStorageVfsDriver
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
 

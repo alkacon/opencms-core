@@ -34,10 +34,13 @@ import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 
 /**
- * Defines a storage strategy for binary resource content.<p>
+ * Storage backend interface for the OpenCms deduplicating media storage engine (DMSE).<p>
  *
- * This interface allows to abstract the physical storage of file contents,
- * enabling storage to external systems like S3.<p>
+ * This interface abstracts the physical storage of binary resource content in
+ * database, file system or S3-compatible backends. Content is addressed by its
+ * SHA-512 hash.<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public interface I_CmsStorage extends AutoCloseable {
 

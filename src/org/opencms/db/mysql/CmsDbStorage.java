@@ -30,7 +30,10 @@ package org.opencms.db.mysql;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * MySQL database storage implementation.<p>
+ * MySQL database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsDbStorage
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage extends org.opencms.db.generic.CmsDbStorage {
 

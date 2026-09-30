@@ -30,7 +30,10 @@ package org.opencms.db.as400;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * AS400 implementation of the storage VFS driver methods.<p>
+ * AS/400 VFS driver for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsStorageVfsDriver
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
 

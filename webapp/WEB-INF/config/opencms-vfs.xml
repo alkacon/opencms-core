@@ -134,7 +134,7 @@
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
                 </type>
             </resourcetypes>
-            <storage-policy class="org.opencms.db.storage.policy.CmsNoExternalStoragePolicy" />
+            <storage-policy class="org.opencms.db.storage.policy.CmsDefaultStoragePolicy" />
             <collectors>
                 <collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
                 <collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />

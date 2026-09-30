@@ -30,7 +30,10 @@ package org.opencms.db.db2;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * DB2 implementation of the storage VFS driver methods.<p>
+ * DB2 VFS driver for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsStorageVfsDriver
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsStorageVfsDriver extends org.opencms.db.generic.CmsStorageVfsDriver {
 

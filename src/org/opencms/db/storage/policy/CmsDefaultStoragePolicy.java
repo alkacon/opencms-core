@@ -38,19 +38,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Default implementation of the storage policy logic for binary blobs.<p>
+ * Default content selection policy for the OpenCms deduplicating media storage engine (DMSE).<p>
  *
- * This class evaluates whether a file should be stored directly in the content
- * tables (CMS_CONTENTS, CMS_OFFLINE_CONTENTS) or offloaded to a deduplicated
- * storage. It uses a rule-based engine to check the configured resource type ids
- * and file size.<p>
+ * Content is stored in the active backend when its resource type ID is included
+ * in the configured selection and its size is strictly greater than the configured
+ * threshold. The defaults select all non-empty binary files and images (type IDs
+ * 2 and 3) with a threshold of 0 bytes.<p>
  *
- * High-level evaluation order:
- * <ol>
- * <li><b>Whitelist:</b> If a file matches a whitelist rule (e.g., system paths), it is always stored locally.</li>
- * <li><b>Storage Rules:</b> If any storage rule matches (e.g., configured resource type ids above the configured threshold), it is offloaded.</li>
- * <li><b>Fallback:</b> If no rules match, the file is stored locally by default.</li>
- * </ol>
+ * This policy defines no path-based exceptions; matching resources below
+ * {@code /system/} are also selected. Content which does not match remains in the
+ * regular VFS content columns ({@code CMS_CONTENTS}, {@code CMS_OFFLINE_CONTENTS}).<p>
+ *
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDefaultStoragePolicy implements I_CmsStoragePolicy, I_CmsConfigurationParameterHandler {
 

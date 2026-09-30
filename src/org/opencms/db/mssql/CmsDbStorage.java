@@ -30,7 +30,10 @@ package org.opencms.db.mssql;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * MSSQL database storage implementation.<p>
+ * MS SQL database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsDbStorage
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage extends org.opencms.db.generic.CmsDbStorage {
 

@@ -30,7 +30,10 @@ package org.opencms.db.db2;
 import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * DB2 database storage implementation.<p>
+ * DB2 database backend for the OpenCms deduplicating media storage engine (DMSE).<p>
+ *
+ * @see org.opencms.db.generic.CmsDbStorage
+ * @see org.opencms.db.storage.CmsStorageManager
  */
 public class CmsDbStorage extends org.opencms.db.generic.CmsDbStorage {
 
