@@ -31,9 +31,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspWriter;
+import javax.servlet.ServletException;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 
 /**
  * Helper class for managing three lists on the same dialog.<p>

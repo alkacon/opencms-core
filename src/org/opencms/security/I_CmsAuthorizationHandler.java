@@ -33,8 +33,8 @@ import org.opencms.main.CmsException;
 import java.io.IOException;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Defines general authorization methods.<p>

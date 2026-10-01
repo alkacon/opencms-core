@@ -30,6 +30,10 @@ package org.opencms.mail;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestRunner;
 
+import javax.mail.Address;
+import javax.mail.SendFailedException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.mail2.core.EmailException;
 
 import org.junit.jupiter.api.AfterAll;
@@ -41,10 +45,6 @@ import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.dumbster.smtp.SimpleSmtpServer;
-
-import jakarta.mail.Address;
-import jakarta.mail.SendFailedException;
-import jakarta.mail.internet.InternetAddress;
 
 /**
  * Unit test for the cms mail functionality.<p>

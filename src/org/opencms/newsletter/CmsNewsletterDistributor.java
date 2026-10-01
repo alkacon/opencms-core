@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.mail2.jakarta.Email;
+import org.apache.commons.mail2.javax.Email;
 
 /**
  *

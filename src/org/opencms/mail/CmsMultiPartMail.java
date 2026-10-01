@@ -29,7 +29,7 @@ package org.opencms.mail;
 
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.mail2.jakarta.MultiPartEmail;
+import org.apache.commons.mail2.javax.MultiPartEmail;
 
 /**
  * This class is used to send multi-part internet email like

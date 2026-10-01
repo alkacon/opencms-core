@@ -66,9 +66,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.jsp.JspException;
 
-import jakarta.servlet.jsp.JspException;
+import org.apache.commons.logging.Log;
 
 /**
  * This tag is used to easily create a search form for a Solr search within a JSP.
@@ -194,7 +194,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -204,7 +204,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException, CmsIllegalArgumentException {
@@ -248,7 +248,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#release()
+     * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

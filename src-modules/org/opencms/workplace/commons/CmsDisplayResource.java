@@ -47,11 +47,11 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
+import org.apache.commons.logging.Log;
 
 /**
  * Shows a preview of the selected resource in the Explorer view.<p>
@@ -268,7 +268,7 @@ public class CmsDisplayResource extends CmsDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, jakarta.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

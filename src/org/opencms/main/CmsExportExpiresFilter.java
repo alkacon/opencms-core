@@ -31,16 +31,16 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-import com.google.common.net.HttpHeaders;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
+import com.google.common.net.HttpHeaders;
 
 /**
  * Simple filter for setting caching headers for exported resources.
@@ -64,7 +64,7 @@ public class CmsExportExpiresFilter implements Filter {
         }
 
         /**
-         * @see jakarta.servlet.ServletResponseWrapper#setContentType(java.lang.String)
+         * @see javax.servlet.ServletResponseWrapper#setContentType(java.lang.String)
          */
         @Override
         public void setContentType(String type) {
@@ -88,7 +88,7 @@ public class CmsExportExpiresFilter implements Filter {
     }
 
     /**
-     * @see jakarta.servlet.Filter#destroy()
+     * @see javax.servlet.Filter#destroy()
      */
     public void destroy() {
 
@@ -96,7 +96,7 @@ public class CmsExportExpiresFilter implements Filter {
     }
 
     /**
-     * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, jakarta.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
@@ -106,7 +106,7 @@ public class CmsExportExpiresFilter implements Filter {
     }
 
     /**
-     * @see jakarta.servlet.Filter#init(jakarta.servlet.FilterConfig)
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig filterConfig) {
 

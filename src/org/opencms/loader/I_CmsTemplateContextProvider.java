@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Interface for template context providers.<p>

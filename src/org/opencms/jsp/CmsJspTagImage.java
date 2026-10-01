@@ -45,10 +45,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.jsp.JspException;
+import org.apache.commons.logging.Log;
 
 /**
  * Creates HTML code for &lt;img src&gt; tags that use the OpenCms image scaling capabilities.<p>
@@ -349,7 +349,7 @@ public class CmsJspTagImage extends CmsJspImageScalerTagSupport implements I_Cms
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -378,7 +378,7 @@ public class CmsJspTagImage extends CmsJspImageScalerTagSupport implements I_Cms
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "image"), ex);
                 }
-                throw new jakarta.servlet.jsp.JspException(ex);
+                throw new javax.servlet.jsp.JspException(ex);
             }
         }
         release();
@@ -390,7 +390,7 @@ public class CmsJspTagImage extends CmsJspImageScalerTagSupport implements I_Cms
      *
      * @return <code>{@link #EVAL_BODY_BUFFERED}</code>
      *
-     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {
@@ -541,7 +541,7 @@ public class CmsJspTagImage extends CmsJspImageScalerTagSupport implements I_Cms
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#release()
+     * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

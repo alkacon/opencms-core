@@ -33,8 +33,8 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.pdftools.CmsPdfThumbnailLink;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.jsp.tagext.TagSupport;
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * JSP tag to generate a link to a PDF produced from a given XML content.<p>
@@ -80,7 +80,7 @@ public class CmsJspTagPdfThumbnail extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() {

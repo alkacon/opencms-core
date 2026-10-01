@@ -34,9 +34,9 @@ import org.opencms.xml.xml2json.CmsJsonRequest;
 import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentContainerPage;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletResponse;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
 
 /**
  * JSON handler for rendering a container page as JSON.

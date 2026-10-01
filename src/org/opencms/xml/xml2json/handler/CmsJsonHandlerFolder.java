@@ -35,9 +35,9 @@ import org.opencms.xml.xml2json.CmsJsonRequest;
 import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentFolder;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletResponse;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
 
 /**
  * Produces directory listings in JSON format.

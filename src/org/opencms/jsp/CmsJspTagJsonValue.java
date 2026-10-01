@@ -30,9 +30,9 @@ package org.opencms.jsp;
 import org.opencms.json.JSONTokener;
 import org.opencms.main.CmsLog;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.jsp.JspException;
 
-import jakarta.servlet.jsp.JspException;
+import org.apache.commons.logging.Log;
 
 /**
  * Adds a JSON value to the surrounding context and/or stores it as a variable in the page context.

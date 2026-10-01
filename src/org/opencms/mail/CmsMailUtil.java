@@ -33,7 +33,7 @@ import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail2.core.EmailException;
-import org.apache.commons.mail2.jakarta.Email;
+import org.apache.commons.mail2.javax.Email;
 
 /**
  * Contains utility methods for dealing with emails.<p>

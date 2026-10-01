@@ -42,10 +42,10 @@ import org.opencms.workplace.CmsWorkplace;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler for detail-pages.<p>
@@ -69,7 +69,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
+     * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public CmsResource initResource(
         CmsResource resource,

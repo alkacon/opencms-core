@@ -29,7 +29,7 @@ package org.opencms.gwt;
 
 import java.util.Locale;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Convenient client message bundle interface.<p>

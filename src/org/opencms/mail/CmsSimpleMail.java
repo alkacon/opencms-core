@@ -30,10 +30,10 @@ package org.opencms.mail;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.mail2.core.EmailException;
-import org.apache.commons.mail2.jakarta.SimpleEmail;
+import javax.mail.AuthenticationFailedException;
 
-import jakarta.mail.AuthenticationFailedException;
+import org.apache.commons.mail2.core.EmailException;
+import org.apache.commons.mail2.javax.SimpleEmail;
 
 /**
  * This class is used to send simple text internet email messages without
@@ -76,7 +76,7 @@ public class CmsSimpleMail extends SimpleEmail {
     /**
      * Overrides to add a better message for authentication exception.<p>
      *
-     * @see org.apache.commons.mail2.jakarta.Email#send()
+     * @see org.apache.commons.mail2.javax.Email#send()
      */
     @Override
     public String send() {

@@ -92,7 +92,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Parses the HTTP <code>Accept-Language</code> header as per section 14.4 of RFC 2068

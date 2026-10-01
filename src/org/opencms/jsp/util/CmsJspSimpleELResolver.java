@@ -27,8 +27,8 @@
 
 package org.opencms.jsp.util;
 
-import jakarta.el.ELContext;
-import jakarta.servlet.jsp.el.ScopedAttributeELResolver;
+import javax.el.ELContext;
+import javax.servlet.jsp.el.ScopedAttributeELResolver;
 
 /**
  * Does basically the same as ScopedAttributeELResolver, but always marks top-level properties as resolved
@@ -41,7 +41,7 @@ import jakarta.servlet.jsp.el.ScopedAttributeELResolver;
 public class CmsJspSimpleELResolver extends ScopedAttributeELResolver {
 
     /**
-     * @see jakarta.servlet.jsp.el.ScopedAttributeELResolver#getCommonPropertyType(jakarta.el.ELContext, java.lang.Object)
+     * @see javax.servlet.jsp.el.ScopedAttributeELResolver#getCommonPropertyType(javax.el.ELContext, java.lang.Object)
      */
     @Override
     public Class<String> getCommonPropertyType(ELContext context, Object base) {
@@ -51,7 +51,7 @@ public class CmsJspSimpleELResolver extends ScopedAttributeELResolver {
     }
 
     /**
-     * @see jakarta.servlet.jsp.el.ScopedAttributeELResolver#getType(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.servlet.jsp.el.ScopedAttributeELResolver#getType(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public Class<Object> getType(ELContext context, Object base, Object property) {
@@ -66,7 +66,7 @@ public class CmsJspSimpleELResolver extends ScopedAttributeELResolver {
     }
 
     /**
-     * @see jakarta.servlet.jsp.el.ScopedAttributeELResolver#getValue(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.servlet.jsp.el.ScopedAttributeELResolver#getValue(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
@@ -80,7 +80,7 @@ public class CmsJspSimpleELResolver extends ScopedAttributeELResolver {
     }
 
     /**
-     * @see jakarta.servlet.jsp.el.ScopedAttributeELResolver#isReadOnly(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.servlet.jsp.el.ScopedAttributeELResolver#isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
@@ -94,7 +94,7 @@ public class CmsJspSimpleELResolver extends ScopedAttributeELResolver {
     }
 
     /**
-     * @see jakarta.servlet.jsp.el.ScopedAttributeELResolver#setValue(jakarta.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
+     * @see javax.servlet.jsp.el.ScopedAttributeELResolver#setValue(javax.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {

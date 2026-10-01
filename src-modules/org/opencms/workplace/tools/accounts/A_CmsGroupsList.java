@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 
 /**
  * Skeleton for a generic group list.<p>

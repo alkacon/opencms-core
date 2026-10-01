@@ -32,12 +32,12 @@ import org.opencms.main.CmsLog;
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.ImportHandler;
+import javax.servlet.jsp.JspContext;
 
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-import jakarta.el.ImportHandler;
-import jakarta.servlet.jsp.JspContext;
+import org.apache.commons.logging.Log;
 
 /**
  * This EL resolver is a workaround for performance problems in Jetty when using EE 10.
@@ -84,7 +84,7 @@ public class CmsJspElResolver extends ELResolver {
     }
 
     /**
-     * @see jakarta.el.ELResolver#getCommonPropertyType(jakarta.el.ELContext, java.lang.Object)
+     * @see javax.el.ELResolver#getCommonPropertyType(javax.el.ELContext, java.lang.Object)
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
@@ -107,7 +107,7 @@ public class CmsJspElResolver extends ELResolver {
     }
 
     /**
-     * @see jakarta.el.ELResolver#getType(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.el.ELResolver#getType(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
@@ -121,7 +121,7 @@ public class CmsJspElResolver extends ELResolver {
      *
      * All other cases are left to the standard resolver chain.<p>
      *
-     * @see jakarta.el.ELResolver#getValue(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.el.ELResolver#getValue(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
@@ -153,7 +153,7 @@ public class CmsJspElResolver extends ELResolver {
     }
 
     /**
-     * @see jakarta.el.ELResolver#isReadOnly(jakarta.el.ELContext, java.lang.Object, java.lang.Object)
+     * @see javax.el.ELResolver#isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
@@ -162,7 +162,7 @@ public class CmsJspElResolver extends ELResolver {
     }
 
     /**
-     * @see jakarta.el.ELResolver#setValue(jakarta.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
+     * @see javax.el.ELResolver#setValue(javax.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {

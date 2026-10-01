@@ -37,8 +37,8 @@ import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Helper for delivering externally stored VFS content directly to an HTTP response.<p>

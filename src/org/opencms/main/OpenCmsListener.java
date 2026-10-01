@@ -34,15 +34,15 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 
-import org.apache.commons.logging.Log;
+import javax.el.ELResolver;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspFactory;
 
-import jakarta.el.ELResolver;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
-import jakarta.servlet.jsp.JspApplicationContext;
-import jakarta.servlet.jsp.JspFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides the OpenCms system with information from the servlet context.<p>
@@ -62,7 +62,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
     private static final Log LOG = CmsLog.getLog(OpenCmsListener.class);
 
     /**
-     * @see jakarta.servlet.ServletContextListener#contextDestroyed(jakarta.servlet.ServletContextEvent)
+     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event) {
 
@@ -81,7 +81,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
     }
 
     /**
-     * @see jakarta.servlet.ServletContextListener#contextInitialized(jakarta.servlet.ServletContextEvent)
+     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent event) {
 
@@ -135,7 +135,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSessionListener#sessionCreated(jakarta.servlet.http.HttpSessionEvent)
+     * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
      */
     public void sessionCreated(HttpSessionEvent event) {
 
@@ -153,7 +153,7 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSessionListener#sessionDestroyed(jakarta.servlet.http.HttpSessionEvent)
+     * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
      */
     public void sessionDestroyed(HttpSessionEvent event) {
 

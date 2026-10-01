@@ -43,12 +43,12 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides access to OpenCms and System related information.<p>
@@ -324,7 +324,7 @@ public class CmsJspTagInfo extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {
@@ -359,7 +359,7 @@ public class CmsJspTagInfo extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#release()
+     * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

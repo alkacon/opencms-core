@@ -33,7 +33,7 @@ import org.opencms.main.I_CmsRequestHandler;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 
 /**
  * Generic test helper that dispatches a {@link CmsMockHttpServletRequest} to an

@@ -27,7 +27,7 @@
 
 package org.opencms.jsp;
 
-import jakarta.servlet.jsp.JspException;
+import javax.servlet.jsp.JspException;
 
 /**
  * Interface implemented by JSON tags.

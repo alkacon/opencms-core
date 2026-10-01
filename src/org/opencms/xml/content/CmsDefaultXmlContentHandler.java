@@ -135,6 +135,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
+import javax.servlet.ServletRequest;
+
 import org.apache.commons.logging.Log;
 
 import org.antlr.stringtemplate.StringTemplate;
@@ -150,8 +152,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
-import jakarta.servlet.ServletRequest;
 
 /**
  * Default implementation for the XML content handler, will be used by all XML contents that do not
@@ -1604,7 +1604,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getNestedFormatters(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale, jakarta.servlet.ServletRequest)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getNestedFormatters(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale, javax.servlet.ServletRequest)
      */
     public List<String> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req) {
 

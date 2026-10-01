@@ -54,9 +54,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
 
-import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.logging.Log;
 
 /**
  * Manager class for template context providers.<p>

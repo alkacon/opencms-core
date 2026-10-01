@@ -44,6 +44,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpSession;
+
 import com.google.common.collect.Multimap;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -58,8 +60,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
-
-import jakarta.servlet.http.HttpSession;
 
 /**
  * Abstract UI class providing access to the OpenCms context.<p>

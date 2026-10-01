@@ -57,9 +57,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.dom4j.Element;
+import javax.servlet.ServletRequest;
 
-import jakarta.servlet.ServletRequest;
+import org.dom4j.Element;
 
 /**
  * Handles special XML content livetime events, and also provides XML content editor rendering hints.<p>

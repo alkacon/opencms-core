@@ -78,6 +78,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
@@ -120,8 +122,6 @@ import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Vaadin utility functions.<p>

@@ -29,7 +29,7 @@ package org.opencms.jsp.util;
 
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface supports the basic functionality for the device detection.<p>

@@ -36,8 +36,8 @@ import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.util.Collections;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Utility class for PDF formatting.<p>

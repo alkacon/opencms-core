@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import jakarta.activation.DataSource;
+import javax.activation.DataSource;
 
 /**
  *
@@ -90,7 +90,7 @@ public class CmsInputStreamDataSource implements DataSource {
     }
 
     /**
-     * @see jakarta.activation.DataSource#getContentType()
+     * @see javax.activation.DataSource#getContentType()
      */
     public String getContentType() {
 
@@ -104,7 +104,7 @@ public class CmsInputStreamDataSource implements DataSource {
      *
      * @throws IOException if the constructor-given input stream is not "resettable" ({@link InputStream#reset()}).
      *
-     * @see jakarta.activation.DataSource#getInputStream()
+     * @see javax.activation.DataSource#getInputStream()
      *
      */
     public InputStream getInputStream() throws IOException {
@@ -114,7 +114,7 @@ public class CmsInputStreamDataSource implements DataSource {
     }
 
     /**
-     * @see jakarta.activation.DataSource#getName()
+     * @see javax.activation.DataSource#getName()
      */
     public String getName() {
 
@@ -128,7 +128,7 @@ public class CmsInputStreamDataSource implements DataSource {
      * This method will just return a new <code>{@link ByteArrayOutputStream}</code>.
      * <p>
      *
-     * @see jakarta.activation.DataSource#getOutputStream()
+     * @see javax.activation.DataSource#getOutputStream()
      */
     public OutputStream getOutputStream() {
 

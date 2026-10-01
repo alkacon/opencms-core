@@ -42,12 +42,12 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.JspWriter;
-import jakarta.servlet.jsp.PageContext;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides the specific constants, members and helper methods to generate the content of the external link gallery dialog

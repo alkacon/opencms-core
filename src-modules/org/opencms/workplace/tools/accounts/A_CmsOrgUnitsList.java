@@ -57,7 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 
 /**
  * Main organization unit management view.<p>

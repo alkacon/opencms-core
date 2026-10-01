@@ -30,8 +30,8 @@ package org.opencms.jsp;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * Tag for defining a JSON object.
@@ -70,7 +70,7 @@ public class CmsJspTagJsonObject extends A_CmsJspJsonTag implements I_CmsJspJson
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doStartTag()
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
     @Override
     public int doStartTag() {

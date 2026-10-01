@@ -38,8 +38,8 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 /**
  * Minimal in-memory {@link HttpSession} mock for OpenCms tests, holding session attributes (e.g. the
@@ -76,7 +76,7 @@ public class CmsMockHttpSession {
     private boolean m_new = true;
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getAttribute(java.lang.String)
+     * @see javax.servlet.http.HttpSession#getAttribute(java.lang.String)
      */
     public Object getAttribute(String name) {
 
@@ -84,7 +84,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getAttributeNames()
+     * @see javax.servlet.http.HttpSession#getAttributeNames()
      */
     public Enumeration<String> getAttributeNames() {
 
@@ -92,7 +92,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getCreationTime()
+     * @see javax.servlet.http.HttpSession#getCreationTime()
      */
     public long getCreationTime() {
 
@@ -100,7 +100,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getId()
+     * @see javax.servlet.http.HttpSession#getId()
      */
     public String getId() {
 
@@ -108,7 +108,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getLastAccessedTime()
+     * @see javax.servlet.http.HttpSession#getLastAccessedTime()
      */
     public long getLastAccessedTime() {
 
@@ -116,7 +116,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getMaxInactiveInterval()
+     * @see javax.servlet.http.HttpSession#getMaxInactiveInterval()
      */
     public int getMaxInactiveInterval() {
 
@@ -124,7 +124,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#getServletContext()
+     * @see javax.servlet.http.HttpSession#getServletContext()
      */
     public ServletContext getServletContext() {
 
@@ -132,7 +132,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#invalidate()
+     * @see javax.servlet.http.HttpSession#invalidate()
      */
     public void invalidate() {
 
@@ -141,7 +141,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#isNew()
+     * @see javax.servlet.http.HttpSession#isNew()
      */
     public boolean isNew() {
 
@@ -159,7 +159,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#removeAttribute(java.lang.String)
+     * @see javax.servlet.http.HttpSession#removeAttribute(java.lang.String)
      */
     public void removeAttribute(String name) {
 
@@ -167,7 +167,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#setAttribute(java.lang.String, java.lang.Object)
+     * @see javax.servlet.http.HttpSession#setAttribute(java.lang.String, java.lang.Object)
      */
     public void setAttribute(String name, Object value) {
 
@@ -180,7 +180,7 @@ public class CmsMockHttpSession {
     }
 
     /**
-     * @see jakarta.servlet.http.HttpSession#setMaxInactiveInterval(int)
+     * @see javax.servlet.http.HttpSession#setMaxInactiveInterval(int)
      */
     public void setMaxInactiveInterval(int interval) {
 

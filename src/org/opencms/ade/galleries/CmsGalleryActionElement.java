@@ -50,11 +50,11 @@ import org.opencms.workplace.CmsWorkplace;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
+import org.apache.commons.logging.Log;
 
 /**
  * Gallery action used to generate the gallery dialog.<p>

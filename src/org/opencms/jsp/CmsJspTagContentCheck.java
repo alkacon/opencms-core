@@ -36,10 +36,10 @@ import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspTagException;
-import jakarta.servlet.jsp.tagext.Tag;
-import jakarta.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Used to check the availablity of an XML content item for conditional display.<p>
@@ -109,7 +109,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
     @Override
     public int doEndTag() {
@@ -122,7 +122,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
+     * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {
@@ -206,7 +206,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.Tag#release()
+     * @see javax.servlet.jsp.tagext.Tag#release()
      */
     @Override
     public void release() {

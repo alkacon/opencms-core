@@ -49,8 +49,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.jsp.JspException;
+import javax.servlet.ServletException;
+import javax.servlet.jsp.JspException;
 
 /**
  * Generalized user groups view.<p>

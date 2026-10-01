@@ -48,10 +48,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.ServletException;
+import javax.servlet.jsp.JspException;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.jsp.JspException;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for building editors for the CmsDefaultPage page type.<p>

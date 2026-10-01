@@ -31,7 +31,7 @@ import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail2.core.EmailException;
-import org.apache.commons.mail2.jakarta.Email;
+import org.apache.commons.mail2.javax.Email;
 
 /**
  * Sends an email using a Thread, so that the application can

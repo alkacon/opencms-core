@@ -36,11 +36,11 @@ import org.opencms.ugc.CmsUgcSessionFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
+import org.apache.commons.logging.Log;
 
 /**
  * Jsp tag to initialize an editing session for user generated content.<p>
@@ -75,7 +75,7 @@ public class CmsJspTagUgc extends TagSupport {
     private String m_var;
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TagSupport#doEndTag()
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -90,7 +90,7 @@ public class CmsJspTagUgc extends TagSupport {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TagSupport#doStartTag()
+     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {

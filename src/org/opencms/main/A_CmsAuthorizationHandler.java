@@ -34,10 +34,10 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import org.apache.commons.logging.Log;
 
 /**
  * Abstract class to grant the needed access to the session manager.<p>

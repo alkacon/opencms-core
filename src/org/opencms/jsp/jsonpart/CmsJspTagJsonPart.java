@@ -32,11 +32,11 @@ import org.opencms.main.CmsLog;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.TryCatchFinally;
 
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.TagSupport;
-import jakarta.servlet.jsp.tagext.TryCatchFinally;
+import org.apache.commons.logging.Log;
 
 /**
  * Tag used to convert the HTML output of this tag's contents to encoded JSON.<p>
@@ -61,7 +61,7 @@ public class CmsJspTagJsonPart extends TagSupport implements TryCatchFinally {
     private boolean m_needEnd;
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
      */
     public void doCatch(Throwable arg0) throws Throwable {
 
@@ -69,7 +69,7 @@ public class CmsJspTagJsonPart extends TagSupport implements TryCatchFinally {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TagSupport#doEndTag()
+     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
@@ -87,7 +87,7 @@ public class CmsJspTagJsonPart extends TagSupport implements TryCatchFinally {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TryCatchFinally#doFinally()
+     * @see javax.servlet.jsp.tagext.TryCatchFinally#doFinally()
      */
     public void doFinally() {
 
@@ -102,7 +102,7 @@ public class CmsJspTagJsonPart extends TagSupport implements TryCatchFinally {
     }
 
     /**
-     * @see jakarta.servlet.jsp.tagext.TagSupport#doStartTag()
+     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
      */
     @Override
     public int doStartTag() throws JspException {

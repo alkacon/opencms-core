@@ -27,7 +27,7 @@
 
 package org.opencms.jsp;
 
-import jakarta.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Allows to have certain JSP code on a JSP not processed by OpenCms,
@@ -51,7 +51,7 @@ public class CmsJspTagExport extends BodyTagSupport {
     private static final long serialVersionUID = 6326430271724241959L;
 
     /**
-     * @see jakarta.servlet.jsp.tagext.BodyTagSupport#doStartTag()
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
     @Override
     public int doStartTag() {

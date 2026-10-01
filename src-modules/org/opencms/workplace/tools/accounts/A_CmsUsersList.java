@@ -63,7 +63,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 
 /**
  * Main user account management view.<p>

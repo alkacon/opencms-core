@@ -41,11 +41,11 @@ import org.opencms.util.CmsStringUtil;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.jsp.PageContext;
+import org.apache.commons.logging.Log;
 
 /**
  * Action element class for displaying the XML sitemap from a JSP.<p>

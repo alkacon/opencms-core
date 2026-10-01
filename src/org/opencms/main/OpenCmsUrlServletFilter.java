@@ -36,17 +36,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.CloseableThreadContext;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Implements a servlet filter for URL rewriting.
@@ -110,7 +110,7 @@ public class OpenCmsUrlServletFilter implements Filter {
     }
 
     /**
-     * @see jakarta.servlet.Filter#destroy()
+     * @see javax.servlet.Filter#destroy()
      */
     public void destroy() {
 
@@ -122,7 +122,7 @@ public class OpenCmsUrlServletFilter implements Filter {
      * Adjusts the requested URIs by prepending the name of the {@link org.opencms.main.OpenCmsServlet},
      * if the request should be handled by that servlet.
      *
-     * @see jakarta.servlet.Filter#doFilter(jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse, jakarta.servlet.FilterChain)
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
@@ -155,7 +155,7 @@ public class OpenCmsUrlServletFilter implements Filter {
     }
 
     /**
-     * @see jakarta.servlet.Filter#init(jakarta.servlet.FilterConfig)
+     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig filterConfig) {
 

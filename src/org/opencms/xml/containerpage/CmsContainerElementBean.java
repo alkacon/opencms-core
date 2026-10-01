@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import jakarta.servlet.ServletRequest;
+import javax.servlet.ServletRequest;
 
 /**
  * One element of a container in a container page.<p>
