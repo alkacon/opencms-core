@@ -29,22 +29,43 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
            Hint: You can use the "Resource changed since" feature in the Database
            Administration to export all the changes you have done after installing
            OpenCms.
+           
+IMPORTANT: This updater will only update the core OpenCms installation. 
+           Any custom code, templates, or libraries that reference Java EE 8 directly 
+           (e.g. by using classes from javax.servlet.* packages) remain incompatible with Tomcat 10.
+       
 
 IMPORTANT: If you use OCEE, remove OCEE configurations before the update and enable them after the update again.
 
-Follow the following steps to update from OpenCms 10 or higher to @OPENCMS_VERSION@:
+
+IMPORTANT: UPDATE YOUR TOMCAT TO TOMCAT 10.x or higher.
+
+Previous versions of OpenCms were not compatible with Tomcat 10.x and therefore required Tomcat 9.x. 
+As a result, updating to the current OpenCms version also requires migrating the existing installation 
+from Tomcat 9.x to Tomcat 10.x.
+
+The recommended procedure for migrating from Tomcat 9.x to Tomcat 10.x is as follows:
+
+1. Shut down the existing Tomcat 9.x instance.
+
+2. Install Tomcat 10.x alongside the existing Tomcat 9.x installation. Verify that the new Tomcat 10.x 
+installation is configured correctly and starts successfully.
+
+3. Shut down the Tomcat 10.x instance.
+
+4. Move the existing OpenCms web application from the Tomcat 9.x installation to the new Tomcat 10.x installation.
+
+-> At this point, the OpenCms installation has been migrated to Tomcat 10.x. However, it will not yet start
+ successfully because older OpenCms versions are not compatible with Tomcat 10.x.
+
+5. Proceed with the OpenCms update.
+
+You can now use the OpenCms Updater and follow the steps below to update an existing OpenCms 10 or newer installation to the current OpenCms @OPENCMS_VERSION@ version:
 
 
-1. Shutdown your OpenCms servlet container
+6. If you had already updated your OpenCms installation before, ensure to delete the folder 'WEB-INF/updatedata' in your webapp directory.
 
-The OpenCms upgrade requires that you shut down OpenCms first. You can use the
-Broadcast message tool in the 'Administration' view to inform users before the
-server is shut down.
-
-
-2. If you had already updated your OpenCms installation before, ensure to delete the folder 'WEB-INF/updatedata' in your webapp directory.
-
-3. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION_NUMBER@.zip' to
+7. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION@.zip' to
    your web application directory
 
 If you extracted the file to an external directory, copy the folder 'WEB-INF' to the OpenCms webapp directory. Be sure that the files 'opencms.tld'
@@ -56,13 +77,13 @@ The OpenCmsUrlServletFilter available since version 10.5.0 will be disabled by d
 Edit the 'web.xml' to enable it.
 
 
-3. Enable the upgrade wizard
+8. Enable the upgrade wizard
 
 To do so, set the property
 wizard.enabled=true
 in the config file WEB-INF/config/opencms.properties.
 
-4. Restart your OpenCms servlet container
+9. Restart your OpenCms servlet container, this will be the Tomcat 10.x
 
 OpenCms will not start because the wizard in enabled.
 
@@ -70,7 +91,7 @@ Ensure that no requests other than the one to the update wizard reach your OpenC
 otherwise the wizard might not start correctly and you get an error 500.
 
 
-5. Execute the OpenCms update wizard
+11. Execute the OpenCms update wizard
 
 Open the URL $SERVER_NAME/$CONTEXT_NAME/update/ in your Browser, e.g.
 
@@ -82,9 +103,8 @@ page. Then execute the wizard which guides you through the update process.
 
 You will need the Admin password to continue with the upgrade.
 
-When asked to select the modules to update you should definitely select all
-org.opencms.ade.*, org.opencms.editors.*, org.opencms.gwt and org.opencms.workplace.*
-modules.
+When asked to select the modules to update you should definitely select the 
+"OpenCms ADE configuration" and the "OpenCms configuration" modules.
 
 
 
@@ -101,7 +121,7 @@ the wizard will be locked again (in the opencms.properties file).
 
 
 
-6. Update Solr configuration
+12. Update Solr configuration
 
 During the update Solr will be disabled in the WEB-INF/config/opencms-search.xml.
 To update Solr you must update the 'schema.xml and' the 'solrconfig.xml' manually.
@@ -118,7 +138,7 @@ container).
 
 
 
-7. Shutdown and restart your OpenCms servlet container
+13. Shutdown and restart your OpenCms servlet container
 
 Note: to be sure all jsp files work correctly please delete the servlet containers
 work directory (ie. ${TOMCAT_HOME}/work/Catalina/localhost/opencms/) and the
@@ -128,7 +148,7 @@ You should now be able to log into the OpenCms workplace as before.
 
 
 
-8. Rebuild search indexes
+14. Rebuild search indexes
 
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
 Log into OpenCms and navigate to Launchpad > Database -> Search Indexes and rebuild all indexes.
@@ -137,7 +157,7 @@ If you update from OpenCms 17 or older, you must delete the files under WEB-INF/
 servlet container and then reindex your search indexes as shown above.
 
 
-9. Convert model groups [only relevant when updating from 10.0.x]
+15. Convert model groups [only relevant when updating from 10.0.x]
 
 The way model groups are stored has changed between OpenCms 10.0.x and 10.5.x. So if you are using model
 groups and are updating your system from version 10.0.x, you will need to convert them to the new format.
@@ -149,3 +169,4 @@ This requires the following steps:
 - In the form displayed by the JSP, fill out the "base path" and "base container name" fields (they are
   described in the form itself) and hit the submit button.
 
+16. After the update process is completed, the Tomcat9.x installation can be removed.

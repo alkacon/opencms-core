@@ -1619,7 +1619,7 @@ tasks.register('updater', Zip) {
         include 'WEB-INF/updatedata/**/*.txt'
         include 'WEB-INF/updatedata/**/*.jsp'
         exclude 'WEB-INF/updatedata/config/opencms.xml'
-        exclude 'WEB-INF/updatedata/readme.txt'
+        exclude 'WEB-INF/updatedata/readme_*.txt'
         exclude 'WEB-INF/updatedata/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: project.version,
@@ -1636,7 +1636,7 @@ tasks.register('updater', Zip) {
         exclude 'WEB-INF/updatedata/**/*.txt'
         exclude 'WEB-INF/updatedata/**/*.jsp'
         exclude 'WEB-INF/updatedata/config/opencms.xml'
-        exclude 'WEB-INF/updatedata/readme.txt'
+        exclude 'WEB-INF/updatedata/readme_*.txt'
         exclude 'WEB-INF/updatedata/empty.jar'
     }
 
@@ -1674,7 +1674,8 @@ tasks.register('updater', Zip) {
         include '**/*'
     }
 
-    from ("${projectDir}/webapp/WEB-INF/updatedata/readme.txt"){
+    from ("${projectDir}/webapp/WEB-INF/updatedata/readme_${eeTarget}.txt"){
+        rename { 'readme.txt' }
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: project.version,
             OPENCMS_VERSION: product_name+' '+ project.version
