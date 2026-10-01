@@ -54,6 +54,7 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             {"Apache Tomcat/8", null},
             {"Apache Tomcat/9", null},
             {"Apache Tomcat/10", null},
+            {"Apache Tomcat/11", null},
             {"WebLogic Server 9", null},
             {"jetty/12", null},
             {
