@@ -15,7 +15,7 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
-OpenCms 22.0.0 - October ??, 2026
+OpenCms 22.0.0 - October 6, 2026
 
 ! Support for Jakarta EE with Tomcat 10 / 11 and Jetty 12, a legacy Java EE 8 variant for Tomcat 9 is also available
 ! New storage layer with SHA-512 based deduplication of binary and image content, optionally stored in S3-compatible object storage
