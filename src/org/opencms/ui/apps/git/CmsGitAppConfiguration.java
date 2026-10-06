@@ -147,7 +147,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        CmsGitCheckin checkin = new CmsGitCheckin(A_CmsUI.getCmsObject());
+        CmsGitCheckin checkin = new CmsGitCheckin(cms);
         if (!checkin.hasValidConfiguration()) {
             return CmsAppVisibilityStatus.INVISIBLE;
         }
