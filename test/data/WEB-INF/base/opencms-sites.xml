@@ -17,5 +17,9 @@
 		<site server="http://bar.org" uri="/sites/bar/" />
 		<site server="http://localhost:8083" uri="/sites/site-one/" />
 		<site server="http://localhost:8084" uri="/sites/site-two/" />
+		<site server="http://localhost:8085" uri="/outside/" />
+		<site server="http://localhost:8086" uri="/outsider/" />
+		<site server="http://localhost:8087" uri="/sites/longname/anotherlongname/" />
+		<site server="http://localhost:8088" uri="/x/" />
 	</sites>
 </opencms>

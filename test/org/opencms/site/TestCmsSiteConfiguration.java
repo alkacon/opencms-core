@@ -56,6 +56,41 @@ public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests site root lookup for paths with different forms, including query strings.
+     */
+    @Test
+    public void testGetSiteRoot() {
+
+        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
+
+        assertEquals("/sites/default", siteManager.getSiteRoot("/sites/default"));
+        assertEquals("/sites/default", siteManager.getSiteRoot("/sites/default/folder2/page.html"));
+        assertEquals("/sites/default", siteManager.getSiteRoot("/sites/default/folder1"));
+        assertEquals(null, siteManager.getSiteRoot("/sites/longname/foo"));
+        assertEquals("/sites/longname/anotherlongname", siteManager.getSiteRoot("/sites/longname/anotherlongname"));
+        assertEquals(
+            "/sites/longname/anotherlongname",
+            siteManager.getSiteRoot("/sites/longname/anotherlongname/page.html"));
+
+        assertEquals("/outside", siteManager.getSiteRoot("/outside/"));
+        assertEquals("/outside", siteManager.getSiteRoot("/outside"));
+        assertEquals("/outside", siteManager.getSiteRoot("/outside/section/page.html"));
+        assertEquals("/outside", siteManager.getSiteRoot("/outside/section/page.html/"));
+        assertEquals("/outside", siteManager.getSiteRoot("/outside/section/page.html?param=value"));
+        assertEquals("/outsider", siteManager.getSiteRoot("/outsider/"));
+        assertEquals("/outsider", siteManager.getSiteRoot("/outsider"));
+        assertEquals("/outsider", siteManager.getSiteRoot("/outsider/section/page.html"));
+        assertEquals("/x", siteManager.getSiteRoot("/x"));
+        assertEquals("/x", siteManager.getSiteRoot("/x/"));
+        assertEquals("/x", siteManager.getSiteRoot("/x/page.html"));
+        assertEquals("/x", siteManager.getSiteRoot("/x?foo=bar"));
+        assertEquals("/x", siteManager.getSiteRoot("/x/?foo=bar"));
+        assertNull(siteManager.getSiteRoot("/outside-example/page.html"));
+        assertNull(siteManager.getSiteRoot("/xyz/page.html"));
+        assertNull(siteManager.getSiteRoot("/unknown/page.html"));
+    }
+
+    /**
      * Tests the basic site configuration.<p>
      *
      * @throws Throwable if something goes wrong
@@ -71,7 +106,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
         assertNotNull(mapOfSites, "Configured map of sites must not be null");
 
         List<CmsSite> sites = new ArrayList<CmsSite>(mapOfSites.values());
-        assertTrue(sites.size() == 8, "Expected 8 configured sites but found " + sites.size());
+        assertTrue(sites.size() == 12, "Expected 12 configured sites but found " + sites.size());
 
         for (CmsSite site : sites) {
             echo("Found configured site: " + site);

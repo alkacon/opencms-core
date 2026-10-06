@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -192,6 +193,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
 
+    /** Pattern matching a query string or fragment and the remainder of the path. */
+    private static final Pattern QUERY_OR_FRAGMENT_PATTERN = Pattern.compile("[#?].*");
+
     /** The path to the "/sites/" folder. */
     private static final String SITES_FOLDER = "/sites/";
 
@@ -199,7 +203,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     private static final int SITES_FOLDER_POS = SITES_FOLDER.length() + 1;
 
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
-    private List<String> m_additionalSiteRoots;
+    private Set<String> m_additionalSiteRoots;
 
     /** Data for the alternative site root rules. */
     private volatile AlternativeSiteData m_alternativeSiteData = new AlternativeSiteData(new ArrayList<>());
@@ -260,7 +264,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
 
         m_siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>();
         m_siteRootSites = new HashMap<String, CmsSite>();
-        m_additionalSiteRoots = new ArrayList<String>();
+        m_additionalSiteRoots = new HashSet<String>();
         m_workplaceServers = new LinkedHashMap<String, CmsSSLMode>();
         m_workplaceMatchers = new ArrayList<CmsSiteMatcher>();
         m_oldStyleSecureServer = true;
@@ -2010,11 +2014,15 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     private String lookupAdditionalSite(String rootPath) {
 
-        for (int i = 0, size = m_additionalSiteRoots.size(); i < size; i++) {
-            String siteRoot = m_additionalSiteRoots.get(i);
-            if (rootPath.startsWith(siteRoot + "/")) {
-                return siteRoot;
+        // cut off fragment, query string, or both
+        rootPath = QUERY_OR_FRAGMENT_PATTERN.matcher(rootPath).replaceFirst("");
+        String currentPath = rootPath;
+        while (currentPath != null) {
+            currentPath = CmsFileUtil.removeTrailingSeparator(currentPath);
+            if (m_additionalSiteRoots.contains(currentPath)) {
+                return currentPath;
             }
+            currentPath = CmsResource.getParentFolder(currentPath);
         }
         return null;
     }
