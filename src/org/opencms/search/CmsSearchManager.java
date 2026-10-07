@@ -371,10 +371,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchOfflineHandler m_handler;
 
         /** Indicates if this thread is still alive. */
-        boolean m_isAlive;
-
-        /** Indicates that an index update thread is currently running. */
-        private boolean m_isUpdating;
+        volatile boolean m_isAlive;
 
         /** If true a manual update (after file upload) was triggered. */
         private boolean m_updateTriggered;
@@ -456,6 +453,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         interrupted();
                     }
                 }
+                // shutting down: index the changes still queued so that they are not lost
+                List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
+                if (resourcesToIndex.size() > 0) {
+                    startOfflineUpdateThread(report, resourcesToIndex);
+                }
             } finally {
                 // make sure that live status is reset in case of Exceptions
                 m_isAlive = false;
@@ -509,25 +511,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         /**
          * Shuts down this offline index thread.<p>
+         *
+         * Waits until the index update currently running and the changes still queued have been
+         * written, so that the search indexes can be closed safely afterwards.<p>
          */
         protected void shutDown() {
 
+            long waitTime = getOfflineIndexShutdownWaitTime();
             m_isAlive = false;
             interrupt();
-            if (m_isUpdating) {
-                long waitTime = getOfflineUpdateFrequency() / 2;
-                int waitSteps = 0;
-                do {
-                    try {
-                        // wait half the time of the offline index frequency for the thread to finish
-                        Thread.sleep(waitTime);
-                    } catch (InterruptedException e) {
-                        // continue
-                        LOG.info(e.getLocalizedMessage(), e);
-                    }
-                    waitSteps++;
-                    // wait 5 times then stop waiting
-                } while ((waitSteps < 5) && m_isUpdating);
+            try {
+                join(waitTime);
+            } catch (InterruptedException e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+            if (isAlive()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_OI_SHUTDOWN_TIMEOUT_1, Long.valueOf(waitTime)));
             }
         }
 
@@ -549,7 +548,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         Integer.valueOf(resourcesToIndex.size())));
             }
 
-            m_isUpdating = true;
             thread.start();
 
             do {
@@ -568,7 +566,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Long.valueOf(System.currentTimeMillis() - startTime)));
                 }
             } while (thread.isAlive());
-            m_isUpdating = false;
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(
@@ -849,6 +846,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** The default maximal wait time for re-indexing after editing a content. */
     public static final int DEFAULT_MAX_INDEX_WAITTIME = 30000;
+
+    /** The minimal time to wait for the offline indexer to finish when shutting down (60000 msec = 1 min). */
+    public static final long MIN_OFFLINE_INDEX_SHUTDOWN_WAIT_TIME = 2L * DEFAULT_MAX_INDEX_WAITTIME;
 
     /** The default timeout value used for generating a document for the search index (60000 msec = 1 min). */
     public static final int DEFAULT_TIMEOUT = 60000;
@@ -2787,12 +2787,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         m_instantPublishIndexQueue.shutdown();
 
-        if (m_offlineIndexThread != null) {
-            m_offlineIndexThread.shutDown();
+        if (m_offlineHandler != null) {
+            // stop collecting changes before the offline indexer writes the ones still queued
+            OpenCms.removeCmsEventListener(m_offlineHandler);
         }
 
-        if (m_offlineHandler != null) {
-            OpenCms.removeCmsEventListener(m_offlineHandler);
+        if (m_offlineIndexThread != null) {
+            // must have finished before the indexes are closed below
+            m_offlineIndexThread.shutDown();
         }
 
         Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
@@ -3024,6 +3026,36 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the maximal time to wait for the offline indexer to finish when shutting down (in milliseconds).<p>
+     *
+     * This is twice the configured <code>maxIndexWaitTime</code>, but at least
+     * {@link #MIN_OFFLINE_INDEX_SHUTDOWN_WAIT_TIME}, so it can be raised in <code>opencms-search.xml</code>
+     * without a separate setting:<ul>
+     * <li><b>Why <code>maxIndexWaitTime</code>:</b> it is how long OpenCms already accepts to wait for one
+     * offline index pass, for example after a resource is saved or uploaded ({@link #updateOfflineIndexes()}),
+     * so it is the setting that scales with how long a pass takes. The <code>offlineUpdateFrequency</code>
+     * only says how often a pass starts, not how long it runs.</li>
+     * <li><b>Why twice:</b> on shutdown the indexer may have to finish the pass it is running, and then
+     * runs one more pass for the changes still queued, see {@link CmsSearchOfflineIndexThread#run()}.</li>
+     * </ul>
+     *
+     * The minimum keeps a low <code>maxIndexWaitTime</code> from cutting the shutdown wait short: a small or
+     * zero value is a choice about how long editors wait after saving, not about dropping offline index
+     * updates on shutdown. It costs nothing in a normal shutdown, since the wait ends as soon as the indexer
+     * has finished. It also keeps the wait away from 0, which {@link Thread#join(long)} takes as "forever".<p>
+     *
+     * The wait is part of the whole OpenCms shutdown, which must end before the service manager kills the
+     * process (for example <code>TimeoutStopSec</code> of a systemd unit, or the stop timeout of a container).
+     * Raising <code>maxIndexWaitTime</code> also raises how long the workplace waits for the index after an edit.<p>
+     *
+     * @return the maximal time to wait for the offline indexer to finish when shutting down (in milliseconds)
+     */
+    protected long getOfflineIndexShutdownWaitTime() {
+
+        return Math.max(MIN_OFFLINE_INDEX_SHUTDOWN_WAIT_TIME, 2 * getMaxIndexWaitTime());
     }
 
     /**
