@@ -36,10 +36,20 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestRunner;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -178,6 +188,52 @@ public class TestCmsSearchOffline extends OpenCmsTestRunner {
         assertEquals("/sites/default/test/test_moved.txt", (results.get(0)).getPath());
 
         echo("Move Test - end");
+    }
+
+    /**
+     * Tests that resource changes still queued for the offline indexer are written to the index
+     * when the search manager is shut down, instead of being dropped.<p>
+     *
+     * Runs last because it shuts the search manager down.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Order(3)
+    @Test
+    public void testPendingChangesIndexedOnShutdown() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing that pending offline index updates are written on shutdown");
+
+        CmsSearchManager manager = OpenCms.getSearchManager();
+        // suspend the periodic updates so that the changes below stay queued until the shutdown
+        manager.setOfflineUpdateFrequency(3600000);
+        // let the update pass triggered by the frequency change finish before queuing anything
+        Thread.sleep(2000);
+
+        cms.createResource("/shutdown/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+        String fileName = "/shutdown/pending.txt";
+        cms.createResource(
+            fileName,
+            CmsResourceTypePlain.getStaticTypeId(),
+            "Alkacon OpenCms is still indexing".getBytes(),
+            null);
+        String rootPath = cms.getRequestContext().addSiteRoot(fileName);
+        String indexPath = ((CmsSearchIndex)manager.getIndex(INDEX_SPECIAL)).getPath();
+
+        // shut down while the new resource is still queued for the offline indexer
+        manager.shutDown();
+
+        // the index is closed now, so read the index files directly
+        try (Directory directory = FSDirectory.open(Paths.get(indexPath));
+        DirectoryReader reader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(reader);
+            TopDocs hits = searcher.search(new TermQuery(new Term(CmsSearchField.FIELD_PATH, rootPath)), 1);
+            assertEquals(
+                1,
+                hits.scoreDocs.length,
+                "Resource queued before the shutdown is missing in the offline index");
+        }
     }
 
     /**
