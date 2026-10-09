@@ -371,7 +371,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchOfflineHandler m_handler;
 
         /** Indicates if this thread is still alive. */
-        boolean m_isAlive;
+        volatile boolean m_isAlive;
+
+        /** Whether shutdown must finish the queued index updates. */
+        private volatile boolean m_finishPendingUpdates;
 
         /** Indicates that an index update thread is currently running. */
         private boolean m_isUpdating;
@@ -456,6 +459,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         interrupted();
                     }
                 }
+                if (m_finishPendingUpdates) {
+                    final List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
+                    if (!resourcesToIndex.isEmpty()) {
+                        startOfflineUpdateThread(report, resourcesToIndex);
+                    }
+                }
             } finally {
                 // make sure that live status is reset in case of Exceptions
                 m_isAlive = false;
@@ -532,6 +541,52 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         /**
+         * Shuts down the offline indexer after finishing its running and queued updates.<p>
+         *
+         * There is no timeout: a module import can require arbitrarily long indexing, and the indexes
+         * must remain open until it finishes. The editor's maxIndexWaitTime does not limit indexing.<p>
+         *
+         * Temporary stops during index reconfiguration use {@link #shutDown()} instead, since they may
+         * hold indexing locks and must leave queued changes for the replacement indexer.<p>
+         */
+        protected void shutDownAndWait() {
+
+            if (!isAlive()) {
+                return;
+            }
+            final long logIntervalSeconds = 30;
+            final long startTime = System.nanoTime();
+            long lastLogTime = startTime;
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OI_SHUTDOWN_START_0));
+            m_finishPendingUpdates = true;
+            m_isAlive = false;
+            interrupt();
+            boolean interrupted = false;
+            while (isAlive()) {
+                try {
+                    join(TimeUnit.SECONDS.toMillis(logIntervalSeconds));
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                }
+                final long now = System.nanoTime();
+                if (isAlive() && (TimeUnit.NANOSECONDS.toSeconds(now - lastLogTime) >= logIntervalSeconds)) {
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_OI_SHUTDOWN_WAIT_1,
+                            Long.valueOf(TimeUnit.NANOSECONDS.toSeconds(now - startTime))));
+                    lastLogTime = now;
+                }
+            }
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_OI_SHUTDOWN_FINISH_1,
+                    Long.valueOf(TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - startTime))));
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        /**
          * Updates the offline search indexes for the given list of resources.<p>
          *
          * @param report the report to write the index information to
@@ -560,7 +615,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // continue
                     LOG.info(e.getLocalizedMessage(), e);
                 }
-                if (thread.isAlive()) {
+                if (thread.isAlive() && !m_finishPendingUpdates) {
                     LOG.warn(
                         Messages.get().getBundle().key(
                             Messages.LOG_OI_UPDATE_LONG_2,
@@ -2785,28 +2840,37 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void shutDown() {
 
-        m_instantPublishIndexQueue.shutdown();
+        boolean interrupted = Thread.interrupted();
+        try {
+            m_instantPublishIndexQueue.shutdown();
 
-        if (m_offlineIndexThread != null) {
-            m_offlineIndexThread.shutDown();
-        }
+            if (m_offlineHandler != null) {
+                OpenCms.removeCmsEventListener(m_offlineHandler);
+            }
 
-        if (m_offlineHandler != null) {
-            OpenCms.removeCmsEventListener(m_offlineHandler);
-        }
+            if (m_offlineIndexThread != null) {
+                m_offlineIndexThread.shutDownAndWait();
+            }
+            // Lucene cleanup must finish before restoring the caller's interrupt status.
+            interrupted |= Thread.interrupted();
 
-        Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
-        while (i.hasNext()) {
-            I_CmsSearchIndex index = i.next();
-            index.shutDown();
-            index = null;
-        }
-        m_indexes.clear();
+            Iterator<I_CmsSearchIndex> i = m_indexes.iterator();
+            while (i.hasNext()) {
+                I_CmsSearchIndex index = i.next();
+                index.shutDown();
+                index = null;
+            }
+            m_indexes.clear();
 
-        shutDownSolrContainer();
+            shutDownSolrContainer();
 
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
+            }
+        } finally {
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

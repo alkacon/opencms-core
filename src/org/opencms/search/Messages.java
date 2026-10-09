@@ -353,6 +353,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NO_INDEX_WITH_NAME_1 = "LOG_NO_INDEX_WITH_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_SHUTDOWN_FINISH_1 = "LOG_OI_SHUTDOWN_FINISH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_SHUTDOWN_START_0 = "LOG_OI_SHUTDOWN_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OI_SHUTDOWN_WAIT_1 = "LOG_OI_SHUTDOWN_WAIT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_OI_UPDATE_EVENT_1 = "LOG_OI_UPDATE_EVENT_1";
 
     /** Message constant for key in the resource bundle. */
