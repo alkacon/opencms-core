@@ -1268,6 +1268,46 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the formatter configuration for a resource type.<p>
+     *
+     * @param cms the current CMS context
+     * @param resType the resource type
+     * @param schemaFormatters the resource schema formatters
+     *
+     * @return the configuration of formatters for the resource type
+     */
+    public CmsFormatterConfiguration getFormatters(
+        CmsObject cms,
+        I_CmsResourceType resType,
+        CmsFormatterConfiguration schemaFormatters) {
+
+        String typeName = resType.getTypeName();
+        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
+        Set<String> types = new HashSet<String>();
+        types.add(typeName);
+        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
+            if (changeSet != null) {
+                changeSet.applyToTypes(types);
+            }
+        }
+
+        if ((schemaFormatters != null) && types.contains(typeName)) {
+            for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
+                formatters.add(formatter);
+            }
+        }
+
+        try {
+            List<I_CmsFormatterBean> formattersForType = m_formattersByTypeCache.get(typeName);
+            formatters.addAll(formattersForType);
+        } catch (ExecutionException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+
+        }
+        return CmsFormatterConfiguration.create(cms, formatters);
+    }
+
+    /**
      * Gets a named function reference.<p>
      *
      * @param name the name of the function reference
@@ -2019,46 +2059,6 @@ public class CmsADEConfigData {
             }
         }
         return result;
-    }
-
-    /**
-     * Gets the formatter configuration for a resource type.<p>
-     *
-     * @param cms the current CMS context
-     * @param resType the resource type
-     * @param schemaFormatters the resource schema formatters
-     *
-     * @return the configuration of formatters for the resource type
-     */
-    protected CmsFormatterConfiguration getFormatters(
-        CmsObject cms,
-        I_CmsResourceType resType,
-        CmsFormatterConfiguration schemaFormatters) {
-
-        String typeName = resType.getTypeName();
-        List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
-        Set<String> types = new HashSet<String>();
-        types.add(typeName);
-        for (CmsFormatterChangeSet changeSet : getFormatterChangeSets()) {
-            if (changeSet != null) {
-                changeSet.applyToTypes(types);
-            }
-        }
-
-        if ((schemaFormatters != null) && types.contains(typeName)) {
-            for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
-                formatters.add(formatter);
-            }
-        }
-
-        try {
-            List<I_CmsFormatterBean> formattersForType = m_formattersByTypeCache.get(typeName);
-            formatters.addAll(formattersForType);
-        } catch (ExecutionException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-
-        }
-        return CmsFormatterConfiguration.create(cms, formatters);
     }
 
     /**
