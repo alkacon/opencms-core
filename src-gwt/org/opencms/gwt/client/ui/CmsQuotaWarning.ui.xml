@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+    <ui:style type="org.opencms.gwt.client.ui.CmsQuotaWarning.I_Style">
+        .warning {
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e3bb62;
+            border-radius: 4px;
+            background-color: #fff3d2;
+            color: #333;
+        }
+        .warning.exceeded {
+            background-color: #fbe9e8;
+            border-color: #d88a86;
+        }
+        .warning .message table tr td:first-child {
+            height: auto;
+            min-width: 40px;
+        }
+        .warning .message table tr td div {
+            padding: 4px 8px;
+            max-height: none;
+        }
+        .bar {
+            height: 12px;
+            margin-top: 6px;
+            background-color: #e1e1e1;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .fill {
+            height: 100%;
+            background-color: #eead38;
+        }
+        .exceeded .fill {
+            background-color: #d66b68;
+        }
+    </ui:style>
+    <g:FlowPanel styleName="{style.warning}">
+        <cms:CmsMessageWidget ui:field="m_message" addStyleNames="{style.message}" />
+        <g:FlowPanel ui:field="m_bar" styleName="{style.bar}">
+            <g:FlowPanel ui:field="m_fill" styleName="{style.fill}" />
+        </g:FlowPanel>
+    </g:FlowPanel>
+</ui:UiBinder>

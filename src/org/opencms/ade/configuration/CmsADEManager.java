@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.CmsElementView.ElementViewComparator;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
@@ -748,6 +749,28 @@ public class CmsADEManager {
         } finally {
             cms.getRequestContext().setSiteRoot(oldSiteRoot);
         }
+    }
+
+    /**
+     * Gets local attributes for every website and subsite, independently of the site selector.<p>
+     *
+     * Master configurations and connectors are included; attributes inherited from parent websites or subsites are excluded.<p>
+     *
+     * @param online true to use the Online configuration, false for Offline
+     *
+     * @return attributes indexed by normalized website or subsite root path
+     */
+    public Map<String, Map<String, AttributeValue>> getLocalSitemapAttributes(boolean online) {
+
+        CmsADEConfigCacheState state = getCacheState(online);
+        Set<String> paths = new HashSet<>(OpenCms.getSiteManager().getSiteRoots());
+        paths.addAll(state.getSiteConfigurationPaths());
+        paths.removeIf(
+            path -> "/".equals(CmsFileUtil.addTrailingSeparator(path))
+                || OpenCms.getSiteManager().isSharedFolder(path));
+        List<I_CmsSitemapExtraInfo> extraInfo = getSitemapExtraInfoProviders().stream().map(
+            provider -> provider.getExtraInfo(state.getCms())).collect(Collectors.toList());
+        return state.getLocalAttributesByPath(paths, extraInfo);
     }
 
     /**

@@ -28,6 +28,7 @@
 package org.opencms.gwt.shared.rpc;
 
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 
@@ -67,6 +68,15 @@ public interface I_CmsUploadService extends RemoteService {
      * that already exist in the VFS and a list of filenames that are invalid
      */
     CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder, boolean isRootPath);
+
+    /**
+     * Returns the storage budget of the scope owning an accessible upload folder.<p>
+     *
+     * @param targetFolder the upload folder
+     * @param isRootPath whether the path includes the site root
+     * @return the current budget, or null if the folder is not an accessible offline upload target
+     */
+    CmsQuotaStatus getQuota(String targetFolder, boolean isRootPath);
 
     /**
      * Returns the upload progress information.<p>

@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsQuotaWarning;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsVirusReport;
@@ -61,6 +62,8 @@ import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsQuotaProjection;
+import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
@@ -213,6 +216,21 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The user information text widget. */
     private HTML m_selectionSummary;
 
+    /** Latest stored usage snapshot. */
+    private CmsQuotaStatus m_quotaStatus;
+
+    /** Whether the initial budget request is pending. */
+    private boolean m_quotaLoading;
+
+    /** Existing upload checks may disable OK independently of the budget. */
+    private String m_okDisabledReason;
+
+    /** Advisory warning for the upload target's current storage budget. */
+    private CmsQuotaWarning m_quotaWarning = new CmsQuotaWarning();
+
+    /** Identifies the latest budget request, so late responses cannot replace newer information. */
+    private int m_quotaRequest;
+
     /** The target folder to upload the selected files. */
     private String m_targetFolder;
 
@@ -266,6 +284,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_dialogInfo = new HTML();
         m_dialogInfo.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().dialogInfo());
         m_mainPanel.add(m_dialogInfo);
+        m_mainPanel.add(m_quotaWarning);
         m_scrollPanel = GWT.create(CmsScrollPanel.class);
         m_scrollPanel.getElement().getStyle().setPropertyPx("minHeight", MIN_CONTENT_HEIGHT);
         m_scrollPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().mainContentWidget());
@@ -360,6 +379,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_SELECTION_0), false);
         // set the selection summary
         updateSummary();
+        updateQuota();
 
         // add a upload button
         m_uploadButton.createFileInput();
@@ -720,7 +740,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     protected void disableOKButton(String disabledReason) {
 
-        m_okButton.disable(disabledReason);
+        m_okDisabledReason = disabledReason;
+        updateOkButton();
     }
 
     /**
@@ -736,7 +757,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     protected void enableOKButton() {
 
-        m_okButton.enable();
+        m_okDisabledReason = null;
+        updateOkButton();
     }
 
     /**
@@ -829,6 +851,24 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+     * Gets the total size of the selected upload files without overflowing.<p>
+     *
+     * @return the selected bytes, preserving large file sizes and avoiding overflow
+     */
+    protected long getSelectedUploadSize() {
+
+        long total = 0;
+        for (CmsFileInfo file : m_filesToUpload.values()) {
+            long size = Math.max(0, file.getFileSize());
+            if (size > Long.MAX_VALUE - total) {
+                return Long.MAX_VALUE;
+            }
+            total += size;
+        }
+        return total;
+    }
+
+    /**
      * Returns the targetFolder.<p>
      *
      * @return the targetFolder
@@ -882,6 +922,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     protected void onOkClick() {
 
+        if (m_quotaLoading || isQuotaBlocking()) {
+            updateQuotaDisplay();
+            return;
+        }
         if (!m_selectionDone) {
             checkSelection();
         } else {
@@ -913,7 +957,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     protected void proceedWorkflow(CmsUploadFileBean result) {
 
         if (result.isActive()) {
-            m_okButton.enable();
+            enableOKButton();
             CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_RUNNING_0));
         } else {
             if (!result.getExistingResourceNames().isEmpty()
@@ -958,6 +1002,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         if (m_dialogInfo.isVisible()) {
             fixedContent += m_dialogInfo.getOffsetHeight();
         }
+        if (m_quotaWarning.isVisible()) {
+            fixedContent += m_quotaWarning.getOffsetHeight();
+        }
         if (m_selectionSummary.isVisible()) {
             fixedContent += m_selectionSummary.getOffsetHeight();
         }
@@ -989,6 +1036,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     protected void setSummaryHTML(String html) {
 
         m_selectionSummary.setHTML(html);
+        updateQuotaDisplay();
     }
 
     /**
@@ -1218,7 +1266,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     private void checkSelection() {
 
-        m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
+        disableOKButton(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
 
         if (!m_selectionDone) {
             m_firstContentHeight = CmsDomUtil.getCurrentStyleInt(m_scrollPanel.getElement(), CmsDomUtil.Style.height);
@@ -1275,9 +1323,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     private void commit() {
 
+        if (m_quotaLoading || isQuotaBlocking()) {
+            enableOKButton();
+            updateQuotaDisplay();
+            return;
+        }
         m_selectionDone = true;
         if (!m_filesToUpload.isEmpty()) {
-            m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0));
+            disableOKButton(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0));
             if (m_uploadButton instanceof UIObject) {
                 ((UIObject)m_uploadButton).getElement().getStyle().setDisplay(Display.NONE);
             }
@@ -1429,6 +1482,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+     * Checks whether the selected upload exceeds the storage budget.<p>
+     *
+     * @return whether this selection exceeds the known budget
+     */
+    private boolean isQuotaBlocking() {
+
+        return new CmsQuotaProjection(m_quotaStatus, getSelectedUploadSize()).isUploadBlocked();
+    }
+
+    /**
      * Helper method to upload the hook dialog after an upload.
      *
      * @param uploadedFileIds the uploaded file ids
@@ -1504,7 +1567,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
         // update the dialog
         m_selectionDone = true;
-        m_okButton.enable();
+        enableOKButton();
         if (infoBean.getInvalidFileNames().isEmpty() && infoBean.getExistingDeletedFileNames().isEmpty()) {
             displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
         } else {
@@ -1539,6 +1602,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             m_filesToUpload.remove(filename);
         }
 
+        updateSummary();
+        enableOKButton();
         // set the height of the content
         setHeight();
     }
@@ -1548,6 +1613,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      */
     private void showProgress() {
 
+        ++m_quotaRequest;
+        m_quotaWarning.setStatus(null);
         removeContent();
         displayDialogInfo(
             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_UPLOAD_INFO_UPLOADING_0),
@@ -1601,6 +1668,77 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             m_contentWrapper.remove(m_loadingPanel);
             doResize();
             m_clientLoading = false;
+        }
+    }
+
+    /**
+     * Combines existing upload restrictions with the budget restriction.<p>
+     */
+    private void updateOkButton() {
+
+        if (m_okButton == null) {
+            return;
+        }
+        if (m_okDisabledReason != null) {
+            m_okButton.disable(m_okDisabledReason);
+        } else if (m_filesToUpload.isEmpty()) {
+            m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_NO_FILES_0));
+        } else if (m_quotaLoading) {
+            m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_CHECKING_0));
+        } else if (isQuotaBlocking()) {
+            m_okButton.disable(
+                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_QUOTA_UPLOAD_BLOCKED_0));
+        } else {
+            m_okButton.enable();
+        }
+    }
+
+    /**
+     * Reads stored usage for the actual target, then refreshes the upload projection.<p>
+     */
+    private void updateQuota() {
+
+        final int request = ++m_quotaRequest;
+        m_quotaStatus = null;
+        m_quotaLoading = m_targetFolder != null;
+        updateQuotaDisplay();
+        if (m_targetFolder == null) {
+            return;
+        }
+        final String targetRootPath = getTargetRootPath();
+        getUploadService().getQuota(targetRootPath, true, new AsyncCallback<CmsQuotaStatus>() {
+
+            public void onFailure(Throwable caught) {
+
+                if (request == m_quotaRequest) {
+                    m_quotaLoading = false;
+                    updateQuotaDisplay();
+                }
+            }
+
+            public void onSuccess(CmsQuotaStatus status) {
+
+                if ((request == m_quotaRequest)
+                    && !m_canceled
+                    && (m_progressInfo == null)
+                    && targetRootPath.equals(getTargetRootPath())) {
+                    m_quotaLoading = false;
+                    m_quotaStatus = status;
+                    updateQuotaDisplay();
+                }
+            }
+        });
+    }
+
+    /**
+     * Updates the projection immediately when the selection or stored usage changes.<p>
+     */
+    private void updateQuotaDisplay() {
+
+        if (m_progressInfo == null) {
+            m_quotaWarning.setUpload(m_quotaStatus, getSelectedUploadSize(), m_filesToUpload.size());
+            updateOkButton();
+            setContentWrapperHeight();
         }
     }
 }

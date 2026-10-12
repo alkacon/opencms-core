@@ -35,6 +35,8 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
+import org.opencms.gwt.shared.CmsQuotaStatus;
+import org.opencms.gwt.shared.CmsQuotaStatus.State;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -60,6 +62,15 @@ public interface I_CmsGalleryServiceAsync {
      * @param info the gallery upload information, or null if no folder with that path is found
      */
     public void getGalleryActionInfo(String sitePath, AsyncCallback<CmsGalleryActionInfo> info);
+
+    /**
+     * Acknowledges the displayed gallery budget warning in the current session.<p>
+     *
+     * @param rootPath the budget scope root path
+     * @param state the displayed warning state
+     * @param callback the callback
+     */
+    void acknowledgeQuotaWarning(String rootPath, State state, AsyncCallback<Void> callback);
 
     /**
      * Deletes the given resource.<p>
@@ -100,6 +111,14 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getInitialSettings(CmsGalleryConfiguration conf, AsyncCallback<CmsGalleryDataBean> callback);
+
+    /**
+     * Gets the budget warning not yet acknowledged in this session.<p>
+     *
+     * @param referenceRootPath the context resource's VFS root path
+     * @param callback the callback
+     */
+    void getQuotaWarning(String referenceRootPath, AsyncCallback<CmsQuotaStatus> callback);
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>

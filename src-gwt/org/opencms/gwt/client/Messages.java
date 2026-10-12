@@ -37,6 +37,42 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_GALLERY_TITLE_0 = "GUI_QUOTA_GALLERY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_GALLERY_EXCEEDED_0 = "GUI_QUOTA_GALLERY_EXCEEDED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_GALLERY_CONTINUE_0 = "GUI_QUOTA_GALLERY_CONTINUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_WARNING_2 = "GUI_QUOTA_UPLOAD_WARNING_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_ALREADY_FULL_1 = "GUI_QUOTA_UPLOAD_ALREADY_FULL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_SINGLE_2 = "GUI_QUOTA_UPLOAD_SINGLE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_MULTIPLE_2 = "GUI_QUOTA_UPLOAD_MULTIPLE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_FULL_0 = "GUI_QUOTA_UPLOAD_FULL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UPLOAD_BLOCKED_0 = "GUI_QUOTA_UPLOAD_BLOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_WARNING_2 = "GUI_QUOTA_WARNING_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_EXCEEDED_1 = "GUI_QUOTA_EXCEEDED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_LABEL_0 = "GUI_QUOTA_LABEL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */

@@ -202,6 +202,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         final CmsGalleryController controller,
         boolean isFirstTime) {
 
+        m_galleryDialog.setQuotaReferencePath(dialogBean.getReferenceSitePath());
         m_mode = dialogBean.getMode();
         if (isFirstTime) {
             if ((dialogBean.getSitemapSiteSelectorOptions() == null)

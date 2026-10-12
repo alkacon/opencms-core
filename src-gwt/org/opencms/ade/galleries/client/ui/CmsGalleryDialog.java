@@ -43,6 +43,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotificationWidget;
@@ -100,6 +101,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /** The categories tab. */
     private CmsCategoriesTab m_categoriesTab;
+
+    /** Session-scoped budget notice in front of the normal gallery. */
+    private CmsGalleryQuotaNotice m_quotaNotice;
 
     /** The gallery controller. */
     private CmsGalleryController m_controller;
@@ -212,7 +216,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         //        m_showPreview.setVisible(false);
         //        m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
-        initWidget(m_parentPanel);
+        m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, () -> updateSizes());
+        initWidget(m_quotaNotice);
         ensureNotifications();
         m_dndHandler = galleryHandler.getDndHandler();
         m_autoHideParent = galleryHandler.getAutoHideParent();
@@ -682,6 +687,17 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
             m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
         }
+    }
+
+    /**
+     * Sets the gallery context resource used to resolve the enclosing budget scope.<p>
+     *
+     * @param sitePath the context site path, or null for the current site root
+     */
+    public void setQuotaReferencePath(String sitePath) {
+
+        m_quotaNotice.setReferenceRootPath(
+            CmsCoreProvider.get().addSiteRoot((sitePath == null) || sitePath.trim().isEmpty() ? "/" : sitePath));
     }
 
     /**

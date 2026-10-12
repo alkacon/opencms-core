@@ -36,6 +36,45 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_USAGE_TEXT_3 = "GUI_QUOTA_USAGE_TEXT_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UNLIMITED_VALUE_0 = "GUI_QUOTA_UNLIMITED_VALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_CAPACITY_1 = "GUI_QUOTA_CAPACITY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_OCCUPIED_1 = "GUI_QUOTA_OCCUPIED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_FREE_1 = "GUI_QUOTA_FREE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_OVER_1 = "GUI_QUOTA_OVER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_USAGE_3 = "GUI_QUOTA_USAGE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_WARNING_1 = "GUI_QUOTA_WARNING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_EXCEEDED_1 = "GUI_QUOTA_EXCEEDED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UNLIMITED_0 = "GUI_QUOTA_UNLIMITED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UNCONFIGURED_0 = "GUI_QUOTA_UNCONFIGURED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_UNAVAILABLE_0 = "GUI_QUOTA_UNAVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUOTA_USED_2 = "GUI_QUOTA_USED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PAGECOPY_INVALID_PAGE_0 = "ERR_PAGECOPY_INVALID_PAGE_0";
 
     /** Message constant for key in the resource bundle. */

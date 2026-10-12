@@ -198,3 +198,34 @@ div.quickFilterBox {
     margin-top: 4px !important;
     margin-bottom: 3px !important; 
 }
+
+/* The containing CmsPopup provides the standard caption. */
+.quotaNoticeWrapper {
+    position: relative;
+}
+
+.quotaNoticeActive {
+    background-color: #fff;
+    border-radius: value("constants.css.borderRadius");
+}
+
+.quotaNoticeActive > .quotaNoticeContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+}
+
+/* Keeps the acknowledgement button in the white notice body. */
+.quotaNoticeActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Normal document flow keeps the notice only as tall as its message and button. */
+.quotaNoticePanel {
+    padding: 20px;
+    max-height: calc(100vh - 180px);
+    overflow: auto;
+}

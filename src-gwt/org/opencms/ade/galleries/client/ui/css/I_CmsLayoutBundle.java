@@ -157,6 +157,36 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
         /** Access method.<p>
          *
+         * @return the budget notice actions class
+         */
+        String quotaNoticeActions();
+
+        /** Access method.<p>
+         *
+         * @return the active budget notice class, removed when the gallery is shown
+         */
+        String quotaNoticeActive();
+
+        /** Access method.<p>
+         *
+         * @return the gallery content class, hidden only while the budget notice is active
+         */
+        String quotaNoticeContent();
+
+        /** Access method.<p>
+         *
+         * @return the budget notice panel class
+         */
+        String quotaNoticePanel();
+
+        /** Access method.<p>
+         *
+         * @return the budget notice wrapper class
+         */
+        String quotaNoticeWrapper();
+
+        /** Access method.<p>
+         *
          * @return the CSS class name
          */
         String resultTabUpload();

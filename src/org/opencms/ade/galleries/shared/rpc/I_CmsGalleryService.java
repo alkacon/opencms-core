@@ -36,6 +36,8 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
 import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsQuotaStatus;
+import org.opencms.gwt.shared.CmsQuotaStatus.State;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -53,6 +55,14 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
  */
 public interface I_CmsGalleryService extends RemoteService {
+
+    /**
+     * Acknowledges the displayed gallery budget warning in the current session.<p>
+     *
+     * @param rootPath the budget scope root path
+     * @param state the displayed warning state
+     */
+    void acknowledgeQuotaWarning(String rootPath, State state);
 
     /**
      * Deletes the given resource.<p>
@@ -115,6 +125,14 @@ public interface I_CmsGalleryService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsGalleryDataBean getInitialSettings(CmsGalleryConfiguration conf) throws CmsRpcException;
+
+    /**
+     * Gets the budget warning not yet acknowledged in this session.<p>
+     *
+     * @param referenceRootPath the context resource's VFS root path
+     * @return the warning snapshot, or null
+     */
+    CmsQuotaStatus getQuotaWarning(String referenceRootPath);
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>

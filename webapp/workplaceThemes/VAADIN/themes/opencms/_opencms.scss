@@ -74,6 +74,211 @@
 
 @mixin opencms {
 	@include valo;
+
+	// Shared fixed text column for budget and absolute-size indicators, across all cards.
+	.o-size-indicator-horizontal {
+		display: grid;
+		grid-template-columns: 100px minmax(0, 1fr);
+		column-gap: 12px;
+		align-items: center;
+
+		> .v-label {
+			width: 100%;
+			min-width: 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+
+	.o-quota {
+		.v-label {
+			white-space: normal;
+		}
+
+		.v-progressbar {
+			height: 8px;
+			margin-top: 4px;
+		}
+
+		.v-progressbar-wrapper {
+			height: 8px;
+		}
+
+		.v-progressbar-indicator {
+			background-image: none;
+		}
+
+		&.o-quota-normal .v-progressbar-indicator {
+			background-color: #287d3c;
+		}
+
+		&.o-quota-warning .v-progressbar-indicator {
+			background-color: #d87900;
+		}
+
+		&.o-quota-exceeded .v-progressbar-indicator {
+			background-color: #c62828;
+		}
+
+		&.o-quota-warning > .v-label {
+			color: #945100;
+		}
+
+		&.o-quota-exceeded > .v-label {
+			color: #a82020;
+		}
+
+		&.o-quota-capacity {
+			> .v-label {
+				font-weight: 700;
+				color: #222;
+			}
+
+			> .v-progressbar {
+				display: block;
+				height: 14px;
+				margin: 4px 0;
+			}
+
+			.v-progressbar-wrapper {
+				height: 14px;
+				background: #f4f5f6;
+			}
+
+			.v-progressbar-indicator {
+				height: 100%;
+				min-width: 0;
+				border: 0;
+				box-shadow: none;
+			}
+
+			&.o-quota-normal .v-progressbar-indicator,
+			&.o-quota-unlimited .v-progressbar-indicator {
+				background-color: #b7dfbf;
+			}
+
+			&.o-quota-warning .v-progressbar-indicator {
+				background-color: #ffd28a;
+			}
+
+			&.o-quota-exceeded .v-progressbar-indicator {
+				background-color: #f3abab;
+			}
+
+			.o-quota-details {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-between;
+				gap: 2px 12px;
+				color: #666;
+
+				> .v-label {
+					max-width: 100%;
+					overflow-wrap: anywhere;
+				}
+
+				> .o-quota-free {
+					margin-left: auto;
+					text-align: right;
+				}
+			}
+		}
+
+		&.o-size-indicator-horizontal {
+			> .v-label {
+				grid-area: 1 / 1;
+				white-space: nowrap;
+				font-weight: normal;
+			}
+
+			> .v-progressbar {
+				grid-area: 1 / 2;
+				margin: 0;
+				height: 20px;
+			}
+
+			.v-progressbar-wrapper {
+				height: 20px;
+			}
+
+			> .v-label.o-quota-value {
+				grid-area: 1 / 2;
+				z-index: 1;
+				padding: 0 8px;
+				text-align: right;
+				line-height: 20px;
+				color: #222;
+				pointer-events: none;
+			}
+
+			&.o-quota-individual > .v-label.o-quota-value {
+				font-weight: bold;
+			}
+
+			&.o-quota-unconfigured {
+				> .v-label {
+					grid-area: 1 / 2;
+					white-space: normal;
+					overflow-wrap: anywhere;
+				}
+			}
+		}
+
+		&.o-quota-inline {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			min-height: 32px;
+
+			> .v-label, > .v-progressbar {
+				grid-area: 1 / 1;
+			}
+
+			> .v-label {
+				z-index: 1;
+				width: 100%;
+				box-sizing: border-box;
+				padding: 6px 10px;
+				text-align: left;
+				line-height: 20px;
+				color: #000;
+				white-space: normal;
+				overflow-wrap: anywhere;
+			}
+
+			> .v-progressbar {
+				height: 100%;
+				min-height: 32px;
+				margin: 0;
+			}
+
+			.v-progressbar-wrapper {
+				height: 100%;
+				min-height: 32px;
+				background: #f4f5f6;
+			}
+
+			.v-progressbar-indicator {
+				height: 100%;
+				min-width: 0;
+				border: 0;
+				box-shadow: none;
+			}
+
+			&.o-quota-normal .v-progressbar-indicator {
+				background-color: #b7dfbf;
+			}
+
+			&.o-quota-warning .v-progressbar-indicator {
+				background-color: #ffd28a;
+			}
+
+			&.o-quota-exceeded .v-progressbar-indicator {
+				background-color: #f3abab;
+			}
+		}
+	}
+
   	.o-info-dialog-small{
 		width:270px !important;
 	}

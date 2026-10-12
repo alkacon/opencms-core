@@ -66,6 +66,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.quota.CmsFolderSizeTracker;
+import org.opencms.file.quota.CmsQuotaManager;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
@@ -2852,6 +2853,12 @@ public final class OpenCmsCore {
             } catch (CmsException e) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
             }
+        }
+
+        try {
+            CmsQuotaManager.get().initialize(m_configAdminCms);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         try {

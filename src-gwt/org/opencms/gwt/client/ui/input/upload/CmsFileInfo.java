@@ -75,13 +75,10 @@ public class CmsFileInfo extends JavaScriptObject {
      *
      * @return the file size
      */
-    public final native int getFileSize() /*-{
-        if (typeof this.size === 'undefined') {
-            return this.fileSize;
-        } else {
-            return this.size;
-        }
-    }-*/;
+    public final long getFileSize() {
+
+        return (long)getNativeFileSize();
+    }
 
     /**
      * Returns the suffix of the file name with the dot at the beginning e.g. <code>".zip"</code>.<p>
@@ -126,4 +123,17 @@ public class CmsFileInfo extends JavaScriptObject {
     public final native void setOverrideFileName(String overrideFileName) /*-{
                                                                           this.overrideFileName = overrideFileName;
                                                                           }-*/;
+
+    /**
+     * Gets the file size reported by the browser without narrowing it to an integer.<p>
+     *
+     * @return the browser's numeric file size, without narrowing it to a 32-bit integer
+     */
+    private final native double getNativeFileSize() /*-{
+        if (typeof this.size === 'undefined') {
+            return this.fileSize;
+        } else {
+            return this.size;
+        }
+    }-*/;
 }

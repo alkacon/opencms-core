@@ -29,6 +29,7 @@
             <resource uri="/system/config/page.dtd" />
             <resource uri="/system/config/decoration/" />
             <resource uri="/system/config/showversion" />
+            <resource uri="/system/config/quotas.properties" />
             <resource uri="/system/config/templatecontexts.json" />
             <resource uri="/system/config/notification/notification" />
             <resource uri="/system/config/notification/publish-notification" />
@@ -405,6 +406,44 @@
             </properties>
             <relations />
             <accesscontrol />
+        </file>
+        <file>
+            <source>system/config/quotas.properties</source>
+            <destination>system/config/quotas.properties</destination>
+            <type>plain</type>
+            <uuidstructure>64a77dc3-c61f-11f1-9224-0242ac11002b</uuidstructure>
+            <uuidresource>64a77dc4-c61f-11f1-9224-0242ac11002b</uuidresource>
+            <datecreated>Mon, 12 Oct 2026 12:00:00 GMT</datecreated>
+            <flags>0</flags>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <value><![CDATA[System-wide storage budget]]></value>
+                </property>
+                <property>
+                    <name>content-encoding</name>
+                    <value><![CDATA[UTF-8]]></value>
+                </property>
+            </properties>
+            <relations />
+            <accesscontrol>
+                <accessentry>
+                    <uuidprincipal>ALL_OTHERS</uuidprincipal>
+                    <flags>132</flags>
+                    <permissionset>
+                        <allowed>0</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+                <accessentry>
+                    <uuidprincipal>ROLE.ROOT_ADMIN</uuidprincipal>
+                    <flags>516</flags>
+                    <permissionset>
+                        <allowed>31</allowed>
+                        <denied>0</denied>
+                    </permissionset>
+                </accessentry>
+            </accesscontrol>
         </file>
         <file>
             <source>system/config/showversion</source>

@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReference;
 import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceInstance;
 import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
@@ -40,10 +41,12 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -385,6 +388,43 @@ public class CmsADEConfigCacheState {
     public SetMultimap<String, String> getFolderTypes() {
 
         return Multimaps.unmodifiableSetMultimap(m_folderTypes);
+    }
+
+    /**
+     * Reads attributes defined for each requested website or subsite, including its master configurations and connectors.<p>
+     *
+     * Attributes from parent websites or subsites and module configurations are not included.<p>
+     *
+     * @param paths the website and subsite root paths
+     * @param extraInfo the connector snapshots, in ascending priority order
+     *
+     * @return local attribute maps, including empty maps for websites or subsites without settings
+     */
+    public Map<String, Map<String, AttributeValue>> getLocalAttributesByPath(
+        Collection<String> paths,
+        List<I_CmsSitemapExtraInfo> extraInfo) {
+
+        Map<String, Map<String, AttributeValue>> result = new HashMap<>();
+        for (String path : paths) {
+            String normalizedPath = CmsFileUtil.addTrailingSeparator(path);
+            Map<String, AttributeValue> attributes = new HashMap<>();
+            CmsADEConfigDataInternal config = m_siteConfigurationsByPath.get(normalizedPath);
+            if (config != null) {
+                List<ConfigReferenceInstance> sequence = new ArrayList<>();
+                fillMasterConfigurations(sequence, new ConfigReferenceInstance(config), new HashSet<>());
+                for (ConfigReferenceInstance reference : sequence) {
+                    attributes.putAll(reference.getConfig().getAttributes());
+                }
+            }
+            for (I_CmsSitemapExtraInfo info : extraInfo) {
+                Map<String, AttributeValue> injected = info.getAttributes(normalizedPath);
+                if (injected != null) {
+                    attributes.putAll(injected);
+                }
+            }
+            result.put(normalizedPath, Collections.unmodifiableMap(attributes));
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     public Set<String> getParentFolderTypes(String rootPath) {

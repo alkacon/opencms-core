@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.shared.rpc;
 
+import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 
@@ -68,6 +69,15 @@ public interface I_CmsUploadServiceAsync {
         String targetFolder,
         boolean isRootPath,
         AsyncCallback<CmsUploadFileBean> callback);
+
+    /**
+     * Reads the storage budget for the upload folder.<p>
+     *
+     * @param targetFolder the upload folder
+     * @param isRootPath whether the path includes the site root
+     * @param callback the asynchronous callback
+     */
+    void getQuota(String targetFolder, boolean isRootPath, AsyncCallback<CmsQuotaStatus> callback);
 
     /**
      * Returns the upload progress information.<p>

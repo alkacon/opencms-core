@@ -715,6 +715,16 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /**
+     * Returns whether this popup has a close button.<p>
+     *
+     * @return true if a close button is present
+     */
+    public boolean hasDialogClose() {
+
+        return m_close != null;
+    }
+
+    /**
      * @see com.google.gwt.user.client.ui.PopupPanel#hide()
      */
     @Override
@@ -851,6 +861,19 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
         m_buttonPanel.remove(button);
         if (m_buttonPanel.getWidgetCount() == 0) {
             m_buttonPanel.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideButtonPanel());
+        }
+    }
+
+    /**
+     * Removes the close button and its command.<p>
+     */
+    public void removeDialogClose() {
+
+        if (m_close != null) {
+            orphan(m_close);
+            m_close.getElement().removeFromParent();
+            m_close = null;
+            m_closeCommand = null;
         }
     }
 
