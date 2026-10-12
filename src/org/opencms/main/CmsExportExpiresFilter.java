@@ -64,12 +64,46 @@ public class CmsExportExpiresFilter implements Filter {
         }
 
         /**
+         * @see jakarta.servlet.http.HttpServletResponseWrapper#addHeader(java.lang.String, java.lang.String)
+         */
+        @Override
+        public void addHeader(String name, String value) {
+
+            super.addHeader(name, value);
+            if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)) {
+                updateCacheHeaders(value);
+            }
+        }
+
+        /**
          * @see jakarta.servlet.ServletResponseWrapper#setContentType(java.lang.String)
          */
         @Override
         public void setContentType(String type) {
 
             super.setContentType(type);
+            updateCacheHeaders(type);
+        }
+
+        /**
+         * @see jakarta.servlet.http.HttpServletResponseWrapper#setHeader(java.lang.String, java.lang.String)
+         */
+        @Override
+        public void setHeader(String name, String value) {
+
+            super.setHeader(name, value);
+            if (HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)) {
+                updateCacheHeaders(value);
+            }
+        }
+
+        /**
+         * Updates the caching headers for each non-null content type assignment.
+         *
+         * @param type the content type
+         */
+        private void updateCacheHeaders(String type) {
+
             Duration day = Duration.of(1, ChronoUnit.DAYS);
             Duration year = Duration.of(365, ChronoUnit.DAYS);
             Duration duration = null;
