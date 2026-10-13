@@ -61,7 +61,7 @@ public class TestCmsQuotaIndicator {
         assertEquals("Size: 100 MB", ((Label)indicator.getComponent(0)).getValue());
         CssLayout details = (CssLayout)indicator.getComponent(2);
         assertTrue(details.isVisible());
-        assertEquals("25 MB used", ((Label)details.getComponent(0)).getValue());
+        assertEquals("25 MB used (25 %)", ((Label)details.getComponent(0)).getValue());
         assertEquals("75 MB free", ((Label)details.getComponent(1)).getValue());
         assertEquals(null, ((ProgressBar)indicator.getComponent(1)).getDescription());
         indicator.setStatus(new CmsQuotaStatus("/a/", 100 * mb, 100 * mb, 100 * mb, State.EXCEEDED));

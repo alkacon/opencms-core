@@ -250,10 +250,10 @@ public class CmsQuotaIndicator extends CssLayout {
             text = m_capacityLabel == null
             ? messages.key(Messages.GUI_QUOTA_CAPACITY_1, capacity)
             : m_capacityLabel + ": " + capacity;
-            m_used.setValue(
-                m_usedTextPattern == null
-                ? messages.key(Messages.GUI_QUOTA_OCCUPIED_1, CmsSizeFormatter.format(status.getUsedBytes(), m_locale))
-                : MessageFormat.format(m_usedTextPattern, CmsSizeFormatter.format(status.getUsedBytes(), m_locale)));
+            String usedText = m_usedTextPattern == null
+            ? messages.key(Messages.GUI_QUOTA_OCCUPIED_1, CmsSizeFormatter.format(status.getUsedBytes(), m_locale))
+            : MessageFormat.format(m_usedTextPattern, CmsSizeFormatter.format(status.getUsedBytes(), m_locale));
+            m_used.setValue(limited ? usedText + " (" + formatPercentage(status) + " %)" : usedText);
             if (unlimited) {
                 m_bar.setValue(1f);
                 m_free.setValue("");
@@ -318,7 +318,7 @@ public class CmsQuotaIndicator extends CssLayout {
     }
 
     /**
-     * Sets the localized text below the bar for the used capacity.<p>
+     * Sets the localized text below the bar for the used capacity. Finite budgets also show utilization in parentheses.<p>
      *
      * @param pattern a message pattern with {0} for the formatted size, or null for the standard text
      */
