@@ -207,7 +207,7 @@ public class CmsJspTagBundle extends BundleTag {
     /**
      * Internal action method.<p>
      *
-     * @return EVAL_BODY_BUFFERED
+     * @return EVAL_BODY_INCLUDE
      * @see jakarta.servlet.jsp.tagext.Tag#doStartTag()
      */
     @Override
@@ -215,7 +215,7 @@ public class CmsJspTagBundle extends BundleTag {
 
         evaluateExpressions();
         m_locCtxt = getLocalizationContext(pageContext, basename);
-        return EVAL_BODY_BUFFERED;
+        return EVAL_BODY_INCLUDE;
     }
 
     /**
