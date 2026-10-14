@@ -1774,6 +1774,9 @@ tasks.withType(Test).configureEach {
 
 def coreTestConfig = {
     useJUnitPlatform()
+    if (project.hasProperty('test.forkEvery')) {
+        forkEvery = project.property('test.forkEvery').toString().toLong()
+    }
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
