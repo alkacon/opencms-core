@@ -112,7 +112,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
     private static final Log LOG = CmsLog.getLog(A_CmsStaticExportHandler.class);
 
     /** Indicates if this content handler is busy. */
-    protected boolean m_busy;
+    protected volatile boolean m_busy;
 
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()

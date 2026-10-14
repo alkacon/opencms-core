@@ -699,6 +699,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -750,6 +751,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
             cms.unlockResource(resourceName);
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CountingDbStorage.reset();
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
@@ -833,6 +835,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
             cms.unlockResource(resourceName);
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -973,6 +976,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CountingDbStorage.reset();
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
@@ -1047,6 +1051,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1114,6 +1119,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1181,6 +1187,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1248,6 +1255,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1324,6 +1332,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1390,6 +1399,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CountingDbStorage.reset();
 
@@ -1458,6 +1468,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1516,6 +1527,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1584,6 +1596,7 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
 
             OpenCms.getPublishManager().publishResource(cms, resourceName);
             OpenCms.getPublishManager().waitWhileRunning();
+            waitForCleanup();
 
             CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             exportCms.getRequestContext().setCurrentProject(exportCms.readProject("Online"));
@@ -1857,5 +1870,22 @@ public class TestExportStoredBinary extends OpenCmsTestRunner {
     private byte[] readTestImageContent() throws Exception {
 
         return Files.readAllBytes(new File("test/org/opencms/loader/img_01.jpg").toPath());
+    }
+
+    /**
+     * Wait until the static export manager is no longer busy.
+     *
+     * <p>Necessary because export cleanup is not done as part of the publish thread, but asynchronously, so
+     * CmsPublishManager.waitWhileRunning() is not sufficient to ensure that there is no ongoing cleanup.
+     */
+    private void waitForCleanup() {
+
+        while (OpenCms.getStaticExportManager().getHandler().isBusy()) {
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                // ignroe
+            }
+        }
     }
 }
