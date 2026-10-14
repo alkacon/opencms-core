@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 
@@ -72,7 +73,7 @@ public final class CmsPublishEngine {
     private CmsUUID m_adminUserId;
 
     /** The current running publish job. */
-    private CmsPublishThread m_currentPublishThread;
+    private volatile CmsPublishThread m_currentPublishThread;
 
     /** The runtime info factory used during publishing. */
     private final I_CmsDbContextFactory m_dbContextFactory;
@@ -81,7 +82,7 @@ public final class CmsPublishEngine {
     private CmsDriverManager m_driverManager;
 
     /** The engine state. */
-    private CmsPublishEngineState m_engineState;
+    private volatile CmsPublishEngineState m_engineState;
 
     /** The publish listeners. */
     private final CmsPublishListenerCollection m_listeners;
@@ -96,7 +97,7 @@ public final class CmsPublishEngine {
     private int m_publishQueueShutdowntime;
 
     /** Is set during shutdown. */
-    private boolean m_shuttingDown;
+    private volatile boolean m_shuttingDown;
 
     /**
      * Default constructor.<p>
@@ -135,7 +136,11 @@ public final class CmsPublishEngine {
     /**
      * Abandons the given publish thread.<p>
      */
-    public void abandonThread() {
+    public synchronized void abandonThread() {
+
+        if (m_currentPublishThread == null) {
+            return;
+        }
 
         if (!m_currentPublishThread.isAlive()) {
             // thread is dead
@@ -164,15 +169,12 @@ public final class CmsPublishEngine {
      */
     public synchronized void checkCurrentPublishJobThread() {
 
-        // give the finishing publish thread enough time to clean up
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            // ignore
-        }
+        // Wake waiters after any queue/thread transition made by this method. They can
+        // only check the state after this synchronized method releases the monitor.
+        notifyAll();
 
         // create a publish thread only if engine is started
-        if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
+        if (m_shuttingDown || (m_engineState != CmsPublishEngineState.ENGINE_STARTED)) {
             return;
         }
 
@@ -250,8 +252,14 @@ public final class CmsPublishEngine {
             m_listeners.fireEnqueued(new CmsPublishJobBase(publishJob));
         } catch (Throwable t) {
             // we really really need to catch everything here, or else the queue status is broken
-            if (m_publishQueue.contains(publishJob)) {
-                m_publishQueue.remove(publishJob);
+            try {
+                if (m_publishQueue.contains(publishJob)) {
+                    m_publishQueue.remove(publishJob);
+                }
+            } finally {
+                synchronized (this) {
+                    notifyAll();
+                }
             }
             // throw the exception again
             throw new CmsException(
@@ -274,9 +282,9 @@ public final class CmsPublishEngine {
     public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
 
         // try current running job
-        if ((m_currentPublishThread != null)
-            && m_currentPublishThread.getPublishJob().getPublishHistoryId().equals(publishHistoryId)) {
-            return new CmsPublishJobRunning(m_currentPublishThread.getPublishJob());
+        CmsPublishThread currentThread = m_currentPublishThread;
+        if ((currentThread != null) && currentThread.getPublishJob().getPublishHistoryId().equals(publishHistoryId)) {
+            return new CmsPublishJobRunning(currentThread.getPublishJob());
         }
         // try enqueued jobs
         Iterator<CmsPublishJobEnqueued> itEnqueuedJobs = getPublishQueue().asList().iterator();
@@ -334,6 +342,8 @@ public final class CmsPublishEngine {
 
         // prevent new publish jobs are accepted
         m_shuttingDown = true;
+        // Leave queued jobs for the next startup, and only wait for the active job.
+        stopEngine();
 
         // if a job is currently running,
         // wait the specified amount of time,
@@ -342,13 +352,7 @@ public final class CmsPublishEngine {
 
             // if a shutdown time is defined, wait  if a publish process is running
             if (m_publishQueueShutdowntime > 0) {
-                synchronized (this) {
-                    try {
-                        Thread.sleep(m_publishQueueShutdowntime * 1000);
-                    } catch (InterruptedException exc) {
-                        // ignore
-                    }
-                }
+                waitWhileRunning(TimeUnit.SECONDS.toMillis(m_publishQueueShutdowntime));
             }
 
             if (m_currentPublishThread != null) {
@@ -396,42 +400,49 @@ public final class CmsPublishEngine {
     protected void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsPublishException {
 
-        // abort event should be raised before the job is removed implicitly
-        m_listeners.fireAbort(userId, publishJob);
+        try {
+            // abort event should be raised before the job is removed implicitly
+            m_listeners.fireAbort(userId, publishJob);
 
-        if ((m_currentPublishThread == null)
-            || !publishJob.m_publishJob.equals(m_currentPublishThread.getPublishJob())) {
-            // engine is currently publishing another job or is not publishing
-            if (!m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
-                // job not found
-                throw new CmsPublishException(
-                    Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
+            CmsPublishThread currentThread = m_currentPublishThread;
+            if ((currentThread == null) || !publishJob.m_publishJob.equals(currentThread.getPublishJob())) {
+                // engine is currently publishing another job or is not publishing
+                if (!m_publishQueue.abortPublishJob(publishJob.m_publishJob)) {
+                    // job not found
+                    throw new CmsPublishException(
+                        Messages.get().container(Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
+                }
+            } else if (!m_shuttingDown) {
+                // engine is currently publishing the job to abort
+                currentThread.abort();
+            } else {
+                // aborting the current job during shut down
+                I_CmsReport report = currentThread.getReport();
+                report.println();
+                report.println();
+                report.println(
+                    Messages.get().container(Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
+                    I_CmsReport.FORMAT_ERROR);
+                report.println();
             }
-        } else if (!m_shuttingDown) {
-            // engine is currently publishing the job to abort
-            m_currentPublishThread.abort();
-        } else if (m_shuttingDown && (m_currentPublishThread != null)) {
-            // aborting the current job during shut down
-            I_CmsReport report = m_currentPublishThread.getReport();
-            report.println();
-            report.println();
-            report.println(
-                Messages.get().container(Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
-                I_CmsReport.FORMAT_ERROR);
-            report.println();
-        }
 
-        // unlock all resources
-        if (publishJob.getPublishList() != null) {
-            unlockPublishList(publishJob.m_publishJob);
-        }
-        // keep job if requested
-        if (!removeJob) {
-            // set finish info
-            publishJob.m_publishJob.finish();
-            getPublishHistory().add(publishJob.m_publishJob);
-        } else {
-            getPublishQueue().remove(publishJob.m_publishJob);
+            // unlock all resources
+            if (publishJob.getPublishList() != null) {
+                unlockPublishList(publishJob.m_publishJob);
+            }
+            // keep job if requested
+            if (!removeJob) {
+                // set finish info
+                publishJob.m_publishJob.finish();
+                getPublishHistory().add(publishJob.m_publishJob);
+            } else {
+                getPublishQueue().remove(publishJob.m_publishJob);
+            }
+        } finally {
+            // Removing a queued job must wake waiters even if its cleanup fails.
+            synchronized (this) {
+                notifyAll();
+            }
         }
     }
 
@@ -448,15 +459,16 @@ public final class CmsPublishEngine {
     /**
      * Disables the publish engine, i.e. publish jobs are not accepted.<p>
      */
-    protected void disableEngine() {
+    protected synchronized void disableEngine() {
 
         m_engineState = CmsPublishEngineState.ENGINE_DISABLED;
+        notifyAll();
     }
 
     /**
      * Enables the publish engine, i.e. publish jobs are accepted.<p>
      */
-    protected void enableEngine() {
+    protected synchronized void enableEngine() {
 
         m_engineState = CmsPublishEngineState.ENGINE_STARTED;
         // start publish job if jobs waiting
@@ -582,7 +594,7 @@ public final class CmsPublishEngine {
         m_publishQueueShutdowntime = publishQueueShutdowntime;
 
         // initially the engine is stopped, must be restartet after full system initialization
-        m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
+        stopEngine();
         // read the publish history from the repository
         m_publishHistory.initialize();
         // read the queue from the repository
@@ -596,10 +608,11 @@ public final class CmsPublishEngine {
      *
      * @return the working state
      */
-    protected boolean isRunning() {
+    protected synchronized boolean isRunning() {
 
-        return (((m_engineState == CmsPublishEngineState.ENGINE_STARTED) && !m_publishQueue.isEmpty())
-            || (m_currentPublishThread != null));
+        return ((!m_shuttingDown
+            && (m_engineState == CmsPublishEngineState.ENGINE_STARTED)
+            && !m_publishQueue.isEmpty()) || (m_currentPublishThread != null));
     }
 
     /**
@@ -694,14 +707,16 @@ public final class CmsPublishEngine {
             // log failure, most likely a database problem
             LOG.error(t.getLocalizedMessage(), t);
         }
-        if (Thread.currentThread() == m_currentPublishThread) {
-            // wipe the dead thread, only if this thread has not been abandoned
-            m_currentPublishThread = null;
-        }
         // clear the published resources cache
         OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.PUBLISHED_RESOURCES);
-        // try to start a new publish job
-        checkCurrentPublishJobThread();
+        synchronized (this) {
+            if (Thread.currentThread() == m_currentPublishThread) {
+                // Publish completion only after all listeners, history and cache cleanup.
+                m_currentPublishThread = null;
+            }
+            // Select the next job before waiters can observe the engine as idle.
+            checkCurrentPublishJobThread();
+        }
     }
 
     /**
@@ -767,7 +782,7 @@ public final class CmsPublishEngine {
     /**
      * Starts the publish engine, i.e. publish jobs are accepted and processed.<p>
      */
-    protected void startEngine() {
+    protected synchronized void startEngine() {
 
         if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
             m_engineState = CmsPublishEngineState.ENGINE_STARTED;
@@ -781,9 +796,10 @@ public final class CmsPublishEngine {
     /**
      * Stops the publish engine, i.e. publish jobs are still accepted but not published.<p>
      */
-    protected void stopEngine() {
+    protected synchronized void stopEngine() {
 
         m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
+        notifyAll();
     }
 
     /**
@@ -810,6 +826,34 @@ public final class CmsPublishEngine {
             throw e;
         } finally {
             dbc.clear();
+        }
+    }
+
+    /**
+     * Waits for publishing to become idle, up to the given timeout. Interruptions do not
+     * bypass publish completion, but the interrupt status is restored before returning.<p>
+     *
+     * @param ms the maximum wait in milliseconds; non-positive values do not wait
+     */
+    protected synchronized void waitWhileRunning(long ms) {
+
+        long timeout = TimeUnit.MILLISECONDS.toNanos(ms);
+        long start = System.nanoTime();
+        long remaining = timeout;
+        boolean interrupted = false;
+        try {
+            while (isRunning() && (remaining > 0)) {
+                try {
+                    TimeUnit.NANOSECONDS.timedWait(this, remaining);
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                }
+                remaining = timeout - (System.nanoTime() - start);
+            }
+        } finally {
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

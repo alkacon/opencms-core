@@ -86,9 +86,6 @@ public class CmsPublishManager {
     /** The default shutdown time for the running publish job. */
     public static final int DEFAULT_QUEUE_SHUTDOWNTIME = 1;
 
-    /** Milliseconds in a second. */
-    private static final int MS_ONE_SECOND = 1000;
-
     /** List of providers for special publish history ids that shouldn't be cleaned up. */
     private static CopyOnWriteArrayList<Supplier<List<CmsUUID>>> m_specialHistoryIdProviders = new CopyOnWriteArrayList<>();
 
@@ -279,10 +276,11 @@ public class CmsPublishManager {
      */
     public CmsPublishJobRunning getCurrentPublishJob() {
 
-        if (m_publishEngine.getCurrentPublishJob() == null) {
+        CmsPublishThread currentThread = m_publishEngine.getCurrentPublishJob();
+        if (currentThread == null) {
             return null;
         }
-        return new CmsPublishJobRunning(m_publishEngine.getCurrentPublishJob().getPublishJob());
+        return new CmsPublishJobRunning(currentThread.getPublishJob());
     }
 
     /**
@@ -893,31 +891,15 @@ public class CmsPublishManager {
     }
 
     /**
-     * Waits until no publish jobs remain or the given max milliseconds.<p>
+     * Waits until publishing is idle or the given timeout expires. Queued jobs in a
+     * stopped engine do not keep this method waiting. Interruptions do not bypass
+     * completion, but the interrupt status is restored before returning.<p>
      *
-     * @param ms the max milliseconds to wait
+     * @param ms the max milliseconds to wait; non-positive values do not wait
      */
     public void waitWhileRunning(long ms) {
 
-        int i = 0;
-        // wait until it is done or time is over
-        synchronized (this) {
-            try {
-                Thread.sleep(100); // wait a bit to give the publish engine the chance to actualize the state
-            } catch (InterruptedException e) {
-                // ignore
-                e.printStackTrace();
-            }
-            while (isRunning() && ((MS_ONE_SECOND * i) <= ms)) {
-                try {
-                    Thread.sleep(MS_ONE_SECOND); // wait a second
-                } catch (InterruptedException e) {
-                    // ignore
-                    e.printStackTrace();
-                }
-                i++;
-            }
-        }
+        m_publishEngine.waitWhileRunning(ms);
     }
 
     /**
