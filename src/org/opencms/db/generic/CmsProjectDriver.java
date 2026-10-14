@@ -201,6 +201,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /** The SQL manager. */
     protected CmsSqlManager m_sqlManager;
 
+    /** Last project creation timestamp allocated by this driver, guarded by this instance's monitor. */
+    private long m_lastProjectCreateTime;
+
     /**
      * @see org.opencms.db.I_CmsProjectDriver#cleanupPublishHistory(org.opencms.db.CmsDbContext, org.opencms.db.generic.CmsPublishHistoryCleanupFilter)
      */
@@ -292,18 +295,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt.setString(10, CmsOrganizationalUnit.SEPARATOR + CmsOrganizationalUnit.getParentFqn(projectFqn));
 
             synchronized (this) {
-                long createTime = System.currentTimeMillis();
+                // Keep timestamps unique within this driver for the (OU, name, date created) unique index.
+                long createTime = Math.max(System.currentTimeMillis(), m_lastProjectCreateTime + 1);
+                m_lastProjectCreateTime = createTime;
                 stmt.setLong(8, createTime);
                 stmt.executeUpdate();
-                try {
-                    // this is an ugly hack, but for MySQL (and maybe other DBs as well)
-                    // there is a UNIQUE INDEX constraint on the project name+createTime
-                    // so theoretically if 2 projects with the same name are created very fast, this
-                    // SQL restraint would be violated if we don't wait here
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    // continue
-                }
                 project = new CmsProject(
                     id,
                     projectFqn,
