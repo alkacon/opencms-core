@@ -3669,12 +3669,12 @@ public class OpenCmsTestRunner extends Assertions {
         // exit the shell
         m_shell.exit();
 
-        try {
-            // sleep 0.5 seconds - sometimes other Threads need to finish before the next test case can start
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // ignore
-        }
+        //        try {
+        //            // sleep 0.5 seconds - sometimes other Threads need to finish before the next test case can start
+        //            Thread.sleep(500);
+        //        } catch (InterruptedException e) {
+        //            // ignore
+        //        }
 
         // remove the database
         removeDatabase();
