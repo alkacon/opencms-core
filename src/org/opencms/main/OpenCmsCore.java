@@ -2578,6 +2578,7 @@ public final class OpenCmsCore {
                     // has to be stopped before the security manager, since this thread uses it
                     if (m_threadStore != null) {
                         m_threadStore.shutDown();
+                        m_threadStore.join();
                     }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(
