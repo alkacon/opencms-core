@@ -45,6 +45,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 
@@ -114,11 +117,11 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
-    /** Indicated if a reload is already scheduled. */
-    private boolean m_reloadIsScheduled;
+    /** The scheduled bundle reload task. */
+    private final ScheduledFuture<?> m_reloadTask;
 
-    /** Thread generation counter. */
-    private int m_threadCount;
+    /** Record if updates are needed. */
+    private AtomicBoolean m_updatesNeeded = new AtomicBoolean();
 
     /**
      * Creates a new instance.<p>
@@ -135,6 +138,11 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
             new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});
         // immediately load all bundles for the first time
         reload(true);
+        m_reloadTask = OpenCms.getExecutor().scheduleWithFixedDelay(() -> {
+            if (m_updatesNeeded.getAndSet(false)) {
+                reload(false);
+            }
+        }, 1500, 1500, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -189,16 +197,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     }
 
     /**
-     * Indicates if a reload thread is currently scheduled.
-     *
-     * @return <code>true</code> if a reload is currently scheduled
-     */
-    public boolean isReloadScheduled() {
-
-        return m_reloadIsScheduled;
-    }
-
-    /**
      * Re-initializes the resource bundles.<p>
      *
      * @param isStartup true when this is called during startup
@@ -246,25 +244,15 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     }
 
     /**
-     * Sets the information if a reload thread is currently scheduled.
-     *
-     * @param reloadIsScheduled if <code>true</code> there is a reload currently scheduled
-     */
-    public void setReloadScheduled(boolean reloadIsScheduled) {
-
-        m_reloadIsScheduled = reloadIsScheduled;
-    }
-
-    /**
      * Shuts down the VFS bundle manager.<p>
      *
-     * This will cause the internal reloading Thread not reload in case it is still running.<p>
+     * Cancels future bundle reloads without interrupting a reload already in progress.<p>
      */
     public void shutDown() {
 
         // we don't want to listen to further events
         OpenCms.getEventManager().removeCmsEventListener(this);
-        setReloadScheduled(false);
+        m_reloadTask.cancel(false);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 org.opencms.staticexport.Messages.get().getBundle().key(
@@ -286,8 +274,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
         } else {
             LOG.info(e.getLocalizedMessage(), e);
         }
-        // if an error was logged make sure that the flag to schedule a reload is reset
-        setReloadScheduled(false);
     }
 
     /**
@@ -402,27 +388,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
      */
     private void scheduleReload() {
 
-        if (!isReloadScheduled() && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)) {
-            // only schedule a reload if the system is not going down already
-            m_threadCount++;
-            Thread thread = new Thread("Bundle reload Thread " + m_threadCount) {
-
-                @Override
-                public void run() {
-
-                    setReloadScheduled(true);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                    if (isReloadScheduled()) {
-                        reload(false);
-                    }
-                    setReloadScheduled(false);
-                }
-            };
-            thread.start();
-        }
+        m_updatesNeeded.set(true);
     }
 }
