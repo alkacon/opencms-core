@@ -282,6 +282,9 @@ public class OpenCmsTestRunner extends Assertions {
     /** Name of the temporary tablespace (oracle only). */
     private String m_tempTablespace;
 
+    /** Cached admin CmsObject. */
+    private CmsObject m_cachedCms;
+
     /**
      * Default JUnit constructor.<p>
      */
@@ -2885,11 +2888,7 @@ public class OpenCmsTestRunner extends Assertions {
     protected CmsObject getCmsObject() throws CmsException {
 
         // log in the Admin user and switch to the setup project
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        cms.loginUser("Admin", "admin");
-        // switch to the "Offline" project
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.getRequestContext().setSiteRoot("/sites/default/");
+        CmsObject cms = prepareCmsObject();
 
         // init the storage
         createStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
@@ -4527,6 +4526,25 @@ public class OpenCmsTestRunner extends Assertions {
             parents.put(curRes.getResourceId(), curRes.getRootPath());
         }
         return parents;
+    }
+
+    /**
+     * Initializes/caches an Admin-privilege CmsObject.
+     * @return the CmsObject
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private CmsObject prepareCmsObject() throws CmsException {
+
+        if (m_cachedCms == null) {
+            m_cachedCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+            m_cachedCms.loginUser("Admin", "admin");
+            m_cachedCms.getRequestContext().setSiteRoot("/sites/default/");
+        }
+        CmsObject cms = OpenCms.initCmsObject(m_cachedCms);
+        // Project might have been deleted / recreated since last call
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        return cms;
     }
 
 }
