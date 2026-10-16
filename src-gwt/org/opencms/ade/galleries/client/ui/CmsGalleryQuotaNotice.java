@@ -78,6 +78,12 @@ public class CmsGalleryQuotaNotice extends Composite {
     /** Last displayed snapshot; acknowledge its state, not a newer server state. */
     private CmsQuotaStatus m_status;
 
+    /** Whether the content may be displayed and measured. */
+    private boolean m_ready;
+
+    /** Preview requested while checking or waiting for acknowledgement. */
+    private Command m_pendingPreview;
+
     /** Guards callbacks after closing, reopening or changing context. */
     private int m_request;
 
@@ -109,6 +115,20 @@ public class CmsGalleryQuotaNotice extends Composite {
         root.add(m_notice);
         initWidget(root);
         showPending();
+    }
+
+    /**
+     * Runs a preview action after checking and, if necessary, acknowledging the budget.<p>
+     *
+     * @param action the preview action; a newer request replaces an earlier pending preview
+     */
+    public void runAfterCheck(Command action) {
+
+        if (m_ready && isAttached()) {
+            action.execute();
+        } else {
+            m_pendingPreview = action;
+        }
     }
 
     /**
@@ -175,6 +195,8 @@ public class CmsGalleryQuotaNotice extends Composite {
     protected void onUnload() {
 
         ++m_request;
+        m_ready = false;
+        m_pendingPreview = null;
         restorePopup();
         super.onUnload();
     }
@@ -242,7 +264,12 @@ public class CmsGalleryQuotaNotice extends Composite {
                 configurePopup();
                 m_status = status;
                 m_warning.setGalleryStatus(status);
+                removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticePending());
+                addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticeActive());
                 m_notice.setVisible(true);
+                if (m_popup instanceof CmsGalleryPopup) {
+                    m_popup.center();
+                }
                 m_continue.setEnabled(true);
                 m_continue.setFocus(true);
             }
@@ -299,8 +326,15 @@ public class CmsGalleryQuotaNotice extends Composite {
         restorePopup();
         m_notice.setVisible(false);
         removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticeActive());
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticePending());
         m_content.getElement().removeAttribute("inert");
         m_content.getElement().removeAttribute("aria-hidden");
+        m_ready = true;
+        Command preview = m_pendingPreview;
+        m_pendingPreview = null;
+        if (preview != null) {
+            preview.execute();
+        }
         m_onContinue.execute();
     }
 
@@ -310,8 +344,10 @@ public class CmsGalleryQuotaNotice extends Composite {
     private void showPending() {
 
         m_status = null;
+        m_ready = false;
         m_notice.setVisible(false);
-        addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticeActive());
+        removeStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticeActive());
+        addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().quotaNoticePending());
         m_content.getElement().setAttribute("inert", "");
         m_content.getElement().setAttribute("aria-hidden", "true");
     }

@@ -204,6 +204,11 @@ div.quickFilterBox {
     position: relative;
 }
 
+/* Keep the gallery dimensions while the asynchronous budget check is pending. */
+.quotaNoticePending > .quotaNoticeContent {
+    visibility: hidden;
+}
+
 .quotaNoticeActive {
     background-color: #fff;
     border-radius: value("constants.css.borderRadius");

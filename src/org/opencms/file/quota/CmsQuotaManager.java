@@ -44,6 +44,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -105,21 +108,7 @@ public class CmsQuotaManager {
 
         Map<String, CmsQuotaStatus> result = new LinkedHashMap<>();
         for (CmsQuotaDefinition definition : definitions) {
-            Long quota = definition.getIndividualQuota();
-            if (quota == null) {
-                int nearest = -1;
-                for (CmsQuotaDefinition ancestor : definitions) {
-                    if (definition.getRootPath().startsWith(ancestor.getRootPath())
-                        && (ancestor.getDefaultQuota() != null)
-                        && (ancestor.getRootPath().length() > nearest)) {
-                        quota = ancestor.getDefaultQuota();
-                        nearest = ancestor.getRootPath().length();
-                    }
-                }
-            }
-            if (quota == null) {
-                quota = systemDefaultQuota;
-            }
+            Long quota = resolveQuota(definition, definitions, () -> systemDefaultQuota);
             CmsFolderReportEntry sizes = report.get(definition.getRootPath());
             long used = sizes == null ? -1 : sizes.getTreeSizeExclusive();
             long total = sizes == null ? -1 : sizes.getTreeSize();
@@ -199,6 +188,107 @@ public class CmsQuotaManager {
                     CmsQuotaConfig.parse(individualQuota == null ? null : individualQuota.getValue())));
         }
         return result;
+    }
+
+    /**
+     * Resolves a single finite budget before requesting its consumption.<p>
+     *
+     * @param rootPath the resource's root path
+     * @param definitions the budget scopes
+     * @param systemDefault supplies the system default only when needed
+     * @param skipScope checks whether the scope needs a warning
+     * @param sizes supplies the inclusive and exclusive sizes for the selected scope
+     * @return the status, or null if no consumption is needed
+     */
+    static CmsQuotaStatus getLimitedStatus(
+        String rootPath,
+        Collection<CmsQuotaDefinition> definitions,
+        Supplier<Long> systemDefault,
+        Predicate<String> skipScope,
+        Function<String, CmsFolderReportEntry> sizes) {
+
+        String path = CmsFileUtil.addTrailingSeparator(rootPath);
+        CmsQuotaDefinition selected = null;
+        for (CmsQuotaDefinition definition : definitions) {
+            if (path.startsWith(definition.getRootPath())
+                && ((selected == null) || (definition.getRootPath().length() > selected.getRootPath().length()))) {
+                selected = definition;
+            }
+        }
+        if ((selected == null) || skipScope.test(selected.getRootPath())) {
+            return null;
+        }
+        Long quota = resolveQuota(selected, definitions, systemDefault);
+        if ((quota == null) || (quota.longValue() <= 0)) {
+            return null;
+        }
+        CmsFolderReportEntry report = sizes.apply(selected.getRootPath());
+        long used = report == null ? -1 : report.getTreeSizeExclusive();
+        return new CmsQuotaStatus(
+            selected.getRootPath(),
+            used,
+            report == null ? -1 : report.getTreeSize(),
+            quota.longValue(),
+            used < 0 ? State.UNAVAILABLE : CmsQuotaStatus.getUsageState(used, quota.longValue()),
+            selected.getIndividualQuota() != null);
+    }
+
+    /**
+     * Resolves an individual budget, inherited default or system default.<p>
+     *
+     * @param definition the selected scope
+     * @param definitions all scope definitions
+     * @param systemDefault supplies the system default only if no other setting applies
+     * @return the applicable budget, or null if none is configured
+     */
+    private static Long resolveQuota(
+        CmsQuotaDefinition definition,
+        Collection<CmsQuotaDefinition> definitions,
+        Supplier<Long> systemDefault) {
+
+        Long quota = definition.getIndividualQuota();
+        if (quota == null) {
+            int nearest = -1;
+            for (CmsQuotaDefinition ancestor : definitions) {
+                if (definition.getRootPath().startsWith(ancestor.getRootPath())
+                    && (ancestor.getDefaultQuota() != null)
+                    && (ancestor.getRootPath().length() > nearest)) {
+                    quota = ancestor.getDefaultQuota();
+                    nearest = ancestor.getRootPath().length();
+                }
+            }
+        }
+        return quota == null ? systemDefault.get() : quota;
+    }
+
+    /**
+     * Gets a finite budget's status only if the caller still needs it.<p>
+     *
+     * Scope resolution precedes the caller's check. Configuration and usage changes are therefore
+     * not hidden by a cached decision for a different or newly introduced budget scope.<p>
+     *
+     * @param rootPath the resource's VFS root path
+     * @param skipScope whether the caller already acknowledged the scope's warning
+     * @return the status, or null if no usage check is needed or configuration is unavailable
+     */
+    public CmsQuotaStatus getLimitedStatus(String rootPath, Predicate<String> skipScope) {
+
+        try {
+            Collection<CmsQuotaDefinition> definitions = getDefinitions(
+                OpenCms.getADEManager().getLocalSitemapAttributes(false),
+                OpenCms.getSiteManager().getSiteRoots());
+            return getLimitedStatus(
+                rootPath,
+                definitions,
+                () -> m_cms == null ? CmsQuotaDefinition.UNAVAILABLE : CmsQuotaConfig.readSystemDefault(m_cms),
+                skipScope,
+                scope -> OpenCms.getFolderSizeTracker(false).getFolderReport(
+                    definitions.stream().map(CmsQuotaDefinition::getRootPath).filter(
+                        path -> path.startsWith(scope)).collect(Collectors.toList())).get(scope));
+        } catch (RuntimeException e) {
+            LOG.error("Could not determine storage quota", e);
+            return null;
+        }
     }
 
     /**

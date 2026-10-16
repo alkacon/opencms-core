@@ -27,8 +27,10 @@
 
 package org.opencms.ade.galleries;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsQuotaStatus.State;
@@ -39,6 +41,23 @@ import org.junit.jupiter.api.Test;
  * Red-only gallery warnings, session and budget scope isolation, and explicit acknowledgement.<p>
  */
 public class TestCmsGalleryQuotaWarnings {
+
+    @Test
+    public void testEarlyAcknowledgementCheckIsScopeAndSessionSpecific() {
+
+        CmsGalleryQuotaWarnings warnings = new CmsGalleryQuotaWarnings();
+        CmsQuotaStatus red = status("/sites/a/", State.EXCEEDED);
+        assertFalse(warnings.isAcknowledged(red.getRootPath()));
+        warnings.getWarning(red);
+        assertFalse(warnings.isAcknowledged(red.getRootPath()));
+        warnings.acknowledge(red.getRootPath(), State.WARNING);
+        assertFalse(warnings.isAcknowledged(red.getRootPath()));
+        warnings.acknowledge(red.getRootPath(), State.EXCEEDED);
+        assertTrue(warnings.isAcknowledged(red.getRootPath()));
+        assertFalse(warnings.isAcknowledged("/sites/a/sub/"));
+        assertFalse(warnings.isAcknowledged("/sites/b/"));
+        assertFalse(new CmsGalleryQuotaWarnings().isAcknowledged(red.getRootPath()));
+    }
 
     @Test
     public void testOnlyOfferedWarningCanBeAcknowledged() {

@@ -216,7 +216,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         //        m_showPreview.setVisible(false);
         //        m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
-        m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, () -> updateSizes());
+        m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, () -> {
+            updateSizes();
+            if (m_galleryHandler instanceof CmsGalleryPopup) {
+                ((CmsGalleryPopup)m_galleryHandler).center();
+            }
+        });
         initWidget(m_quotaNotice);
         ensureNotifications();
         m_dndHandler = galleryHandler.getDndHandler();
@@ -584,6 +589,16 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
             }
         });
 
+    }
+
+    /**
+     * Defers a preview until the gallery's budget check and acknowledgement are complete.<p>
+     *
+     * @param action the preview action
+     */
+    public void runAfterQuotaCheck(Command action) {
+
+        m_quotaNotice.runAfterCheck(action);
     }
 
     /**

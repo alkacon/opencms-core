@@ -97,4 +97,15 @@ public class CmsGalleryQuotaWarnings implements Serializable {
         m_offered.merge(rootPath, Integer.valueOf(level), Math::max);
         return status;
     }
+
+    /**
+     * Checks acknowledgement before consumption needs to be determined.<p>
+     *
+     * @param rootPath the resolved budget scope's root path
+     * @return true if the red warning for this exact scope was acknowledged
+     */
+    public synchronized boolean isAcknowledged(String rootPath) {
+
+        return m_acknowledged.getOrDefault(rootPath, Integer.valueOf(0)).intValue() >= getLevel(State.EXCEEDED);
+    }
 }

@@ -29,6 +29,7 @@ package org.opencms.file.quota;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.opencms.gwt.shared.CmsQuotaStatus;
@@ -125,6 +126,83 @@ public class TestCmsQuotaManager {
                 new CmsQuotaDefinition("/a/b/c", null, null)),
             Collections.singletonMap("/a/b/c/", new CmsFolderReportEntry(10, 10)));
         assertEquals(State.UNAVAILABLE, result.get("/a/b/c/").getState());
+    }
+
+    @Test
+    public void testLimitedStatusResolvesExactScopeAndInheritedBudget() {
+
+        java.util.List<CmsQuotaDefinition> definitions = Arrays.asList(
+            new CmsQuotaDefinition("/sites/a/", 200L, 100L),
+            new CmsQuotaDefinition("/sites/a/sub/", null, null),
+            new CmsQuotaDefinition("/sites/other/", null, 1000L));
+        CmsQuotaStatus result = CmsQuotaManager.getLimitedStatus("/sites/a/sub/ordinary/image.jpg", definitions, () -> {
+            throw new AssertionError("An inherited default takes precedence");
+        }, scope -> scope.equals("/sites/a/"), scope -> {
+            assertEquals("/sites/a/sub/", scope);
+            return new CmsFolderReportEntry(400, 250);
+        });
+        assertEquals("/sites/a/sub/", result.getRootPath());
+        assertEquals(200, result.getQuotaBytes());
+        assertEquals(250, result.getUsedBytes());
+        assertEquals(State.EXCEEDED, result.getState());
+        assertFalse(result.isIndividualQuota());
+        result = CmsQuotaManager.getLimitedStatus(
+            "/sites/a/ordinary/image.jpg",
+            definitions,
+            () -> 900L,
+            scope -> false,
+            scope -> new CmsFolderReportEntry(400, 90));
+        assertEquals(100, result.getQuotaBytes());
+        assertEquals(State.WARNING, result.getState());
+        assertTrue(result.isIndividualQuota());
+        result = CmsQuotaManager.getLimitedStatus(
+            "/sites/b/image.jpg",
+            Collections.singletonList(new CmsQuotaDefinition("/sites/b/", null, null)),
+            () -> 100L,
+            scope -> false,
+            scope -> new CmsFolderReportEntry(25, 25));
+        assertEquals(State.NORMAL, result.getState());
+        assertEquals(100, result.getQuotaBytes());
+    }
+
+    @Test
+    public void testLimitedStatusSkipsConsumptionAndUnusedDefaults() {
+
+        for (Long budget : new Long[] {null, CmsQuotaDefinition.UNLIMITED, CmsQuotaDefinition.UNAVAILABLE}) {
+            assertNull(
+                CmsQuotaManager.getLimitedStatus(
+                    "/sites/a/image.jpg",
+                    Collections.singletonList(new CmsQuotaDefinition("/sites/a/", null, budget)),
+                    () -> null,
+                    scope -> false,
+                    scope -> {
+                        throw new AssertionError("No consumption needed for an unlimited or missing budget");
+                    }));
+        }
+        assertNull(
+            CmsQuotaManager.getLimitedStatus(
+                "/sites/a/image.jpg",
+                Collections.singletonList(new CmsQuotaDefinition("/sites/a/", null, null)),
+                () -> {
+                    throw new AssertionError("An acknowledged scope needs no system default");
+                },
+                scope -> true,
+                scope -> {
+                    throw new AssertionError("An acknowledged scope needs no consumption");
+                }));
+        assertNull(
+            CmsQuotaManager.getLimitedStatus(
+                "/sites/unknown/image.jpg",
+                Collections.singletonList(new CmsQuotaDefinition("/sites/a/", null, 100L)),
+                () -> {
+                    throw new AssertionError("No known scope");
+                },
+                scope -> {
+                    throw new AssertionError("No known scope");
+                },
+                scope -> {
+                    throw new AssertionError("No known scope");
+                }));
     }
 
     @Test

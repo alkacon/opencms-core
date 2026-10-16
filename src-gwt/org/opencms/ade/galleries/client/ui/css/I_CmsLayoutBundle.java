@@ -181,6 +181,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
 
         /** Access method.<p>
          *
+         * @return the pending budget check class, preserving gallery dimensions
+         */
+        String quotaNoticePending();
+
+        /** Access method.<p>
+         *
          * @return the budget notice wrapper class
          */
         String quotaNoticeWrapper();

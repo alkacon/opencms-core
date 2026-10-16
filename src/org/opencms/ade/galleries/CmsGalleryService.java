@@ -1041,7 +1041,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             cms.getRequestContext().setSiteRoot("");
             // Check the reference resource with the current user's permissions before reading the quota snapshot.
             CmsResource resource = cms.readResource(referenceRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
-            return getQuotaWarnings().getWarning(CmsQuotaManager.get().getStatus(resource.getRootPath()));
+            CmsGalleryQuotaWarnings warnings = getQuotaWarnings();
+            return warnings.getWarning(
+                CmsQuotaManager.get().getLimitedStatus(resource.getRootPath(), warnings::isAcknowledged));
         } catch (CmsException e) {
             return null;
         }
