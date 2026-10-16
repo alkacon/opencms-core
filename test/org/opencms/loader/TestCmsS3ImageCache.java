@@ -59,6 +59,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BooleanSupplier;
 
 import org.junit.jupiter.api.Test;
@@ -74,7 +76,7 @@ public class TestCmsS3ImageCache {
     private static class TestS3Client implements I_CmsS3Client {
 
         /** Stored objects. */
-        private Map<String, byte[]> m_objects = new HashMap<String, byte[]>();
+        private Map<String, byte[]> m_objects = new ConcurrentHashMap<String, byte[]>();
 
         /** Whether bucket access was validated. */
         private boolean m_validated;
@@ -98,13 +100,13 @@ public class TestCmsS3ImageCache {
         private Set<String> m_failedRenewalKeys = new HashSet<String>();
 
         /** Observed multi-object delete batch sizes. */
-        private List<Integer> m_deleteBatchSizes = new ArrayList<Integer>();
+        private List<Integer> m_deleteBatchSizes = new CopyOnWriteArrayList<Integer>();
 
         /** The last prefix passed to the metadata listing. */
         private String m_lastListingPrefix;
 
         /** Stored object timestamps. */
-        private Map<String, Instant> m_lastModified = new HashMap<String, Instant>();
+        private Map<String, Instant> m_lastModified = new ConcurrentHashMap<String, Instant>();
 
         /**
          * @see org.opencms.db.storage.s3.I_CmsS3Client#close()
