@@ -277,7 +277,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
         m_state = readCompleteConfiguration();
         // In debug mode, use a shorter delay to speed up the test cases
-        long delay = DEBUG ? 500 : TASK_DELAY_MILLIS;
+        long delay = DEBUG ? 100 : TASK_DELAY_MILLIS;
         m_taskFuture = OpenCms.getExecutor().scheduleWithFixedDelay(new Runnable() {
 
             public void run() {
