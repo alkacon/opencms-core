@@ -43,7 +43,8 @@
 			<encoding>UTF-8</encoding>
 			<digest-type>scrypt</digest-type>
 			<param name="compatibility.convert.digestencoding">false</param>
-			<param name="scrypt.settings">16384,8,1</param>
+			<!-- Low cost for test fixtures only; production defaults are covered by TestLoginAndPasswordHandler. -->
+			<param name="scrypt.settings">1024,8,1</param>
 		</passwordhandler>
 		<validationhandler class="org.opencms.security.CmsDefaultValidationHandler" />
 		<two-factor-authentication>

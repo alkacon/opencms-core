@@ -398,32 +398,16 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestRunner {
         }
         echo("Test took " + (System.currentTimeMillis() - startTime) + " msec.");
 
-        if ("scrypt".equals(OpenCms.getPasswordHandler().getDigestType())) {
-            // OpenCms configuration tests, SCrypt assumed as configured default
-            String hashed = OpenCms.getPasswordHandler().digest(pwd);
-            String[] parts = hashed.split("\\$");
+        // Verify production defaults independently of the cheaper integration-test configuration.
+        CmsDefaultPasswordHandler defaultHandler = new CmsDefaultPasswordHandler();
+        defaultHandler.initConfiguration();
+        assertScryptParameters(defaultHandler, pwd, 16384);
+        assertScryptParameters(OpenCms.getPasswordHandler(), pwd, 1024);
 
-            if ((parts.length != 5) || !parts[1].equals("s0")) {
-                fail("OpenCms produced an invalid hashed SCrypt value");
-            }
-
-            long params = Long.parseLong(parts[2], 16);
-            byte[] salt = decode(parts[3].toCharArray());
-            byte[] derived = decode(parts[4].toCharArray());
-
-            N = (int)Math.pow(2, (params >> 16) & 0xffff);
-            r = ((int)params >> 8) & 0xff;
-            p = (int)params & 0xff;
-
-            echo("Parsed SCrpyt digest as N:" + N + " r:" + r + " p:" + p + " salt:" + salt + " derived:" + derived);
-
-            assertEquals(16384, N, "Unexpected SCrypt value for N");
-            assertEquals(8, r, "Unexpected SCrypt value for r");
-            assertEquals(1, p, "Unexpected SCrypt value for p");
-
-        } else {
-            fail("Expected SCrypt algorithm not configured as password digester");
-        }
+        // Verification must honor the parameters in an existing hash, not the fixture's lower cost.
+        String productionHash = defaultHandler.digest(pwd);
+        assertTrue(OpenCms.getPasswordHandler().checkPassword(pwd, productionHash, false));
+        assertFalse(OpenCms.getPasswordHandler().checkPassword(pwd + "wrong", productionHash, false));
     }
 
     /**
@@ -587,6 +571,43 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestRunner {
         assertTrue(
             passwordHandler.checkPassword("test2", user.getPassword(), true),
             "test2 user password does not check with fallback to MD5");
+    }
+
+    /**
+     * Checks the algorithm and parameters encoded in a password handler's digest.
+     *
+     * @param handler the handler to check
+     * @param password the password to digest
+     * @param expectedN the expected CPU cost
+     * @throws Exception if digesting fails
+     */
+    private void assertScryptParameters(I_CmsPasswordHandler handler, String password, int expectedN) throws Exception {
+
+        if ("scrypt".equals(handler.getDigestType())) {
+            String hashed = handler.digest(password);
+            String[] parts = hashed.split("\\$");
+
+            if ((parts.length != 5) || !parts[1].equals("s0")) {
+                fail("OpenCms produced an invalid hashed SCrypt value");
+            }
+
+            long params = Long.parseLong(parts[2], 16);
+            byte[] salt = decode(parts[3].toCharArray());
+            byte[] derived = decode(parts[4].toCharArray());
+
+            int N = (int)Math.pow(2, (params >> 16) & 0xffff);
+            int r = ((int)params >> 8) & 0xff;
+            int p = (int)params & 0xff;
+
+            echo("Parsed SCrpyt digest as N:" + N + " r:" + r + " p:" + p + " salt:" + salt + " derived:" + derived);
+
+            assertEquals(expectedN, N, "Unexpected SCrypt value for N");
+            assertEquals(8, r, "Unexpected SCrypt value for r");
+            assertEquals(1, p, "Unexpected SCrypt value for p");
+
+        } else {
+            fail("Expected SCrypt algorithm not configured as password digester");
+        }
     }
 
 }
