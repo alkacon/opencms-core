@@ -2521,23 +2521,28 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public synchronized void shutDown() {
 
-        int count = 0;
-        // if the handler is still running, we must wait up to 30 seconds until it is finished
-        while ((count < HANDLER_FINISH_TIME) && m_handler.isBusy()) {
-            count++;
+        long start = System.nanoTime();
+        int lastLoggedSecond = -1;
+        // Poll every 100 ms, but log progress per second.
+        while (m_handler.isBusy()) {
+            int secondsWaited = (int)((System.nanoTime() - start) / 1_000_000_000L);
+            if (secondsWaited >= HANDLER_FINISH_TIME) {
+                break;
+            }
             try {
-                if (CmsLog.INIT.isInfoEnabled()) {
+                if ((secondsWaited > lastLoggedSecond) && CmsLog.INIT.isInfoEnabled()) {
+                    lastLoggedSecond = secondsWaited;
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(
                             Messages.INIT_STATIC_EXPORT_SHUTDOWN_3,
                             m_handler.getClass().getName(),
-                            String.valueOf(count),
+                            String.valueOf(secondsWaited + 1),
                             String.valueOf(HANDLER_FINISH_TIME)));
                 }
-                wait(1000);
+                wait(100);
             } catch (InterruptedException e) {
                 // if interrupted we ignore the handler, this will produce some log messages but should be ok
-                count = HANDLER_FINISH_TIME;
+                break;
             }
         }
 

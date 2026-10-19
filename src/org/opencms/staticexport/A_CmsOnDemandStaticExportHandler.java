@@ -55,23 +55,28 @@ public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExport
     @Override
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
 
-        int count = 0;
-        // if the handler is still running, we must wait up to 30 secounds until it is finished
-        while ((count < CmsStaticExportManager.HANDLER_FINISH_TIME) && isBusy()) {
-            count++;
+        long start = System.nanoTime();
+        int lastLoggedSecond = -1;
+        // Poll every 100 ms, log progress per second.
+        while (isBusy()) {
+            int secondsWaited = (int)((System.nanoTime() - start) / 1_000_000_000L);
+            if (secondsWaited >= CmsStaticExportManager.HANDLER_FINISH_TIME) {
+                break;
+            }
             try {
-                if (LOG.isInfoEnabled()) {
+                if ((secondsWaited > lastLoggedSecond) && LOG.isInfoEnabled()) {
+                    lastLoggedSecond = secondsWaited;
                     LOG.info(
                         Messages.get().getBundle().key(
                             Messages.LOG_WAITING_STATIC_EXPORT_3,
                             getClass().getName(),
-                            Integer.valueOf(count),
+                            Integer.valueOf(secondsWaited + 1),
                             Integer.valueOf(CmsStaticExportManager.HANDLER_FINISH_TIME)));
                 }
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 // if interrupted we ignore the handler, this will produce some log messages but should be ok
-                count = CmsStaticExportManager.HANDLER_FINISH_TIME;
+                break;
             }
         }
 
