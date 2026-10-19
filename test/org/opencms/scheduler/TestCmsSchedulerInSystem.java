@@ -64,31 +64,30 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestRunner {
     @Order(2)
     public void testAccessToCmsObject() throws Exception {
 
-        System.out.println("Trying to run an OpenCms job with access to the CmsObject the OpenCms system scheduler.");
+        try (CmsScheduledJobTestProbe probe = new CmsScheduledJobTestProbe()) {
+            System.out.println(
+                "Trying to run an OpenCms job with access to the CmsObject the OpenCms system scheduler.");
 
-        // generate job description
-        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
-        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
-        jobInfo.setContextInfo(contextInfo);
-        jobInfo.setJobName("Test job for CmsObject access");
-        jobInfo.setClassName(CmsTestScheduledJobWithCmsAccess.class.getName());
-        jobInfo.setReuseInstance(false);
-        jobInfo.setCronExpression("0/2 * * * * ?");
+            // generate job description
+            CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+            probe.attach(jobInfo);
+            CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+            jobInfo.setContextInfo(contextInfo);
+            jobInfo.setJobName("Test job for CmsObject access");
+            jobInfo.setClassName(CmsTestScheduledJobWithCmsAccess.class.getName());
+            jobInfo.setReuseInstance(false);
+            jobInfo.setCronExpression(TestCmsScheduler.CRON_EXPRESSION);
 
-        // add the job to the manager
-        OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
+            // add the job to the manager
+            try {
+                OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            fail("Something caused the waiting test thread to interrupt!");
-        }
-
-        // unschedule the job from the manager (to avoid confilcts with other test cases)
-        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
-
-        if (!CmsTestScheduledJobWithCmsAccess.m_success) {
-            fail("CmsObject in scheduled job was null!");
+                probe.awaitExecutions(1);
+            } finally {
+                if (jobInfo.getId() != null) {
+                    OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
+                }
+            }
         }
     }
 
@@ -101,44 +100,29 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestRunner {
     @Order(1)
     public void testDefaultConfiguration() throws Exception {
 
-        System.out.println("Trying to run a persistent OpenCms job 5x with the OpenCms system scheduler.");
-        CmsTestScheduledJob.m_runCount = 0;
+        try (CmsScheduledJobTestProbe probe = new CmsScheduledJobTestProbe()) {
+            System.out.println("Trying to run a persistent OpenCms job 5x with the OpenCms system scheduler.");
 
-        // generate job description
-        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
-        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
-        jobInfo.setContextInfo(contextInfo);
-        jobInfo.setJobName("Test job");
-        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
-        jobInfo.setReuseInstance(true);
-        jobInfo.setCronExpression("0/2 * * * * ?");
+            // generate job description
+            CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+            probe.attach(jobInfo);
+            CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+            jobInfo.setContextInfo(contextInfo);
+            jobInfo.setJobName("Test job");
+            jobInfo.setClassName(CmsTestScheduledJob.class.getName());
+            jobInfo.setReuseInstance(true);
+            jobInfo.setCronExpression(TestCmsScheduler.CRON_EXPRESSION);
 
-        // add the job to the manager
-        OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
-
-        int seconds = 0;
-        do {
+            // add the job to the manager
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                fail("Something caused the waiting test thread to interrupt!");
+                OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
+
+                probe.awaitExecutions(1, 2, 3, 4, 5);
+            } finally {
+                if (jobInfo.getId() != null) {
+                    OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
+                }
             }
-            seconds++;
-        } while ((seconds < TestCmsScheduler.SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 5));
-
-        // unschedule the job from the manager (to avoid confilcts with other test cases)
-        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
-
-        if (CmsTestScheduledJob.m_runCount == 5) {
-            System.out.println("Test job was correctly run 5 times in OpenCms scheduler.");
-        } else {
-            fail("Test class not run after " + TestCmsScheduler.SECONDS_TO_WAIT + " seconds.");
-        }
-
-        if (CmsTestScheduledJob.m_instanceCountCopy == 5) {
-            System.out.println("Instance counter was correctly incremented 5 times.");
-        } else {
-            fail("Instance counter was not incremented!");
         }
     }
 }

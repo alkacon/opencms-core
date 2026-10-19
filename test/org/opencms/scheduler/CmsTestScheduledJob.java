@@ -36,11 +36,8 @@ import java.util.Map;
  */
 public class CmsTestScheduledJob implements I_CmsScheduledJob {
 
-    /** Indicates if this class was run. */
-    static int m_runCount;
-
-    /** Static copy of the instance run count for easy test access. */
-    static int m_instanceCountCopy;
+    /** Observer captured on the first launch, retained for reused job instances. */
+    private CmsScheduledJobTestProbe m_probe;
 
     /** Instance run count. */
     private int m_instanceRunCount;
@@ -57,11 +54,13 @@ public class CmsTestScheduledJob implements I_CmsScheduledJob {
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
     @Override
-    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
+    public synchronized String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
-        m_runCount++;
+        if (m_probe == null) {
+            m_probe = CmsScheduledJobTestProbe.lookup(parameters);
+        }
         m_instanceRunCount++;
-        m_instanceCountCopy = m_instanceRunCount;
-        return "OpenCms scheduler test job " + m_runCount + " was run (instance count: " + m_instanceRunCount + ").";
+        m_probe.record(m_instanceRunCount, null);
+        return "OpenCms scheduler test job was run (instance count: " + m_instanceRunCount + ").";
     }
 }

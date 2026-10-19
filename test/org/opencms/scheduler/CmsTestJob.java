@@ -27,31 +27,60 @@
 
 package org.opencms.scheduler;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
-/**
- * Class that implements the Job interface.<p>
- */
+/** Job used to exercise concurrent execution and completion in the scheduler thread pool. */
 public class CmsTestJob implements Job {
 
-    /** Current count. */
-    static int m_count;
+    /** Synchronization and observations owned by a single pool test. */
+    static final class Probe {
 
-    /** Currently running instances. */
-    static int m_running;
+        /** The default pool can run ten jobs concurrently. */
+        private final CountDownLatch m_firstBatchStarted = new CountDownLatch(10);
+        private final CountDownLatch m_release = new CountDownLatch(1);
+        private final CountDownLatch m_finished = new CountDownLatch(TestCmsScheduler.THREADS_TO_RUN);
+        private final Queue<String> m_completed = new ConcurrentLinkedQueue<>();
+        private final Queue<String> m_failures = new ConcurrentLinkedQueue<>();
 
-    /** Count of individual thread. */
-    private int m_myCount;
+        /** Called after scheduler shutdown, when no more results can be published. */
+        void assertCompleted(Set<String> expectedJobs) {
 
-    /**
-     * Default constructor.<p>
-     */
-    public CmsTestJob() {
+            assertTrue(m_failures.isEmpty(), "Job failures: " + m_failures);
+            assertEquals(expectedJobs.size(), m_completed.size(), "Each job must complete exactly once");
+            assertEquals(expectedJobs, new HashSet<>(m_completed));
+        }
 
-        CmsTestJob.m_count++;
-        m_myCount = CmsTestJob.m_count;
+        void awaitCompletion() throws InterruptedException {
+
+            assertTrue(m_finished.await(TestCmsScheduler.SECONDS_TO_WAIT, TimeUnit.SECONDS), "Not all jobs completed");
+        }
+
+        void awaitFirstBatch() throws InterruptedException {
+
+            assertTrue(
+                m_firstBatchStarted.await(TestCmsScheduler.SECONDS_TO_WAIT, TimeUnit.SECONDS),
+                "Ten jobs did not start concurrently");
+        }
+
+        void release() {
+
+            m_release.countDown();
+        }
     }
+
+    /** Job-data key for this test's probe. */
+    static final String PROBE_KEY = "testProbe";
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
@@ -59,16 +88,19 @@ public class CmsTestJob implements Job {
     @Override
     public void execute(JobExecutionContext context) {
 
-        System.out.println(
-            getClass().getName() + " " + m_myCount + " is starting (running: " + CmsTestJob.m_running + ").");
-        CmsTestJob.m_running++;
+        Probe probe = (Probe)context.getMergedJobDataMap().get(PROBE_KEY);
+        String jobName = context.getJobDetail().getKey().getName();
+        probe.m_firstBatchStarted.countDown();
         try {
-            Thread.sleep(1000 + (long)(4000.0 * Math.random()));
+            if (!probe.m_release.await(TestCmsScheduler.SECONDS_TO_WAIT, TimeUnit.SECONDS)) {
+                probe.m_failures.add("Timed out waiting for release: " + jobName);
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            probe.m_failures.add("Interrupted while waiting for release: " + jobName);
+            Thread.currentThread().interrupt();
+        } finally {
+            probe.m_completed.add(jobName);
+            probe.m_finished.countDown();
         }
-        CmsTestJob.m_running--;
-        System.out.println(
-            getClass().getName() + " " + m_myCount + " is finished (running: " + CmsTestJob.m_running + ").");
     }
 }

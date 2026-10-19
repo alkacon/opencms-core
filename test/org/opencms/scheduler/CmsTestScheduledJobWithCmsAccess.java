@@ -36,16 +36,8 @@ import java.util.Map;
  */
 public class CmsTestScheduledJobWithCmsAccess implements I_CmsScheduledJob {
 
-    /** Indicates if the run was a success. */
-    static boolean m_success;
-
-    /**
-     * Default constructor.<p>
-     */
-    public CmsTestScheduledJobWithCmsAccess() {
-
-        m_success = false;
-    }
+    /** Observer captured by this job instance. */
+    private CmsScheduledJobTestProbe m_probe;
 
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
@@ -53,10 +45,11 @@ public class CmsTestScheduledJobWithCmsAccess implements I_CmsScheduledJob {
     @Override
     public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
-        if ((cms == null) || (parameters == null)) {
-            throw new RuntimeException("CmsObject in CmsTestScheduledJobWithCmsAccess (or parameter Map) is null!");
+        if (m_probe == null) {
+            m_probe = CmsScheduledJobTestProbe.lookup(parameters);
         }
-        m_success = true;
-        return "success";
+        String failure = ((cms == null) || (parameters == null)) ? "CmsObject or parameter Map is null" : null;
+        m_probe.record(1, failure);
+        return failure == null ? "success" : failure;
     }
 }
