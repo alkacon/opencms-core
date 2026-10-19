@@ -423,9 +423,12 @@ public class TestSolrSearch extends OpenCmsTestRunner {
         echo("Testing searching with limiting to time ranges");
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
-        String query = "?rows=50&q=text:OpenCms";
+        String query = "?rows=50&q=+text:OpenCms";
         CmsSolrResultList results = index.search(getCmsObject(), query);
         int orgCount = results.size();
+
+        // wait until beginning of next second
+        Thread.sleep(Math.max(1, 1000 - (System.currentTimeMillis() % 1000)));
 
         // check min date created
         Date stamp = new Date();
