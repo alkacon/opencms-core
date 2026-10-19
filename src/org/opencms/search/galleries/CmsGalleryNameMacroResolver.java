@@ -33,6 +33,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.i18n.CmsLazyMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.jsp.util.CmsObjectFunctionTransformer;
@@ -142,10 +143,17 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
         if (null == locale) {
             locale = OpenCms.getLocaleManager().getBestAvailableLocaleForXmlContent(cms, content.getFile(), content);
         }
-        CmsMultiMessages message = new CmsMultiMessages(locale);
-        message.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
-        message.addMessages(content.getContentDefinition().getContentHandler().getMessages(locale));
-        setMessages(message);
+        final Locale constLocale = locale;
+        // We use lazy initialization for the messages. In a normal running system, getting the workplace messages isn't actually
+        // that costly, because they're cached. But in test cases, that cache is flushed frequently because of all the imports.
+        // So we only want to do that when actually needed.
+        CmsLazyMessages lazyMessages = new CmsLazyMessages(constLocale, () -> {
+            CmsMultiMessages message = new CmsMultiMessages(constLocale);
+            message.addMessages(OpenCms.getWorkplaceManager().getMessages(constLocale));
+            message.addMessages(content.getContentDefinition().getContentHandler().getMessages(constLocale));
+            return message;
+        });
+        setMessages(lazyMessages);
         m_content = content;
         m_contentLocale = locale;
     }

@@ -368,33 +368,35 @@ public final class CmsResourceBundleLoader {
         try {
 
             String resourceName = localizedName.replace('.', '/') + ".properties";
-            URL url = CmsResourceBundleLoader.class.getClassLoader().getResource(resourceName);
 
             I_CmsResourceBundle additionalBundle = m_permanentCache.get(localizedName);
             if (additionalBundle != null) {
                 result = additionalBundle.getClone();
-            } else if (url != null) {
-                // the resource was found on the file system
-                InputStream is = null;
-                String path = CmsFileUtil.normalizePath(url);
-                File file = new File(path);
-                try {
-                    // try to load the resource bundle from a file, NOT with the resource loader first
-                    // this is important since using #getResourceAsStream() may return cached results,
-                    // for example Tomcat by default does cache all resources loaded by the class loader
-                    // this means a changed resource bundle file is not loaded
-                    is = new FileInputStream(file);
-                } catch (IOException ex) {
-                    // this will happen if the resource is contained for example in a .jar file
-                    is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
-                } catch (SecurityException acex) {
-                    // fixed bug #1550
-                    // this will happen if the resource is contained for example in a .jar file
-                    // and security manager is turned on.
-                    is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
-                }
-                if (is != null) {
-                    result = new CmsPropertyResourceBundle(is);
+            } else {
+                URL url = CmsResourceBundleLoader.class.getClassLoader().getResource(resourceName);
+                if (url != null) {
+                    // the resource was found on the file system
+                    InputStream is = null;
+                    String path = CmsFileUtil.normalizePath(url);
+                    File file = new File(path);
+                    try {
+                        // try to load the resource bundle from a file, NOT with the resource loader first
+                        // this is important since using #getResourceAsStream() may return cached results,
+                        // for example Tomcat by default does cache all resources loaded by the class loader
+                        // this means a changed resource bundle file is not loaded
+                        is = new FileInputStream(file);
+                    } catch (IOException ex) {
+                        // this will happen if the resource is contained for example in a .jar file
+                        is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
+                    } catch (SecurityException acex) {
+                        // fixed bug #1550
+                        // this will happen if the resource is contained for example in a .jar file
+                        // and security manager is turned on.
+                        is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
+                    }
+                    if (is != null) {
+                        result = new CmsPropertyResourceBundle(is);
+                    }
                 }
             }
         } catch (IOException ex) {
