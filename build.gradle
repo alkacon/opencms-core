@@ -1836,6 +1836,9 @@ def coreTestConfig = {
         .orElse(providers.systemProperty('opencms.test.snapshot.disabled'))
         .orElse('false')
         .get()
+    systemProperties['opencms.test.hsqldb.statementCacheSize'] = providers.systemProperty('opencms.test.hsqldb.statementCacheSize')
+        .orElse('256')
+        .get()
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
     systemProperty 'javax.xml.parsers.SAXParserFactory', 'org.apache.xerces.jaxp.SAXParserFactoryImpl'
