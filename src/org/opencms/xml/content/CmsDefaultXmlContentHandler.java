@@ -736,6 +736,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The principal list separator. */
     private static final String PRINCIPAL_LIST_SEPARATOR = ",";
 
+    /** String template group for the simple search setting expansions. */
+    private static final StringTemplateGroup SEARCH_TEMPLATE_GROUP = initSearchTemplateGroup();
+
     /** The title property individual mapping key. */
     private static final String TITLE_PROPERTY_INDIVIDUAL_MAPPING = MAPTO_PROPERTY_INDIVIDUAL
         + CmsPropertyDefinition.PROPERTY_TITLE;
@@ -840,9 +843,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The search settings. */
     protected Map<String, CmsSearchContentConfig> m_searchSettings;
-
-    /** String template group for the simple search setting expansions. */
-    protected StringTemplateGroup m_searchTemplateGroup;
 
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
@@ -999,6 +999,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Initializes the string template group for the simple search setting expansions.
+     *
+     * @return the string template group
+     */
+    private static StringTemplateGroup initSearchTemplateGroup() {
+
+        StringTemplateGroup result = null;
+        try (
+        InputStream stream = CmsDefaultXmlContentHandler.class.getResourceAsStream("simple-searchsetting-configs.st")) {
+            result = CmsStringUtil.readStringTemplateGroup(stream);
+        } catch (IOException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return result;
     }
 
     /**
@@ -2788,7 +2805,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 m_primaryGeomappingField = name;
                 m_searchSettings.put(CmsXmlUtils.removeXpath(name), I_CmsXmlContentValue.CmsSearchContentConfig.FALSE);
             } else {
-                StringTemplate template = m_searchTemplateGroup.getInstanceOf(value);
+                StringTemplate template = SEARCH_TEMPLATE_GROUP.getInstanceOf(value);
                 if ((template != null) && (template.getFormalArgument("name") != null)) {
                     template.setAttribute("name", CmsEncoder.escapeXml(name));
                     String xml = template.toString();
@@ -3104,12 +3121,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_displayTypes = new HashMap<String, DisplayType>();
         m_editorChangeHandlers = new ArrayList<I_CmsXmlContentEditorChangeHandler>();
         m_nestedFormatterElements = new HashSet<String>();
-        try (
-        InputStream stream = CmsDefaultXmlContentHandler.class.getResourceAsStream("simple-searchsetting-configs.st")) {
-            m_searchTemplateGroup = CmsStringUtil.readStringTemplateGroup(stream);
-        } catch (IOException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
     }
 
     /**
