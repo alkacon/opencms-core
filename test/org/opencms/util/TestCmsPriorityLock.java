@@ -113,7 +113,7 @@ public class TestCmsPriorityLock extends OpenCmsTestRunner {
 
                         try {
                             buffer.append((high ? "H" : "L"));
-                            Thread.sleep(500);
+                            Thread.sleep(50);
                         } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
