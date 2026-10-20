@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
 public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
     /** The delay between updates. */
-    public static final int DELAY_MILLIS = 3000;
+    public static final int DELAY_MILLIS = initDelay();
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailNameCache.class);
@@ -88,6 +88,20 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     public CmsDetailNameCache(CmsObject cms) {
 
         m_cms = cms;
+    }
+
+    /**
+     * Initializes the delay based on whether we are in test or production mode.
+     *
+     * @return the delay in milliseconds
+     */
+    private static int initDelay() {
+
+        if ("1".equals(System.getProperty("org.opencms.test"))) {
+            return 200;
+        } else {
+            return 3000;
+        }
     }
 
     /**
