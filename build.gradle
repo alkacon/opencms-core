@@ -1797,6 +1797,9 @@ def coreTestConfig = {
         .get()
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
+    systemProperty 'javax.xml.parsers.SAXParserFactory', 'org.apache.xerces.jaxp.SAXParserFactoryImpl'
+    systemProperty 'org.apache.xerces.xni.parser.XMLParserConfiguration', 'org.apache.xerces.parsers.SecureProcessingConfiguration'
+
 }
 
 def storageBackendTestPatterns = [
