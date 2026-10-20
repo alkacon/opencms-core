@@ -486,7 +486,7 @@ public class TestFormSession extends OpenCmsTestRunner {
     @Test
     public void testQueueWaitTime() throws Exception {
 
-        int waitTime = 500;
+        int waitTime = 100;
         final CmsUgcSessionQueue queue = new CmsUgcSessionQueue(true, waitTime, Integer.MAX_VALUE);
         int numThreads = 10;
         final CountDownLatch countdown = new CountDownLatch(numThreads);
