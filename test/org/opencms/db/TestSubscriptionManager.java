@@ -56,7 +56,7 @@ public class TestSubscriptionManager extends OpenCmsTestRunner {
     private static final long CLOCK_ADVANCE_TIMEOUT_MILLIS = 1000;
 
     /**
-     * 
+     *
      * Makes sure System.currentTimeMillis() advances.
      *
      * @return the current wall-clock time, strictly greater than the time at entry
