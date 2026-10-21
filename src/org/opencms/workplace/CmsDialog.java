@@ -31,11 +31,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
@@ -46,7 +48,12 @@ import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -329,6 +336,81 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Checks whether a close link is a root-relative URI or an HTTP(S) URL with a configured origin.<p>
+     *
+     * @param link the redirect target
+     * @return whether the target is allowed
+     */
+    public static boolean validateCloseLink(String link) {
+
+        List<CmsSiteMatcher> servers = new ArrayList<CmsSiteMatcher>(OpenCms.getSiteManager().getSites().keySet());
+        for (String server : OpenCms.getSiteManager().getWorkplaceServers()) {
+            CmsSiteMatcher matcher = new CmsSiteMatcher(server);
+            servers.add(matcher.forDifferentScheme("http"));
+            servers.add(matcher.forDifferentScheme("https"));
+        }
+        boolean result = isSafeRedirect(link, servers);
+        Object validateOpt = OpenCms.getRuntimeProperty("CmsDialog.validateCloseLink");
+        if ((validateOpt == null) || Boolean.parseBoolean("" + validateOpt)) {
+            if (!result) {
+                LOG.debug("Rejecting close link: " + link + ", servers=" + servers);
+            }
+            return result;
+        } else {
+            if (!result) {
+                LOG.debug("Ignoring rejected close link (validation disabled): " + link + ", servers=" + servers);
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Checks a redirect target against explicit trusted origins.<p>
+     *
+     * @param link the redirect target
+     * @param servers the trusted origins
+     * @return whether the target is allowed
+     */
+    static boolean isSafeRedirect(String link, Collection<CmsSiteMatcher> servers) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link) || (link.indexOf('\\') >= 0)) {
+            return false;
+        }
+        for (int i = 0; i < link.length(); i++) {
+            if (Character.isISOControl(link.charAt(i))) {
+                return false;
+            }
+        }
+        try {
+            URI uri = new URI(link);
+            if (link.startsWith("/")) {
+                return !link.startsWith("//") && (uri.getRawAuthority() == null);
+            }
+            String scheme = uri.getScheme();
+            if ((!("http".equalsIgnoreCase(scheme)) && !("https".equalsIgnoreCase(scheme)))
+                || (uri.getHost() == null)
+                || (uri.getRawUserInfo() != null)) {
+                return false;
+            }
+            int port = uri.getPort();
+            if (port == -1) {
+                port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
+            }
+            for (CmsSiteMatcher server : servers) {
+                // Compare components explicitly: site matchers may also represent wildcard/default sites.
+                if (scheme.equalsIgnoreCase(server.getServerProtocol())
+                    && uri.getHost().equalsIgnoreCase(server.getServerName())
+                    && (port == server.getServerPort())) {
+                    return true;
+                }
+            }
+        } catch (URISyntaxException e) {
+            return false;
+        }
+        return false;
+    }
+
+    /**
      * Used to close the current JSP dialog.<p>
      *
      * This method tries to include the URI stored in the workplace settings.
@@ -364,6 +446,10 @@ public class CmsDialog extends CmsToolDialog {
         } else if (getParamCloseLink() != null) {
             // close link parameter present
             try {
+                if (!CmsDialog.validateCloseLink(getParamCloseLink())) {
+                    openLaunchpad();
+                    return;
+                }
                 if (CmsLinkManager.isWorkplaceLink(getParamCloseLink())) {
                     // in case the close link points to the new workplace, make sure to set the new location on the top frame
                     openWorkplaceLink(getParamCloseLink());
@@ -1938,7 +2024,10 @@ public class CmsDialog extends CmsToolDialog {
         // in case the close link points to the new workplace, make sure to set the new location on the top frame
         JspWriter out = getJsp().getJspContext().getOut();
         try {
-            out.write("<html><head><script >top.location.href=\"" + workplaceLink + "\";</script></head>\n");
+            out.write(
+                "<html><head><script >top.location.href="
+                    + JSONObject.quote(workplaceLink).replace("<", "\\u003c")
+                    + ";</script></head>\n");
             out.write("</html>\n");
         } finally {
             out.close();
