@@ -641,6 +641,10 @@ spotless {
 
 configurations {
 
+    gwtCodeServer {
+        description = 'GWT Super Dev Mode code server runtime; excluded from published GWT API dependencies'
+    }
+
     distribution {
         description = 'libraries included into the opencms distribution'
     }
@@ -1068,6 +1072,43 @@ tasks.register('opencmsFonts', JavaExec) {
 Properties gwtProps = new Properties()
 gwtProps.load(new FileInputStream("${projectDir}/src-gwt/gwt-modules.properties"))
 project.ext.gwtModuleNames = gwtProps['gwtmodules']
+
+// Run GWT Super Dev Mode against one of the project's modules.
+tasks.register('gwtSuperDev', JavaExec) {
+    group = 'GWT'
+    description = 'Starts the GWT Super Dev Mode code server (select module with -PgwtModule=...).'
+    dependsOn gwtClasses
+    mainClass = 'com.google.gwt.dev.codeserver.CodeServer'
+    classpath {
+        [
+            sourceSets.main.java.srcDirs,
+            sourceSets.gwt.java.srcDirs,
+            sourceSets.modules.java.srcDirs,
+            sourceSets.gwt.output.resourcesDir,
+            sourceSets.gwt.java.classesDirectory,
+            sourceSets.gwt.compileClasspath,
+            configurations.gwtCodeServer,
+        ]
+    }
+    doFirst {
+        def module = project.findProperty('gwtModule') ?: 'org.opencms.ade.OpenCms'
+        if (!gwtModuleNames.split(',').contains(module)) {
+            throw new GradleException("Unknown GWT module '${module}'. Available modules: ${gwtModuleNames}")
+        }
+        def workDir = layout.buildDirectory.dir("gwt-superdev-work/${module}").get().asFile
+        workDir.mkdirs()
+        args = [
+            '-port', project.findProperty('gwtPort') ?: '9876',
+            '-bindAddress', project.findProperty('gwtBindAddress') ?: '127.0.0.1',
+            '-workDir', workDir.absolutePath,
+            '-logLevel', 'INFO',
+            '-style', 'PRETTY',
+            '-setProperty', 'locale=en',
+            module
+        ]
+    }
+    maxHeapSize = max_heap_size
+}
 
 tasks.register('resourcesJar', Jar) {
     dependsOn workplaceTheme, opencmsFonts
