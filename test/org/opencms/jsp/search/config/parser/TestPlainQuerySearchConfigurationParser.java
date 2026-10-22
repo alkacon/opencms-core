@@ -49,7 +49,7 @@ public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        setupOpenCms(testInfo, null, "/", "/../org/opencms/search/solr");
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);

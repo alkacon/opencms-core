@@ -52,7 +52,7 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/");
+        setupOpenCms(testInfo);
     }
 
     /**

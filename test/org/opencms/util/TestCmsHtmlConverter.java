@@ -59,7 +59,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/");
+        setupOpenCms(testInfo);
     }
 
     /**

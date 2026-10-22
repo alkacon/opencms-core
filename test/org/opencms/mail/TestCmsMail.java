@@ -68,7 +68,7 @@ public class TestCmsMail extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/");
+        setupOpenCms(testInfo);
         // start SMTP server
         m_server = SimpleSmtpServer.start(SMTP_PORT);
     }

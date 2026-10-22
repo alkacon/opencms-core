@@ -88,7 +88,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        setupOpenCms(testInfo, null, "/", "/../org/opencms/search/solr");
         // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
