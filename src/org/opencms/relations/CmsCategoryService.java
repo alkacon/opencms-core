@@ -144,6 +144,22 @@ public class CmsCategoryService {
     }
 
     /**
+     * Checks that a complete move preserves all currently valid assigned category paths.
+     * This method is read-only and must be called before moving any resource.
+     *
+     * @param cms the CMS context, with an empty site root
+     * @param source the root of the move
+     * @param destination the destination root path
+     * @param resources all resources being moved, including the root and deleted descendants
+     * @throws CmsException if a category would be lost or validation fails
+     */
+    public void checkMove(CmsObject cms, CmsResource source, String destination, List<CmsResource> resources)
+    throws CmsException {
+
+        new CmsCategoryMoveCheck(cms, this, source, destination).check(resources);
+    }
+
+    /**
      * Removes the given resource from all categories.<p>
      *
      * @param cms the cms context
@@ -328,22 +344,7 @@ public class CmsCategoryService {
             ret.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
             return ret;
         }
-        String path = referencePath;
-        if (!CmsResource.isFolder(path)) {
-            path = CmsResource.getParentFolder(path);
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-            path = "/";
-        }
         String categoryBase = getRepositoryBaseFolderName(cms);
-        do {
-            String repositoryPath = internalCategoryRootPath(path, categoryBase);
-            if (cms.existsResource(repositoryPath)) {
-                ret.add(repositoryPath);
-            }
-            path = CmsResource.getParentFolder(path);
-        } while (path != null);
-
         String additionalRepo = null;
 
         try {
@@ -359,9 +360,7 @@ public class CmsCategoryService {
                 if (!additionalRepo.endsWith(categoryBase)) {
                     additionalRepo = CmsStringUtil.joinPaths(additionalRepo, categoryBase);
                 }
-                if (cms.existsResource(additionalRepo)) {
-                    ret.add(additionalRepo);
-                } else {
+                if (!cms.existsResource(additionalRepo)) {
                     LOG.warn("Additional category repository " + additionalRepo + " not found.");
                 }
             }
@@ -371,9 +370,11 @@ public class CmsCategoryService {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        ret.add(CmsCategoryService.CENTRALIZED_REPOSITORY);
-        // the order is important in case of conflicts
-        Collections.reverse(ret);
+        for (String repository : getCategoryRepositoryCandidates(referencePath, categoryBase, additionalRepo)) {
+            if (repository.equals(CENTRALIZED_REPOSITORY) || cms.existsResource(repository)) {
+                ret.add(repository);
+            }
+        }
         return ret;
     }
 
@@ -798,6 +799,42 @@ public class CmsCategoryService {
     public void repairRelations(CmsObject cms, String resourceName) throws CmsException {
 
         repairRelations(cms, cms.readResource(resourceName));
+    }
+
+    /**
+     * Computes repository candidates in resolution order, independently of VFS existence.
+     * Shared by normal category lookup and the read-only view of a prospective move.
+     *
+     * @param referencePath the reference path
+     * @param categoryBase the configured repository folder name
+     * @param additionalRepo the inherited repository property, or null
+     * @return candidate root paths, starting with the central repository
+     */
+    List<String> getCategoryRepositoryCandidates(String referencePath, String categoryBase, String additionalRepo) {
+
+        List<String> result = new ArrayList<>();
+        if (referencePath != null) {
+            String path = CmsResource.isFolder(referencePath)
+            ? referencePath
+            : CmsResource.getParentFolder(referencePath);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+                path = "/";
+            }
+            do {
+                result.add(internalCategoryRootPath(path, categoryBase));
+                path = CmsResource.getParentFolder(path);
+            } while (path != null);
+            if (additionalRepo != null) {
+                String repository = CmsStringUtil.joinPaths("/", additionalRepo, "/");
+                if (!repository.endsWith(categoryBase)) {
+                    repository = CmsStringUtil.joinPaths(repository, categoryBase);
+                }
+                result.add(repository);
+            }
+        }
+        result.add(CENTRALIZED_REPOSITORY);
+        Collections.reverse(result);
+        return result;
     }
 
     /**

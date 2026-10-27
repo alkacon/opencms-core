@@ -37,6 +37,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for a move which would lose a category. */
+    public static final String ERR_MOVE_CATEGORY_LOST_3 = "ERR_MOVE_CATEGORY_LOST_3";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CATEGORY_INVALID_LOCATION_1 = "ERR_CATEGORY_INVALID_LOCATION_1";
 

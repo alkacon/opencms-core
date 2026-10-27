@@ -78,6 +78,7 @@ import org.opencms.main.CmsMultiException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEngine;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -168,6 +169,9 @@ public final class CmsSecurityManager {
         }
 
     }
+
+    /** Runtime property controlling whether moves which lose valid categories are rejected. */
+    public static final String PARAM_CHECK_CATEGORIES_ON_MOVE = "check-categories-on-move";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
@@ -4064,6 +4068,29 @@ public final class CmsSecurityManager {
                         }
                     }
                     dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS);
+                }
+                if (Boolean.parseBoolean(
+                    String.valueOf(OpenCms.getRuntimeProperty(PARAM_CHECK_CATEGORIES_ON_MOVE)).trim())) {
+                    // Use the same unfiltered traversal as the move itself. A permission-filtered
+                    // listing could silently omit a descendant which is going to be moved.
+                    List<CmsResource> resourcesToCheck = new ArrayList<>();
+                    resourcesToCheck.add(source);
+                    for (int i = 0; i < resourcesToCheck.size(); i++) {
+                        CmsResource resource = resourcesToCheck.get(i);
+                        if (resource.isFolder()) {
+                            resourcesToCheck.addAll(
+                                m_driverManager.readChildResources(
+                                    dbc,
+                                    resource,
+                                    CmsResourceFilter.ALL,
+                                    true,
+                                    true,
+                                    false));
+                        }
+                    }
+                    CmsObject cms = OpenCms.initCmsObject(new CmsObject(this, context));
+                    cms.getRequestContext().setSiteRoot("");
+                    CmsCategoryService.getInstance().checkMove(cms, source, destination, resourcesToCheck);
                 }
                 Set<CmsResource> allMovedResources = new HashSet<>();
                 moveResource(dbc, source, destination, allMovedResources);
