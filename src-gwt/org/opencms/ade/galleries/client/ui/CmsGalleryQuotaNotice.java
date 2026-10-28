@@ -118,16 +118,6 @@ public class CmsGalleryQuotaNotice extends Composite {
     }
 
     /**
-     * Returns whether the budget check and any required acknowledgement are complete.<p>
-     *
-     * @return true if the normal gallery may be displayed
-     */
-    public boolean isGalleryReady() {
-
-        return m_ready;
-    }
-
-    /**
      * Runs a preview action after checking and, if necessary, acknowledging the budget.<p>
      *
      * @param action the preview action; a newer request replaces an earlier pending preview

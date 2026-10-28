@@ -53,6 +53,7 @@ import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -616,6 +617,25 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Resolves the budget context for gallery warnings.<p>
+     *
+     * The container page takes precedence over the edited content, which may be stored in another website
+     * or the shared folder. Without a page context, the gallery reference path remains authoritative.<p>
+     *
+     * @param context the current request context
+     * @param referenceRootPath the gallery reference resource's VFS root path
+     * @return the VFS root path used to resolve the budget scope
+     */
+    static String getQuotaReferencePath(CmsRequestContext context, String referenceRootPath) {
+
+        Object pageContext = context.getAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH);
+        if ((pageContext instanceof String) && CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)pageContext)) {
+            return (String)pageContext;
+        }
+        return referenceRootPath;
+    }
+
+    /**
      * Helper function for getting the IDs of functions which do not fit into a given set of container type/width combinations.
      *
      * @param cms the current CMS context
@@ -1029,7 +1049,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     public CmsGalleryQuotaInfo getQuotaInfo(String referenceRootPath) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(referenceRootPath)
+        String quotaRootPath = getQuotaReferencePath(getCmsObject().getRequestContext(), referenceRootPath);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(quotaRootPath)
             || getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
             return null;
         }
@@ -1037,7 +1058,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setSiteRoot("");
             // Resolve the context with the caller's permissions before reading the budget snapshot.
-            CmsResource resource = cms.readResource(referenceRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource resource = cms.readResource(quotaRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsQuotaStatus status = CmsQuotaManager.get().getLimitedStatus(resource.getRootPath(), scope -> false);
             if ((status == null) || ((status.getState() != State.WARNING) && (status.getState() != State.EXCEEDED))) {
                 return null;
@@ -1060,7 +1081,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     public CmsQuotaStatus getQuotaWarning(String referenceRootPath) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(referenceRootPath)
+        String quotaRootPath = getQuotaReferencePath(getCmsObject().getRequestContext(), referenceRootPath);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(quotaRootPath)
             || getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
             return null;
         }
@@ -1068,7 +1090,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             CmsObject cms = OpenCms.initCmsObject(getCmsObject());
             cms.getRequestContext().setSiteRoot("");
             // Check the reference resource with the current user's permissions before reading the quota snapshot.
-            CmsResource resource = cms.readResource(referenceRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource resource = cms.readResource(quotaRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
             CmsGalleryQuotaWarnings warnings = getQuotaWarnings();
             return warnings.getWarning(
                 CmsQuotaManager.get().getLimitedStatus(resource.getRootPath(), warnings::isAcknowledged));

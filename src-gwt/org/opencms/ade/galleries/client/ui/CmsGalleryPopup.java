@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -84,6 +85,18 @@ public class CmsGalleryPopup extends CmsPopup implements I_CmsGalleryHandler {
         m_container = new SimplePanel();
         setMainContent(m_container);
         addDialogClose(null);
+    }
+
+    /**
+     * Positions the popup using the full gallery height, independent of the current content.<p>
+     *
+     * @see org.opencms.gwt.client.ui.CmsPopup#center()
+     */
+    @Override
+    public void center() {
+
+        // Keep the outer top edge fixed for the budget notice, gallery tabs and preview.
+        centerHorizontally((Window.getClientHeight() - CmsToolbarPopup.getAvailableHeight()) / 2);
     }
 
     /**

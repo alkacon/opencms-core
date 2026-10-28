@@ -216,10 +216,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         //        m_showPreview.setVisible(false);
         //        m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
-        m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, () -> {
-            updateSizes();
-            centerPopup();
-        });
+        m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, this::updateSizes);
         initWidget(m_quotaNotice);
         ensureNotifications();
         m_dndHandler = galleryHandler.getDndHandler();
@@ -633,7 +630,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void setDialogSize(int width, int height) {
 
-        boolean sizeChanged = (width != m_width) || ((height > 50) && (height != m_height));
         if (height > 50) {
             m_height = height;
             m_parentPanel.setHeight(m_height + "px");
@@ -641,9 +637,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         m_width = width;
         m_parentPanel.setWidth(m_width + "px");
         truncateTabs();
-        if (sizeChanged) {
-            centerPopup();
-        }
     }
 
     /**
@@ -697,7 +690,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         if (m_previewVisible) {
             useMaxDimensions();
             m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewVisible());
-            centerPopup();
         } else {
             m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
@@ -860,19 +852,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                 updateSizes();
             }
         });
-    }
-
-    /**
-     * Centers a visible gallery popup after updating its size or content.<p>
-     */
-    private void centerPopup() {
-
-        if ((m_galleryHandler instanceof CmsGalleryPopup) && isAttached() && m_quotaNotice.isGalleryReady()) {
-            CmsGalleryPopup popup = (CmsGalleryPopup)m_galleryHandler;
-            if (popup.isShowing()) {
-                popup.center();
-            }
-        }
     }
 
     /**
