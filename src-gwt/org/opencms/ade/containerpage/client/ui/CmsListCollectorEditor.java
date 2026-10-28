@@ -114,6 +114,19 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#highlightElement()
+     */
+    @Override
+    public void highlightElement() {
+
+        if (m_highlighting == null) {
+            // the list entry may have moved since the buttons were last positioned, e.g. while a slider is still moving
+            m_position = CmsDomUtil.getEditablePosition(getMarkerTag());
+        }
+        super.highlightElement();
+    }
+
+    /**
      * Returns true if the element view of the element is compatible with the currently set element view in the container page editor.<p>
      *
      * @return true if the element should be visible in the current mode
@@ -169,6 +182,10 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         style.setRight(right, Unit.PX);
         style.setTop(top, Unit.PX);
         updateExpiredOverlayPosition(parent);
+        if (m_highlighting != null) {
+            // the element may have moved while it was highlighted, e.g. in a slider
+            m_highlighting.setPosition(m_position);
+        }
     }
 
     /**
