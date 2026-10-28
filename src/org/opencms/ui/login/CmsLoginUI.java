@@ -235,7 +235,7 @@ public class CmsLoginUI extends A_CmsUI {
         }
         CmsRequestUtil.disableCrossSiteFrameEmbedding(response);
         CmsObject cms = controller.getCmsObject();
-        if ((OpenCms.getSiteManager().getSites().size() > 1) && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+        if ((OpenCms.getSiteManager().getSiteCount() > 1) && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
             // do not send any redirects to the workplace site for security reasons
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;

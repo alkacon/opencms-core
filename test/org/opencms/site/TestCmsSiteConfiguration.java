@@ -56,6 +56,16 @@ public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests that a secure server does not count as a separate configured site.<p>
+     */
+    @Test
+    public void testGetSiteCount() {
+
+        // The test configuration contains 11 sites and an additional secure server for the default site.
+        assertEquals(11, OpenCms.getSiteManager().getSiteCount());
+    }
+
+    /**
      * Tests site root lookup for paths with different forms, including query strings.
      */
     @Test
@@ -106,7 +116,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
         assertNotNull(mapOfSites, "Configured map of sites must not be null");
 
         List<CmsSite> sites = new ArrayList<CmsSite>(mapOfSites.values());
-        assertTrue(sites.size() == 12, "Expected 12 configured sites but found " + sites.size());
+        assertEquals(13, sites.size(), "sites.size() mismatch");
 
         for (CmsSite site : sites) {
             echo("Found configured site: " + site);

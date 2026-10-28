@@ -61,6 +61,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -978,6 +979,20 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the number of distinct configured sites, counting aliases and secure servers only once per site.<p>
+     *
+     * @return the number of distinct configured sites
+     */
+    public int getSiteCount() {
+
+        IdentityHashMap<CmsSite, Boolean> sites = new IdentityHashMap<>();
+        for (CmsSite site : m_siteMatcherSites.values()) {
+            sites.put(site, Boolean.TRUE);
+        }
+        return sites.size();
     }
 
     /**
