@@ -79,6 +79,9 @@ public class CmsXmlContentProperty implements Serializable {
         /** Visible in both element and list parent as a shared setting. */
         elementAndParentShared,
 
+        /** Visible only on the element, and overrides shared settings with the same name from nested formatters. */
+        elementOverride,
+
         /** Visible only on list parent, as individual setting. */
         parentIndividual,
 
@@ -94,7 +97,8 @@ public class CmsXmlContentProperty implements Serializable {
 
             return (this == Visibility.element)
                 || (this == elementAndParentIndividual)
-                || (this == elementAndParentShared);
+                || (this == elementAndParentShared)
+                || (this == elementOverride);
         }
     }
 

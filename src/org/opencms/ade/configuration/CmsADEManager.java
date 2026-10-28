@@ -293,6 +293,57 @@ public class CmsADEManager {
     }
 
     /**
+     * Merges the settings of a main formatter with the settings of its nested formatters.<p>
+     *
+     * @param config the sitemap configuration
+     * @param mainSettings the settings of the main formatter
+     * @param nestedFormatters the nested formatters, may be null
+     *
+     * @return the merged settings
+     */
+    protected static Map<String, CmsXmlContentProperty> mergeFormatterSettings(
+        CmsADEConfigData config,
+        Map<String, CmsXmlContentProperty> mainSettings,
+        List<I_CmsFormatterBean> nestedFormatters) {
+
+        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
+        Visibility defaultVisibility = Visibility.elementAndParentIndividual;
+        for (Entry<String, CmsXmlContentProperty> entry : mainSettings.entrySet()) {
+            Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
+            if (visibility.isVisibleOnElement()) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+        }
+        if (nestedFormatters != null) {
+            for (I_CmsFormatterBean formatter : nestedFormatters) {
+                for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings(config).entrySet()) {
+                    Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
+                    switch (visibility) {
+                        case parentShared:
+                        case elementAndParentShared:
+                            // a main formatter setting with visibility elementOverride wins over nested shared settings
+                            CmsXmlContentProperty mainSetting = mainSettings.get(entry.getKey());
+                            if ((mainSetting == null)
+                                || (mainSetting.getVisibility(defaultVisibility) != Visibility.elementOverride)) {
+                                result.put(entry.getKey(), entry.getValue());
+                            }
+                            break;
+                        case elementAndParentIndividual:
+                        case parentIndividual:
+                            String settingName = formatter.getKeyOrId() + "_" + entry.getKey();
+                            CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
+                            result.put(settingName, settingConf);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Adds a wait handle for the next cache update to a formatter configuration.<p>
      *
      * @param online true if we want to add a wait handle to the online cache, else the offline cache
@@ -665,41 +716,13 @@ public class CmsADEManager {
         Locale locale,
         ServletRequest req) {
 
-        Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
-        Visibility defaultVisibility = Visibility.elementAndParentIndividual;
-        if (mainFormatter != null) {
-            for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings(config).entrySet()) {
-                Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
-                if (visibility.isVisibleOnElement()) {
-                    result.put(entry.getKey(), entry.getValue());
-                }
-            }
-            if (mainFormatter.hasNestedFormatterSettings()) {
-                List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, config, res, locale, req);
-                if (nestedFormatters != null) {
-                    for (I_CmsFormatterBean formatter : nestedFormatters) {
-                        for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings(config).entrySet()) {
-                            Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
-                            switch (visibility) {
-                                case parentShared:
-                                case elementAndParentShared:
-                                    result.put(entry.getKey(), entry.getValue());
-                                    break;
-                                case elementAndParentIndividual:
-                                case parentIndividual:
-                                    String settingName = formatter.getKeyOrId() + "_" + entry.getKey();
-                                    CmsXmlContentProperty settingConf = entry.getValue().withName(settingName);
-                                    result.put(settingName, settingConf);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
+        if (mainFormatter == null) {
+            return new LinkedHashMap<String, CmsXmlContentProperty>();
         }
-        return result;
+        List<I_CmsFormatterBean> nestedFormatters = mainFormatter.hasNestedFormatterSettings()
+        ? getNestedFormatters(cms, config, res, locale, req)
+        : null;
+        return mergeFormatterSettings(config, mainFormatter.getSettings(config), nestedFormatters);
     }
 
     /**
