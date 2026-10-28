@@ -39,6 +39,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -301,8 +302,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
         // please note: can't just subtract and cast to int here because of float precision loss
         if (m_position == thatPos) {
             if (m_position == Float.MAX_VALUE) {
-                // if they both do not have any position, sort by title
-                return m_title.compareTo((that).getTitle());
+                return Comparator.nullsLast(Comparator.<String> naturalOrder()).compare(m_title, that.getTitle());
             }
             return 0;
         }
