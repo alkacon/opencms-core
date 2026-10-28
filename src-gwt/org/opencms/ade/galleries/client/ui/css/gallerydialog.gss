@@ -234,3 +234,15 @@ div.quickFilterBox {
     max-height: calc(100vh - 180px);
     overflow: auto;
 }
+
+.quotaSummary {
+    overflow: hidden;
+}
+
+.quotaSummary > div {
+    margin-bottom: 5px;
+}
+
+.quotaSummaryOptions .selectboxWidth {
+    vertical-align: top;
+}

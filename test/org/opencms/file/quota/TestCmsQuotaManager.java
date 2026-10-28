@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Test;
 public class TestCmsQuotaManager {
 
     @Test
-    public void testConfiguredSystemDefaultAndTenantPrecedence() {
+    public void testConfiguredSystemDefaultAndScopePrecedence() {
 
         java.util.List<CmsQuotaDefinition> definitions = Arrays.asList(
             new CmsQuotaDefinition("/a", null, null),

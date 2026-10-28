@@ -33,7 +33,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Shared size formatting for tenant sizes, storage usage and storage budgets.<p>
+ * Formats resource sizes, disk usage and storage budgets.<p>
  */
 public final class CmsSizeFormatter {
 

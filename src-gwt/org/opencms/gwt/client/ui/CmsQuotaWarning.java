@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
+import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsQuotaProjection;
 import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsQuotaStatus.State;
@@ -37,6 +38,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -112,7 +114,7 @@ public class CmsQuotaWarning extends Composite {
     }
 
     /**
-     * Uses the same decimal units as the tenant UI: whole B/KB and up to one decimal for MB/GB.<p>
+     * Formats decimal units: whole B/KB and up to one decimal for MB/GB.<p>
      *
      * @param bytes the remaining bytes
      * @return the localized size
@@ -152,6 +154,31 @@ public class CmsQuotaWarning extends Composite {
     public void setStatus(CmsQuotaStatus status) {
 
         showStatus(status, null);
+    }
+
+    /**
+     * Displays a named, two-line summary without a progress bar.<p>
+     *
+     * @param status the budget snapshot
+     * @param caption the localized budget scope caption
+     * @param usagePattern the localized pattern with percentage, used size and budget as arguments
+     */
+    public void setSummary(CmsQuotaStatus status, String caption, String usagePattern) {
+
+        showStatus(status, null);
+        if (!isVisible()) {
+            return;
+        }
+        String usage = CmsMessages.formatMessage(
+            usagePattern,
+            formatPercentage(status.getPercentage()),
+            formatSize(status.getUsedBytes()),
+            formatSize(status.getQuotaBytes()));
+        SafeHtmlBuilder message = new SafeHtmlBuilder();
+        message.appendHtmlConstant("<strong>").appendEscaped(caption).appendHtmlConstant("</strong><br>").appendEscaped(
+            usage);
+        m_message.setMessageHtml(message.toSafeHtml().asString());
+        m_bar.setVisible(false);
     }
 
     /**
@@ -212,6 +239,7 @@ public class CmsQuotaWarning extends Composite {
             setVisible(false);
             return;
         }
+        m_bar.setVisible(true);
         boolean exceeded = status.getState() == State.EXCEEDED;
         double percentage = status.getPercentage();
         String percentageText = formatPercentage(percentage);
@@ -227,9 +255,9 @@ public class CmsQuotaWarning extends Composite {
         setStyleName(style.exceeded(), exceeded);
         m_message.setMessageText(message);
         m_message.setIcon(
-            FontOpenCms.WARNING,
+            exceeded ? FontOpenCms.ERROR : FontOpenCms.WARNING,
             exceeded
-            ? I_CmsConstantsBundle.INSTANCE.css().notificationErrorBorder()
+            ? I_CmsConstantsBundle.INSTANCE.css().colorError()
             : I_CmsConstantsBundle.INSTANCE.css().colorWarning());
         double filled = Math.max(0, Math.min(100, percentage));
         m_fill.getElement().getStyle().setWidth(filled, Unit.PCT);

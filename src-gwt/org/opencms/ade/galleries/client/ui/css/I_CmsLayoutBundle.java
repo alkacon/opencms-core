@@ -195,6 +195,18 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          *
          * @return the CSS class name
          */
+        String quotaSummary();
+
+        /** Access method.<p>
+         *
+         * @return the options class for alignment with the budget summary
+         */
+        String quotaSummaryOptions();
+
+        /** Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String resultTabUpload();
 
         /** Access method.<p>

@@ -60,7 +60,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 /**
- * Tests local, master and connector budget settings without a Tenants module.<p>
+ * Tests local, master and connector budget settings independently of external modules.<p>
  */
 public class TestQuotaAttributes {
 
@@ -177,10 +177,10 @@ public class TestQuotaAttributes {
         Config ordinary = new Config("/site/language/", "/site/language/.content/.config", master).attribute(
             CmsQuotaConfig.ATTR_UPLOAD_QUOTA,
             "unlimited");
-        Config child = new Config("/site/language/tenant/", "/site/language/tenant/.content/.config").attribute(
+        Config child = new Config("/site/language/budget/", "/site/language/budget/.content/.config").attribute(
             scope,
             "true");
-        List<String> roots = Arrays.asList("/site/", "/site/language/", "/site/language/tenant/");
+        List<String> roots = Arrays.asList("/site/", "/site/language/", "/site/language/budget/");
         Map<String, Map<String, AttributeValue>> local = cache(master, site, ordinary, child).getLocalAttributesByPath(
             roots,
             Collections.emptyList());
@@ -190,8 +190,8 @@ public class TestQuotaAttributes {
             CmsQuotaDefinition.BYTES_PER_GB);
         assertEquals(2, statuses.size());
         assertEquals(CmsQuotaDefinition.BYTES_PER_GB, statuses.get("/site/").getQuotaBytes());
-        assertEquals(3 * CmsQuotaDefinition.BYTES_PER_GB, statuses.get("/site/language/tenant/").getQuotaBytes());
-        assertFalse(statuses.get("/site/language/tenant/").isIndividualQuota());
+        assertEquals(3 * CmsQuotaDefinition.BYTES_PER_GB, statuses.get("/site/language/budget/").getQuotaBytes());
+        assertFalse(statuses.get("/site/language/budget/").isIndividualQuota());
     }
 
     @Test
@@ -235,7 +235,7 @@ public class TestQuotaAttributes {
             "/empty/");
         CmsADEConfigCacheState cache = cache(masterBase, master, site, child, deep, leaf);
         I_CmsSitemapExtraInfo connector = path -> path.equals("/site/")
-        ? Collections.singletonMap(individual, new AttributeValue("8", "Tenant: /site/"))
+        ? Collections.singletonMap(individual, new AttributeValue("8", "Connector: /site/"))
         : null;
         Map<String, Map<String, AttributeValue>> local = cache.getLocalAttributesByPath(
             roots,
@@ -265,16 +265,16 @@ public class TestQuotaAttributes {
         Config site = new Config("/site/", "/site/.content/.config");
         Config de = new Config("/site/de/", "/site/de/.content/.config");
         Config en = new Config("/site/en/", "/site/en/.content/.config");
-        Config child = new Config("/site/en/tenant/", "/site/en/tenant/.content/.config").attribute(scope, "true");
-        Config deep = new Config("/site/en/tenant/deep/", "/site/en/tenant/deep/.content/.config").attribute(
+        Config child = new Config("/site/en/budget/", "/site/en/budget/.content/.config").attribute(scope, "true");
+        Config deep = new Config("/site/en/budget/deep/", "/site/en/budget/deep/.content/.config").attribute(
             scope,
             "true");
         List<String> roots = Arrays.asList(
             "/site/",
             "/site/de/",
             "/site/en/",
-            "/site/en/tenant/",
-            "/site/en/tenant/deep/");
+            "/site/en/budget/",
+            "/site/en/budget/deep/");
         CmsADEConfigCacheState cache = cache(site, de, en, child, deep);
         CmsFolderSizeTable sizes = new CmsFolderSizeTable(null, false);
         java.lang.reflect.Field field = CmsFolderSizeTable.class.getDeclaredField("m_folders");
@@ -283,8 +283,8 @@ public class TestQuotaAttributes {
         folders.put("/site/", 100L);
         folders.put("/site/de/", 200L);
         folders.put("/site/en/", 300L);
-        folders.put("/site/en/tenant/", 400L);
-        folders.put("/site/en/tenant/deep/", 500L);
+        folders.put("/site/en/budget/", 400L);
+        folders.put("/site/en/budget/deep/", 500L);
         field.set(sizes, folders);
         Collection<CmsQuotaDefinition> definitions = CmsQuotaManager.getDefinitions(
             cache.getLocalAttributesByPath(roots, Collections.emptyList()),
@@ -294,8 +294,8 @@ public class TestQuotaAttributes {
         Map<String, CmsQuotaStatus> statuses = CmsQuotaManager.calculate(definitions, report);
         assertEquals(1500, statuses.get("/site/").getTotalBytes());
         assertEquals(600, statuses.get("/site/").getUsedBytes());
-        assertEquals(400, statuses.get("/site/en/tenant/").getUsedBytes());
-        assertEquals(500, statuses.get("/site/en/tenant/deep/").getUsedBytes());
+        assertEquals(400, statuses.get("/site/en/budget/").getUsedBytes());
+        assertEquals(500, statuses.get("/site/en/budget/deep/").getUsedBytes());
         child.getAttributes().clear();
         definitions = CmsQuotaManager.getDefinitions(
             cache.getLocalAttributesByPath(roots, Collections.emptyList()),
@@ -305,7 +305,7 @@ public class TestQuotaAttributes {
         statuses = CmsQuotaManager.calculate(definitions, report);
         assertEquals(2, statuses.size());
         assertEquals(1000, statuses.get("/site/").getUsedBytes());
-        assertEquals(500, statuses.get("/site/en/tenant/deep/").getUsedBytes());
+        assertEquals(500, statuses.get("/site/en/budget/deep/").getUsedBytes());
     }
 
     @Test
@@ -327,7 +327,7 @@ public class TestQuotaAttributes {
             CmsQuotaManager.getDefinitions(local, Collections.singleton("/site")).stream().map(
                 CmsQuotaDefinition::getRootPath).collect(Collectors.toSet()));
         I_CmsSitemapExtraInfo connector = path -> path.equals("/site/disabled/")
-        ? Collections.singletonMap(scope, new AttributeValue("true", "Tenant"))
+        ? Collections.singletonMap(scope, new AttributeValue("true", "Connector"))
         : null;
         local = cache.getLocalAttributesByPath(roots, Collections.singletonList(connector));
         assertEquals(3, CmsQuotaManager.getDefinitions(local, Collections.singleton("/site/")).size());

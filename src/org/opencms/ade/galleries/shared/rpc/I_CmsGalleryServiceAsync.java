@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
+import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.CmsSitemapEntryBean;
@@ -111,6 +112,14 @@ public interface I_CmsGalleryServiceAsync {
      * @param callback the callback
      */
     void getInitialSettings(CmsGalleryConfiguration conf, AsyncCallback<CmsGalleryDataBean> callback);
+
+    /**
+     * Gets the named warning for the galleries tab, independently of session acknowledgement.<p>
+     *
+     * @param referenceRootPath the context resource's VFS root path
+     * @param callback the callback receiving the warning or null
+     */
+    void getQuotaInfo(String referenceRootPath, AsyncCallback<CmsGalleryQuotaInfo> callback);
 
     /**
      * Gets the budget warning not yet acknowledged in this session.<p>

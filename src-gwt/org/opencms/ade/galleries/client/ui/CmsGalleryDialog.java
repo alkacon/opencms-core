@@ -218,9 +218,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         // All composites must call initWidget() in their constructors.
         m_quotaNotice = new CmsGalleryQuotaNotice(m_parentPanel, () -> {
             updateSizes();
-            if (m_galleryHandler instanceof CmsGalleryPopup) {
-                ((CmsGalleryPopup)m_galleryHandler).center();
-            }
+            centerPopup();
         });
         initWidget(m_quotaNotice);
         ensureNotifications();
@@ -635,6 +633,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void setDialogSize(int width, int height) {
 
+        boolean sizeChanged = (width != m_width) || ((height > 50) && (height != m_height));
         if (height > 50) {
             m_height = height;
             m_parentPanel.setHeight(m_height + "px");
@@ -642,6 +641,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         m_width = width;
         m_parentPanel.setWidth(m_width + "px");
         truncateTabs();
+        if (sizeChanged) {
+            centerPopup();
+        }
     }
 
     /**
@@ -695,9 +697,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         if (m_previewVisible) {
             useMaxDimensions();
             m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().previewVisible());
-            if (m_galleryHandler instanceof CmsGalleryPopup) {
-                ((CmsGalleryPopup)m_galleryHandler).center();
-            }
+            centerPopup();
         } else {
             m_previewVisibility.setValue(I_CmsLayoutBundle.INSTANCE.previewDialogCss().hidePreview());
             updateSizes();
@@ -711,8 +711,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void setQuotaReferencePath(String sitePath) {
 
-        m_quotaNotice.setReferenceRootPath(
-            CmsCoreProvider.get().addSiteRoot((sitePath == null) || sitePath.trim().isEmpty() ? "/" : sitePath));
+        String rootPath = CmsCoreProvider.get().addSiteRoot(
+            (sitePath == null) || sitePath.trim().isEmpty() ? "/" : sitePath);
+        m_quotaNotice.setReferenceRootPath(rootPath);
+        if (m_galleriesTab != null) {
+            m_galleriesTab.setQuotaReferencePath(rootPath);
+        }
     }
 
     /**
@@ -856,6 +860,19 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                 updateSizes();
             }
         });
+    }
+
+    /**
+     * Centers a visible gallery popup after updating its size or content.<p>
+     */
+    private void centerPopup() {
+
+        if ((m_galleryHandler instanceof CmsGalleryPopup) && isAttached() && m_quotaNotice.isGalleryReady()) {
+            CmsGalleryPopup popup = (CmsGalleryPopup)m_galleryHandler;
+            if (popup.isShowing()) {
+                popup.center();
+            }
+        }
     }
 
     /**

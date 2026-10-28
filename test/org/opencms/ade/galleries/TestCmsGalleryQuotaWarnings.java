@@ -117,7 +117,7 @@ public class TestCmsGalleryQuotaWarnings {
     }
 
     @Test
-    public void testSeparateTenantsSubsitesAndSessions() {
+    public void testSeparateBudgetScopesAndSessions() {
 
         CmsGalleryQuotaWarnings first = new CmsGalleryQuotaWarnings();
         CmsGalleryQuotaWarnings second = new CmsGalleryQuotaWarnings();

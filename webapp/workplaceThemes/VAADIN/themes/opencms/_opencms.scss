@@ -92,6 +92,21 @@
 	}
 
 	.o-quota {
+		--oc-quota-color: #{$green};
+		--oc-quota-background: #{mix($white, $green, 85%)};
+
+		&.o-quota-warning {
+			--oc-quota-color: #{$orange};
+			// Match the GWT notification background in constants.gss.
+			--oc-quota-background: #fff3d2;
+		}
+
+		&.o-quota-exceeded {
+			--oc-quota-color: #{$red};
+			// Match the GWT notification background in constants.gss.
+			--oc-quota-background: #ffcccc;
+		}
+
 		.v-label {
 			white-space: normal;
 		}
@@ -103,36 +118,28 @@
 
 		.v-progressbar-wrapper {
 			height: 8px;
+			background: $gray-light;
 		}
 
-		.v-progressbar-indicator {
+		.v-progressbar .v-progressbar-indicator {
 			background-image: none;
-		}
-
-		&.o-quota-normal .v-progressbar-indicator {
-			background-color: #287d3c;
-		}
-
-		&.o-quota-warning .v-progressbar-indicator {
-			background-color: #d87900;
-		}
-
-		&.o-quota-exceeded .v-progressbar-indicator {
-			background-color: #c62828;
+			background-color: var(--oc-quota-background);
+			border: 0;
+			box-shadow: inset 0 0 0 1px var(--oc-quota-color);
 		}
 
 		&.o-quota-warning > .v-label {
-			color: #945100;
+			color: var(--oc-quota-color);
 		}
 
 		&.o-quota-exceeded > .v-label {
-			color: #a82020;
+			color: var(--oc-quota-color);
 		}
 
 		&.o-quota-capacity {
 			> .v-label {
 				font-weight: 700;
-				color: #222;
+				color: $v-font-color;
 			}
 
 			> .v-progressbar {
@@ -143,27 +150,11 @@
 
 			.v-progressbar-wrapper {
 				height: 14px;
-				background: #f4f5f6;
 			}
 
 			.v-progressbar-indicator {
 				height: 100%;
 				min-width: 0;
-				border: 0;
-				box-shadow: none;
-			}
-
-			&.o-quota-normal .v-progressbar-indicator,
-			&.o-quota-unlimited .v-progressbar-indicator {
-				background-color: #b7dfbf;
-			}
-
-			&.o-quota-warning .v-progressbar-indicator {
-				background-color: #ffd28a;
-			}
-
-			&.o-quota-exceeded .v-progressbar-indicator {
-				background-color: #f3abab;
 			}
 
 			.o-quota-details {
@@ -171,7 +162,7 @@
 				flex-wrap: wrap;
 				justify-content: space-between;
 				gap: 2px 12px;
-				color: #666;
+				color: lighten($v-font-color, 12%);
 
 				> .v-label {
 					max-width: 100%;
@@ -189,7 +180,7 @@
 			> .v-label {
 				grid-area: 1 / 1;
 				white-space: nowrap;
-				font-weight: normal;
+				font-weight: $v-font-weight;
 			}
 
 			> .v-progressbar {
@@ -208,7 +199,7 @@
 				padding: 0 8px;
 				text-align: right;
 				line-height: 20px;
-				color: #222;
+				color: $v-font-color;
 				pointer-events: none;
 			}
 
@@ -241,7 +232,7 @@
 				padding: 6px 10px;
 				text-align: left;
 				line-height: 20px;
-				color: #000;
+				color: $v-font-color;
 				white-space: normal;
 				overflow-wrap: anywhere;
 			}
@@ -255,27 +246,13 @@
 			.v-progressbar-wrapper {
 				height: 100%;
 				min-height: 32px;
-				background: #f4f5f6;
 			}
 
 			.v-progressbar-indicator {
 				height: 100%;
 				min-width: 0;
-				border: 0;
-				box-shadow: none;
 			}
 
-			&.o-quota-normal .v-progressbar-indicator {
-				background-color: #b7dfbf;
-			}
-
-			&.o-quota-warning .v-progressbar-indicator {
-				background-color: #ffd28a;
-			}
-
-			&.o-quota-exceeded .v-progressbar-indicator {
-				background-color: #f3abab;
-			}
 		}
 	}
 

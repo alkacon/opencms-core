@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryGroup;
+import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
@@ -1024,6 +1025,33 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getQuotaInfo(java.lang.String)
+     */
+    public CmsGalleryQuotaInfo getQuotaInfo(String referenceRootPath) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(referenceRootPath)
+            || getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+            return null;
+        }
+        try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            // Resolve the context with the caller's permissions before reading the budget snapshot.
+            CmsResource resource = cms.readResource(referenceRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsQuotaStatus status = CmsQuotaManager.get().getLimitedStatus(resource.getRootPath(), scope -> false);
+            if ((status == null) || ((status.getState() != State.WARNING) && (status.getState() != State.EXCEEDED))) {
+                return null;
+            }
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(status.getRootPath());
+            return new CmsGalleryQuotaInfo(
+                getGalleryScopeLabel(getCmsObject(), site, status.getRootPath(), true),
+                status);
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
      * Gets the unacknowledged warning for the budget scope containing the gallery context resource.
      * Uses the existing offline size cache without forcing an update.<p>
      *
@@ -1778,35 +1806,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     // we are in a proper subsite, not just the site itself
                     group = CmsGalleryGroup.subsite;
 
-                    String labelSuffix = cms.getRequestContext().removeSiteRoot(subsitePath);
-                    try {
-                        Map<String, String> properties = CmsProperty.toMap(
-                            cms.readPropertyObjects(cms.getRequestContext().removeSiteRoot(subsitePath), false));
-                        for (String propName : new String[] {
-                            CmsPropertyDefinition.PROPERTY_TITLE,
-                            CmsPropertyDefinition.PROPERTY_NAVTEXT}) {
-                            String propValue = properties.get(propName);
-                            if (propValue != null) {
-                                labelSuffix = propValue;
-                                break;
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                    groupLabel = Messages.get().getBundle(wpLocale).key(
-                        Messages.GUI_GALLERIES_GROUP_SUBSITE_1,
-                        labelSuffix);
+                    groupLabel = getGalleryScopeLabel(cms, site, subsitePath, false);
                 } else if ((site != null) && CmsStringUtil.isPrefixPath(site.getSiteRoot(), res.getRootPath())) {
                     group = CmsGalleryGroup.site;
-                    String labelSuffix;
-                    labelSuffix = site.getTitle();
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(labelSuffix)) {
-                        labelSuffix = site.getSiteRoot();
-                    }
-                    groupLabel = Messages.get().getBundle(wpLocale).key(
-                        Messages.GUI_GALLERIES_GROUP_SITE_1,
-                        labelSuffix);
+                    groupLabel = getGalleryScopeLabel(cms, site, site.getSiteRoot(), false);
                 } else if (CmsStringUtil.isPrefixPath(CmsResource.VFS_FOLDER_SYSTEM, res.getRootPath())
                     || OpenCms.getSiteManager().startsWithShared(res.getRootPath())) {
                     group = CmsGalleryGroup.shared;
@@ -2537,6 +2540,47 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             galleriesList,
             (a, b) -> ComparisonChain.start().compare(a.getRootPath(), b.getRootPath()).result());
         return galleriesList;
+    }
+
+    /**
+     * Gets the shared label for a website or subsite in gallery groups and budget warnings.<p>
+     *
+     * @param cms the current CMS context
+     * @param site the containing website
+     * @param scopeRootPath the website or subsite root path
+     * @param quotaSummary whether to use the budget summary caption instead of the group heading
+     * @return the localized label
+     */
+    private String getGalleryScopeLabel(CmsObject cms, CmsSite site, String scopeRootPath, boolean quotaSummary) {
+
+        if ((site != null) && new CmsPath(scopeRootPath).equals(new CmsPath(site.getSiteRoot()))) {
+            String labelSuffix = site.getTitle();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(labelSuffix)) {
+                labelSuffix = site.getSiteRoot();
+            }
+            return Messages.get().getBundle(getWorkplaceLocale()).key(
+                quotaSummary ? Messages.GUI_QUOTA_SCOPE_SITE_1 : Messages.GUI_GALLERIES_GROUP_SITE_1,
+                labelSuffix);
+        }
+        String labelSuffix = cms.getRequestContext().removeSiteRoot(scopeRootPath);
+        try {
+            Map<String, String> properties = CmsProperty.toMap(
+                cms.readPropertyObjects(cms.getRequestContext().removeSiteRoot(scopeRootPath), false));
+            for (String propName : new String[] {
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                CmsPropertyDefinition.PROPERTY_NAVTEXT}) {
+                String propValue = properties.get(propName);
+                if (propValue != null) {
+                    labelSuffix = propValue;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return Messages.get().getBundle(getWorkplaceLocale()).key(
+            quotaSummary ? Messages.GUI_QUOTA_SCOPE_SUBSITE_1 : Messages.GUI_GALLERIES_GROUP_SUBSITE_1,
+            labelSuffix);
     }
 
     /**

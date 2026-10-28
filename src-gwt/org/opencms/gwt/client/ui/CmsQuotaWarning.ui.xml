@@ -3,17 +3,26 @@
     xmlns:g="urn:import:com.google.gwt.user.client.ui"
     xmlns:cms="urn:import:org.opencms.gwt.client.ui">
     <ui:style type="org.opencms.gwt.client.ui.CmsQuotaWarning.I_Style">
+        @def WARNING_COLOR eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().colorWarning()");
+        @def ERROR_COLOR eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().colorError()");
+        @def WARNING_BACKGROUND eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().notificationWarningBg()");
+        @def ERROR_BACKGROUND eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().notificationErrorBg()");
+        @def WARNING_BORDER eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().notificationWarningBorder()");
+        @def ERROR_BORDER eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().notificationErrorBorder()");
+        @def BAR_BACKGROUND eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().backgroundColorSoft()");
+        @def MESSAGE_COLOR eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().notificationWarningColor()");
+
         .warning {
             padding: 8px;
             margin-bottom: 8px;
-            border: 1px solid #e3bb62;
+            border: 1px solid WARNING_BORDER;
             border-radius: 4px;
-            background-color: #fff3d2;
-            color: #333;
+            background-color: WARNING_BACKGROUND;
+            color: MESSAGE_COLOR;
         }
         .warning.exceeded {
-            background-color: #fbe9e8;
-            border-color: #d88a86;
+            background-color: ERROR_BACKGROUND;
+            border-color: ERROR_BORDER;
         }
         .warning .message table tr td:first-child {
             height: auto;
@@ -23,19 +32,22 @@
             padding: 4px 8px;
             max-height: none;
         }
+        .warning .message strong {
+            font-weight: bold;
+        }
         .bar {
             height: 12px;
             margin-top: 6px;
-            background-color: #e1e1e1;
+            background-color: BAR_BACKGROUND;
             border-radius: 3px;
             overflow: hidden;
         }
         .fill {
             height: 100%;
-            background-color: #eead38;
+            background-color: WARNING_COLOR;
         }
         .exceeded .fill {
-            background-color: #d66b68;
+            background-color: ERROR_COLOR;
         }
     </ui:style>
     <g:FlowPanel styleName="{style.warning}">

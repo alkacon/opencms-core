@@ -202,7 +202,6 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         final CmsGalleryController controller,
         boolean isFirstTime) {
 
-        m_galleryDialog.setQuotaReferencePath(dialogBean.getReferenceSitePath());
         m_mode = dialogBean.getMode();
         if (isFirstTime) {
             if ((dialogBean.getSitemapSiteSelectorOptions() == null)
@@ -211,6 +210,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
             }
             m_galleryDialog.fillTabs(controller);
         }
+
+        m_galleryDialog.setQuotaReferencePath(dialogBean.getReferenceSitePath());
 
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
             // select box may be initially set to grouped, we need to first change it to something else
