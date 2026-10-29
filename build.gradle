@@ -1807,6 +1807,9 @@ tasks.register('bindist', Zip) {
 tasks.withType(Test).configureEach {
     maxHeapSize = "2000m"
     jvmArgs += ['--enable-native-access=ALL-UNNAMED']
+    // Tests share a logging context, avoiding caller-stack walks on logger lookup.
+    systemProperty 'log4j2.contextSelector',
+        'org.apache.logging.log4j.core.selector.BasicContextSelector'
     useJUnit()
     scanForTestClasses = false
     testLogging.showStandardStreams = true
