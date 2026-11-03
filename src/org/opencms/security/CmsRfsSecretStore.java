@@ -36,82 +36,19 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.List;
+import java.nio.file.attribute.FileTime;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 
 /**
- * RFS secret store which just loads secrets from a .properties file, whose path is configured via the 'path' parameter.
- *
- * <p>This class already initializes itself in the initConfiguration() method, which means it can return secrets before the initialize()
- * method (which does nothing) is even called.
- *
- * <p>When OpenCms is running, this class will also track modifications in the configured secrets file and reload it.
+ * RFS secret store which reloads secrets from a properties file when its modification date changes.
  */
 public class CmsRfsSecretStore implements I_CmsSecretStore {
-
-    /**
-     * Tracks modifications of the secrets file.
-     */
-    class WatchThread extends Thread {
-
-        public WatchThread() {
-
-            super("CmsRfsSecretStore.WatchThread");
-            // needs to shut down when OpenCms shuts down
-            setDaemon(true);
-        }
-
-        public void run() {
-
-            try (WatchService watch = FileSystems.getDefault().newWatchService()) {
-                m_path.getParent().register(
-                    watch,
-                    StandardWatchEventKinds.ENTRY_CREATE,
-                    StandardWatchEventKinds.ENTRY_DELETE,
-                    StandardWatchEventKinds.ENTRY_MODIFY);
-                while (true) {
-                    try {
-                        WatchKey watchKey = watch.take();
-                        try {
-                            List<WatchEvent<?>> events = watchKey.pollEvents();
-                            for (WatchEvent<?> event : events) {
-                                if (event.kind() == StandardWatchEventKinds.OVERFLOW) {
-                                    continue;
-                                }
-                                WatchEvent<Path> ev = (WatchEvent<Path>)event;
-                                if (ev.context().getFileName().equals(m_path.getFileName())) {
-                                    m_needsReload.set(true);
-                                }
-                            }
-                        } finally {
-                            if (!watchKey.reset()) {
-                                LOG.error(
-                                    "Watch key for " + m_path.getParent() + " has become invalid, stop tracking it");
-                                return;
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-
-            } catch (IOException | UnsupportedOperationException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-    }
 
     /** The parameter used to configure the path of the properties file. */
     public static final String PARAM_PATH = "path";
@@ -125,8 +62,8 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
     /** The configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
-    /** True when the secrets file has changed and not been reloaded. */
-    private AtomicBoolean m_needsReload = new AtomicBoolean(false);
+    /** The modification time of the last successfully loaded secrets file. */
+    private FileTime m_lastModified;
 
     /** The path of the secrets file. */
     private Path m_path;
@@ -177,9 +114,13 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
         if (password != null) {
             m_encryption = new CmsAESCBCTextEncryption(password);
         }
-        try (InputStream stream = new FileInputStream(m_path.toString())) {
-            props.load(stream);
-            m_properties = decrypt(props);
+        try {
+            FileTime lastModified = Files.getLastModifiedTime(m_path);
+            try (InputStream stream = new FileInputStream(m_path.toString())) {
+                props.load(stream);
+                m_properties = decrypt(props);
+            }
+            m_lastModified = lastModified;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -192,8 +133,6 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
     @Override
     public void initialize(CmsObject cmsObject) {
 
-        WatchThread thread = new WatchThread();
-        thread.start();
         OpenCms.getExecutor().scheduleWithFixedDelay(this::checkReload, 1000, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -202,17 +141,21 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
      */
     private void checkReload() {
 
-        if (m_needsReload.compareAndSet(true, false)) {
-            LOG.info("Reloading secrets file...");
-            Properties props = new Properties();
-            try (InputStream stream = new FileInputStream(m_path.toString())) {
-                props.load(stream);
-                m_properties = decrypt(props);
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
+        try {
+            FileTime lastModified = Files.getLastModifiedTime(m_path);
+            if (!lastModified.equals(m_lastModified)) {
+                LOG.info("Reloading secrets file...");
+                Properties props = new Properties();
+                try (InputStream stream = new FileInputStream(m_path.toString())) {
+                    props.load(stream);
+                    m_properties = decrypt(props);
+                }
+                m_lastModified = lastModified;
             }
-
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
+
     }
 
     /**
