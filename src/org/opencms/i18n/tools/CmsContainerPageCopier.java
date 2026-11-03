@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -234,6 +235,20 @@ public class CmsContainerPageCopier {
     public void copyPageOnly(CmsResource originalPage, String targetPageRootPath)
     throws CmsException, NoCustomReplacementException {
 
+        copyPageOnly(originalPage, targetPageRootPath, CmsResource.COPY_PRESERVE_SIBLING);
+    }
+
+    /**
+     * Copies the given container page to the provided root path.
+     * @param originalPage the page to copy
+     * @param targetPageRootPath the root path of the copy target.
+     * @param resourceCopyMode the resource copy mode for the page
+     * @throws CmsException thrown if something goes wrong.
+     * @throws NoCustomReplacementException if a custom replacement is not found for a type which requires it.
+     */
+    public void copyPageOnly(CmsResource originalPage, String targetPageRootPath, CmsResourceCopyMode resourceCopyMode)
+    throws CmsException, NoCustomReplacementException {
+
         if ((null == originalPage)
             || !OpenCms.getResourceManager().getResourceType(originalPage).getTypeName().equals(
                 CmsResourceTypeXmlContainerPage.getStaticTypeName())) {
@@ -241,7 +256,7 @@ public class CmsContainerPageCopier {
         }
         m_originalPage = originalPage;
         CmsObject rootCms = getRootCms();
-        rootCms.copyResource(originalPage.getRootPath(), targetPageRootPath);
+        rootCms.copyResource(originalPage.getRootPath(), targetPageRootPath, resourceCopyMode);
         CmsResource copiedPage = rootCms.readResource(targetPageRootPath, CmsResourceFilter.IGNORE_EXPIRATION);
         m_targetFolder = rootCms.readResource(CmsResource.getFolderPath(copiedPage.getRootPath()));
         replaceElements(copiedPage);
