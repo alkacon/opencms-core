@@ -388,40 +388,22 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         header.append('=');
         header.append(cookie.getValue());
 
-        // add version 1 / RFC 2109 specific information
-        if (cookie.getVersion() == 1) {
-            header.append("; Version=1");
-
-            // comment
-            if (cookie.getComment() != null) {
-                header.append("; Comment=");
-                header.append(cookie.getComment());
-            }
-        }
-
         // domain
         if (cookie.getDomain() != null) {
             header.append("; Domain=");
             header.append(cookie.getDomain());
         }
 
-        // max-age / expires
+        // expires
         if (cookie.getMaxAge() >= 0) {
-            if (cookie.getVersion() == 0) {
-                // old Netscape format
-                header.append("; Expires=");
-                long time;
-                if (cookie.getMaxAge() == 0) {
-                    time = 10000L;
-                } else {
-                    time = System.currentTimeMillis() + (cookie.getMaxAge() * 1000L);
-                }
-                header.append(CmsDateUtil.getOldCookieDate(time));
+            header.append("; Expires=");
+            long time;
+            if (cookie.getMaxAge() == 0) {
+                time = 10000L;
             } else {
-                // new RFC 2109 format
-                header.append("; Max-Age=");
-                header.append(cookie.getMaxAge());
+                time = System.currentTimeMillis() + (cookie.getMaxAge() * 1000L);
             }
+            header.append(CmsDateUtil.getOldCookieDate(time));
         }
 
         // path
