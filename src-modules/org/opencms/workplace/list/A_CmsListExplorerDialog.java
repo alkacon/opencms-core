@@ -394,7 +394,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             lstate = getListState();
         }
         switch (getAction()) {
-            //////////////////// ACTION: default actions
+            // ACTION: default actions
             case ACTION_LIST_SEARCH:
                 if (getParamSearchFilter() == null) {
                     setParamSearchFilter("");

@@ -1007,8 +1007,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
             // initialize the search context
             CmsObject searchCms = OpenCms.initCmsObject(cms);
 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////// QUERY
-            /// FOR PERMISSION CHECK, FACETS, SPELLCHECK, SUGGESTIONS
+            // QUERY
+            // FOR PERMISSION CHECK, FACETS, SPELLCHECK, SUGGESTIONS
 
             // Clone the query and keep the original one
             CmsSolrQuery checkQuery = query.clone();
@@ -1134,8 +1134,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 } while ((resultSolrIds.size() < rows) && (processedResults < maxToProcess));
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////// QUERY
-            /// FOR RESULTS AND HIGHLIGHTING
+            // QUERY
+            // FOR RESULTS AND HIGHLIGHTING
 
             // the lists storing the found documents that will be returned
             List<CmsSearchResource> resourceDocumentList = new ArrayList<CmsSearchResource>(resultSolrIds.size());
@@ -1205,8 +1205,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             long processTime = System.currentTimeMillis() - startTime - solrPermissionTime - solrResultTime;
 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////// CREATE
-            /// THE FINAL RESPONSE
+            // CREATE
+            // THE FINAL RESPONSE
 
             // we are manipulating the checkQueryResponse to set up the final response, we want to deliver.
 

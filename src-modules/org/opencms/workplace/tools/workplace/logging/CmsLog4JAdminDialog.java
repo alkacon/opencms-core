@@ -463,9 +463,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     @Override
     protected void setColumns(CmsListMetadata metadata) {
 
-        //////////////////
+        // ---------------
         // FATAL COLUMN //
-        //////////////////
+        // ---------------
         CmsListColumnDefinition fatalColumn = new CmsListColumnDefinition(COLUMN_FATAL);
         fatalColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_FATAL_0));
         fatalColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -503,9 +503,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         fatalColumn.addDirectAction(fatalActAction);
         metadata.addColumn(fatalColumn);
 
-        //////////////////
+        // ---------------
         // ERROR COLUMN //
-        //////////////////
+        // ---------------
         CmsListColumnDefinition errorColumn = new CmsListColumnDefinition(COLUMN_ERROR);
         errorColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_ERROR_0));
         errorColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -541,9 +541,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         errorColumn.addDirectAction(errorActAction);
         metadata.addColumn(errorColumn);
 
-        /////////////////
+        // --------------
         // WARN COLUMN //
-        /////////////////
+        // --------------
         CmsListColumnDefinition warnColumn = new CmsListColumnDefinition(COLUMN_WARN);
         warnColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_WARN_0));
         warnColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -579,9 +579,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         warnColumn.addDirectAction(warnAction);
         metadata.addColumn(warnColumn);
 
-        /////////////////
+        // --------------
         // INFO COLUMN //
-        /////////////////
+        // --------------
         CmsListColumnDefinition infoColumn = new CmsListColumnDefinition(COLUMN_INFO);
         infoColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_INFO_0));
         infoColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -618,9 +618,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         infoColumn.addDirectAction(infoAction);
         metadata.addColumn(infoColumn);
 
-        //////////////////
+        // ---------------
         // DEBUG COLUMN //
-        //////////////////
+        // ---------------
         CmsListColumnDefinition debugColumn = new CmsListColumnDefinition(COLUMN_DEBUG);
         debugColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_DEBUG_0));
         debugColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -657,9 +657,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         debugColumn.addDirectAction(debugAction);
         metadata.addColumn(debugColumn);
 
-        /////////////////////
+        // ------------------
         // TRUN OFF COLUMN //
-        /////////////////////
+        // ------------------
         CmsListColumnDefinition offColumn = new CmsListColumnDefinition(COLUMN_OFF);
         offColumn.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_OFF_0));
         offColumn.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -693,9 +693,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         offColumn.addDirectAction(offAction);
         metadata.addColumn(offColumn);
 
-        //////////////////////////////
+        // ---------------------------
         // CURRENT LOG LEVEL COLUMN //
-        //////////////////////////////
+        // ---------------------------
         CmsListColumnDefinition logLevelHidden = new CmsListColumnDefinition(COLUMN_LOG_LEVEL);
         logLevelHidden.setName(Messages.get().container(Messages.GUI_LOG_LEVEL_CURRENT_0));
         logLevelHidden.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
@@ -705,9 +705,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         logLevelHidden.setVisible(false);
         metadata.addColumn(logLevelHidden);
 
-        //////////////////
+        // ---------------
         // LOG CHANNELS //
-        //////////////////
+        // ---------------
         CmsListColumnDefinition channels = new CmsListColumnDefinition(COLUMN_CHANNELS);
         channels.setName(Messages.get().container(Messages.GUI_LOG_CHANNELS_0));
         channels.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
@@ -716,9 +716,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         channels.setPrintable(true);
         metadata.addColumn(channels);
 
-        ///////////////////////////////
+        // ----------------------------
         // PARENT LOG CHANNEL COLUMN //
-        ///////////////////////////////
+        // ----------------------------
         CmsListColumnDefinition parentChannel = new CmsListColumnDefinition(COLUMN_PARENT_CHANNELS);
         parentChannel.setName(Messages.get().container(Messages.GUI_LOG_PARENT_CHANNEL_0));
         parentChannel.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
@@ -727,9 +727,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         parentChannel.setPrintable(false);
         metadata.addColumn(parentChannel);
 
-        /////////////////////
+        // ------------------
         // LOG FILE COLUMN //
-        /////////////////////
+        // ------------------
         CmsListColumnDefinition selectedFile = new CmsListColumnDefinition(COLUMN_LOG_FILE);
         selectedFile.setName(Messages.get().container(Messages.GUI_LOG_FILE_SELECTED_0));
         selectedFile.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
@@ -738,9 +738,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         selectedFile.setPrintable(false);
         metadata.addColumn(selectedFile);
 
-        ////////////////////////
+        // ---------------------
         // CHANGE FILE COLUMN //
-        ////////////////////////
+        // ---------------------
         CmsListColumnDefinition changeFile = new CmsListColumnDefinition(COLUMN_CHANGE_LOGFILE);
         changeFile.setName(Messages.get().container(Messages.GUI_LOG_FILE_CHANGE_FILE_0));
         changeFile.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
@@ -773,9 +773,9 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         changeFile.addDirectAction(changeFileAction);
         metadata.addColumn(changeFile);
 
-        ///////////////////
+        // ----------------
         // SEARCH ACTION //
-        ///////////////////
+        // ----------------
         CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(COLUMN_CHANNELS));
         metadata.setSearchAction(searchAction);
     }

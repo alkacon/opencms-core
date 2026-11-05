@@ -110,7 +110,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             setException(e);
             return;
         }
-        /// copied
+        // copied
         CmsConfigurationException exception = null;
         CmsModule module = null;
         try {

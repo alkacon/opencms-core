@@ -342,26 +342,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
                     Integer.valueOf(getAction())));
         }
         switch (getAction()) {
-            //////////////////// ACTION: default actions
+            // ACTION: default actions
             case ACTION_LIST_SEARCH:
             case ACTION_LIST_SORT:
             case ACTION_LIST_SELECT_PAGE:
                 executeDefaultActions();
                 break;
 
-            //////////////////// ACTION: execute single list action
+            // ACTION: execute single list action
             case ACTION_LIST_SINGLE_ACTION:
                 if (getSelectedItem() != null) {
                     executeListSingleActions();
                 }
                 break;
 
-            //////////////////// ACTION: execute multiple list actions
+            // ACTION: execute multiple list actions
             case ACTION_LIST_MULTI_ACTION:
                 executeListMultiActions();
                 break;
 
-            //////////////////// ACTION: execute independent list actions
+            // ACTION: execute independent list actions
             case ACTION_LIST_INDEPENDENT_ACTION:
                 executeListIndepActions();
                 break;

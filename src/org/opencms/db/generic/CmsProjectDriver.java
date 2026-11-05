@@ -759,9 +759,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
         CmsGroup users = m_driverManager.readGroup(dbc, usersGroup);
 
-        /////////////////////////////////////////////////////////////////////////////////////
+        // ----------------------------------------------------------------------------------
         // online project stuff
-        /////////////////////////////////////////////////////////////////////////////////////
+        // ----------------------------------------------------------------------------------
 
         // create the online project
         CmsProject onlineProject = createProject(
@@ -819,9 +819,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_driverManager.getVfsDriver(dbc).createResource(dbc, onlineProject.getUuid(), systemFolder, null);
 
-        /////////////////////////////////////////////////////////////////////////////////////
+        // ----------------------------------------------------------------------------------
         // setup project stuff
-        /////////////////////////////////////////////////////////////////////////////////////
+        // ----------------------------------------------------------------------------------
 
         // important: must access through driver manager to ensure proper cascading
         CmsProject setupProject = m_driverManager.getProjectDriver(dbc).createProject(
@@ -1703,7 +1703,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
 
-            /////////////////////////////////////////////////////////////////////////////////
+            // ------------------------------------------------------------------------------
             // write the historical project entry
 
             if (OpenCms.getSystemInfo().isHistoryEnabled()) {
@@ -1721,7 +1721,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
 
-            ////////////////////////////////////////////////////////////////////////////////
+            // -----------------------------------------------------------------------------
             // publish new/changed folders
 
             if (LOG.isDebugEnabled()) {
@@ -1826,7 +1826,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     I_CmsReport.FORMAT_HEADLINE);
             }
 
-            ////////////////////////////////////////////////////////////////////////////////
+            // -----------------------------------------------------------------------------
             // publish changed/new/deleted files
 
             publishedFileCount = 0;
@@ -1905,7 +1905,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 report.println(Messages.get().container(Messages.RPT_PUBLISH_FILES_END_0), I_CmsReport.FORMAT_HEADLINE);
             }
 
-            /////////////////////////////////////////////////////////////////////////////////
+            // ------------------------------------------------------------------------------
 
             // publish deleted folders
             List<CmsResource> deletedFolders = publishList.getDeletedFolderList();
