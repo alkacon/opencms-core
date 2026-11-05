@@ -88,6 +88,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.logging.Log;
 
@@ -2005,10 +2006,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
             }
 
-            if (Strings.builder().get().endsWithAny(vfsName.toLowerCase(), ".jsp", ".jspx")
-                && !OpenCms.getResourceManager().matchResourceType(
-                    CmsResourceTypeJsp.getStaticTypeName(),
-                    exportRes.getTypeId())) {
+            // Windows removes trailing dots from file names.
+            String normalizedVfsName = StringUtils.stripEnd(vfsName, ".");
+            if (Strings.builder().get().endsWithAny(normalizedVfsName.toLowerCase(), ".jsp", ".jspx")
+                && (vfsName.endsWith(".") // always reject exports with ".jsp."-like suffix, regardless of type
+                    || !OpenCms.getResourceManager().matchResourceType(
+                        CmsResourceTypeJsp.getStaticTypeName(),
+                        exportRes.getTypeId()))) {
 
                 return false;
             }
