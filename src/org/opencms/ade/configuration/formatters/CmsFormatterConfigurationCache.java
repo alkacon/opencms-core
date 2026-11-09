@@ -54,13 +54,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -243,55 +249,56 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
      */
     public void reload() {
 
-        List<CmsResource> settingConfigResources = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
         try {
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_SETTINGS_CONFIG);
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
-            settingConfigResources.addAll(m_cms.readResources("/", filter));
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-
-        Map<CmsUUID, Map<CmsSharedSettingKey, CmsXmlContentProperty>> sharedSettingsByStructureId = new HashMap<>();
-        for (CmsResource resource : settingConfigResources) {
-            Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettings = parseSettingsConfig(resource);
-            if (sharedSettings != null) {
-                sharedSettingsByStructureId.put(resource.getStructureId(), sharedSettings);
+            List<CmsResource> settingConfigResources = new ArrayList<>();
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_SETTINGS_CONFIG);
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+                settingConfigResources.addAll(m_cms.readResources("/", filter));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
             }
-        }
-        m_settingConfigs = sharedSettingsByStructureId;
 
-        List<CmsResource> formatterResources = new ArrayList<CmsResource>();
-        try {
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG);
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
-            formatterResources.addAll(m_cms.readResources("/", filter));
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        try {
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
-            formatterResources.addAll(m_cms.readResources("/", filter));
-            I_CmsResourceType typeFlex = OpenCms.getResourceManager().getResourceType(TYPE_FLEX_FORMATTER);
-            CmsResourceFilter filterFlex = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFlex);
-            formatterResources.addAll(m_cms.readResources("/", filterFlex));
-            I_CmsResourceType typeFunction = OpenCms.getResourceManager().getResourceType(
-                CmsResourceTypeFunctionConfig.TYPE_NAME);
-            CmsResourceFilter filterFunction = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFunction);
-            formatterResources.addAll(m_cms.readResources("/", filterFunction));
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        Map<CmsUUID, I_CmsFormatterBean> newFormatters = Maps.newHashMap();
-        for (CmsResource formatterResource : formatterResources) {
-            I_CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
-            if (formatterBean != null) {
-                newFormatters.put(formatterResource.getStructureId(), formatterBean);
+            // All shared settings must be available before any formatter is parsed.
+            m_settingConfigs = readConfigurations(executor, settingConfigResources, this::parseSettingsConfig);
+
+            List<CmsResource> formatterResources = new ArrayList<CmsResource>();
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG);
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+                formatterResources.addAll(m_cms.readResources("/", filter));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
             }
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+                formatterResources.addAll(m_cms.readResources("/", filter));
+                I_CmsResourceType typeFlex = OpenCms.getResourceManager().getResourceType(TYPE_FLEX_FORMATTER);
+                CmsResourceFilter filterFlex = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeFlex);
+                formatterResources.addAll(m_cms.readResources("/", filterFlex));
+                I_CmsResourceType typeFunction = OpenCms.getResourceManager().getResourceType(
+                    CmsResourceTypeFunctionConfig.TYPE_NAME);
+                CmsResourceFilter filterFunction = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                    typeFunction);
+                formatterResources.addAll(m_cms.readResources("/", filterFunction));
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            Map<CmsUUID, I_CmsFormatterBean> newFormatters = readConfigurations(
+                executor,
+                formatterResources,
+                resource -> readFormatter(resource.getStructureId()));
+            m_state = new CmsFormatterConfigurationCacheState(newFormatters);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while reloading formatter configurations", e);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("Could not reload formatter configurations", e.getCause());
+        } finally {
+            executor.shutdownNow();
         }
-        m_state = new CmsFormatterConfigurationCacheState(newFormatters);
-
     }
 
     /**
@@ -350,10 +357,13 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         I_CmsFormatterBean formatterBean = null;
         CmsResource formatterRes = null;
         try {
-            formatterRes = m_cms.readResource(structureId);
-            CmsFile formatterFile = m_cms.readFile(formatterRes);
-            CmsFormatterBeanParser parser = new CmsFormatterBeanParser(m_cms, m_settingConfigs);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, formatterFile);
+            // Resolving XML links may temporarily change the CMS context's site root.
+            CmsObject cms = OpenCms.initCmsObject(m_cms);
+            cms.getRequestContext().setRequestTime(m_cms.getRequestContext().getRequestTime());
+            formatterRes = cms.readResource(structureId);
+            CmsFile formatterFile = cms.readFile(formatterRes);
+            CmsFormatterBeanParser parser = new CmsFormatterBeanParser(cms, m_settingConfigs);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, formatterFile);
             formatterBean = parser.parse(content, formatterRes.getRootPath(), "" + formatterRes.getStructureId());
         } catch (Exception e) {
 
@@ -425,13 +435,13 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
         Map<CmsSharedSettingKey, CmsXmlContentProperty> result = new HashMap<>();
         try {
-            CmsFile settingFile = m_cms.readFile(resource);
-            CmsXmlContent settingContent = CmsXmlContentFactory.unmarshal(m_cms, settingFile);
+            CmsObject cms = OpenCms.initCmsObject(m_cms);
+            cms.getRequestContext().setRequestTime(m_cms.getRequestContext().getRequestTime());
+            CmsFile settingFile = cms.readFile(resource);
+            CmsXmlContent settingContent = CmsXmlContentFactory.unmarshal(cms, settingFile);
             CmsXmlContentRootLocation location = new CmsXmlContentRootLocation(settingContent, Locale.ENGLISH);
             for (I_CmsXmlContentValueLocation settingLoc : location.getSubValues(CmsFormatterBeanParser.N_SETTING)) {
-                CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(
-                    m_cms,
-                    settingLoc).getPropertyData();
+                CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(cms, settingLoc).getPropertyData();
                 String includeName = setting.getIncludeName(setting.getName());
                 if (includeName == null) {
                     LOG.warn(
@@ -443,7 +453,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 }
                 Set<String> formatterKeys = new HashSet<>();
                 for (I_CmsXmlContentValueLocation formatterKeyLoc : settingLoc.getSubValues(N_FORMATTER_KEY)) {
-                    String formatterKey = formatterKeyLoc.getValue().getStringValue(m_cms);
+                    String formatterKey = formatterKeyLoc.getValue().getStringValue(cms);
                     if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatterKey)) {
                         formatterKeys.add(formatterKey.trim());
                     }
@@ -462,5 +472,36 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             LOG.error(e.getLocalizedMessage());
             return null;
         }
+    }
+
+    /**
+     * Reads independent resource configurations in parallel and collects successful results on the calling thread.
+     *
+     * @param <T> the configuration type
+     * @param executor the local executor
+     * @param resources the configuration resources
+     * @param reader the reader, which must use a separate CMS context for each resource
+     * @return the configurations by structure id, omitting null results
+     * @throws InterruptedException if interrupted while waiting for results
+     * @throws ExecutionException if a reader fails unexpectedly
+     */
+    private <T> Map<CmsUUID, T> readConfigurations(
+        ExecutorService executor,
+        List<CmsResource> resources,
+        Function<CmsResource, T> reader)
+    throws InterruptedException, ExecutionException {
+
+        Map<CmsUUID, Future<T>> futures = new LinkedHashMap<>();
+        for (CmsResource resource : resources) {
+            futures.put(resource.getStructureId(), executor.submit(() -> reader.apply(resource)));
+        }
+        Map<CmsUUID, T> result = new HashMap<>();
+        for (Map.Entry<CmsUUID, Future<T>> entry : futures.entrySet()) {
+            T configuration = entry.getValue().get();
+            if (configuration != null) {
+                result.put(entry.getKey(), configuration);
+            }
+        }
+        return result;
     }
 }

@@ -57,6 +57,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -340,25 +343,48 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                             OpenCms.getResourceManager().getResourceType(TYPE_SITEMAP_MASTER_CONFIG)));
                     configFileCandidates.addAll(masterCandidates);
                 }
-                for (CmsResource candidate : configFileCandidates) {
-                    if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
-                        try {
-                            CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
-                            String basePath = getBasePath(candidate.getRootPath());
-                            CmsADEConfigDataInternal data = reader.parseSitemapConfiguration(basePath, candidate);
-                            siteConfigurations.put(candidate.getStructureId(), data);
-                        } catch (Exception e) {
-                            LOG.error(
-                                "Error processing sitemap configuration "
-                                    + candidate.getRootPath()
-                                    + ": "
-                                    + e.getLocalizedMessage(),
-                                e);
+                ExecutorService executor = Executors.newFixedThreadPool(4);
+                try {
+                    long requestTime = m_cms.getRequestContext().getRequestTime();
+                    Map<CmsUUID, Future<CmsADEConfigDataInternal>> configurations = new LinkedHashMap<>();
+                    for (CmsResource candidate : configFileCandidates) {
+                        if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
+                            configurations.put(candidate.getStructureId(), executor.submit(() -> {
+                                try {
+                                    // Resolving XML links may temporarily change the CMS context's site root.
+                                    CmsObject cms = OpenCms.initCmsObject(m_cms);
+                                    cms.getRequestContext().setRequestTime(requestTime);
+                                    CmsConfigurationReader reader = new CmsConfigurationReader(cms);
+                                    String basePath = getBasePath(candidate.getRootPath());
+                                    return reader.parseSitemapConfiguration(basePath, candidate);
+                                } catch (Exception e) {
+                                    LOG.error(
+                                        "Error processing sitemap configuration "
+                                            + candidate.getRootPath()
+                                            + ": "
+                                            + e.getLocalizedMessage(),
+                                        e);
+                                    return null;
+                                }
+                            }));
                         }
-
                     }
+                    // Collect on the calling thread before constructing the cache state.
+                    for (Map.Entry<CmsUUID, Future<CmsADEConfigDataInternal>> entry : configurations.entrySet()) {
+                        CmsADEConfigDataInternal data = entry.getValue().get();
+                        if (data != null) {
+                            siteConfigurations.put(entry.getKey(), data);
+                        }
+                    }
+                } finally {
+                    executor.shutdownNow();
                 }
 
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Interrupted while reading sitemap configurations", e);
+            } catch (ExecutionException e) {
+                throw new IllegalStateException("Could not read sitemap configurations", e.getCause());
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

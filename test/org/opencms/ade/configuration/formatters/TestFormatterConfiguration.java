@@ -57,6 +57,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -632,6 +635,59 @@ public class TestFormatterConfiguration extends OpenCmsTestRunner {
         } finally {
             delete("/system/formatter1.fc");
             delete("/system/formatter2.fc");
+        }
+    }
+
+    /**
+     * Tests that a complete reload reads formatters concurrently and includes all results.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testParallelReload() throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        cms.getRequestContext().setSiteRoot("");
+        String folder = "/system/parallel-formatter-test/";
+        try {
+            createFolder(cms, folder);
+            Set<CmsUUID> expectedIds = new HashSet<>();
+            for (int i = 0; i < 8; i++) {
+                CmsResource resource = createFile(
+                    cms,
+                    folder + "formatter" + i + ".xml",
+                    "formatter_config",
+                    createFormatterConfigXml("plain", "parallel" + i, true, 100));
+                expectedIds.add(resource.getStructureId());
+            }
+            CountDownLatch started = new CountDownLatch(4);
+            Set<Thread> workers = ConcurrentHashMap.newKeySet();
+            CmsFormatterConfigurationCache cache = new CmsFormatterConfigurationCache(cms, "parallel-test") {
+
+                @Override
+                protected I_CmsFormatterBean readFormatter(CmsUUID structureId) {
+
+                    workers.add(Thread.currentThread());
+                    started.countDown();
+                    try {
+                        assertTrue(started.await(10, TimeUnit.SECONDS), "Four formatter reads should overlap");
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new AssertionError(e);
+                    }
+                    return super.readFormatter(structureId);
+                }
+            };
+            cache.reload();
+            assertEquals(4, workers.size());
+            assertFalse(workers.contains(Thread.currentThread()));
+            assertTrue(cache.getState().getFormatters().keySet().containsAll(expectedIds));
+            for (Thread worker : workers) {
+                worker.join(10000);
+                assertFalse(worker.isAlive(), "The local worker pool should shut down after reload");
+            }
+        } finally {
+            delete(folder);
         }
     }
 

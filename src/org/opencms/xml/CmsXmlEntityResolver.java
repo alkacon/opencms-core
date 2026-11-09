@@ -208,7 +208,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     /**
      * Initializes the internal caches for permanent and temporary system IDs.<p>
      */
-    private static void initCaches() {
+    private static synchronized void initCaches() {
 
         if (m_cacheTemporary == null) {
             m_cacheTemporary = CmsMemoryMonitor.createLRUCacheMap(1024);
