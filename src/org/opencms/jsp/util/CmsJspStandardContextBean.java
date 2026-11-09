@@ -939,32 +939,11 @@ public final class CmsJspStandardContextBean {
      */
     public static String getFunctionDetailLinkExact(CmsObject cms, String functionName) {
 
-        String type = CmsDetailPageInfo.FUNCTION_PREFIX + functionName;
-
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
             cms,
             cms.addSiteRoot(cms.getRequestContext().getUri()));
-        List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
-
-        CmsDetailPageInfo detailPage = null;
-        if ((detailPages == null) || (detailPages.size() == 0)) {
-            return null;
-        }
-        detailPage = detailPages.get(0);
-        if (detailPage.isDefaultDetailPage()) {
-            return null;
-        }
-
-        CmsUUID id = detailPage.getId();
-        try {
-            CmsResource r = cms.readResource(id);
-            String link = OpenCms.getLinkManager().substituteLink(cms, r);
-            return link;
-        } catch (CmsException e) {
-            LOG.warn(e.getLocalizedMessage(), e);
-            return null;
-        }
-
+        CmsResource detailPage = config.getFunctionDetailPageExact(cms, functionName);
+        return detailPage == null ? null : OpenCms.getLinkManager().substituteLink(cms, detailPage);
     }
 
     /**

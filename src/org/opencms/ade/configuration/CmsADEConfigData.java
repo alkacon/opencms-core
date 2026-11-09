@@ -1308,6 +1308,33 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the resource of a function detail page without falling back to the default detail page.
+     *
+     * @param cms the CMS context
+     * @param functionName the function name
+     *
+     * @return the detail page resource, or null if none is configured or the resource cannot be read
+     */
+    public CmsResource getFunctionDetailPageExact(CmsObject cms, String functionName) {
+
+        String type = CmsDetailPageInfo.FUNCTION_PREFIX + functionName;
+        List<CmsDetailPageInfo> detailPages = getDetailPagesForType(type);
+        if ((detailPages == null) || (detailPages.size() == 0)) {
+            return null;
+        }
+        CmsDetailPageInfo detailPage = detailPages.get(0);
+        if (detailPage.isDefaultDetailPage()) {
+            return null;
+        }
+        try {
+            return cms.readResource(detailPage.getId());
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
+
+    /**
      * Gets a named function reference.<p>
      *
      * @param name the name of the function reference
