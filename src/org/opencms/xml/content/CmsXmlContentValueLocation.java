@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Lists;
 
 /**
  * Represents the concrete location of an XML content value.<p>
@@ -50,6 +49,38 @@ import com.google.common.collect.Lists;
  * @since 8.0.0
  */
 public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation {
+
+    /** A value and its precomputed sort keys. */
+    private static class SortableValue {
+
+        /** The numeric index of the last path element. */
+        private final int m_index;
+
+        /** The location to return. */
+        private final CmsXmlContentValueLocation m_location;
+
+        /** The path without the final index. */
+        private final String m_path;
+
+        /**
+         * Creates a sortable value.<p>
+         *
+         * @param location the location
+         * @param path the full indexed path
+         */
+        SortableValue(CmsXmlContentValueLocation location, String path) {
+
+            m_location = location;
+            m_path = CmsXmlUtils.removeXpathIndex(path);
+            m_index = CmsXmlUtils.getXpathIndexInt(path);
+        }
+    }
+
+    /** Whether paths may be cached while reading an unchanged document. */
+    private final boolean m_cachePaths;
+
+    /** The lazily cached path. */
+    private String m_path;
 
     /** The XML content value. */
     private I_CmsXmlContentValue m_value;
@@ -61,10 +92,25 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
      */
     public CmsXmlContentValueLocation(I_CmsXmlContentValue value) {
 
+        this(value, false);
+    }
+
+    /**
+     * Constructs a location with optional path caching.<p>
+     *
+     * If caching is enabled, the document structure must remain unchanged while this
+     * location or any locations obtained from it are in use.<p>
+     *
+     * @param value the XML content value
+     * @param cachePaths whether to cache paths for read-only access
+     */
+    public CmsXmlContentValueLocation(I_CmsXmlContentValue value, boolean cachePaths) {
+
         if (value == null) {
             throw new UnsupportedOperationException("Can't create content value location with a null value.");
         }
         m_value = value;
+        m_cachePaths = cachePaths;
     }
 
     /**
@@ -111,10 +157,10 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
         Locale locale = m_value.getLocale();
 
         I_CmsXmlContentValue subValue = m_value.getDocument().getValue(
-            CmsXmlUtils.concatXpath(m_value.getPath(), subPath),
+            CmsXmlUtils.concatXpath(getPath(), subPath),
             locale);
         if (subValue != null) {
-            return new CmsXmlContentValueLocation(subValue);
+            return new CmsXmlContentValueLocation(subValue, m_cachePaths);
         }
         return null;
     }
@@ -127,34 +173,37 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
         List<I_CmsXmlContentValueLocation> result = new ArrayList<I_CmsXmlContentValueLocation>();
         String requiredLastElement = CmsXmlUtils.getLastXpathElement(subPath);
         Locale locale = m_value.getLocale();
-        List<I_CmsXmlContentValue> subValues = Lists.newArrayList(
-            m_value.getDocument().getValues(CmsXmlUtils.concatXpath(m_value.getPath(), subPath), locale));
+        List<I_CmsXmlContentValue> subValues = m_value.getDocument().getValues(
+            CmsXmlUtils.concatXpath(getPath(), subPath),
+            locale);
+        List<SortableValue> sortedValues = new ArrayList<>();
+        for (I_CmsXmlContentValue subValue : subValues) {
+            if (subValue != null) {
+                String path = subValue.getPath();
+                // Repeating choices return values with other names too. Use the already computed
+                // path to preserve the existing filtering semantics, including qualified names.
+                if (CmsXmlUtils.getLastXpathElement(path).equals(requiredLastElement)) {
+                    CmsXmlContentValueLocation location = new CmsXmlContentValueLocation(subValue, m_cachePaths);
+                    if (m_cachePaths) {
+                        location.m_path = path;
+                    }
+                    sortedValues.add(new SortableValue(location, path));
+                }
+            }
+        }
 
-        Collections.sort(subValues, new Comparator<I_CmsXmlContentValue>() {
+        Collections.sort(sortedValues, new Comparator<SortableValue>() {
 
-            public int compare(I_CmsXmlContentValue firstValue, I_CmsXmlContentValue secondValue) {
+            public int compare(SortableValue firstValue, SortableValue secondValue) {
 
-                String firstPath = CmsXmlUtils.removeXpathIndex(firstValue.getPath());
-                String secondPath = CmsXmlUtils.removeXpathIndex(secondValue.getPath());
-                int firstIndex = CmsXmlUtils.getXpathIndexInt(firstValue.getPath());
-                int secondIndex = CmsXmlUtils.getXpathIndexInt(secondValue.getPath());
-                int comparisonResult = ComparisonChain.start().compare(firstPath, secondPath).compare(
-                    firstIndex,
-                    secondIndex).result();
-                return comparisonResult;
+                return ComparisonChain.start().compare(firstValue.m_path, secondValue.m_path).compare(
+                    firstValue.m_index,
+                    secondValue.m_index).result();
             }
         });
 
-        for (I_CmsXmlContentValue subValue : subValues) {
-            if (subValue != null) {
-                // if subPath is the path of one option of a choice element, getValues() will, strangely,
-                // return all values of the choice, regardless of their name, so we need to check
-                // the name by hand
-                String lastElement = CmsXmlUtils.getLastXpathElement(subValue.getPath());
-                if (lastElement.equals(requiredLastElement)) {
-                    result.add(new CmsXmlContentValueLocation(subValue));
-                }
-            }
+        for (SortableValue value : sortedValues) {
+            result.add(value.m_location);
         }
         return result;
     }
@@ -167,6 +216,22 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
     public I_CmsXmlContentValue getValue() {
 
         return m_value;
+    }
+
+    /**
+     * Gets the path, reusing it when read-only access was requested.<p>
+     *
+     * @return the indexed path
+     */
+    private String getPath() {
+
+        if (!m_cachePaths) {
+            return m_value.getPath();
+        }
+        if (m_path == null) {
+            m_path = m_value.getPath();
+        }
+        return m_path;
     }
 
 }

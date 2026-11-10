@@ -439,7 +439,7 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
             cms.getRequestContext().setRequestTime(m_cms.getRequestContext().getRequestTime());
             CmsFile settingFile = cms.readFile(resource);
             CmsXmlContent settingContent = CmsXmlContentFactory.unmarshal(cms, settingFile);
-            CmsXmlContentRootLocation location = new CmsXmlContentRootLocation(settingContent, Locale.ENGLISH);
+            CmsXmlContentRootLocation location = new CmsXmlContentRootLocation(settingContent, Locale.ENGLISH, true);
             for (I_CmsXmlContentValueLocation settingLoc : location.getSubValues(CmsFormatterBeanParser.N_SETTING)) {
                 CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(cms, settingLoc).getPropertyData();
                 String includeName = setting.getIncludeName(setting.getName());

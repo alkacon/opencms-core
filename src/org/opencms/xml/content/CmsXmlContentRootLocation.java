@@ -41,6 +41,9 @@ import java.util.Locale;
  */
 public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
 
+    /** Whether child locations may cache paths for read-only access. */
+    private final boolean m_cachePaths;
+
     /** The XML document. */
     private I_CmsXmlDocument m_document;
 
@@ -55,8 +58,24 @@ public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
      */
     public CmsXmlContentRootLocation(I_CmsXmlDocument doc, Locale locale) {
 
+        this(doc, locale, false);
+    }
+
+    /**
+     * Creates a root location with optional path caching for its descendants.<p>
+     *
+     * If caching is enabled, the document structure must remain unchanged while
+     * locations obtained from this root are in use.<p>
+     *
+     * @param doc the XML document
+     * @param locale the locale
+     * @param cachePaths whether to cache paths for read-only access
+     */
+    public CmsXmlContentRootLocation(I_CmsXmlDocument doc, Locale locale, boolean cachePaths) {
+
         m_document = doc;
         m_locale = locale;
+        m_cachePaths = cachePaths;
     }
 
     /**
@@ -84,7 +103,7 @@ public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
         if (value == null) {
             return null;
         }
-        return new CmsXmlContentValueLocation(value);
+        return new CmsXmlContentValueLocation(value, m_cachePaths);
     }
 
     /**
@@ -96,7 +115,7 @@ public class CmsXmlContentRootLocation implements I_CmsXmlContentLocation {
         List<I_CmsXmlContentValueLocation> result = new ArrayList<I_CmsXmlContentValueLocation>();
         for (I_CmsXmlContentValue value : values) {
             if (value != null) {
-                result.add(new CmsXmlContentValueLocation(value));
+                result.add(new CmsXmlContentValueLocation(value, m_cachePaths));
             }
         }
         return result;

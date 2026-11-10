@@ -369,7 +369,7 @@ public class CmsFormatterBeanParser {
         Locale en = Locale.ENGLISH;
         I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
         m_niceName = niceName != null ? niceName.getStringValue(m_cms) : null;
-        CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, en);
+        CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, en, true);
         I_CmsXmlContentValueLocation rankLoc = root.getSubValue(N_RANK);
         if (rankLoc != null) {
             String rankStr = rankLoc.getValue().getStringValue(m_cms);
