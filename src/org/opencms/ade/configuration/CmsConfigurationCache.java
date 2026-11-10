@@ -231,7 +231,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         if (rootPath != null) {
             return rootPath;
         }
-        CmsResource res = m_cms.readResource(structureId);
+        CmsResource res = m_cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
         m_pathCache.put(structureId, res.getRootPath());
         return res.getRootPath();
     }
