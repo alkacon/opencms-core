@@ -45,9 +45,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -816,6 +818,20 @@ public class TestProperty extends OpenCmsTestRunner {
     }
 
     /**
+     * Tests modification metadata when writing properties with a CmsResource argument.<p>
+     *
+     * @return tests for structure and shared properties
+     */
+    @TestFactory
+    @Order(17)
+    public List<DynamicTest> testWritePropertyObjectsUpdatesModificationMetadata() {
+
+        return List.of(
+            DynamicTest.dynamicTest("structure property", () -> checkPropertyModificationMetadata(false)),
+            DynamicTest.dynamicTest("shared property", () -> checkPropertyModificationMetadata(true)));
+    }
+
+    /**
      * Tests the writePropertyObject method for writing of a property on a folder.<p>
      *
      * @throws Throwable if something goes wrong
@@ -828,5 +844,70 @@ public class TestProperty extends OpenCmsTestRunner {
         echo("Testing writing one property on a folder");
         CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);
         writeProperty(this, cms, "/folder2/", property10);
+    }
+
+    /**
+     * Checks that a property write replaces the previous modification user, project and date.<p>
+     *
+     * @param shared whether to write a shared resource property
+     * @throws Exception if the test fails
+     */
+    private void checkPropertyModificationMetadata(boolean shared) throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsUser originalUser = cms.getRequestContext().getCurrentUser();
+        CmsProject originalProject = cms.getRequestContext().getCurrentProject();
+        String name = "property-metadata-" + (shared ? "shared" : "structure");
+        String path = "/" + name + ".txt";
+        long originalDate = 1234567890000L;
+        CmsProperty originalProperty = new CmsProperty(
+            "Title",
+            shared ? null : "old title",
+            shared ? "old title" : null);
+        cms.createResource(path, CmsResourceTypePlain.getStaticTypeId(), new byte[0], List.of(originalProperty));
+        cms.setDateLastModified(path, originalDate, false);
+        cms.unlockResource(path);
+
+        CmsUser modifier = cms.createUser(name, "test-password", "Property metadata test user", new HashMap<>());
+        cms.addUserToGroup(name, OpenCms.getDefaultUsers().getGroupAdministrators());
+        CmsProject project = cms.createProject(
+            name,
+            "Property metadata test project",
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        cms.loginUser(name, "test-password");
+        cms.getRequestContext().setCurrentProject(project);
+        cms.copyResourceToProject(path);
+        cms.lockResource(path);
+        // Locking changes the modification project, so reset it before the property write.
+        cms.writeProjectLastModified(cms.readResource(path), originalProject);
+        OpenCms.getMemoryMonitor().clearResourceCache();
+        CmsResource resource = cms.readResource(path);
+        assertAll(
+            () -> assertEquals(originalUser.getId(), resource.getUserLastModified(), "initial modification user"),
+            () -> assertEquals(
+                originalProject.getUuid(),
+                resource.getProjectLastModified(),
+                "initial modification project"),
+            () -> assertEquals(originalDate, resource.getDateLastModified(), "initial modification date"));
+
+        CmsProperty property = new CmsProperty("Title", shared ? null : "new title", shared ? "new title" : null);
+        long beforeWrite = System.currentTimeMillis();
+        cms.writePropertyObjects(resource, List.of(property));
+        long afterWrite = System.currentTimeMillis();
+
+        OpenCms.getMemoryMonitor().clearResourceCache();
+        CmsResource actual = cms.readResource(resource.getStructureId());
+        CmsProperty written = cms.readPropertyObject(actual, "Title", false);
+        assertAll(
+            () -> assertEquals("new title", shared ? written.getResourceValue() : written.getStructureValue()),
+            () -> assertEquals(modifier.getId(), actual.getUserLastModified(), "modification user"),
+            () -> assertEquals(project.getUuid(), actual.getProjectLastModified(), "modification project"),
+            () -> assertTrue(
+                actual.getDateLastModified() >= beforeWrite,
+                "modification date must advance to the write"),
+            () -> assertTrue(
+                actual.getDateLastModified() <= afterWrite,
+                "modification date must not be in the future"));
     }
 }
