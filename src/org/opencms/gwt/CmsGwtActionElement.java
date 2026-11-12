@@ -351,7 +351,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Exports script tag to the main OpenCms GWT no-cache js script tag.<p>
+     * Exports the external editor stylesheet and scripts followed by the main OpenCms GWT bootstrap script.<p>
      *
      * @param moduleName the client module to start
      *
@@ -363,7 +363,14 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + CmsCoreData.META_PARAM_MODULE_KEY
             + "\" content=\""
             + moduleName
-            + "\" >\n<script src=\""
+            + "\" >\n<link rel=\"stylesheet\" href=\""
+            + CmsWorkplace.getStaticResourceUri("bootstrap-icons/bootstrap-icons.min.css")
+            + "\">\n<script src=\""
+            + CmsWorkplace.getStaticResourceUri(
+                "editors/tinymce/jscripts/tinymce/plugins/typograf/dist/typograf.all.min.js")
+            + "\"></script>\n<script src=\""
+            + CmsWorkplace.getStaticResourceUri("editors/tinymce/jscripts/tinymce/tinymce.min.js")
+            + "\"></script>\n<script src=\""
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         result += "\"></script>\n";
         return result;

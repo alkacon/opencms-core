@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
 	<inherits name="org.opencms.GwtBaseCommon" />
-	<define-linker name="cmsIFrameLinker" class="org.opencms.gwt.linker.CmsIFrameLinker" />
-   	<add-linker name="cmsIFrameLinker" />		
+	<add-linker name="xsiframe" />
 </module>

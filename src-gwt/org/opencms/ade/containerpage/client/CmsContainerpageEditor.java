@@ -419,22 +419,22 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     private native void exportMethods(CmsContainerpageController controller) /*-{
         var contr = controller;
-        $wnd.opencms = {
-            openStacktraceDialog : function(event) {
-                event = (event) ? event : ((window.event) ? window.event : "");
-                var elem = (event.target) ? event.target : event.srcElement;
-                if (elem != null) {
-                    var children = elem.getElementsByTagName("span");
-                    if (children.length > 0) {
-                        var title = children[0].getAttribute("title");
-                        var content = children[0].innerHTML;
-                        @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                    }
+        // Preserve the GWT bootstrap function and its Super Dev Mode state.
+        var api = $wnd.opencms = $wnd.opencms || {};
+        api.openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
                 }
-            },
-            reinitializeEditButtons : function() {
-                contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
             }
-        }
+        };
+        api.reinitializeEditButtons = function() {
+            contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+        };
     }-*/;
 }

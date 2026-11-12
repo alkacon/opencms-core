@@ -1073,10 +1073,10 @@ Properties gwtProps = new Properties()
 gwtProps.load(new FileInputStream("${projectDir}/src-gwt/gwt-modules.properties"))
 project.ext.gwtModuleNames = gwtProps['gwtmodules']
 
-// Run GWT Super Dev Mode against one of the project's modules.
+// Run GWT Super Dev Mode against the selected project modules.
 tasks.register('gwtSuperDev', JavaExec) {
     group = 'GWT'
-    description = 'Starts the GWT Super Dev Mode code server (select module with -PgwtModule=...).'
+    description = 'Starts the GWT Super Dev Mode code server (select modules with -PgwtSuperDevModules=module1,module2,...).'
     dependsOn gwtClasses
     mainClass = 'com.google.gwt.dev.codeserver.CodeServer'
     classpath {
@@ -1091,11 +1091,15 @@ tasks.register('gwtSuperDev', JavaExec) {
         ]
     }
     doFirst {
-        def module = project.findProperty('gwtModule') ?: 'org.opencms.ade.OpenCms'
-        if (!gwtModuleNames.split(',').contains(module)) {
-            throw new GradleException("Unknown GWT module '${module}'. Available modules: ${gwtModuleNames}")
+        def modules = (project.findProperty('gwtSuperDevModules') ?: '').split(',').collect { it.trim() }.findAll { it }.unique()
+        if (modules.isEmpty()) {
+            throw new GradleException('Select at least one GWT module with -PgwtSuperDevModules=module1,module2,...')
         }
-        def workDir = layout.buildDirectory.dir("gwt-superdev-work/${module}").get().asFile
+        def unknownModules = modules.findAll { !gwtModuleNames.split(',').contains(it) }
+        if (!unknownModules.isEmpty()) {
+            throw new GradleException("Unknown GWT modules: ${unknownModules.join(', ')}. Available modules: ${gwtModuleNames}")
+        }
+        def workDir = layout.buildDirectory.dir('gwt-superdev-work').get().asFile
         workDir.mkdirs()
         args = [
             '-port', project.findProperty('gwtPort') ?: '9876',
@@ -1103,11 +1107,10 @@ tasks.register('gwtSuperDev', JavaExec) {
             '-workDir', workDir.absolutePath,
             '-logLevel', 'INFO',
             '-style', 'PRETTY',
-            '-setProperty', 'locale=en',
-            module
-        ]
+            '-setProperty', 'locale=en'
+        ] + modules
     }
-    maxHeapSize = max_heap_size
+    maxHeapSize = project.property('gwtSuperDevMaxHeapSize')
 }
 
 tasks.register('resourcesJar', Jar) {
