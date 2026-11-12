@@ -1245,7 +1245,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 new String[] {resource.getRootPath()}),
             false);
         // write it
-        writeResource(dbc, clone);
+        writeResource(dbc, clone, true);
     }
 
     /**
@@ -3399,8 +3399,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     removeAce = false;
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
-                    getVfsDriver(
-                        dbc).writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_STRUCTURE, false);
+                    getVfsDriver(dbc).writeResourceState(
+                        dbc,
+                        dbc.currentProject(),
+                        currentResource,
+                        UPDATE_STRUCTURE_STATE,
+                        false);
 
                     // update the project ID
                     getVfsDriver(dbc).writeLastModifiedProjectId(
@@ -8815,7 +8819,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             false);
 
         // update the "last modified" information
-        setDateLastModified(dbc, resource, resource.getDateLastModified());
+        touchResource(dbc, resource, null);
 
         // clear the cache
         m_monitor.clearAccessControlListCache();
@@ -9511,7 +9515,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        try (var ignored = dbc.withAttribute(I_CmsVfsDriver.DBC_ATTR_UPDATE_DATE_EXPIRED, Boolean.TRUE)) {
+            getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        }
 
         // modify the last modified project reference
         getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
@@ -9550,34 +9556,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setDateLastModified(CmsDbContext dbc, CmsResource resource, long dateLastModified)
     throws CmsDataAccessException {
 
-        // modify the last modification date
-        resource.setDateLastModified(dateLastModified);
-        if (resource.getState().isUnchanged()) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        } else if (resource.getState().isNew() && (resource.getSiblingCount() > 1)) {
-            // in case of new resources with siblings make sure the state is correct
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
-        resource.setUserLastModified(dbc.currentUser().getId());
-        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
-
-        log(
-            dbc,
-            new CmsLogEntry(
-                dbc,
-                resource.getStructureId(),
-                CmsLogEntryType.RESOURCE_TOUCHED,
-                new String[] {resource.getRootPath()}),
-            false);
-
-        // clear the cache
-        m_monitor.clearResourceCache();
-
-        // fire the event
-        Map<String, Object> data = new HashMap<String, Object>(2);
-        data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_LASTMODIFIED));
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        touchResource(dbc, resource, Long.valueOf(dateLastModified));
     }
 
     /**
@@ -9600,7 +9579,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (resource.getState().isUnchanged()) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
-        getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        try (var ignored = dbc.withAttribute(I_CmsVfsDriver.DBC_ATTR_UPDATE_DATE_RELEASED, Boolean.TRUE)) {
+            getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_STRUCTURE, false);
+        }
 
         // modify the last modified project reference
         getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE_PROJECT, false);
@@ -9779,7 +9760,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // set the state to changed
         resource.setState(CmsResourceState.STATE_CHANGED);
         // perform the changes
-        updateState(dbc, resource, false);
+        updateState(dbc, resource, UPDATE_STRUCTURE_STATE, false);
         // log it
         log(
             dbc,
@@ -10339,7 +10320,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             false);
 
         // update the "last modified" information
-        setDateLastModified(dbc, resource, resource.getDateLastModified());
+        touchResource(dbc, resource, null);
 
         // clear the cache
         m_monitor.clearAccessControlListCache();
@@ -10709,7 +10690,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             getVfsDriver(dbc).writePropertyObject(dbc, dbc.currentProject(), resource, property);
 
             if (updateState > 0) {
-                updateState(dbc, resource, updateState == 2);
+                updateState(dbc, resource, updateState == 2 ? UPDATE_RESOURCE_STATE : UPDATE_STRUCTURE_STATE, true);
             }
             // log it
             log(
@@ -10791,7 +10772,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             if (updateStateValue > 0) {
                 // update state
-                updateState(dbc, resource, (updateStateValue == 2));
+                updateState(
+                    dbc,
+                    resource,
+                    updateStateValue == 2 ? UPDATE_RESOURCE_STATE : UPDATE_STRUCTURE_STATE,
+                    true);
             }
 
             if (updateState) {
@@ -10857,30 +10842,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeResource(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        // access was granted - write the resource
-        resource.setUserLastModified(dbc.currentUser().getId());
-        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
-        ? dbc.currentProject().getUuid()
-        : dbc.getProjectId();
-
-        getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_RESOURCE_STATE);
-
-        // make sure the written resource has the state correctly set
-        if (resource.getState().isUnchanged()) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
-
-        // delete in content relations if the new type is not parseable
-        if (!(OpenCms.getResourceManager().getResourceType(resource.getTypeId()) instanceof I_CmsLinkParseable)) {
-            deleteRelationsWithSiblings(dbc, resource);
-        }
-
-        // update the cache
-        m_monitor.clearResourceCache();
-        Map<String, Object> data = new HashMap<String, Object>(2);
-        data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE));
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        writeResource(dbc, resource, false);
     }
 
     /**
@@ -12347,6 +12309,50 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Updates the modification metadata and state of a resource.<p>
+     *
+     * @param dbc the database context
+     * @param resource the resource to touch
+     * @param dateLastModified the new modification date, or null to preserve the stored date
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    private void touchResource(CmsDbContext dbc, CmsResource resource, Long dateLastModified)
+    throws CmsDataAccessException {
+
+        if (dateLastModified != null) {
+            resource.setDateLastModified(dateLastModified.longValue());
+        }
+        if (resource.getState().isUnchanged()) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        } else if (resource.getState().isNew() && (resource.getSiblingCount() > 1)) {
+            // in case of new resources with siblings make sure the state is correct
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+        try (var ignored = dbc.withAttribute(
+            I_CmsVfsDriver.DBC_ATTR_PRESERVE_DATE_LASTMODIFIED,
+            Boolean.valueOf(dateLastModified == null))) {
+            getVfsDriver(dbc).writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE, false);
+        }
+
+        log(
+            dbc,
+            new CmsLogEntry(
+                dbc,
+                resource.getStructureId(),
+                CmsLogEntryType.RESOURCE_TOUCHED,
+                new String[] {resource.getRootPath()}),
+            false);
+
+        m_monitor.clearResourceCache();
+        Map<String, Object> data = new HashMap<String, Object>(2);
+        data.put(I_CmsEventListener.KEY_RESOURCE, resource);
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_LASTMODIFIED));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+    }
+
+    /**
      * All permissions and resources attributes of the principal
      * are transfered to a replacement principal.<p>
      *
@@ -12745,27 +12751,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Updates the state of a resource, depending on the <code>resourceState</code> parameter.<p>
+     * Updates the state and modification metadata of a resource.<p>
      *
      * @param dbc the db context
      * @param resource the resource
-     * @param resourceState if <code>true</code> the resource state will be updated, if not just the structure state.
+     * @param changed the driver update mode
+     * @param propertiesOnly whether to update only property state and modification metadata
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    private void updateState(CmsDbContext dbc, CmsResource resource, boolean resourceState)
+    private void updateState(CmsDbContext dbc, CmsResource resource, int changed, boolean propertiesOnly)
     throws CmsDataAccessException {
 
         CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
         ? dbc.currentProject().getUuid()
         : dbc.getProjectId();
         resource.setUserLastModified(dbc.currentUser().getId());
-        if (resourceState) {
-            // update the whole resource state
-            getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_RESOURCE_STATE);
-        } else {
-            // update the structure state
-            getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_STRUCTURE_STATE);
+        try (
+        var ignored = dbc.withAttribute(I_CmsVfsDriver.DBC_ATTR_UPDATE_PROPERTIES, Boolean.valueOf(propertiesOnly))) {
+            getVfsDriver(dbc).writeResource(dbc, projectId, resource, changed);
         }
     }
 
@@ -12785,6 +12789,42 @@ public final class CmsDriverManager implements I_CmsEventListener {
             Thread.currentThread().getContextClassLoader(),
             new Class[] {cls},
             new CmsProfilingInvocationHandler(newDriverInstance, CmsDefaultProfilingHandler.INSTANCE));
+    }
+
+    /**
+     * Writes resource metadata and performs the associated relation and cache updates.<p>
+     *
+     * @param dbc the database context
+     * @param resource the resource to write
+     * @param typeOnly whether to update only the type, state and modification metadata
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void writeResource(CmsDbContext dbc, CmsResource resource, boolean typeOnly) throws CmsException {
+
+        resource.setUserLastModified(dbc.currentUser().getId());
+        CmsUUID projectId = ((dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID())
+        ? dbc.currentProject().getUuid()
+        : dbc.getProjectId();
+
+        try (var ignored = dbc.withAttribute(I_CmsVfsDriver.DBC_ATTR_UPDATE_RESOURCE_TYPE, Boolean.valueOf(typeOnly))) {
+            getVfsDriver(dbc).writeResource(dbc, projectId, resource, UPDATE_RESOURCE_STATE);
+        }
+
+        if (resource.getState().isUnchanged()) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+
+        // delete in content relations if the new type is not parseable
+        if (!(OpenCms.getResourceManager().getResourceType(resource.getTypeId()) instanceof I_CmsLinkParseable)) {
+            deleteRelationsWithSiblings(dbc, resource);
+        }
+
+        m_monitor.clearResourceCache();
+        Map<String, Object> data = new HashMap<String, Object>(2);
+        data.put(I_CmsEventListener.KEY_RESOURCE, resource);
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
 }

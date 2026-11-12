@@ -61,6 +61,21 @@ import java.util.Map;
  */
 public interface I_CmsVfsDriver {
 
+    /** Boolean DB context attribute to preserve the stored modification date in writeResourceState. */
+    String DBC_ATTR_PRESERVE_DATE_LASTMODIFIED = "PRESERVE_DATE_LASTMODIFIED";
+
+    /** Boolean DB context attribute to update only the expiration date and stored structure state. */
+    String DBC_ATTR_UPDATE_DATE_EXPIRED = "UPDATE_DATE_EXPIRED";
+
+    /** Boolean DB context attribute to update only the release date and stored structure state. */
+    String DBC_ATTR_UPDATE_DATE_RELEASED = "UPDATE_DATE_RELEASED";
+
+    /** Boolean DB context attribute to update only property state and modification metadata in writeResource. */
+    String DBC_ATTR_UPDATE_PROPERTIES = "UPDATE_PROPERTIES";
+
+    /** Boolean DB context attribute to update only the type, state and modification metadata in writeResource. */
+    String DBC_ATTR_UPDATE_RESOURCE_TYPE = "UPDATE_RESOURCE_TYPE";
+
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 3;
 
@@ -1114,6 +1129,13 @@ public interface I_CmsVfsDriver {
      * or "deleted". The "changed" argument allows to choose whether the structure
      * or resource state, or none of them, is set to "changed".<p>
      *
+     * Setting the {@link #DBC_ATTR_UPDATE_RESOURCE_TYPE} or {@link #DBC_ATTR_UPDATE_PROPERTIES}
+     * attribute on the database context to {@link Boolean#TRUE} updates only the
+     * requested type or property state and modification metadata, preserving all
+     * unrelated header fields even if the supplied resource is stale. Property updates
+     * use {@link CmsDriverManager#UPDATE_RESOURCE_STATE} or
+     * {@link CmsDriverManager#UPDATE_STRUCTURE_STATE} to select the state to change.<p>
+     *
      * The rating of the file state values is as follows:<br>
      * unchanged &lt; changed &lt; new &lt; deleted<p>
      *
@@ -1141,6 +1163,15 @@ public interface I_CmsVfsDriver {
      *
      * This method allows to change the resource state to any state by setting the
      * desired state value in the specified CmsResource instance.<p>
+     *
+     * The {@link CmsDriverManager#UPDATE_RESOURCE} mode instead derives the state
+     * transition from the stored state. Setting {@link #DBC_ATTR_PRESERVE_DATE_LASTMODIFIED}
+     * on the database context to {@link Boolean#TRUE} also preserves the stored modification date.
+     * With {@link CmsDriverManager#UPDATE_STRUCTURE}, setting either
+     * {@link #DBC_ATTR_UPDATE_DATE_RELEASED} or {@link #DBC_ATTR_UPDATE_DATE_EXPIRED}
+     * to {@link Boolean#TRUE} changes only the selected date and derives the structure
+     * state transition from the stored state.
+     * {@link CmsDriverManager#UPDATE_RESOURCE_PROJECT} changes only the project reference.<p>
      *
      * This method is frequently used while resources are published to set the file state
      * back to "unchanged".<p>

@@ -86,6 +86,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -3538,6 +3539,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public void writeResource(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, int changed)
     throws CmsDataAccessException {
 
+        if (Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_UPDATE_RESOURCE_TYPE))
+            || Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_UPDATE_PROPERTIES))) {
+            writeResourceMetadata(dbc, projectId, resource, changed);
+            return;
+        }
+
         // validate the resource length
         internalValidateResourceLength(resource);
 
@@ -3651,28 +3658,27 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
+        if (changed == CmsDriverManager.UPDATE_RESOURCE) {
+            writeResourceMetadata(dbc, project.getUuid(), resource, changed);
+            if (isPublishing) {
+                internalUpdateVersions(dbc, resource);
+            }
+            return;
+        }
+
+        boolean updateReleased = (changed == CmsDriverManager.UPDATE_STRUCTURE)
+            && Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_UPDATE_DATE_RELEASED));
+        boolean updateExpired = (changed == CmsDriverManager.UPDATE_STRUCTURE)
+            && Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_UPDATE_DATE_EXPIRED));
+
         try {
             conn = m_sqlManager.getConnection(dbc);
 
             if (changed == CmsDriverManager.UPDATE_RESOURCE_PROJECT) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_PROJECT");
-                stmt.setInt(1, resource.getFlags());
+                stmt.setNull(1, Types.INTEGER);
                 stmt.setString(2, project.getUuid().toString());
                 stmt.setString(3, resource.getResourceId().toString());
-                stmt.executeUpdate();
-                m_sqlManager.closeAll(dbc, null, stmt, null);
-            }
-
-            if (changed == CmsDriverManager.UPDATE_RESOURCE) {
-                stmt = m_sqlManager.getPreparedStatement(
-                    conn,
-                    project,
-                    "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
-                stmt.setInt(1, resource.getState().getState());
-                stmt.setLong(2, resource.getDateLastModified());
-                stmt.setString(3, resource.getUserLastModified().toString());
-                stmt.setString(4, project.getUuid().toString());
-                stmt.setString(5, resource.getResourceId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
@@ -3690,7 +3696,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 || (changed == CmsDriverManager.UPDATE_ALL)
                 || (changed == CmsDriverManager.UPDATE_STRUCTURE_STATE)) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE_STATE");
-                stmt.setInt(1, resource.getState().getState());
+                if (updateReleased || updateExpired) {
+                    stmt.setNull(1, Types.INTEGER);
+                } else {
+                    stmt.setInt(1, resource.getState().getState());
+                }
                 stmt.setString(2, resource.getStructureId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -3698,8 +3708,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             if ((changed == CmsDriverManager.UPDATE_STRUCTURE) || (changed == CmsDriverManager.UPDATE_ALL)) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RELEASE_EXPIRED");
-                stmt.setLong(1, resource.getDateReleased());
-                stmt.setLong(2, resource.getDateExpired());
+                if (updateExpired) {
+                    stmt.setNull(1, Types.BIGINT);
+                } else {
+                    stmt.setLong(1, resource.getDateReleased());
+                }
+                if (updateReleased) {
+                    stmt.setNull(2, Types.BIGINT);
+                } else {
+                    stmt.setLong(2, resource.getDateExpired());
+                }
                 stmt.setString(3, resource.getStructureId().toString());
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -4979,6 +4997,64 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     private String replaceProject(String query, boolean online) {
 
         return query.replace("%(PROJECT)", online ? ONLINE : OFFLINE);
+    }
+
+    /**
+     * Writes only the metadata selected by the database context attributes and update mode.<p>
+     *
+     * Unrelated columns and state transitions are handled by the existing SQL statements,
+     * so stale resource arguments do not require an additional database read.<p>
+     *
+     * @param dbc the database context
+     * @param projectId the project id
+     * @param resource the resource containing the requested changes
+     * @param changed the update mode
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    private void writeResourceMetadata(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, int changed)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        boolean structureOnly = changed == CmsDriverManager.UPDATE_STRUCTURE_STATE;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
+            // A structure property must not mark the other siblings as changed.
+            stmt.setInt(1, structureOnly ? 0 : 1);
+            if (Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_PRESERVE_DATE_LASTMODIFIED))) {
+                stmt.setNull(2, Types.BIGINT);
+            } else {
+                long dateLastModified = ((changed == CmsDriverManager.UPDATE_RESOURCE) || resource.isTouched())
+                ? resource.getDateLastModified()
+                : System.currentTimeMillis();
+                stmt.setLong(2, dateLastModified);
+            }
+            stmt.setString(3, resource.getUserLastModified().toString());
+            stmt.setString(4, projectId.toString());
+            if (Boolean.TRUE.equals(dbc.getAttribute(DBC_ATTR_UPDATE_RESOURCE_TYPE))) {
+                stmt.setInt(5, resource.getTypeId());
+            } else {
+                stmt.setNull(5, Types.INTEGER);
+            }
+            stmt.setString(6, resource.getResourceId().toString());
+            stmt.executeUpdate();
+            m_sqlManager.closeAll(dbc, null, stmt, null);
+
+            if (structureOnly) {
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_STRUCTURE_STATE");
+                stmt.setNull(1, Types.INTEGER);
+                stmt.setString(2, resource.getStructureId().toString());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
     }
 
 }

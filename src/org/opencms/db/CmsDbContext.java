@@ -49,6 +49,56 @@ import java.util.Map;
  */
 public class CmsDbContext {
 
+    /**
+     * Restores a temporarily overridden context attribute when closed.<p>
+     */
+    public final class AttributeScope implements AutoCloseable {
+
+        /** Whether this scope has already been closed. */
+        private boolean m_closed;
+
+        /** Whether the attribute was present before entering the scope. */
+        private final boolean m_hadAttribute;
+
+        /** The attribute key. */
+        private final String m_key;
+
+        /** The original attribute value. */
+        private final Object m_previous;
+
+        /**
+         * Sets a temporary attribute value, saving its original value.<p>
+         *
+         * @param key the attribute key
+         * @param value the temporary value
+         */
+        private AttributeScope(String key, Object value) {
+
+            m_key = key;
+            m_hadAttribute = (m_attributes != null) && m_attributes.containsKey(key);
+            m_previous = getAttribute(key);
+            setAttribute(key, value);
+        }
+
+        /**
+         * Restores the original attribute value, or removes the attribute if it was absent.<p>
+         *
+         * Closing an already closed scope has no effect.<p>
+         */
+        @Override
+        public void close() {
+
+            if (!m_closed) {
+                if (m_hadAttribute) {
+                    setAttribute(m_key, m_previous);
+                } else {
+                    removeAttribute(m_key);
+                }
+                m_closed = true;
+            }
+        }
+    }
+
     /** Context attributes. */
     protected Map<String, Object> m_attributes;
 
@@ -338,5 +388,21 @@ public class CmsDbContext {
         } else {
             throw new CmsVfsException(message, throwable);
         }
+    }
+
+    /**
+     * Sets an attribute temporarily and returns a scope which restores its previous value.<p>
+     *
+     * Use the returned scope in a try-with-resources statement to restore the attribute even
+     * when an exception occurs. Nested scopes must be closed in reverse order.<p>
+     *
+     * @param key the attribute key
+     * @param value the temporary value
+     *
+     * @return the scope restoring the original attribute value when closed
+     */
+    public AttributeScope withAttribute(String key, Object value) {
+
+        return new AttributeScope(key, value);
     }
 }
