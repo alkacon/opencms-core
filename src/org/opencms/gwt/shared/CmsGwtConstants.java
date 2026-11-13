@@ -322,6 +322,12 @@ public final class CmsGwtConstants {
 
     public static final String AUGMENTATION_TRANSLATION = "translation";
 
+    /** Configuration key for the site-relative path of the resource being edited. */
+    public static final String KEY_RESOURCE_INFO_REFERENCE_PATH = "referencePath";
+
+    /** Configuration key for the resource info configuration. */
+    public static final String KEY_RESOURCE_INFO_CONFIG = "resourceInfo";
+
     /**
      * Hide constructor.<p>
      */

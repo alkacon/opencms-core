@@ -61,6 +61,10 @@
 					<td ui:field="m_labelLastChanged"></td>
 					<td ui:field="m_lastChanged"></td>
 				</tr>
+				<tr ui:field="m_additionalInfoRow" style="display:none">
+					<td ui:field="m_additionalInfoLabel"></td>
+					<td ui:field="m_additionalInfoValue"></td>
+				</tr>
 			</table>
 		</div>
 	</g:HTMLPanel>

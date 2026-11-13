@@ -233,6 +233,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
             // initialization failed
             return;
         }
+        initResourceInfoConfig(jsonObj);
         // determine the class name that fills in values dynamically
         setClassName(jsonObj.optString(CONFIG_KEY_CLASS, null));
         I_CmsImageWidgetDynamicConfiguration dynConf = null;

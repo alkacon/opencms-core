@@ -511,7 +511,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         multimessages.addMessages(OpenCms.getWorkplaceManager().getMessages(userSettings.getLocale()));
         resolver.setMessages(multimessages);
         resolver.setKeepEmptyMacros(true);
-
         return resolver;
     }
 

@@ -28,11 +28,13 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.Messages;
+import org.opencms.ade.galleries.shared.CmsImageInfoItemBean;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -50,6 +52,18 @@ public class CmsImageInfo extends Composite {
 
     /** The ui-binder instance. */
     private static I_CmsImageInfoUiBinder uiBinder = GWT.create(I_CmsImageInfoUiBinder.class);
+
+    /** The optional information row. */
+    @UiField
+    protected TableRowElement m_additionalInfoRow;
+
+    /** The optional information label. */
+    @UiField
+    protected TableCellElement m_additionalInfoLabel;
+
+    /** The optional information value. */
+    @UiField
+    protected TableCellElement m_additionalInfoValue;
 
     /** The description field. */
     @UiField
@@ -96,6 +110,14 @@ public class CmsImageInfo extends Composite {
     public CmsImageInfo(CmsResultItemBean info, String dimensions) {
 
         initWidget(uiBinder.createAndBindUi(this));
+        CmsImageInfoItemBean additionalInfo = info.getImageInfoItem();
+        if (additionalInfo != null) {
+            m_additionalInfoLabel.setInnerText(additionalInfo.getLabel());
+            m_additionalInfoLabel.setTitle(additionalInfo.getLabel());
+            m_additionalInfoValue.setInnerText(additionalInfo.getValue());
+            m_additionalInfoValue.setTitle(additionalInfo.getValue());
+            m_additionalInfoRow.getStyle().clearDisplay();
+        }
         m_labelDescription.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DESCRIPTION_0));
         m_labelDimension.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DIMENSION_0));
         m_labelLastChanged.setInnerText(Messages.get().key(Messages.GUI_IMAGE_INFO_DATE_LAST_CHANGED_0));

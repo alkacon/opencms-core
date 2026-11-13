@@ -307,6 +307,9 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         }
         // the start up gallery path
         CmsGalleryWidgetConfiguration configuration = getWidgetConfiguration(cms, messages, param);
+        if (configuration.getResourceInfoConfig() != null) {
+            result.put(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_INFO, configuration.getResourceInfoConfig());
+        }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
             result.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH, configuration.getStartup());
         }

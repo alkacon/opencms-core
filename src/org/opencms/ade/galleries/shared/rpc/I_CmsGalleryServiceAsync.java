@@ -41,6 +41,7 @@ import org.opencms.gwt.shared.CmsQuotaStatus.State;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -101,9 +102,14 @@ public interface I_CmsGalleryServiceAsync {
      *
      * @param path the resource path
      * @param locale the content locale
+     * @param optionalParameters optional parameters, or null if none are supplied
      * @param callback the callback
      */
-    void getInfoForResource(String path, String locale, AsyncCallback<CmsResultItemBean> callback);
+    void getInfoForResource(
+        String path,
+        String locale,
+        Map<String, String> optionalParameters,
+        AsyncCallback<CmsResultItemBean> callback);
 
     /**
      * Returns the initial data for the given gallery mode.<p>

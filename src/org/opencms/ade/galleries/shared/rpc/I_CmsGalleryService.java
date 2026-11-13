@@ -42,6 +42,7 @@ import org.opencms.gwt.shared.CmsQuotaStatus.State;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -109,12 +110,14 @@ public interface I_CmsGalleryService extends RemoteService {
      *
      * @param path the resource path
      * @param locale the content locale
+     * @param optionalParameters optional parameters, or null if none are supplied
      *
      * @return the resource info
      *
      * @throws CmsRpcException if something goes wrong
      */
-    CmsResultItemBean getInfoForResource(String path, String locale) throws CmsRpcException;
+    CmsResultItemBean getInfoForResource(String path, String locale, Map<String, String> optionalParameters)
+    throws CmsRpcException;
 
     /**
      * Returns the initial data for the given gallery mode.<p>

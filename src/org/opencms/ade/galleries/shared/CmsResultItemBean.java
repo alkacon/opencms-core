@@ -38,6 +38,9 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
 
+    /** Optional additional image information. */
+    private CmsImageInfoItemBean m_imageInfoItem;
+
     /** The structured id of the resource. */
     private String m_clientId;
 
@@ -123,6 +126,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
     public String getDimension() {
 
         return m_dimension;
+    }
+
+    /**
+     * Returns the optional additional image information.<p>
+     *
+     * @return the additional item, or null if absent
+     */
+    public CmsImageInfoItemBean getImageInfoItem() {
+
+        return m_imageInfoItem;
     }
 
     /**
@@ -288,6 +301,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
     public void setDimension(String dimension) {
 
         m_dimension = dimension;
+    }
+
+    /**
+     * Sets the optional additional image information.<p>
+     *
+     * @param additionalInfo the additional item, or null to omit it
+     */
+    public void setImageInfoItem(CmsImageInfoItemBean additionalInfo) {
+
+        m_imageInfoItem = additionalInfo;
     }
 
     /**

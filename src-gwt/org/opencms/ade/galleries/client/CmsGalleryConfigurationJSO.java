@@ -190,6 +190,14 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getResourceInfoConfig()
+     */
+    public String getResourceInfoConfig() {
+
+        return getString(I_CmsGalleryProviderConstants.CONFIG_RESOURCE_INFO);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getResourceTypes()
      */
     public List<String> getResourceTypes() {

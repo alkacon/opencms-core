@@ -114,6 +114,13 @@ public interface I_CmsGalleryConfiguration {
     String getReferencePath();
 
     /**
+     * Returns the opaque resource info configuration.<p>
+     *
+     * @return the configuration, or null if absent
+     */
+    String getResourceInfoConfig();
+
+    /**
      * Returns the available resource types.<p>
      *
      * @return the available resource types

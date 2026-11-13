@@ -59,6 +59,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -870,7 +871,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 @Override
                 public void execute() {
 
-                    getGalleryService().getInfoForResource(path, m_configuration.getLocale(), this);
+                    Map<String, String> optionalParameters = new HashMap<String, String>();
+                    String referencePath = m_configuration.getReferencePath();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(referencePath)) {
+                        optionalParameters.put(CmsGwtConstants.KEY_RESOURCE_INFO_REFERENCE_PATH, referencePath);
+                    }
+                    String resourceInfoConfig = m_configuration.getResourceInfoConfig();
+                    if (resourceInfoConfig != null) {
+                        optionalParameters.put(CmsGwtConstants.KEY_RESOURCE_INFO_CONFIG, resourceInfoConfig);
+                    }
+                    getGalleryService().getInfoForResource(path, m_configuration.getLocale(), optionalParameters, this);
                 }
 
                 @Override

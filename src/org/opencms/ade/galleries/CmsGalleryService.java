@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
+import org.opencms.ade.galleries.shared.CmsImageInfoItemBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.TypeVisibility;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
@@ -73,6 +74,7 @@ import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsQuotaStatus;
 import org.opencms.gwt.shared.CmsQuotaStatus.State;
@@ -104,11 +106,13 @@ import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPath;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -118,6 +122,8 @@ import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.text.Collator;
 import java.text.DateFormat;
@@ -264,6 +270,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
             m_resourceType = resourceType;
         }
+    }
+
+    /** Keys for the additional resource information configuration. */
+    enum ResourceInfoConfigKeys {
+        /** The information display mode. */
+        mode,
+        /** The resource property to display. */
+        property,
+        /** Whether to search parent folders for the property value. */
+        recursive,
+        /** Whether to read a localized property value. */
+        localized,
+        /** The optional display label. */
+        label;
     }
 
     /** Bean used to store a single type together with a flag indicating its visibility. */
@@ -805,13 +825,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInfoForResource(java.lang.String, java.lang.String)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getInfoForResource(java.lang.String, java.lang.String, java.util.Map)
      */
-    public CmsResultItemBean getInfoForResource(String linkPath, String locale) throws CmsRpcException {
+    public CmsResultItemBean getInfoForResource(String linkPath, String locale, Map<String, String> optionalParameters)
+    throws CmsRpcException {
 
         CmsResultItemBean result = null;
         CmsObject cms = getCmsObject();
         CmsMessages messageBundle = Messages.get().getBundle(getWorkplaceLocale());
+        CmsResource selectedResource = null;
         try {
             if (new CmsUriSplitter(linkPath).getProtocol() != null) {
                 result = new CmsResultItemBean();
@@ -864,7 +886,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     CmsObject rootCms = OpenCms.initCmsObject(cms);
                     rootCms.getRequestContext().setSiteRoot("");
                     try {
-                        CmsResource selectedResource = rootCms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+                        selectedResource = rootCms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
                         long currentTime = System.currentTimeMillis();
                         isInTimeRange = selectedResource.isReleasedAndNotExpired(currentTime);
                         if (selectedResource.isFolder()) {
@@ -955,6 +977,60 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         CmsIconUtil.getIconClasses(CmsIconUtil.TYPE_RESOURCE_NOT_FOUND, null, false));
                 }
             }
+            if (result != null) {
+                String resourceInfoStr = optionalParameters.get(CmsGwtConstants.KEY_RESOURCE_INFO_CONFIG);
+                if (resourceInfoStr != null) {
+                    try {
+                        JSONObject resourceInfo = new JSONObject(resourceInfoStr);
+                        String mode = resourceInfo.optString(ResourceInfoConfigKeys.mode.name());
+                        if ("property".equals(mode)) {
+                            String property = resourceInfo.optString(ResourceInfoConfigKeys.property.name(), null);
+                            boolean localized = resourceInfo.optBoolean(ResourceInfoConfigKeys.localized.name(), false);
+                            boolean recursive = resourceInfo.optBoolean(ResourceInfoConfigKeys.recursive.name(), false);
+                            String labelFromConfig = resourceInfo.optString(ResourceInfoConfigKeys.label.name(), null);
+
+                            if ((property != null) && (selectedResource != null)) {
+                                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                                    cms,
+                                    selectedResource.getRootPath());
+
+                                CmsProperty prop = null;
+                                prop = cms.readPropertyObject(
+                                    selectedResource,
+                                    property,
+                                    recursive,
+                                    localized ? CmsLocaleManager.getLocale(locale) : null);
+                                String value = prop.getValue();
+                                I_CmsMacroResolver resolver = CmsMacroResolver.newWorkplaceLocaleResolver(cms);
+
+                                String label = null;
+                                if (value != null) {
+                                    if (labelFromConfig == null) {
+                                        CmsXmlContentProperty propConfig = config.getPropertyConfigurationAsMap().get(
+                                            prop.getName()); // we use the name of the property that was actually read (might have a locale suffix)
+                                        if ((propConfig != null)
+                                            && !CmsStringUtil.isEmptyOrWhitespaceOnly(propConfig.getNiceName())) {
+                                            CmsXmlContentProperty localizedPropConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperty(
+                                                propConfig,
+                                                resolver);
+                                            label = localizedPropConfig.getNiceName();
+                                        } else {
+                                            label = prop.getName();
+                                        }
+                                    } else {
+                                        label = labelFromConfig; // macros in widget config (where this is coming from) have already been resolved during editor initialization
+                                    }
+                                    result.setImageInfoItem(new CmsImageInfoItemBean(label + ":", value));
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+
+                }
+            }
+
         } catch (Throwable t) {
             error(t);
         }

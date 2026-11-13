@@ -39,6 +39,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSerializable {
 
+    /** The opaque resource info configuration. */
+    private String m_resourceInfoConfig;
+
     /** The current element. */
     private String m_currentElement;
 
@@ -129,6 +132,7 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_imageFormats = configuration.getImageFormats();
         m_locale = configuration.getLocale();
         m_referencePath = configuration.getReferencePath();
+        m_resourceInfoConfig = configuration.getResourceInfoConfig();
         m_resourceTypes = configuration.getResourceTypes();
         m_searchTypes = configuration.getSearchTypes();
         m_showSiteSelector = configuration.isShowSiteSelector();
@@ -231,6 +235,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public String getReferencePath() {
 
         return m_referencePath;
+    }
+
+    /**
+     * Returns the opaque resource info configuration.<p>
+     *
+     * @return the configuration, or null if absent
+     */
+    public String getResourceInfoConfig() {
+
+        return m_resourceInfoConfig;
     }
 
     /**
@@ -458,6 +472,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setReferencePath(String referencePath) {
 
         m_referencePath = referencePath;
+    }
+
+    /**
+     * Sets the opaque resource info configuration.<p>
+     *
+     * @param resourceInfoConfig the configuration, or null if absent
+     */
+    public void setResourceInfoConfig(String resourceInfoConfig) {
+
+        m_resourceInfoConfig = resourceInfoConfig;
     }
 
     /**

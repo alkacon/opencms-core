@@ -216,6 +216,9 @@ public interface I_CmsGalleryProviderConstants {
     /** Configuration key. */
     String CONFIG_REFERENCE_PATH = "resource";
 
+    /** Configuration key for the opaque resource info configuration. */
+    String CONFIG_RESOURCE_INFO = "resourceInfoConfig";
+
     /** Configuration key. */
     String CONFIG_RESOURCE_TYPES = "resourcetypes";
 
