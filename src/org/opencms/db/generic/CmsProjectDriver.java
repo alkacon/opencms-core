@@ -2348,10 +2348,17 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * Returns the projects of a given resource.<p>
+     * Returns all projects which explicitly contain the given resource root path.<p>
+     *
+     * This lookup is not recursive. Move and delete operations traverse descendants in
+     * {@code CmsSecurityManager}, calling the drivers separately for each resource.
+     * During publishing, deleted folders are processed individually from the publish list.
+     * Project path maintenance therefore looks up the exact entry for the current resource;
+     * including descendant entries here would incorrectly expand child-only project scopes on a move.<p>
      *
      * @param dbc the database context
-     * @param rootPath the resource root path
+     * @param rootPath the canonical resource root path from {@link CmsResource#getRootPath()},
+     *     including the trailing slash for folders; this method does not normalize paths
      *
      * @return the projects of the resource, as a list of projects
      *
@@ -2368,13 +2375,13 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READ_BYRESOURCE_1");
 
-            stmt.setString(1, rootPath + "%");
+            stmt.setString(1, rootPath);
             res = stmt.executeQuery();
 
-            if (res.next()) {
-                projects.add(internalCreateProject(res));
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
+            while (res.next()) {
+                // Preserve case-sensitive VFS path semantics even with a case-insensitive database collation.
+                if (rootPath.equals(res.getString("RESOURCE_PATH"))) {
+                    projects.add(internalCreateProject(res));
                 }
             }
         } catch (SQLException e) {
