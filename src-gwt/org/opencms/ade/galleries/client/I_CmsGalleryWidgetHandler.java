@@ -36,6 +36,14 @@ import org.opencms.util.CmsUUID;
 public interface I_CmsGalleryWidgetHandler {
 
     /**
+     * Reloads the widget's preview image even if the selected path has not changed.<p>
+     */
+    default void reloadPreviewImage() {
+
+        // Optional for widgets which do not display a preview image.
+    }
+
+    /**
      * Sets the widget value.<p>
      *
      * @param resourcePath the resource path

@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
@@ -60,7 +61,14 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
         CmsContextMenuEntryBean bean) {
 
         super(bean.getLabel());
-        m_replaceHandler = new CmsReplaceHandler(structureId);
+        m_replaceHandler = new CmsReplaceHandler(structureId) {
+
+            @Override
+            public void onChange(CmsFileInput fileInput) {
+
+                handler.executeAction(() -> super.onChange(fileInput));
+            }
+        };
         m_replaceHandler.setCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> arg0) {

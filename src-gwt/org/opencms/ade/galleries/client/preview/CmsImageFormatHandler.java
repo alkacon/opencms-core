@@ -435,6 +435,16 @@ public class CmsImageFormatHandler implements HasValueChangeHandlers<CmsCropping
     }
 
     /**
+     * Updates the image path without resetting the selected format or cropping.<p>
+     *
+     * @param imagePath the current image path
+     */
+    public void setImagePath(String imagePath) {
+
+        m_croppingDialog.setImagePath(imagePath);
+    }
+
+    /**
      * Sets the original width.<p>
      *
      * @param originalWidth the original width to set

@@ -158,6 +158,24 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
     }
 
     /**
+     * Reloads and reopens the existing preview, preserving its format and editor settings.<p>
+     *
+     * @param resourcePath the current resource path
+     */
+    public void reloadPreview(final String resourcePath) {
+
+        getImageInfo(resourcePath, new I_CmsSimpleCallback<CmsImageInfoBean>() {
+
+            public void execute(CmsImageInfoBean imageInfo) {
+
+                imageInfo.setSelectedPath(resourcePath);
+                getGalleryDialog().setPreviewVisible(true);
+                showData(imageInfo);
+            }
+        });
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.preview.A_CmsResourcePreview#removePreview()
      */
     @Override
@@ -274,6 +292,9 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                         m_infoBean.getResourcePath(),
                         m_infoBean.getStructureId(),
                         croppingParam);
+                    if (m_previewDialog.hasContextMenuActionInvoked()) {
+                        getGalleryDialog().getWidgetHandler().reloadPreviewImage();
+                    }
                 } else {
                     if (CmsPreviewUtil.isAdvancedWidget()) {
                         CmsPreviewUtil.setVfsImage(

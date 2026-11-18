@@ -219,6 +219,16 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
     }
 
     /**
+     * Updates the image path used when opening the cropping dialog.<p>
+     *
+     * @param imagePath the image path
+     */
+    public void setImagePath(String imagePath) {
+
+        m_imagePath = imagePath;
+    }
+
+    /**
      * Shows the dialog.<p>
      *
      * @param targetParam the target cropping parameter, containing the target size restriction

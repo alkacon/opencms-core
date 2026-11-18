@@ -419,6 +419,16 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * Reloads the resource data while retaining the pending image settings.<p>
+     *
+     * @param resourcePath the current resource path
+     */
+    public void reloadPreview(String resourcePath) {
+
+        ((CmsImageResourcePreview)m_resourcePreview).reloadPreview(resourcePath);
+    }
+
+    /**
      * Sets the image format handler.<p>
      *
      * @param formatHandler the format handler

@@ -34,9 +34,20 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.contextmenu.CmsDeleteResource;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtLog;
+import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
@@ -70,6 +81,12 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** Style name for distinguishing whether the properties tab is currently active or not. */
     public static final String STYLE_PROPERTIES_TAB_ACTIVE = "propertiesTabActive";
 
+    /** Height reserved for the resource information above the image. */
+    private static final int RESOURCE_INFO_HEIGHT = 44;
+
+    /** Whether a context menu action was invoked from this preview. */
+    private boolean m_contextMenuActionInvoked;
+
     /** The preview handler. */
     private CmsImagePreviewHandler m_handler;
 
@@ -91,6 +108,9 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     /** The properties tab. */
     private CmsPropertiesTab m_propertiesTab;
 
+    /** The resource information holder. */
+    private FlowPanel m_resourceInfoHolder = new FlowPanel();
+
     /**
      * The constructor.<p>
      *
@@ -102,6 +122,10 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public CmsImagePreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
         super(dialogMode, dialogHeight, dialogWidth, disableSelection);
+        m_resourceInfoHolder.getElement().getStyle().setMargin(1, Unit.PX);
+        m_parentPanel.insert(m_resourceInfoHolder, m_parentPanel.getWidgetIndex(m_previewHolder));
+        m_previewHeight -= RESOURCE_INFO_HEIGHT;
+        m_previewHolder.getElement().getStyle().setHeight(m_previewHeight, Unit.PX);
         // set the line-height to the height of the preview panel to be able to center the image vertically
         m_previewHolder.getElement().getStyle().setProperty("lineHeight", m_previewHeight - 2, Unit.PX);
     }
@@ -114,6 +138,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     @Override
     public void fillContent(CmsImageInfoBean infoBean) {
 
+        fillResourceInfo(infoBean);
         // properties tab
         m_propertiesTab.fillContent(infoBean);
         if (m_initialFill) {
@@ -151,6 +176,9 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         String src = infoBean.getViewLink() != null
         ? infoBean.getViewLink()
         : CmsCoreProvider.get().link(infoBean.getResourcePath());
+        if (m_handler.getFormatHandler() != null) {
+            m_handler.getFormatHandler().setImagePath(src);
+        }
         urlScaled.append(src);
         m_previewPanel.setWidget(panel); // Need to already attach it here so we can measure the dimensions
         m_handler.setImageContainerSize(panel.getOffsetWidth(), panel.getOffsetHeight());
@@ -213,6 +241,16 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
     public boolean hasChanges() {
 
         return m_propertiesTab.isChanged();
+    }
+
+    /**
+     * Returns whether a context menu action was invoked from this preview.<p>
+     *
+     * @return true if a context menu action was invoked
+     */
+    public boolean hasContextMenuActionInvoked() {
+
+        return m_contextMenuActionInvoked;
     }
 
     /**
@@ -304,6 +342,80 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
         updateClassForTab(m_tabbedPanel.getSelectedIndex());
 
+    }
+
+    /**
+     * Displays the resource information and context menu for the previewed image.<p>
+     *
+     * @param infoBean the image information
+     */
+    private void fillResourceInfo(CmsImageInfoBean infoBean) {
+
+        String title = infoBean.getProperties().get("Title");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            title = infoBean.getTitle();
+        }
+        CmsListInfoBean listInfo = new CmsListInfoBean(title, infoBean.getResourcePath(), null);
+        listInfo.setBigIconClasses(infoBean.getBigIconClasses());
+        listInfo.setSmallIconClasses(infoBean.getSmallIconClasses());
+        CmsListItemWidget infoBox = new CmsListItemWidget(listInfo);
+        CmsContextMenuHandler menuHandler = new CmsContextMenuHandler() {
+
+            @Override
+            public void executeAction(Command action) {
+
+                m_contextMenuActionInvoked = true;
+                if (hasChanges()) {
+                    saveChanges(action);
+                } else {
+                    action.execute();
+                }
+            }
+
+            @Override
+            public void refreshResource(final CmsUUID structureId) {
+
+                m_contextMenuActionInvoked = true;
+                m_handler.closePreview();
+                m_handler.getGalleryDialog().getResultsTab().getContextMenuHandler().refreshResource(structureId);
+                CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+                    @Override
+                    public void execute() {
+
+                        // Publish actions may report a null UUID to request a general refresh.
+                        CmsCoreProvider.getVfsService().getSitePath(infoBean.getStructureId(), this);
+                    }
+
+                    @Override
+                    protected void onResponse(String resourcePath) {
+
+                        if (resourcePath != null) {
+                            m_handler.reloadPreview(resourcePath);
+                        }
+                    }
+                };
+                action.execute();
+            }
+
+            @Override
+            protected I_CmsContextMenuEntry transformSingleEntry(CmsContextMenuEntryBean bean, CmsUUID structureId) {
+
+                if (CmsDeleteResource.class.getName().equals(bean.getName())) {
+                    return null;
+                }
+                return super.transformSingleEntry(bean, structureId);
+            }
+        };
+        CmsContextMenuButton menuButton = new CmsContextMenuButton(
+            infoBean.getStructureId(),
+            menuHandler,
+            AdeContext.gallery);
+        menuButton.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
+        infoBox.addButton(menuButton);
+        m_resourceInfoHolder.clear();
+        m_resourceInfoHolder.add(infoBox);
     }
 
     /**

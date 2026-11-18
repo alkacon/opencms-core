@@ -218,8 +218,14 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The info timer instance. */
     private Timer m_infoTimer;
 
+    /** Cache-busting timestamp for explicitly reloaded preview images. */
+    private long m_previewReloadTime;
+
     /** The previous field value. */
     private String m_previousValue;
+
+    /** Sequence number used to ignore superseded resource information responses. */
+    private int m_resourceInfoRequest;
 
     /** The upload action. */
     private String m_uploadAction;
@@ -394,6 +400,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     public boolean isEnabled() {
 
         return m_textbox.isEnabled();
+    }
+
+    /**
+     * Reloads the preview image and resource information without changing the field value.<p>
+     */
+    public void reloadPreviewImage() {
+
+        m_previewReloadTime = Math.max(System.currentTimeMillis(), m_previewReloadTime + 1);
+        updateResourceInfo(getFormValueAsString());
     }
 
     /**
@@ -619,6 +634,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             normalRes = imagePath + "?" + restricted.convertToScalingParam(false);
             highRes = imagePath + "?" + restricted.convertToScalingParam(true);
         }
+        if (m_previewReloadTime != 0) {
+            normalRes += "&time=" + m_previewReloadTime;
+            if (highRes != null) {
+                highRes += "&time=" + m_previewReloadTime;
+            }
+        }
         Element image = DOM.createImg();
         image.setAttribute("src", normalRes);
         {
@@ -742,6 +763,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     void displayResourceInfo(CmsResultItemBean info) {
 
+        m_resourceInfoPanel.clear();
         if (m_hasImage) {
             setImagePreview(info.getPath(), info.getViewLink());
             m_resourceInfoPanel.add(new CmsImageInfo(info, info.getDimension()));
@@ -854,6 +876,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     void updateResourceInfo(final String path) {
 
+        final int request = ++m_resourceInfoRequest;
         m_resourceInfoPanel.clear();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
             m_resourceInfoPanel.setVisible(false);
@@ -886,7 +909,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 @Override
                 protected void onResponse(CmsResultItemBean result) {
 
-                    displayResourceInfo(result);
+                    if (request == m_resourceInfoRequest) {
+                        displayResourceInfo(result);
+                    }
                 }
             };
             action.execute();
@@ -902,6 +927,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     private CmsGalleryPopup createPopup() {
 
         I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
+
+            @Override
+            public void reloadPreviewImage() {
+
+                CmsGalleryField.this.reloadPreviewImage();
+            }
 
             @Override
             public void setWidgetValue(

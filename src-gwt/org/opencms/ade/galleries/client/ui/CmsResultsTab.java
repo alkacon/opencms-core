@@ -580,6 +580,16 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Returns the context menu handler shared by gallery resource actions.<p>
+     *
+     * @return the context menu handler
+     */
+    public CmsContextMenuHandler getContextMenuHandler() {
+
+        return m_contextMenuHandler;
+    }
+
+    /**
      * Returns the drag and drop handler.<p>
      *
      * @return the drag and drop handler

@@ -33,6 +33,8 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
+import com.google.gwt.user.client.Command;
+
 /**
  * Interface for context menu commands.<p>
  *
@@ -48,6 +50,16 @@ public interface I_CmsContextMenuHandler extends I_CmsActionHandler {
      * @param callback the callback to execute
      */
     void ensureLockOnResource(CmsUUID structureId, I_CmsSimpleCallback<Boolean> callback);
+
+    /**
+     * Executes an action after any pending edits have been saved.<p>
+     *
+     * @param action the action to execute
+     */
+    default void executeAction(Command action) {
+
+        action.execute();
+    }
 
     /**
      * Returns the available context menu commands as a map by class name.<p>

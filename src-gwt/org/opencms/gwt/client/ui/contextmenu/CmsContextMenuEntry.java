@@ -78,7 +78,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
     public void execute() {
 
         if (m_menuCommand != null) {
-            m_menuCommand.execute(m_structureId, m_handler, m_bean);
+            m_handler.executeAction(() -> m_menuCommand.execute(m_structureId, m_handler, m_bean));
         }
     }
 
