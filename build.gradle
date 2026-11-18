@@ -2243,6 +2243,16 @@ publishing {
                             dependencyNode.appendNode('artifactId', "opencms-core${pVariant.get()}")
                             dependencyNode.appendNode('groupId','org.opencms')
                             dependencyNode.appendNode('version',version)
+                            if (pub.key == 'test') {
+                                def hsqldbDependency = project.configurations.testCompile.dependencies.find {
+                                    it.group == 'org.hsqldb' && it.name == 'hsqldb'
+                                }
+                                def hsqldbNode = dependenciesNode.appendNode('dependency')
+                                hsqldbNode.appendNode('groupId', hsqldbDependency.group)
+                                hsqldbNode.appendNode('artifactId', hsqldbDependency.name)
+                                hsqldbNode.appendNode('version', hsqldbDependency.version)
+                                hsqldbNode.appendNode('scope', 'compile')
+                            }
                         }
                     }
                 }

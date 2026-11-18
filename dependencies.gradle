@@ -218,7 +218,7 @@ dependencies {
     testCompile('dumbster:dumbster:1.6') { transitive = false }
     testCompile('junit:junit:4.13.1') { transitive = false }
     testCompile('org.hamcrest:hamcrest-core:1.3') { transitive = false }
-    testCompile('org.hsqldb:hsqldb:2.7.2:jdk8') { transitive = false }
+    testCompile('org.hsqldb:hsqldb:2.7.2') { transitive = false }
     testCompile('com.oracle.database.jdbc:ojdbc11:23.26.1.0.0') { transitive = false }
     testCompile fileTree(dir: 'webapp/WEB-INF/setupdata/database', include: ['**/*.jar'], exclude: ['oracle/ojdbc14-10.2.0.3.jar'])
     // JUnit 6 Jupiter support
