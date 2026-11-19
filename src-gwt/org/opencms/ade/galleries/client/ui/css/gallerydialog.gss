@@ -31,6 +31,7 @@ div.parentPanel div.criteriaList {
 	background-color: value("constants.css.backgroundColorDialog");
 	bottom: 6px;
     left: 6px;
+    margin-right: 0;
     padding: 0 2px;
     position: absolute;
     right: 6px;

@@ -28,12 +28,10 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
-import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGalleryGroup;
-import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -43,7 +41,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsQuotaWarning;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -72,7 +69,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -321,18 +317,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** The tab handler. */
     private CmsGalleriesTabHandler m_tabHandler;
 
-    /** Compact budget summary between the filter controls and gallery list. */
-    private final CmsQuotaWarning m_quotaWarning = new CmsQuotaWarning();
-
-    /** Context used to resolve the budget scope. */
-    private String m_quotaReferencePath;
-
-    /** Whether the budget has been requested for this opening. */
-    private boolean m_quotaLoaded;
-
-    /** Invalidates callbacks after closing or changing context. */
-    private int m_quotaRequest;
-
     /**
      * Constructor.<p>
      *
@@ -353,11 +337,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         m_tabHandler = tabHandler;
         m_galleries = new HashMap<String, CmsGalleryFolderBean>();
         init();
-        m_tab.remove(m_additionalWidgets);
-        m_tab.insert(m_additionalWidgets, m_tab.getWidgetIndex(m_options) + 1);
-        m_options.addStyleName(DIALOG_CSS.quotaSummaryOptions());
-        m_additionalWidgets.addStyleName(DIALOG_CSS.quotaSummary());
-        m_additionalWidgets.add(m_quotaWarning);
+        initQuotaWarning();
     }
 
     /**
@@ -464,9 +444,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
     @Override
     public void onResize() {
 
-        if (m_quotaWarning.isVisible()) {
+        if (getQuotaWarningHeight() > 0) {
             // Reserve the warning's actual height, including wrapped text.
-            int listTop = m_additionalWidgets.getElement().getOffsetTop() + m_additionalWidgets.getOffsetHeight();
+            int listTop = m_quotaPanel.getElement().getOffsetTop() + getQuotaWarningHeight();
             m_list.getElement().getStyle().setTop(listTop, Unit.PX);
         } else {
             m_list.getElement().getStyle().clearTop();
@@ -481,7 +461,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void onSelection() {
 
         super.onSelection();
-        loadQuota();
         Timer timer = new Timer() {
 
             @Override
@@ -501,25 +480,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     public void setLoading(boolean loading) {
 
         m_loading = loading;
-    }
-
-    /**
-     * Sets the context for the permanent budget warning.<p>
-     *
-     * @param rootPath the context resource's VFS root path
-     */
-    public void setQuotaReferencePath(String rootPath) {
-
-        if (!rootPath.equals(m_quotaReferencePath)) {
-            m_quotaReferencePath = rootPath;
-            m_quotaLoaded = false;
-            ++m_quotaRequest;
-            m_quotaWarning.setVisible(false);
-            if (isSelected()) {
-                loadQuota();
-                onContentChange();
-            }
-        }
     }
 
     /**
@@ -777,65 +737,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
         setLoading(true);
         MoreItemsCommand cmd = new MoreItemsCommand(30);
         Scheduler.get().scheduleFixedDelay(cmd, 1);
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onLoad()
-     */
-    @Override
-    protected void onLoad() {
-
-        super.onLoad();
-        Scheduler.get().scheduleDeferred(() -> {
-            if (isSelected()) {
-                loadQuota();
-            }
-        });
-    }
-
-    /**
-     * @see com.google.gwt.user.client.ui.Widget#onUnload()
-     */
-    @Override
-    protected void onUnload() {
-
-        ++m_quotaRequest;
-        m_quotaLoaded = false;
-        m_quotaWarning.setVisible(false);
-        super.onUnload();
-    }
-
-    /**
-     * Loads once per opening, independently of the acknowledged interstitial warning.<p>
-     */
-    private void loadQuota() {
-
-        if (!isAttached() || m_quotaLoaded || (m_quotaReferencePath == null)) {
-            return;
-        }
-        m_quotaLoaded = true;
-        final int request = ++m_quotaRequest;
-        CmsGalleryController.getGalleryService().getQuotaInfo(
-            m_quotaReferencePath,
-            new AsyncCallback<CmsGalleryQuotaInfo>() {
-
-                public void onFailure(Throwable caught) {
-
-                    // The advisory display must not prevent access to the galleries.
-                }
-
-                public void onSuccess(CmsGalleryQuotaInfo result) {
-
-                    if (!isAttached() || (request != m_quotaRequest)) {
-                        return;
-                    }
-                    m_quotaWarning.setSummary(
-                        result == null ? null : result.getStatus(),
-                        result == null ? "" : result.getTitle(),
-                        Messages.get().key(Messages.GUI_QUOTA_USAGE_SUMMARY_3));
-                    onContentChange();
-                }
-            });
     }
 
     /**

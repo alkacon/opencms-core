@@ -41,6 +41,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
+import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.CmsCoreProvider;
@@ -67,6 +68,7 @@ import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -104,6 +106,15 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
     /** Session-scoped budget notice in front of the normal gallery. */
     private CmsGalleryQuotaNotice m_quotaNotice;
+
+    /** Context used to resolve the budget scope for the permanent warnings. */
+    private String m_quotaReferencePath;
+
+    /** Whether the budget has been requested for this opening. */
+    private boolean m_quotaLoaded;
+
+    /** Invalidates budget callbacks after closing or changing context. */
+    private int m_quotaRequest;
 
     /** The gallery controller. */
     private CmsGalleryController m_controller;
@@ -570,6 +581,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         int selectedIndex = m_tabbedPanel.getSelectedIndex();
 
         final A_CmsTab tabWidget = m_tabbedPanel.getWidget(selectedIndex);
+        loadQuota();
         if ((tabWidget instanceof CmsResultsTab) && m_isInitialSearch) {
             // no search here
             m_isInitialSearch = false;
@@ -607,6 +619,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         A_CmsTab tab = getTab(tabId);
         if (tab != null) {
             m_tabbedPanel.selectTab(tab, fireEvent);
+            loadQuota();
         }
     }
 
@@ -706,8 +719,12 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         String rootPath = CmsCoreProvider.get().addSiteRoot(
             (sitePath == null) || sitePath.trim().isEmpty() ? "/" : sitePath);
         m_quotaNotice.setReferenceRootPath(rootPath);
-        if (m_galleriesTab != null) {
-            m_galleriesTab.setQuotaReferencePath(rootPath);
+        if (!rootPath.equals(m_quotaReferencePath)) {
+            m_quotaReferencePath = rootPath;
+            m_quotaLoaded = false;
+            ++m_quotaRequest;
+            setQuotaInfo(null);
+            loadQuota();
         }
     }
 
@@ -849,9 +866,22 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
 
             public void execute() {
 
+                loadQuota();
                 updateSizes();
             }
         });
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onUnload()
+     */
+    @Override
+    protected void onUnload() {
+
+        ++m_quotaRequest;
+        m_quotaLoaded = false;
+        setQuotaInfo(null);
+        super.onUnload();
     }
 
     /**
@@ -866,6 +896,55 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         I_CmsLayoutBundle.INSTANCE.croppingDialogCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.imageEditorFormCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().ensureInjected();
+    }
+
+    /**
+     * Loads the permanent warnings once per opening when either relevant tab is selected.<p>
+     */
+    private void loadQuota() {
+
+        int selectedIndex = m_tabbedPanel.getSelectedIndex();
+        if (!isAttached() || m_quotaLoaded || (m_quotaReferencePath == null) || (selectedIndex < 0)) {
+            return;
+        }
+        A_CmsTab tab = m_tabbedPanel.getWidget(selectedIndex);
+        if ((tab != m_galleriesTab) && (tab != m_resultsTab)) {
+            return;
+        }
+        m_quotaLoaded = true;
+        final int request = ++m_quotaRequest;
+        CmsGalleryController.getGalleryService().getQuotaInfo(
+            m_quotaReferencePath,
+            new AsyncCallback<CmsGalleryQuotaInfo>() {
+
+                public void onFailure(Throwable caught) {
+
+                    // The advisory display must not prevent access to the galleries.
+                }
+
+                public void onSuccess(CmsGalleryQuotaInfo result) {
+
+                    if (!isAttached() || (request != m_quotaRequest)) {
+                        return;
+                    }
+                    setQuotaInfo(result);
+                }
+            });
+    }
+
+    /**
+     * Updates both permanent warnings with the same budget information.<p>
+     *
+     * @param info the budget information, or null to hide the warnings
+     */
+    private void setQuotaInfo(CmsGalleryQuotaInfo info) {
+
+        if (m_galleriesTab != null) {
+            m_galleriesTab.setQuotaInfo(info);
+        }
+        if (m_resultsTab != null) {
+            m_resultsTab.setQuotaInfo(info);
+        }
     }
 
     /**

@@ -477,6 +477,7 @@ public class CmsResultsTab extends A_CmsListTab {
         getList().addScrollHandler(new CmsAsynchronousScrollToBottomHandler());
         getList().addScrollHandler(m_backwardScrollHandler);
         init();
+        initQuotaWarning();
         Map<String, String> views = new LinkedHashMap<String, String>();
         views.put(DETAILS, Messages.get().key(Messages.GUI_VIEW_LABEL_DETAILS_0));
         views.put(SMALL, Messages.get().key(Messages.GUI_VIEW_LABEL_SMALL_ICONS_0));
@@ -697,6 +698,9 @@ public class CmsResultsTab extends A_CmsListTab {
             + CmsDomUtil.getCurrentStyleInt(m_additionalWidgets.getElement(), CmsDomUtil.Style.marginBottom);
 
         int listTop = paramsHeight + optionsHeight + addHeight + 5;
+        if (getQuotaWarningHeight() > 0) {
+            listTop = m_quotaPanel.getElement().getOffsetTop() + getQuotaWarningHeight();
+        }
         // another sanity check, don't set any top value below 35
         if (listTop > 35) {
             m_list.getElement().getStyle().setTop(listTop, Unit.PX);

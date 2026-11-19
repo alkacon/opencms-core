@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
+import org.opencms.ade.galleries.shared.CmsGalleryQuotaInfo;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -37,6 +38,7 @@ import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsQuotaWarning;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -250,6 +252,12 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     @UiField
     protected FlowPanel m_options;
 
+    /** The optional budget summary panel below the filter controls. */
+    protected FlowPanel m_quotaPanel;
+
+    /** The budget summary displayed in this tab. */
+    private CmsQuotaWarning m_quotaWarning;
+
     /** The quick search box. */
     protected CmsTextBox m_quickSearch;
 
@@ -321,7 +329,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         int list = m_scrollList.getOffsetHeight();
         list = list > 82 ? list : 82;
-        return list + 47;
+        return list + 47 + getQuotaWarningHeight();
     }
 
     /**
@@ -387,6 +395,22 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             } else {
                 checkQuickSearchStatus();
             }
+        }
+    }
+
+    /**
+     * Sets the permanent budget warning.<p>
+     *
+     * @param info the budget information, or null to hide the warning
+     */
+    public void setQuotaInfo(CmsGalleryQuotaInfo info) {
+
+        if (m_quotaWarning != null) {
+            m_quotaWarning.setSummary(
+                info == null ? null : info.getStatus(),
+                info == null ? "" : info.getTitle(),
+                Messages.get().key(Messages.GUI_QUOTA_USAGE_SUMMARY_3));
+            onContentChange();
         }
     }
 
@@ -657,6 +681,16 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Returns the height reserved for the budget warning.<p>
+     *
+     * @return the warning height including its bottom margin, or zero when hidden
+     */
+    protected int getQuotaWarningHeight() {
+
+        return (m_quotaWarning != null) && m_quotaWarning.isVisible() ? m_quotaPanel.getOffsetHeight() : 0;
+    }
+
+    /**
      * Returns a list with sort values for this tab.<p>
      *
      * @return list of sort order value/text pairs
@@ -701,6 +735,19 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
         createQuickBox();
 
+    }
+
+    /**
+     * Adds a compact budget summary between the filter controls and the list.<p>
+     */
+    protected void initQuotaWarning() {
+
+        m_quotaWarning = new CmsQuotaWarning();
+        m_quotaPanel = new FlowPanel();
+        m_quotaPanel.addStyleName(DIALOG_CSS.quotaSummary());
+        m_quotaPanel.add(m_quotaWarning);
+        m_options.addStyleName(DIALOG_CSS.quotaSummaryOptions());
+        m_tab.insert(m_quotaPanel, m_tab.getWidgetIndex(m_options) + 1);
     }
 
     /**
