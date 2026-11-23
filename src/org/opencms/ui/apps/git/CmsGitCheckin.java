@@ -54,6 +54,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -209,6 +210,27 @@ public class CmsGitCheckin {
         zip.flush();
         zip.close();
 
+    }
+
+    /** Adds the positive or negative flag when the caller overrides the configured default. */
+    private static void addBooleanOption(List<String> command, String option, Boolean value) {
+
+        if (value != null) {
+            command.add((value.booleanValue() ? "--" : "--no-") + option);
+        }
+    }
+
+    /** Adds a Git identity override. A blank value disables the default and a null value keeps it. */
+    private static void addIdentityOption(List<String> command, String option, String value) {
+
+        if (value != null) {
+            if (value.trim().isEmpty()) {
+                command.add("--ignore-default-" + option);
+            } else {
+                command.add("--" + option);
+                command.add(value);
+            }
+        }
     }
 
     /** Adds a module to the modules that should be exported.
@@ -521,6 +543,59 @@ public class CmsGitCheckin {
     }
 
     /**
+     * Builds the argument list for the selected operation.
+     *
+     * @return the process command
+     */
+    List<String> buildScriptCommand() {
+
+        List<String> command = new ArrayList<>();
+        command.add("bash");
+        command.add(DEFAULT_SCRIPT_FILE);
+        if (m_resetRemoteHead) {
+            command.add("--reset-remote-head");
+        } else if (m_resetHead) {
+            command.add("--reset-head");
+        } else if (m_checkout) {
+            command.add("--checkout");
+        } else {
+            addCheckinOptions(command);
+        }
+        command.add(m_currentConfiguration.getFilePath());
+        return command;
+    }
+
+    /**
+     * Adds the options for a normal check-in to the script arguments.
+     *
+     * @param command the command being built
+     */
+    private void addCheckinOptions(List<String> command) {
+
+        if ((m_modulesToExport != null) && !m_modulesToExport.isEmpty()) {
+            command.add("--modules");
+            command.add(String.join(" ", m_modulesToExport));
+        }
+        if (m_commitMessage != null) {
+            command.add("-msg");
+            command.add(m_commitMessage);
+        }
+        addIdentityOption(command, "git-user-name", m_gitUserName);
+        addIdentityOption(command, "git-user-email", m_gitUserEmail);
+        addBooleanOption(command, "pull-before", m_autoPullBefore);
+        addBooleanOption(command, "pull-after", m_autoPullAfter);
+        addBooleanOption(command, "push", m_autoPush);
+        command.add("--export-folder");
+        command.add(m_currentConfiguration.getModuleExportPath());
+        command.add("--export-mode");
+        command.add(Integer.toString(m_currentConfiguration.getExportMode()));
+        addBooleanOption(command, "exclude-libs", m_excludeLibs);
+        addBooleanOption(command, "commit", m_commitMode);
+        addBooleanOption(command, "ignore-unclean", m_ignoreUnclean);
+        addBooleanOption(command, "copy-and-unzip", m_copyAndUnzip);
+    }
+
+    /**
      * Adds the configuration from <code>configFile</code> to the {@link Collection} of {@link CmsGitConfiguration},
      * if a valid configuration is read. Otherwise it logs the failure.
      * @param configurations Collection of configurations where the new configuration should be added.
@@ -602,105 +677,6 @@ public class CmsGitCheckin {
         m_logStream.close();
 
         return exitCode;
-    }
-
-    /** Returns the command to run by the shell to normally run the checkin script.
-     * @return the command to run by the shell to normally run the checkin script.
-     */
-    private String checkinScriptCommand() {
-
-        String exportModules = "";
-        if ((m_modulesToExport != null) && !m_modulesToExport.isEmpty()) {
-            StringBuffer exportModulesParam = new StringBuffer();
-            for (String moduleName : m_modulesToExport) {
-                exportModulesParam.append(" ").append(moduleName);
-            }
-            exportModulesParam.replace(0, 1, " \"");
-            exportModulesParam.append("\" ");
-            exportModules = " --modules " + exportModulesParam.toString();
-
-        }
-        String commitMessage = "";
-        if (m_commitMessage != null) {
-            commitMessage = " -msg \"" + m_commitMessage.replace("\"", "\\\"") + "\"";
-        }
-        String gitUserName = "";
-        if (m_gitUserName != null) {
-            if (m_gitUserName.trim().isEmpty()) {
-                gitUserName = " --ignore-default-git-user-name";
-            } else {
-                gitUserName = " --git-user-name \"" + m_gitUserName + "\"";
-            }
-        }
-        String gitUserEmail = "";
-        if (m_gitUserEmail != null) {
-            if (m_gitUserEmail.trim().isEmpty()) {
-                gitUserEmail = " --ignore-default-git-user-email";
-            } else {
-                gitUserEmail = " --git-user-email \"" + m_gitUserEmail + "\"";
-            }
-        }
-        String autoPullBefore = "";
-        if (m_autoPullBefore != null) {
-            autoPullBefore = m_autoPullBefore.booleanValue() ? " --pull-before " : " --no-pull-before";
-        }
-        String autoPullAfter = "";
-        if (m_autoPullAfter != null) {
-            autoPullAfter = m_autoPullAfter.booleanValue() ? " --pull-after " : " --no-pull-after";
-        }
-        String autoPush = "";
-        if (m_autoPush != null) {
-            autoPush = m_autoPush.booleanValue() ? " --push " : " --no-push";
-        }
-        String exportFolder = " --export-folder \"" + m_currentConfiguration.getModuleExportPath() + "\"";
-        String exportMode = " --export-mode " + m_currentConfiguration.getExportMode();
-        String excludeLibs = "";
-        if (m_excludeLibs != null) {
-            excludeLibs = m_excludeLibs.booleanValue() ? " --exclude-libs" : " --no-exclude-libs";
-        }
-        String commitMode = "";
-        if (m_commitMode != null) {
-            commitMode = m_commitMode.booleanValue() ? " --commit" : " --no-commit";
-        }
-        String ignoreUncleanMode = "";
-        if (m_ignoreUnclean != null) {
-            ignoreUncleanMode = m_ignoreUnclean.booleanValue() ? " --ignore-unclean" : " --no-ignore-unclean";
-        }
-        String copyAndUnzip = "";
-        if (m_copyAndUnzip != null) {
-            copyAndUnzip = m_copyAndUnzip.booleanValue() ? " --copy-and-unzip" : " --no-copy-and-unzip";
-        }
-
-        String configFilePath = m_currentConfiguration.getFilePath();
-
-        return "\""
-            + DEFAULT_SCRIPT_FILE
-            + "\""
-            + exportModules
-            + commitMessage
-            + gitUserName
-            + gitUserEmail
-            + autoPullBefore
-            + autoPullAfter
-            + autoPush
-            + exportFolder
-            + exportMode
-            + excludeLibs
-            + commitMode
-            + ignoreUncleanMode
-            + copyAndUnzip
-            + " \""
-            + configFilePath
-            + "\"";
-    }
-
-    /** Returns the command to run by the shell to normally run the checkin script.
-     * @return the command to run by the shell to normally run the checkin script.
-     */
-    private String checkoutScriptCommand() {
-
-        String configFilePath = m_currentConfiguration.getFilePath();
-        return "\"" + DEFAULT_SCRIPT_FILE + "\"" + " --checkout " + " \"" + configFilePath + "\"";
     }
 
     /**
@@ -875,26 +851,6 @@ public class CmsGitCheckin {
         return configurations;
     }
 
-    /** Returns the command to run by the shell to reset to HEAD.
-     * @return the command to run by the shell to reset to HEAD.
-     */
-    private String resetHeadScriptCommand() {
-
-        String configFilePath = m_currentConfiguration.getFilePath();
-
-        return "\"" + DEFAULT_SCRIPT_FILE + "\" --reset-head" + " \"" + configFilePath + "\"";
-    }
-
-    /** Returns the command to run by the shell to reset to ${origin}/${branch}.
-     * @return the command to run by the shell to reset to ${origin}/${branch}.
-     */
-    private String resetRemoteHeadScriptCommand() {
-
-        String configFilePath = m_currentConfiguration.getFilePath();
-
-        return "\"" + DEFAULT_SCRIPT_FILE + "\" --reset-remote-head" + " \"" + configFilePath + "\"";
-    }
-
     /**
      * Runs the shell script for committing and optionally pushing the changes in the module.
      * @return exit code of the script.
@@ -907,21 +863,9 @@ public class CmsGitCheckin {
         }
         try {
             m_logStream.flush();
-            String commandParam;
-            if (m_resetRemoteHead) {
-                commandParam = resetRemoteHeadScriptCommand();
-            } else if (m_resetHead) {
-                commandParam = resetHeadScriptCommand();
-            } else if (m_checkout) {
-                commandParam = checkoutScriptCommand();
-            } else {
-                commandParam = checkinScriptCommand();
-            }
-            String[] cmd = {"bash", "-c", commandParam};
-            m_logStream.println("Calling the script as follows:");
-            m_logStream.println();
-            m_logStream.println(cmd[0] + " " + cmd[1] + " " + cmd[2]);
-            ProcessBuilder builder = new ProcessBuilder(cmd);
+            List<String> command = buildScriptCommand();
+            m_logStream.println("Calling the script with arguments: " + command);
+            ProcessBuilder builder = new ProcessBuilder(command);
             m_logStream.close();
             m_logStream = null;
             Redirect redirect = Redirect.appendTo(new File(DEFAULT_LOGFILE_PATH));

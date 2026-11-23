@@ -115,7 +115,7 @@ resetGitConfig(){
 
 testModuleExportFolder(){
 	__pwd=$(pwd)
-	cd $moduleExportFolder
+	cd "$moduleExportFolder"
 	if [[ $? != 0 ]]; then
 		echo "ERROR: The specified module export folder \"$moduleExportFolder\" does not exist."
 		exit 7
@@ -242,9 +242,9 @@ if [[ -z "$configfile" ]]; then
 	exit 3;
 
 fi
-source $configfile
+source "$configfile"
 echo " * Read file \"$configfile\":"
-cat $configfile | awk '$0="   * "$0'
+cat "$configfile" | awk '$0="   * "$0'
 
 echo
 echo "Values read from configuration:"
@@ -268,7 +268,7 @@ else
 		fi
 	done
 	if [[ $newModules != "" ]]; then
-		sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
+		sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" "$configfile"
 		echo
 		echo " * Added new modules \"$newModules\" to the config file."
 		echo
@@ -325,7 +325,7 @@ if [[ ! -z "$backupFolder" ]]; then
 			echo
 			echo "   * Handling module ${module} ..."
 			echo
-			cd $moduleExportFolder
+			cd "$moduleExportFolder"
 			fileName=$(getExportedModule)
 			if [[ ! -z "$fileName" ]]; then
 				echo "     * Found zip file ${fileName}."
@@ -540,7 +540,7 @@ if [ $copyAndUnzip == 1 ]; then
 		echo
 		echo " * Handling module ${module} ..."
 		echo
-		cd $moduleExportFolder
+		cd "$moduleExportFolder"
 		fileName=$(getExportedModule)
 		if [[ ! -z "$fileName" ]]; then
 			echo "   * Found zip file ${fileName}."
@@ -638,8 +638,8 @@ if [[ $commit == 1 ]]; then
 	adjustGitConfig
 	echo "   * Step 2: git add -v --all $MODULE_PATH/*"
 	git add -v --all $MODULE_PATH/* | awk '$0="   "$0'
-	echo "   * Step 3: bash -c \"git commit -v -m \\\"${commitMessage//\"/\\\\\\\"}\\\" \""
-	bash -c "git commit -v -m \"${commitMessage//\"/\\\"}\"" | awk '$0="     "$0'
+	echo "   * Step 3: git commit with the configured message"
+	git commit -v -m "$commitMessage" | awk '$0="     "$0'
 	resetGitConfig
 else
 	echo " * Auto-commit disabled. Nothing to do."
