@@ -2863,15 +2863,13 @@ public final class OpenCmsCore {
         }
 
         try {
-            m_folderSizeTrackerFuture = m_executor.submit(
-                () -> new CmsFolderSizeTracker(m_configAdminCms, false).initialize());
+            startFolderSizeTracker(false);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
         try {
-            m_onlineFolderSizeTrackerFuture = m_executor.submit(
-                () -> new CmsFolderSizeTracker(m_configAdminCms, true).initialize());
+            startFolderSizeTracker(true);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -3551,6 +3549,22 @@ public final class OpenCmsCore {
                 }
             }
             m_instance.m_runLevel = level;
+        }
+    }
+
+    /**
+     * Starts loading the folder size tracker for the Online or Offline project.<p>
+     *
+     * @param online true for the online folder size tracker, false for the offline one
+     */
+    private void startFolderSizeTracker(boolean online) {
+
+        Future<CmsFolderSizeTracker> future = m_executor.submit(
+            () -> new CmsFolderSizeTracker(m_configAdminCms, online).initialize());
+        if (online) {
+            m_onlineFolderSizeTrackerFuture = future;
+        } else {
+            m_folderSizeTrackerFuture = future;
         }
     }
 
