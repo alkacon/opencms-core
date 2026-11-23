@@ -399,6 +399,9 @@ public final class OpenCmsCore {
     /** The future for the online folder size tracker. */
     private Future<CmsFolderSizeTracker> m_onlineFolderSizeTrackerFuture;
 
+    /** Guards the start of the folder size trackers. */
+    private final Object m_folderSizeTrackerLock = new Object();
+
     private List<Runnable> m_shutdownActions = new CopyOnWriteArrayList<Runnable>();
 
     /** The configured secret store. */
@@ -748,7 +751,7 @@ public final class OpenCmsCore {
     protected CmsFolderSizeTracker getFolderSizeTracker(boolean online) {
 
         try {
-            return online ? m_onlineFolderSizeTrackerFuture.get() : m_folderSizeTrackerFuture.get();
+            return startFolderSizeTracker(online).get();
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
@@ -2862,16 +2865,20 @@ public final class OpenCmsCore {
             LOG.error(e.getLocalizedMessage(), e);
         }
 
-        try {
-            startFolderSizeTracker(false);
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
+        if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // loading a tracker reads the folder sizes of the whole VFS; the shell has no use for them,
+            // there a tracker is only started on first use (see getFolderSizeTracker)
+            try {
+                startFolderSizeTracker(false);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
 
-        try {
-            startFolderSizeTracker(true);
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            try {
+                startFolderSizeTracker(true);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         // everything is initialized, now start publishing
@@ -3553,18 +3560,24 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Starts loading the folder size tracker for the Online or Offline project.<p>
+     * Starts loading the folder size tracker for the Online or Offline project, unless it was already started.<p>
      *
      * @param online true for the online folder size tracker, false for the offline one
+     * @return the future for the tracker
      */
-    private void startFolderSizeTracker(boolean online) {
+    private Future<CmsFolderSizeTracker> startFolderSizeTracker(boolean online) {
 
-        Future<CmsFolderSizeTracker> future = m_executor.submit(
-            () -> new CmsFolderSizeTracker(m_configAdminCms, online).initialize());
-        if (online) {
-            m_onlineFolderSizeTrackerFuture = future;
-        } else {
-            m_folderSizeTrackerFuture = future;
+        synchronized (m_folderSizeTrackerLock) {
+            Future<CmsFolderSizeTracker> future = online ? m_onlineFolderSizeTrackerFuture : m_folderSizeTrackerFuture;
+            if (future == null) {
+                future = m_executor.submit(() -> new CmsFolderSizeTracker(m_configAdminCms, online).initialize());
+                if (online) {
+                    m_onlineFolderSizeTrackerFuture = future;
+                } else {
+                    m_folderSizeTrackerFuture = future;
+                }
+            }
+            return future;
         }
     }
 
