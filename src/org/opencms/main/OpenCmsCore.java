@@ -159,6 +159,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -1995,7 +1996,7 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
-        m_gwtServiceContexts = new HashMap<String, CmsGwtServiceContext2>();
+        m_gwtServiceContexts = new ConcurrentHashMap<String, CmsGwtServiceContext2>();
 
         // automatic servlet container recognition and specific behavior:
         CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
@@ -3045,12 +3046,12 @@ public final class OpenCmsCore {
      */
     private synchronized CmsGwtService getGwtService(String serviceName, ServletConfig servletConfig) throws Throwable {
 
-        CmsGwtServiceContext2 context = m_gwtServiceContexts.get(serviceName);
-        if (context == null) {
-            context = new CmsGwtServiceContext2(serviceName);
-            m_gwtServiceContexts.put(serviceName, context);
-        }
-        CmsGwtService gwtService = (CmsGwtService)Class.forName(serviceName).getDeclaredConstructor().newInstance();
+        Class<? extends CmsGwtService> serviceClass = Class.forName(
+            serviceName,
+            false,
+            getClass().getClassLoader()).asSubclass(CmsGwtService.class);
+        CmsGwtService gwtService = serviceClass.getDeclaredConstructor().newInstance();
+        CmsGwtServiceContext2 context = m_gwtServiceContexts.computeIfAbsent(serviceName, CmsGwtServiceContext2::new);
         gwtService.init(servletConfig);
         gwtService.setContext(context);
         return gwtService;
