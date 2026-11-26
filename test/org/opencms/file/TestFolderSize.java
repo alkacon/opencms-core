@@ -131,6 +131,24 @@ public class TestFolderSize extends OpenCmsTestRunner {
     }
 
     @Test
+    public void testOnlineSize() throws Exception {
+
+        byte[] data = new byte[100];
+        CmsObject cms = getCmsObject();
+        String folder = getName();
+        cms.createResource(folder, 0);
+        cms.createResource(folder + "/file1", 1, data, new ArrayList<>());
+        String rootPath = CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName());
+        assertEquals(1, cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, false, false)).size());
+        assertEquals(0, cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, true, false)).size());
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+        List<CmsFolderSizeEntry> entries = cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, true, false));
+        assertEquals(1, entries.size());
+        assertEquals(data.length, entries.get(0).getSize());
+    }
+
+    @Test
     public void testSingleSize() throws Exception {
 
         byte[] data = new byte[100];

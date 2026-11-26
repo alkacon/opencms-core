@@ -7481,7 +7481,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
-        List<CmsFolderSizeEntry> stats = vfsDriver.readFolderSizeStats(dbc, false, options);
+        List<CmsFolderSizeEntry> stats = vfsDriver.readFolderSizeStats(dbc, options.isOnline(), options);
         return stats;
 
     }
