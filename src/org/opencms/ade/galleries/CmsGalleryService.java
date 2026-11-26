@@ -1001,27 +1001,28 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                                     recursive,
                                     localized ? CmsLocaleManager.getLocale(locale) : null);
                                 String value = prop.getValue();
+                                // if the property is not set, show the most generic property name (without locale suffix) with an empty value
+                                final String propName = (value != null) ? prop.getName() : property;
                                 I_CmsMacroResolver resolver = CmsMacroResolver.newWorkplaceLocaleResolver(cms);
 
                                 String label = null;
-                                if (value != null) {
-                                    if (labelFromConfig == null) {
-                                        CmsXmlContentProperty propConfig = config.getPropertyConfigurationAsMap().get(
-                                            prop.getName()); // we use the name of the property that was actually read (might have a locale suffix)
-                                        if ((propConfig != null)
-                                            && !CmsStringUtil.isEmptyOrWhitespaceOnly(propConfig.getNiceName())) {
-                                            CmsXmlContentProperty localizedPropConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperty(
-                                                propConfig,
-                                                resolver);
-                                            label = localizedPropConfig.getNiceName();
-                                        } else {
-                                            label = prop.getName();
-                                        }
+                                if (labelFromConfig == null) {
+                                    CmsXmlContentProperty propConfig = config.getPropertyConfigurationAsMap().get(
+                                        propName); // we use the name of the property that was actually read (might have a locale suffix)
+                                    if ((propConfig != null)
+                                        && !CmsStringUtil.isEmptyOrWhitespaceOnly(propConfig.getNiceName())) {
+                                        CmsXmlContentProperty localizedPropConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperty(
+                                            propConfig,
+                                            resolver);
+                                        label = localizedPropConfig.getNiceName();
                                     } else {
-                                        label = labelFromConfig; // macros in widget config (where this is coming from) have already been resolved during editor initialization
+                                        label = propName;
                                     }
-                                    result.setImageInfoItem(new CmsImageInfoItemBean(label + ":", value));
+                                } else {
+                                    label = labelFromConfig; // macros in widget config (where this is coming from) have already been resolved during editor initialization
                                 }
+                                result.setImageInfoItem(
+                                    new CmsImageInfoItemBean(label + ":", (value != null) ? value : ""));
                             }
                         }
                     } catch (Exception e) {
